@@ -57,6 +57,10 @@ public class NLP implements NerTool {
 		}
 
 		Model NamedEntitymodel = ModelFactory.createDefaultModel();
+		System.out.println(buffer);
+		if(buffer.contains("<!--")){
+			return NamedEntitymodel;
+		}
 		NamedEntitymodel.read(stream, "", "TTL");
 		return NamedEntitymodel;
 	}
@@ -147,8 +151,10 @@ public class NLP implements NerTool {
 				Model namedEntityModel = getNamedEntityModel(object.toString());
 //				System.out.println("Named Entity Model");
 //				namedEntityModel.write(System.out,"TTL");
+				if(!namedEntityModel.isEmpty()){
+					resultModel= resultModel.union(getGeoObjects(namedEntityModel));	
+				}
 				
-				resultModel= resultModel.union(getGeoObjects(namedEntityModel));
 //				System.out.println("result Model");
 //				resultModel.write(System.out,"TTL");
 	
