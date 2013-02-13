@@ -80,7 +80,7 @@ public class Fox implements NerTool {
      * @param c Input config
      * @return All NEs found
      */
-    @Override
+//    @Override
     public TreeSet<NamedEntity> getNEs(Configuration c) {
         return getNEs(c.inputText);
     }
