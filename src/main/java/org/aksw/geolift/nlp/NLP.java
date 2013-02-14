@@ -1,6 +1,7 @@
 package org.aksw.geolift.nlp;
 
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +20,8 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.impl.StatementImpl;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -30,6 +33,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -48,6 +52,58 @@ import org.omg.CORBA.portable.InputStream;
  * @author sherif
  */
 public class NLP implements NerTool {
+	
+	Model model;
+	Property litralProperty;
+
+	/**
+	 * @param model
+	 * @param litralProperty
+	 *@author sherif
+	 */
+	public NLP(Model model, Property litralProperty) {
+		super();
+		this.model = model;
+		this.litralProperty = litralProperty;
+	}
+
+	public NLP(String fileNameOrUri, String litralPropartyUri) {
+		super();
+		this.model = loadModel(fileNameOrUri);
+		this.litralProperty = ResourceFactory.createProperty(litralPropartyUri);
+	}
+
+	/**
+	 * @return the model
+	 */
+	public Model getModel() {
+		return model;
+	}
+
+
+	/**
+	 * @return the litralProperty
+	 */
+	public Property getLitralProperty() {
+		return litralProperty;
+	}
+
+
+	/**
+	 * @param model the model to set
+	 */
+	public void setModel(Model model) {
+		this.model = model;
+	}
+
+
+	/**
+	 * @param litralProperty the litralProperty to set
+	 */
+	public void setLitralProperty(Property litralProperty) {
+		this.litralProperty = litralProperty;
+	}
+
 
 	public Model getNamedEntityModel( String inputText){
 		String buffer = getNamedEntity("text","NER","turtle", inputText);
@@ -66,11 +122,15 @@ public class NLP implements NerTool {
 		NamedEntitymodel.read(stream, "", "TTL");
 		return NamedEntitymodel;
 	}
+	
+
 	public String refineString(String inputString){
 		String outputString=inputString;
 		outputString.replace("<", "").replace(">", "").replace("//", "");
 		return outputString;
 	}
+	
+	
 	private String getNamedEntity(String type, String task, String output, String text){
 		String buffer = "", line; 
 		boolean error = true;
@@ -107,16 +167,19 @@ public class NLP implements NerTool {
 	}
 
 
-	public Model getGeoObjects(Model inputModel){
+	public Model getGeoObjects(RDFNode subject){
+
 		Model resultModel=ModelFactory.createDefaultModel();
-		NodeIterator objectsIter = inputModel.listObjects();
+		NodeIterator objectsIter = model.listObjects();
+
 		while (objectsIter.hasNext()) {
 			RDFNode object = objectsIter.nextNode();
 			if(object.isResource()){
 				if(isPlace(object)){
-					resultModel.add((Resource) object,RDF.type, "<http://dbpedia.org/ontology/Place>");
+					Property property= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
+					resultModel.add( (Resource) subject , property, object);
 					//TODO add more data ??
-					//					System.out.println("------------------------>"+object.toString());
+//					System.out.println(subject.toString() + property +object);
 				}	
 			}
 		}
@@ -140,7 +203,7 @@ public class NLP implements NerTool {
 			model.read(in, null);
 		}else if(fileNameOrUri.contains(".nt")){
 			System.out.println("Opening N-Triples file");
-			model.read(in, null, "NT");
+			model.read(in, null, "N-TRIPLE");
 		}else{
 			System.out.println("Content negotiation to get RDFXML from " + fileNameOrUri);
 			model.read(fileNameOrUri);
@@ -151,6 +214,9 @@ public class NLP implements NerTool {
 		System.out.println("loading "+ fileNameOrUri + " is done!!");
 		return model;
 	}
+	
+	
+	
 	private boolean isPlace(RDFNode uri){
 		boolean result=false;
 		String queryString="ask{<" +uri.toString() + "> a <http://dbpedia.org/ontology/Place>}";
@@ -179,21 +245,25 @@ public class NLP implements NerTool {
 		return result;
 	}
 
-	public Model nlpEnrichGeoTriples(Model inputModel, Property litralProperty){
+	public Model nlpEnrichGeoTriples(){
 		Model resultModel=ModelFactory.createDefaultModel();
-		NodeIterator objectsIter = inputModel.listObjectsOfProperty(litralProperty);
-
-		while (objectsIter.hasNext()) {
-			RDFNode object = objectsIter.nextNode();
+		//		NodeIterator objectsIter = inputModel.listObjectsOfProperty(litralProperty);
+		StmtIterator stItr = model.listStatements(null, litralProperty, (RDFNode) null);
+		while (stItr.hasNext()) {
+			com.hp.hpl.jena.rdf.model.Statement st = stItr.nextStatement();
+			RDFNode object = st.getObject();
+			RDFNode subject = st.getSubject();
+			System.out.println("Subject: " + subject);
+			System.out.println("Object:  " + object);
 			if(object.isLiteral()){
 
-				System.out.println("Object="+object);
+				//				System.out.println("Object="+object);
 
 				Model namedEntityModel = getNamedEntityModel(object.toString());
 				//				System.out.println("Named Entity Model");
 				//				namedEntityModel.write(System.out,"TTL");
 				if(!namedEntityModel.isEmpty()){
-					resultModel= resultModel.union(getGeoObjects(namedEntityModel));	
+					resultModel= resultModel.union(getGeoObjects(subject));	
 				}				
 				//				System.out.println("result Model");
 				//				resultModel.write(System.out,"TTL");
@@ -204,23 +274,26 @@ public class NLP implements NerTool {
 		return resultModel;
 	}
 
-	public Model nlpEnrichGeoTriples(List<String> inputText){
-		Model resultModel=ModelFactory.createDefaultModel();
-		for(String it: inputText) {
-			System.out.println("Text=" + it);
-			Model namedEntityModel = getNamedEntityModel(it);
-			if(!namedEntityModel.isEmpty()){
-				resultModel = resultModel.union(getGeoObjects(namedEntityModel));	
-			}
-		}
-		return resultModel;
+	public Model enrichModel(){
+		return model.union(nlpEnrichGeoTriples());
 	}
+	//	public Model nlpEnrichGeoTriples(List<String> inputText){
+	//		Model resultModel=ModelFactory.createDefaultModel();
+	//		for(String it: inputText) {
+	//			System.out.println("Text=" + it);
+	//			Model namedEntityModel = getNamedEntityModel(it);
+	//			if(!namedEntityModel.isEmpty()){
+	//				resultModel = resultModel.union(getGeoObjects(namedEntityModel));	
+	//			}
+	//		}
+	//		return resultModel;
+	//	}
 
 	@Test
-	public void DBpediaAbstractTest(){
-		List<String> abstracts=getDBpediaAbstaracts(10);
-		nlpEnrichGeoTriples(abstracts).write(System.out,"TTL");
-	}
+	//	public void DBpediaAbstractTest(){
+	//		List<String> abstracts=getDBpediaAbstaracts(10);
+	//		nlpEnrichGeoTriples(abstracts).write(System.out,"TTL");
+	//	}
 
 
 
@@ -232,12 +305,19 @@ public class NLP implements NerTool {
 
 
 
-	public static void main(String args[]) {
-		NLP app= new NLP();
+	public static void main(String args[]) throws IOException {
+		
 
-		Model m=app.loadModel(args[0]);
-		Property biographyProperty=ResourceFactory.createProperty(args[1]);
-		app.nlpEnrichGeoTriples(m, biographyProperty).write(System.out,"TTL");
+		NLP app= new NLP(args[0], args[1]);	
+		
+		FileWriter outFile = new FileWriter(args[2]);		
+	
+		
+		Model enrichedModel=app.nlpEnrichGeoTriples();
+		enrichedModel.write(System.out,"TTL");
+		System.out.println("Enriched MODEL:");
+		System.out.println("---------------");
+		enrichedModel.write(outFile,"TURTLE");
 	}
 
 
