@@ -36,7 +36,7 @@ public class AppTest
      */
     public void testApp()
     {
-        NLP app = new NLP("demo.ttl");
+        NlpGeoEnricher app = new NlpGeoEnricher("demo.ttl");
         List<String> hellos = app.queryForPropertyValues(RDFS.label);
         
         assertTrue(hellos.size()==1);
