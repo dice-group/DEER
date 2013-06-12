@@ -1,0 +1,292 @@
+@prefix gn:      <http://www.geonames.org/ontology#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+
+<http://linkedgeodata.org/triplify/node820252479>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "ابهر@fa" , "ابهر" , "Abhar@en" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user13908> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/property/is_in>
+              "Zanjan Province, Iran" ;
+      <http://linkedgeodata.org/property/is_in%3Acontinent>
+              "Asia" ;
+      <http://linkedgeodata.org/property/is_in%3Acountry>
+              "Iran" ;
+      <http://linkedgeodata.org/property/is_in%3Astate>
+              "Zanjan" ;
+      owl:sameAs <http://dbpedia.org/resource/Abhar> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(49.22 36.1437)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "36.1436784^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "49.219963^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node158326597>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Philadelphia" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user3582> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/ontology/gnis%3ACounty_num>
+              "101^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/gnis%3AST_num>
+              "42^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/gnis%3Aid>
+              "1209052^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/population>
+              "1448394^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/property/census%3Apopulation>
+              "1448394;2006" ;
+      <http://linkedgeodata.org/property/gnis%3AClass>
+              "Populated Place" ;
+      <http://linkedgeodata.org/property/gnis%3ACounty>
+              "Philadelphia" ;
+      <http://linkedgeodata.org/property/gnis%3AST_alpha>
+              "PA" ;
+      <http://linkedgeodata.org/property/import_uuid>
+              "bb7269ee-502a-5391-8056-e3ce0e66489c" ;
+      <http://linkedgeodata.org/property/is_in>
+              "Philadelphia,Pennsylvania,Pa.,PA,USA" ;
+      <http://linkedgeodata.org/property/is_in%3Acontinent>
+              "North America" ;
+      <http://linkedgeodata.org/property/is_in%3Acountry>
+              "USA" ;
+      owl:sameAs <http://dbpedia.org/resource/Philadelphia> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(-75.1638 39.9523)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "39.952335^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "-75.163789^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node569005431>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "日進市@ja" , "Nissin@en" , "日進市 (Nissin)" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user146930> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/property/KSJ2%3ACN2>
+              "日進市" ;
+      <http://linkedgeodata.org/property/KSJ2%3APRN>
+              "愛知県" ;
+      <http://linkedgeodata.org/property/KSJ2%3Afilename>
+              "N03-090320_23.xml" ;
+      <http://linkedgeodata.org/property/is_in>
+              "愛知県 (Aichi)" ;
+      <http://linkedgeodata.org/property/is_in%3Aregion>
+              "愛知県 (Aichi)" ;
+      <http://linkedgeodata.org/property/name%3Aja_rm>
+              "Nissin-shi" ;
+      <http://linkedgeodata.org/property/note>
+              "National-Land Numerical Information (Administrative area) 2008, MLIT Japan" ;
+      <http://linkedgeodata.org/property/note%3Aja>
+              "国土数値情報（行政区域データ）平成20年　国土交通省" ;
+      owl:sameAs <http://dbpedia.org/resource/Nisshin,_Aichi> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(137.049 35.1385)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "35.138471^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "137.049405^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node26707967>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Riika@fi" , "Riga@sv" , "Рига@ru" , "Ryga@pl" , "Riga@es" , "Riga@de" , "Riga@en" , "Riga@hu" , "Rīga" , "Riga@eu" , "Riga@hr" , "ריגה@he" , "Ríga@is" , "Ryga@lt" , "Riia@et" , "Ρίγα@el" ;
+      <http://linkedgeodata.org/ontology/admin_level>
+              "5^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user58338> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/ontology/population>
+              "717371^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/property/capital>
+              "yes" ;
+      <http://linkedgeodata.org/property/int_name>
+              "Riga" ;
+      <http://linkedgeodata.org/property/is_in>
+              "Latvija;Latvia;LV;Europe" ;
+      <http://linkedgeodata.org/property/is_in%3Acontinent>
+              "Europe" ;
+      <http://linkedgeodata.org/property/is_in%3Acountry>
+              "Latvija" ;
+      <http://linkedgeodata.org/property/wikipedia>
+              "Riga" ;
+      owl:sameAs <http://dbpedia.org/resource/Riga> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(24.1052 56.9494)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "56.9493977^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "24.1051844^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node299790200>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Montréal" , "Montreal@en" , "مونتريال@ar" , "Montréal@fr" , "Монреаль@ru" ;
+      <http://linkedgeodata.org/ontology/admin_level>
+              "8^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user213199> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/ontology/population>
+              "1651000^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/property/is_in>
+              "Québec, Canada" ;
+      <http://linkedgeodata.org/property/is_in%3Acontinent>
+              "Amérique du nord" ;
+      <http://linkedgeodata.org/property/is_in%3Acountry>
+              "Canada" ;
+      <http://linkedgeodata.org/property/is_in%3Acountry_code>
+              "ca" ;
+      <http://linkedgeodata.org/property/is_in%3Astate>
+              "Québec" ;
+      <http://linkedgeodata.org/property/is_in%3Astate_code>
+              "qc" ;
+      <http://linkedgeodata.org/property/rank>
+              "1" ;
+      <http://linkedgeodata.org/property/superficy>
+              "364" ;
+      owl:sameAs <http://dbpedia.org/resource/Montreal> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(-73.5913 45.5224)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "45.5224507^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "-73.5912827^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node244080662>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "化州市@zh" , "化州市" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user83557> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/ontology/gns%3AADM1>
+              "30^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/gns%3AUFI>
+              "-1910786^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/property/gns%3ADSG>
+              "ADM3" ;
+      <http://linkedgeodata.org/property/gns%3AUNI>
+              "6722104" ;
+      <http://linkedgeodata.org/property/int_name>
+              "Huazhou" ;
+      <http://linkedgeodata.org/property/is_in%3Acontinent>
+              "Asia" ;
+      <http://linkedgeodata.org/property/name%3Azh_pinyin>
+              "Huazhou Shi" ;
+      owl:sameAs <http://dbpedia.org/resource/Huazhou%2C_Guangdong> , <http://dbpedia.org/resource/Huazhou,_Guangdong> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(110.64 21.6517)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "21.6516763^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "110.6404799^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node249310458>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Baft@en" , "بافت" , "بافت@fa" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user13908> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/property/is_in>
+              "Kerman,Iran" ;
+      <http://linkedgeodata.org/property/is_in%3Acontinent>
+              "Asia" ;
+      <http://linkedgeodata.org/property/is_in%3Acountry>
+              "Iran" ;
+      <http://linkedgeodata.org/property/is_in%3Astate>
+              "Kerman" ;
+      owl:sameAs <http://dbpedia.org/resource/Baft> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(56.6057 29.234)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "29.2340169^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "56.6056569^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node198416817>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Río Cuarto" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user299360> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/property/is_in>
+              "Córdoba, Argentina" ;
+      owl:sameAs <http://dbpedia.org/resource/R%C3%ADo_Cuarto,_C%C3%B3rdoba> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(-64.3511 -33.1315)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "-33.1315202^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "-64.3510601^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node358015515>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "보령" , "Boryeong@en" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user74529> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/property/name%3Ako_rm>
+              "Boryeong" ;
+      owl:sameAs <http://dbpedia.org/resource/Boryeong> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(126.613 36.334)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "36.33401^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "126.613165^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node150919109>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Kodiak" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user18069> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/ontology/gnis%3ACounty_num>
+              "150^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/gnis%3AST_num>
+              "2^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/gnis%3Aid>
+              "1404875^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/population>
+              "6259^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/property/census%3Apopulation>
+              "6259;2006" ;
+      <http://linkedgeodata.org/property/gnis%3AClass>
+              "Populated Place" ;
+      <http://linkedgeodata.org/property/gnis%3ACounty>
+              "Kodiak Island" ;
+      <http://linkedgeodata.org/property/gnis%3AST_alpha>
+              "AK" ;
+      <http://linkedgeodata.org/property/import_uuid>
+              "bb7269ee-502a-5391-8056-e3ce0e66489c" ;
+      <http://linkedgeodata.org/property/is_in>
+              "Kodiak Island,Alaska,Alaska,AK,USA" ;
+      owl:sameAs <http://dbpedia.org/resource/Kodiak%2C_Alaska> , <http://dbpedia.org/resource/Kodiak,_Alaska> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(-152.407 57.79)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "57.79^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "-152.4072222^^http://www.w3.org/2001/XMLSchema#double" .

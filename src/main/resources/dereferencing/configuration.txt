@@ -1,0 +1,7 @@
+src/main/resources/dereferencing/demo2.ttl
+http://www.w3.org/2003/01/geo/wgs84_pos#lat
+http://www.w3.org/2003/01/geo/wgs84_pos#long
+http://www.w3.org/2003/01/geo/wgs84_pos#geometry
+http://www.w3.org/2003/01/geo/wgs84_pos#lat_long
+http://www.w3.org/2003/01/geo/wgs84_pos#line
+http://www.w3.org/2003/01/geo/wgs84_pos#polygon

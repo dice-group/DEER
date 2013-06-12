@@ -1,0 +1,32 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://data.semanticweb.org/organization/deri-nui-galway> 	
+	rdf:type 	foaf:Organization ;
+ 	foaf:name 	"DERI";
+ 	foaf:homepage 	<http://www.deri.ie>;
+ 	rdfs:label 	"National University of Ireland, Galway";
+ 	foaf:based_near 	<http://data.semanticweb.org/organization/deri-nui-galway/location> .
+
+<http://data.semanticweb.org/organization/university-of-manchester-uk> 	
+	rdf:type 	foaf:Organization ;
+ 	foaf:name 	"University of Manchester";
+ 	foaf:homepage 	<http://www.manchester.ac.uk/> ;
+ 	rdfs:label 	"University of Manchester";
+ 	foaf:based_near 	<http://dbpedia.org/resource/Berlin> .
+
+
+<http://data.semanticweb.org/organization/bbn-technologies> 	
+	rdf:type 	foaf:Organization ;
+ 	foaf:homepage 	<http://www.bbn.com/> ;
+ 	foaf:name 	"BBN Technologies";
+ 	foaf:based_near 	<http://data.semanticweb.org/organization/bbn-technologies/location> .
+
+
+<http://data.semanticweb.org/organization/clark-parsia> 	
+	rdf:type 	foaf:Organization ;
+ 	foaf:homepage 	<http://clarkparsia.com/> ;
+	foaf:name 	"Clark & Parsia";
+ 	rdfs:label 	"Clark & Parsia, LLC";
+ 	foaf:based_near 	<http://dbpedia.org/resource/Leipzig> .

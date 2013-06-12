@@ -13,6 +13,17 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
+		 <repository>
+                        <id>maven.aksw.org/internal</id>
+                        <name>University Leipzig, AKSW Maven2 Internal Repository</name>
+                        <url>http://maven.aksw.org/repository/internal/</url>
+         </repository>
+
+         <repository>
+                        <id>maven.aksw.org/snapshots</id>
+                        <name>University Leipzig, AKSW Maven2 Snapshot Repository</name>
+                        <url>http://maven.aksw.org/repository/snapshots/</url>
+         </repository>
 	</repositories>
 
 	<dependencies>
@@ -27,5 +38,10 @@
 			<artifactId>jena-arq</artifactId>
 			<version>2.9.0-incubating</version>
 		</dependency>
+		<dependency>
+      <groupId>de.uni_leipzig.simba.limes</groupId>
+      <artifactId>limes-core</artifactId>
+      <version>2013-06-10</version>
+    </dependency>
 	</dependencies>
 </project>
