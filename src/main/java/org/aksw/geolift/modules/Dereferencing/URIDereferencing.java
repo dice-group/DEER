@@ -43,6 +43,7 @@ public class URIDereferencing implements GeoLiftModule
 	 * This method assigns the localmodel inside the class to the one given, collects targeted predicates into list, 
 	 * and calls another method putAdditionalInfo to make the enrichment
 	 */
+	List<String> parametersList= new ArrayList<String>();
 	public Model process(Model model, Map<String, String> parameters) {
 		// TODO Auto-generated method stub
 		if(model!= null)
@@ -56,6 +57,7 @@ public class URIDereferencing implements GeoLiftModule
 		        Map.Entry pairs = (Map.Entry)it.next();
 		        //System.out.println(pairs.getKey() + " = " + pairs.getValue());
 		        predicates.add(pairs.getValue().toString());
+		        parametersList.add(pairs.getValue().toString());
 		        it.remove(); // avoids a ConcurrentModificationException
 		    }
 		    
@@ -66,7 +68,10 @@ public class URIDereferencing implements GeoLiftModule
 	public List<String> getParameters() 
 	{
 		// TODO Auto-generated method stub
-		return null;
+		if(parametersList.size() > 0)
+			return parametersList;
+		else
+			return null;
 	}
 	/**
 	 * @param uri : the URI to be dereferenced

@@ -1,5 +1,6 @@
 package org.aksw.geolift.modules.linking;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +24,21 @@ import de.uni_leipzig.simba.controller.PPJoinController;
 public class Linking implements GeoLiftModule
 {
 
+	List<String> parametersList= new ArrayList<String>();
 	/**
 	 * @param model: the model of the dataset to be enriched
 	 * @param parameters: list of parameters needed for the processing include:
 	 * datasetFilePath,specFilePath,linksFilePath,linksPart
 	 * @return model enriched with links generated from a linking tool
 	 */
+	
 	public Model process(Model model, Map<String, String> parameters) 
 	{
 		// TODO Auto-generated method stub
-		String datasetFilePath = parameters.get("datasetFilePath");
-		String specFilePath = parameters.get("specFilePath");
-		String linksFilePath = parameters.get("linksFilePath");
-		String linksPart=parameters.get("linksPart");
+		String datasetFilePath = parameters.get("datasetFilePath"); parametersList.add(datasetFilePath);
+		String specFilePath = parameters.get("specFilePath"); parametersList.add(specFilePath);
+		String linksFilePath = parameters.get("linksFilePath"); parametersList.add(linksFilePath);
+		String linksPart=parameters.get("linksPart"); parametersList.add(linksPart);
 		
 		model = setPrefixes(model);
 		linkingProcess(specFilePath);
@@ -46,7 +49,10 @@ public class Linking implements GeoLiftModule
 	public List<String> getParameters() 
 	{
 		// TODO Auto-generated method stub
-		return null;
+		if(parametersList.size()>0)
+			return parametersList;
+		else
+			return null;
 	}
 
 	/**
