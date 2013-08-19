@@ -178,7 +178,7 @@ public class LiteralPropertyRanker {
 	 * @param propertyRank the propertyRank to set
 	 */
 
-	public Property getTopRankedLetralProperty(){
+	public Property getTopRankedLiteralProperty(){
 		return getTopNRankedLiteralProperty(1).firstEntry().getValue();
 	}
 
@@ -195,7 +195,7 @@ public class LiteralPropertyRanker {
 			System.out.println(index++ + ". Rank = " + entry.getKey() + ", Property: " + entry.getValue() );
 		}
 		System.out.println();
-		System.out.println("TOP PROPERTY: "+l.getTopRankedLetralProperty());
+		System.out.println("TOP PROPERTY: "+l.getTopRankedLiteralProperty());
 
 	}
 }

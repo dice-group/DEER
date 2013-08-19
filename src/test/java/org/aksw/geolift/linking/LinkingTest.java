@@ -34,7 +34,7 @@ public class LinkingTest {
 		parameters.put("datasetFilePath",args[0]);// The path to the dataset file to be loaded
 		parameters.put("specFilePath",args[1]);//The path to the spec.xml file contains the linking specifications
 		parameters.put("linksFilePath",args[2]);// The path to the file contains the resulted links
-		parameters.put("linksPart",args[3]);//The position of the URI to be enriched in the links generated, so the otherside is the link partner to be added to it
+		parameters.put("linksPart",args[3]);//The position of the Original URI to be enriched in the links generated (right side or left side), so the otherside is the link partner to be added to it
 		
 		Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetFilePath"));
 		Linking l= new Linking();

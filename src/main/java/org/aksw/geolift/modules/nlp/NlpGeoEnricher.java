@@ -2,6 +2,7 @@ package org.aksw.geolift.modules.nlp;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,11 +32,13 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.TreeSet;
 
 import org.aksw.geolift.modules.GeoLiftModule;
-import org.junit.Test;
+
+import riotcmd.printtokens;
+//import org.junit.Test;
 
 /**
  *
@@ -43,8 +46,148 @@ import org.junit.Test;
  */
 public class NlpGeoEnricher implements GeoLiftModule{
 
-	Model model;
-	Property litralProperty;
+	private Model model;
+
+	// parameters list
+	private Property 	litralProperty;
+	private boolean 	useFoxLight		= false;
+	private boolean 	askEndPoint 	= false;
+	private String 		foxType 		= "TEXT";
+	private String 		foxTask 		= "NER";
+	private String 		foxInput 		= "";
+	private String 		foxOutput		= "TURTLE";
+	private boolean 	foxUseNif		= false;
+	private boolean 	foxReturnHtml 	= false;
+	private String 		inputFile		= "";
+	private String 		outputFile		= "";
+
+
+	/**
+	 * @return the outputFile
+	 */
+	public String getOutputFile() {
+		return outputFile;
+	}
+
+	/**
+	 * @param outputFile the outputFile to set
+	 */
+	public void setOutputFile(String outputFile) {
+		this.outputFile = outputFile;
+	}
+
+	/**
+	 * @return the foxType
+	 */
+	public String getFoxType() {
+		return foxType;
+	}
+
+	/**
+	 * @return the foxTask
+	 */
+	public String getFoxTask() {
+		return foxTask;
+	}
+
+	/**
+	 * @return the foxInput
+	 */
+	public String getFoxInput() {
+		return foxInput;
+	}
+
+	/**
+	 * @return the foxOutput
+	 */
+	public String getFoxOutput() {
+		return foxOutput;
+	}
+
+	/**
+	 * @return the foxUseNif
+	 */
+	public boolean isFoxUseNif() {
+		return foxUseNif;
+	}
+
+	/**
+	 * @return the foxReturnHtml
+	 */
+	public boolean isFoxReturnHtml() {
+		return foxReturnHtml;
+	}
+
+	/**
+	 * @param foxType the foxType to set
+	 */
+	public void setFoxType(String foxType) {
+		this.foxType = foxType;
+	}
+
+	/**
+	 * @param foxTask the foxTask to set
+	 */
+	public void setFoxTask(String foxTask) {
+		this.foxTask = foxTask;
+	}
+
+	/**
+	 * @param foxInput the foxInput to set
+	 */
+	public void setFoxInput(String foxInput) {
+		this.foxInput = foxInput;
+	}
+
+	/**
+	 * @param foxOutput the foxOutput to set
+	 */
+	public void setFoxOutput(String foxOutput) {
+		this.foxOutput = foxOutput;
+	}
+
+	/**
+	 * @param foxUseNif the foxUseNif to set
+	 */
+	public void setFoxUseNif(boolean foxUseNif) {
+		this.foxUseNif = foxUseNif;
+	}
+
+	/**
+	 * @param foxReturnHtml the foxReturnHtml to set
+	 */
+	public void setFoxReturnHtml(boolean foxReturnHtml) {
+		this.foxReturnHtml = foxReturnHtml;
+	}
+
+
+	/**
+	 * @return the askEndPoint
+	 */
+	public boolean isAskEndPoint() {
+		return askEndPoint;
+	}
+
+	/**
+	 * @param askEndPoint the askEndPoint to set
+	 */
+	public void setAskEndPoint(boolean askEndPoint) {
+		this.askEndPoint = askEndPoint;
+	}
+
+	/**
+	 * @return the useFoxLight
+	 */
+	public boolean getUseFoxLight() {
+		return useFoxLight;
+	}
+
+	/**
+	 * @param useFoxLight the useFoxLight to set
+	 */
+	public void setUseFoxLight(boolean useFL) {
+		useFoxLight = useFL;
+	}
 
 	/**
 	 * @param model
@@ -106,7 +249,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 
 
 	public Model getNamedEntityModel( String inputText){
-		String buffer = getNamedEntity("text","NER","turtle", inputText);
+		String buffer = getNamedEntity(foxType, foxTask, foxOutput, inputText, useFoxLight, foxUseNif, foxReturnHtml);
 
 		System.out.println(buffer);
 
@@ -127,6 +270,8 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	}
 
 
+
+
 	public String refineString(String inputString){
 		String outputString=inputString;
 		outputString.replace("<", "").replace(">", "").replace("//", "");
@@ -134,7 +279,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	}
 
 
-	private String getNamedEntity(String type, String task, String output, String text){
+	private String getNamedEntity_old_FOX(String type, String task, String output, String text){
 		String buffer = "", line; 
 		boolean error = true;
 		while (error) {
@@ -170,29 +315,120 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	}
 
 
+
+	/**
+	 * @param type: { text | url }
+	 * @param task: { NER }
+	 * @param output: { JSONLD | N3 | N-TRIPLE | RDF/{ JSON | XML | XML-ABBREV} | TURTLE }
+	 * @param input: text or an url
+	 * @param foxlight: { true | false }
+	 * @param nif: { true | false }
+	 * @param returnHtml: { true | false }
+	 * @return Named entity buffer containing annotation of the input text
+	 * @author sherif
+	 */
+	private String getNamedEntity(String type, String task, String output, String input, boolean foxlight, boolean nif, boolean returnHtml){
+		String buffer = "", line; 
+		boolean error = true;
+		while (error) {
+			try {
+				input=refineString(input);
+				// Construct data
+				String data = URLEncoder.encode("type",	 	"UTF-8") 	+ "=" + URLEncoder.encode(type, 						"UTF-8");
+				data += "&" + URLEncoder.encode("task",		"UTF-8") 	+ "=" + URLEncoder.encode(task,	 						"UTF-8");
+				data += "&" + URLEncoder.encode("output", 	"UTF-8") 	+ "=" + URLEncoder.encode(output, 						"UTF-8");
+				data += "&" + URLEncoder.encode("input", 	"UTF-8") 	+ "=" + URLEncoder.encode(input, 						"UTF-8");
+				data += "&" + URLEncoder.encode("foxlight", "UTF-8")	+ "=" + URLEncoder.encode( (foxlight) ? "TRUE":"FALSE",	"UTF-8");
+				data += "&" + URLEncoder.encode("nif", 		"UTF-8")	+ "=" + URLEncoder.encode( (nif) ? "TRUE":"FALSE", 		"UTF-8");
+				data += "&" + URLEncoder.encode("returnHtml", "UTF-8")	+ "=" + URLEncoder.encode( (returnHtml)?"TRUE":"FALSE",	"UTF-8");
+
+				// Send data
+				URL url = new URL("http://139.18.2.164:4443/api");
+				URLConnection conn = url.openConnection();
+				conn.setDoOutput(true);
+				OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+				wr.write(data);
+				wr.flush();
+
+				// Get the response
+				BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+				while ((line = rd.readLine()) != null) {
+					buffer = buffer + line + "\n";
+				}
+				wr.close();
+				rd.close();
+				error = false;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		//TODO use JASON parser
+
+		buffer= URLDecoder.decode(buffer);
+		buffer = buffer.substring(buffer.indexOf("@"), buffer.lastIndexOf("log")-4).toString();
+
+		//		System.out.println(buffer); System.exit(1);
+		return buffer;
+	}
+
+
+	/**
+	 * @param namedEntityModel
+	 * @param subject
+	 * @return model of places contained in the input model 
+	 * @author sherif
+	 */
 	public Model getPlaces(Model namedEntityModel, RDFNode subject){
 
 		Model resultModel=ModelFactory.createDefaultModel();
-		//		NodeIterator objectsIter = namedEntityModel.listObjects();
+
+		String sparqlQueryString= 	"CONSTRUCT {?s ?p ?o} " +
+				" WHERE {?s a <http://ns.aksw.org/scms/annotations/LOCATION>. ?s ?p ?o} " ;
+		QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, namedEntityModel);
+		Model locationsModel =qexec.execConstruct();
+
 		Property meansProperty = ResourceFactory.createProperty("http://ns.aksw.org/scms/means");
-		NodeIterator objectsIter = namedEntityModel.listObjectsOfProperty(meansProperty);
-		while (objectsIter.hasNext()) {
-			RDFNode object = objectsIter.nextNode();
+		NodeIterator objectsIter = locationsModel.listObjectsOfProperty(meansProperty);
 
-			System.out.println("OBJECT:"+object);
-
-			if(object.isResource()){
-				if(isPlace(object)){
-					Property property= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
-					resultModel.add( (Resource) subject , property, object);
-					//TODO add more data ??
-					System.out.println("--------------->"+subject.toString() + property +object);
-				}	
+		if(askEndPoint){
+			while (objectsIter.hasNext()) {
+				RDFNode object = objectsIter.nextNode();
+				//			System.out.println("OBJECT:"+object);
+				if(object.isResource()){
+					if(isPlace(object)){
+						Property relatedToProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
+						resultModel.add( (Resource) subject , relatedToProperty, object);
+						//					TODO add more data ??
+						System.out.println("--------------- RELATED GEO FOUND ---------------\n<"
+								+subject.toString() + "> <" + relatedToProperty + "> <" + object + ">");
+					}	
+				}
+			}
+		}
+		else{
+			while (objectsIter.hasNext()) {
+				RDFNode object = objectsIter.nextNode();
+				//			System.out.println("OBJECT:"+object);
+				if(object.isResource()){
+					Property relatedToProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
+					resultModel.add( (Resource) subject , relatedToProperty, object);
+					//					TODO add more data ??
+					System.out.println("--------------- RELATED GEO FOUND ---------------\n<"
+							+subject.toString() + "> <" + relatedToProperty + "> <" + object + ">");
+				}
 			}
 		}
 		return resultModel;
 	}
 
+	/**
+	 * @param fileNameOrUri
+	 * @return loaded model from input file/URI
+	 * @author sherif
+	 */
 	public Model loadModel(String fileNameOrUri){
 		model=ModelFactory.createDefaultModel();
 		java.io.InputStream in = FileManager.get().open( fileNameOrUri );
@@ -201,30 +437,35 @@ public class NlpGeoEnricher implements GeoLiftModule{
 					"File: " + fileNameOrUri + " not found");
 		}
 		if(fileNameOrUri.contains(".ttl")){
-			System.out.println("Opening Turtle file");
+			System.out.println("Opening Turtle file ...");
 			model.read(in, null, "TTL");
 		}else if(fileNameOrUri.contains(".rdf")){
-			System.out.println("Opening RDFXML file");
+			System.out.println("Opening RDF/XML file ...");
 			model.read(in, null);
 		}else if(fileNameOrUri.contains(".nt")){
-			System.out.println("Opening N-Triples file");
+			System.out.println("Opening N-Triples file ...");
 			model.read(in, null, "N-TRIPLE");
 		}else{
-			System.out.println("Content negotiation to get RDFXML from " + fileNameOrUri);
+			System.out.println("Content negotiation to get RDF/XML from " + fileNameOrUri + " ...");
 			model.read(fileNameOrUri);
 		}
-		System.out.println("loading "+ fileNameOrUri + " is done!!");
+		System.out.println("Loading "+ fileNameOrUri + " is done!!");
 		return model;
 	}
 
 
 
+	/**
+	 * @param uri
+	 * @return wither is the input URI is a place of not
+	 * @author sherif
+	 */
 	private boolean isPlace(RDFNode uri){
 		boolean result=false;
 		if(uri.toString().contains("http://ns.aksw.org/scms/"))
 			return false;
 		String queryString="ask {<" +uri.toString() + "> a <http://dbpedia.org/ontology/Place>}";
-		System.out.println("================================queryString="+ queryString);
+		System.out.println("================================ queryString="+ queryString);
 		Query query = QueryFactory.create(queryString);
 		//		QueryExecution qexec = QueryExecutionFactory.sparqlService(DBpedia.endPoint, query);
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(DBpedia.endPoint, query);
@@ -234,6 +475,11 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	}
 
 
+	/**
+	 * @param limit
+	 * @return just a TEST 
+	 * @author sherif
+	 */
 	public List<String> getDBpediaAbstaracts(Integer limit){
 		List<String> result = new ArrayList<String>();
 
@@ -251,93 +497,124 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		return result;
 	}
 
+	/**
+	 * @return Geo-spatial enriched model
+	 * @author sherif
+	 */
 	public Model nlpEnrichGeoTriples(){
+
 		Model resultModel=ModelFactory.createDefaultModel();
 		StmtIterator stItr = model.listStatements(null, litralProperty, (RDFNode) null);
+
 		while (stItr.hasNext()) {
 			Statement st = stItr.nextStatement();
 			RDFNode object = st.getObject();
 			RDFNode subject = st.getSubject();
-			System.out.println("Subject: " + subject);
-			System.out.println("Object:  " + object);
+			//			System.out.println("Subject: " + subject);
+			//			System.out.println("Object:  " + object);
 			if(object.isLiteral()){
-
 				//				System.out.println("Object="+object);
-
 				Model namedEntityModel = getNamedEntityModel(object.toString());
 				//				System.out.println("Named Entity Model");
 				//				namedEntityModel.write(System.out,"TTL");
 				if(!namedEntityModel.isEmpty()){
-					resultModel= resultModel.union(getPlaces(namedEntityModel, subject));	
+					resultModel= resultModel.union(getPlaces(namedEntityModel, subject));
 				}				
 				//				System.out.println("result Model");
 				//				resultModel.write(System.out,"TTL");
-
 			}
 		}
-
 		return resultModel;
 	}
+
 
 	public Model enrichModel(){
 		return model.union(nlpEnrichGeoTriples());
 	}
-	//	public Model nlpEnrichGeoTriples(List<String> inputText){
-	//		Model resultModel=ModelFactory.createDefaultModel();
-	//		for(String it: inputText) {
-	//			System.out.println("Text=" + it);
-	//			Model namedEntityModel = getNamedEntityModel(it);
-	//			if(!namedEntityModel.isEmpty()){
-	//				resultModel = resultModel.union(getGeoObjects(namedEntityModel));	
-	//			}
-	//		}
-	//		return resultModel;
-	//	}
 
-	@Test
-	//	public void DBpediaAbstractTest(){
-	//		List<String> abstracts=getDBpediaAbstaracts(10);
-	//		nlpEnrichGeoTriples(abstracts).write(System.out,"TTL");
-	//	}
-
-
-
-
-
-	public static void main(String args[]) throws IOException {
-		//		NLP app= new NLP(args[0], args[1]);
-
-		NlpGeoEnricher app= new NlpGeoEnricher();
-		Model m= app.loadModel(args[0]);
-		LiteralPropertyRanker lpr=new LiteralPropertyRanker(m)	;
-		Property p=lpr.getTopRankedLetralProperty();
-		System.out.println("Top founded Literal Property: " + p); 
-		app.setLitralProperty(p);
-		FileWriter outFile = new FileWriter(args[1]);		
-
-		Model enrichedModel=app.nlpEnrichGeoTriples();
-
-		System.out.println("Enriched MODEL:");
-		System.out.println("---------------");
-		enrichedModel.write(System.out,"TTL");
-		enrichedModel.write(outFile,"TURTLE");
-	}
 
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.modules.GeoLiftModule#process(com.hp.hpl.jena.rdf.model.Model, java.util.Map)
 	 */
-	public Model process(Model model, Map<String, String> parameters) {
-		// TODO Auto-generated method stub
-		return null;
+	public Model process(Model model, Map<String, String> parameters){
+		
+		if( parameters.containsKey("inputFile")){
+			inputFile = parameters.get("inputFile");
+			model = loadModel(inputFile);
+		}	
+		
+		if( parameters.containsKey("litralProperty"))
+			litralProperty = ResourceFactory.createProperty(parameters.get("litralProperty"));
+		else{
+			LiteralPropertyRanker lpr=new LiteralPropertyRanker(model)	;
+			litralProperty = lpr.getTopRankedLiteralProperty();
+			System.out.println("Top ranked Literal Property: " + litralProperty); 
+		}
+		
+		if( parameters.containsKey("useFoxLight"))
+			useFoxLight = parameters.get("useFoxLight").toLowerCase().equals("true")? true : false;
+		if( parameters.containsKey("askEndPoint"))
+			askEndPoint = parameters.get("askEndPoint").toLowerCase().equals("true")? true : false;
+		if( parameters.containsKey("foxType"))
+			foxType = parameters.get("foxType").toUpperCase();
+		if( parameters.containsKey("foxTask"))
+			foxTask = parameters.get("foxTask").toUpperCase();
+		if( parameters.containsKey("foxInput"))
+			foxInput = parameters.get("foxInput");
+		if( parameters.containsKey("foxOutput"))
+			foxOutput = parameters.get("foxOutput");
+		if( parameters.containsKey("foxUseNif"))
+			foxUseNif = parameters.get("foxUseNif").toLowerCase().equals("true")? true : false;
+		if( parameters.containsKey("foxReturnHtml"))
+			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
+
+		Model enrichedModel = nlpEnrichGeoTriples();
+
+		if( parameters.containsKey("outputFile")){
+			outputFile = parameters.get("outputFile");
+			FileWriter outFile = null;
+			try {
+				outFile = new FileWriter(outputFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}		
+			enrichedModel.write(outFile,"TURTLE");
+		}
+		return enrichedModel;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.modules.GeoLiftModule#getParameters()
 	 */
 	public List<String> getParameters() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> parameters = new ArrayList<String>();
+		parameters.add("litralProperty");
+		parameters.add("useFoxLight");
+		parameters.add("askEndPoint");
+		parameters.add("foxType");
+		parameters.add("foxTask");
+		parameters.add("foxInput");
+		parameters.add("foxOutput");
+		parameters.add("foxUseNif");
+		parameters.add("foxReturnHtml");
+		return parameters;
 	}
 
+	public static void main(String args[]) throws IOException {
+		NlpGeoEnricher geoEnricher= new NlpGeoEnricher();
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		
+		parameters.put("useFoxLight", "true");
+		parameters.put("askEndPoint", "false");
+		parameters.put("inputFile",   args[0]);
+		parameters.put("outputFile",  args[1]);
+		
+		Model enrichedModel = geoEnricher.process(null, parameters);
+		
+		System.out.println("Enriched MODEL:");
+		System.out.println("---------------");
+		enrichedModel.write(System.out,"TTL");
+	}
 }
 
