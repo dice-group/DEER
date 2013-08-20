@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.24)  19 AUG 2013 15:45
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.6.11)  20 AUG 2013 18:05
 entering extended mode
  %&-line parsing enabled.
 **GeoLiftManual.tex
@@ -580,125 +580,109 @@ File: images/NEAnnotation.pdf Graphic file (type pdf)
 File: images/KWAnnotation.pdf Graphic file (type pdf)
 
 <use images/KWAnnotation.pdf> [10]
-Underfull \hbox (badness 3375) in paragraph at lines 306--307
+Underfull \hbox (badness 3375) in paragraph at lines 311--312
 \OT1/cmr/m/n/12 val-ues, e.g. $\OT1/cmtt/m/n/12 http : / / www . w3 . org /
  []
 
 
-Underfull \hbox (badness 2042) in paragraph at lines 306--307
+Underfull \hbox (badness 2042) in paragraph at lines 311--312
 \OT1/cmtt/m/n/12 2003 / 01 / geo / wgs84 _ pos # lat$\OT1/cmr/m/n/12 . The
  []
 
 
-Overfull \hbox (18.55818pt too wide) in paragraph at lines 301--309
+Overfull \hbox (18.55818pt too wide) in paragraph at lines 306--314
 [][] 
  []
 
 [11 <./images/NEAnnotation.pdf> <./images/KWAnnotation.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 319--320
+Underfull \hbox (badness 10000) in paragraph at lines 331--332
 
  []
 
-[12]
-Overfull \hbox (56.55234pt too wide) in paragraph at lines 331--332
-[][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (38.85123pt too wide) in paragraph at lines 346--347
-[][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (110.58942pt too wide) in paragraph at lines 346--347
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][]  
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [13]
-Underfull \hbox (badness 1931) in paragraph at lines 378--379
+[12] [13]
+Underfull \hbox (badness 1931) in paragraph at lines 384--385
 \OT1/cmr/m/n/12 e.g. $\OT1/cmtt/m/n/12 linkingModuleData / linking /
  []
 
 
-Overfull \hbox (47.386pt too wide) in paragraph at lines 372--382
+Overfull \hbox (47.386pt too wide) in paragraph at lines 378--388
 [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 389--391
+Underfull \hbox (badness 10000) in paragraph at lines 395--397
+
+ []
+
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 398--401
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 392--395
-
+Overfull \hbox (43.90552pt too wide) in paragraph at lines 415--416
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
 
-[14] [15]
-Overfull \hbox (78.39764pt too wide) in paragraph at lines 415--417
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
- []
-
-
-Overfull \hbox (18.15683pt too wide) in paragraph at lines 435--436
+[15]
+Overfull \hbox (23.90552pt too wide) in paragraph at lines 429--430
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][]  
+][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (23.90552pt too wide) in paragraph at lines 437--438
+Overfull \hbox (29.6542pt too wide) in paragraph at lines 430--431
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][]  
+][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (46.90027pt too wide) in paragraph at lines 439--440
+Overfull \hbox (52.64896pt too wide) in paragraph at lines 431--432
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][]  
+][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (46.90027pt too wide) in paragraph at lines 441--442
+Overfull \hbox (52.64896pt too wide) in paragraph at lines 432--433
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][]  
+][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (23.90552pt too wide) in paragraph at lines 443--444
+Overfull \hbox (29.6542pt too wide) in paragraph at lines 433--434
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][]  
+][][][][][][][][][][][][][][] 
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [16]
-Overfull \hbox (41.15158pt too wide) in paragraph at lines 445--446
+Overfull \hbox (46.90027pt too wide) in paragraph at lines 434--435
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][]  
+][][][][][][][][][][][][][][] 
+ []
+
+[16]
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 468
+.
+LaTeX Font Info:    No file OMScmtt.fd. on input line 468.
+
+
+LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
+(Font)              using `OMS/cmsy/m/n' instead
+(Font)              for symbol `textbraceleft' on input line 468.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 471--472
+\OMS/cmtt/m/n/12 j$ \OT1/cmtt/m/n/12 N-TRIPLE $\OMS/cmtt/m/n/12 j$ \OT1/cmtt/m/
+n/12 RDF/\OMS/cmtt/m/n/12 f \OT1/cmtt/m/n/12 JSON $\OMS/cmtt/m/n/12 j$ \OT1/cmt
+t/m/n/12 XML $\OMS/cmtt/m/n/12 j$
  []
 
 
-Overfull \hbox (16.31152pt too wide) in paragraph at lines 452--453
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][]  
- []
-
-
-Underfull \hbox (badness 1014) in paragraph at lines 478--479
-\OT1/cmr/m/n/12 if not set the top ranked prop-erty
- []
-
-
-Overfull \hbox (18.55818pt too wide) in paragraph at lines 474--489
+Overfull \hbox (18.55818pt too wide) in paragraph at lines 461--476
 [][] 
  []
 
-[17] [18] (./GeoLiftManual.bbl
+[17] (./GeoLiftManual.bbl
 
 ! Package inputenc Error: Keyboard character used is undefined
 (inputenc)                in inputencoding `utf8'.
@@ -712,30 +696,36 @@ l.26 Axel-Cyrille {Ngonga Ngomo} and Sö
 You need to provide a definition with \DeclareInputText 
 or \DeclareInputMath before using this key.
 
-[19
+[18]) [19] (./GeoLiftManual.aux)
 
-]) [20] (./GeoLiftManual.aux) ) 
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 5982 strings out of 493848
- 79294 string characters out of 1152823
- 216923 words of memory out of 3000000
- 9162 multiletter control sequences out of 15000+50000
+ 5996 strings out of 493848
+ 79485 string characters out of 1152823
+ 215923 words of memory out of 3000000
+ 9174 multiletter control sequences out of 15000+50000
  13256 words of font info for 52 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 44i,13n,45p,837b,1726s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/ams
-fonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
-csc10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb><
-/usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/t
-exmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive
-/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-texlive/fonts/type1/
-public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfon
-ts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti1
-2.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr
-/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on GeoLiftManual.pdf (20 pages, 1070933 bytes).
+ 44i,13n,45p,837b,1716s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-t
+exlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-texlive/font
+s/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/publ
+ic/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/
+cm/cmr6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb><
+/usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/te
+xmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive
+/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type
+1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-texlive/fonts/type1/public/am
+sfonts/cm/cmtt12.pfb>
+Output written on GeoLiftManual.pdf (19 pages, 1081934 bytes).
 PDF statistics:
- 222 PDF objects out of 1000 (max. 8388607)
+ 223 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

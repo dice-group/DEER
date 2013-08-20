@@ -90,7 +90,7 @@
 
 \vspace*{\fill} 
 \begin{quote} 
-\centering 
+
 \textbf{Abstract}: \\
 This manual presents the spatial mapping component dubbed \geolift. 
 The goal of \geolift is to enrich RDF datasets with geo-spatial information. 
@@ -115,7 +115,7 @@ Finally, we present the detailed developers' manual of \geolift.
 \section{Assumptions}
 Geographical information can be mentioned in three different ways within Linked Data:
 \begin{enumerate}
-\item \emph{Through dereferencing}: Several datasets contain links to datasets with explicit geographical information such as DBpedia or LinkedGeoData. 
+\item \emph{Through dereferencing}: Several datasets contain links to datasets with explicit geographical information such as \emph{DBpedia} or \emph{LinkedGeoData}. 
 For example, in a music dataset, one might find information such as\\ 
 \texttt{http://example.org/Leipzig \\
 owl:sameAs \\ 
@@ -285,16 +285,21 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
  and \texttt{NLP} class which handles named entity extraction process.  
 \end{itemize}
 
- All modules implement the \texttt{GeoLiftModule} interface's tow methdods \texttt{getParameters()} and \texttt{process()}. Method \texttt{getParameters()} returns set of input parameters was given to the implementing module. The \texttt{process()} method takes input model to be enriched in addition to parameters used while processing in the form of Map strcture then use them to start the implementing module process.
+ All modules implement the \texttt{GeoLiftModule} interface's two methdods \texttt{getParameters()} and \texttt{process()},
+ where the \texttt{getParameters()} method returns a list of its module input parameters,
+ and the \texttt{process()} method takes as input a \emph{Jena} model and a Map of different parameters in form of \texttt{("parameterName", "parameterValue")},
+ and as output it generates a Jena model also.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Dereferencing Module%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Dereferencing module}
 \subsubsection{Input}
 \begin{itemize}
- \item \texttt{Data model} contains the triples of the dataset to be enriched (This data model can be an output from previous stage or can be loaded from file directly before using the module). 
+ \item \texttt{Data model} contains the triples of the dataset to be enriched 
+ (This data model can be an output from previous stage or can be loaded from file/URI directly before using the module). 
  \item \texttt{Predicates list} list of interested predicates to be added as enrichment to the data model.
 \end{itemize}
 
-Table \ref{tbl:derefPram} provides details about the \texttt{Dereferencing} module's parameters .
+Table \ref{tbl:derefPram} provides details about the \texttt{Dereferencing} module's parameters.
 
 \begin{table*}[ht]
 \caption{Dereferencing parameters description} \label{tbl:derefPram}
@@ -302,7 +307,7 @@ Table \ref{tbl:derefPram} provides details about the \texttt{Dereferencing} modu
 \toprule
 \textbf{Parameter Name} & \textbf{Default value} & \textbf{Description}\\
 \midrule
-\texttt{model}	& \texttt{null} 	& Original Model to be enriched with geographical information.\\
+\texttt{model}	& \texttt{null} 	& Original Model to be enriched with Geo-spatial information.\\
 \texttt{predicates list} 	& \texttt{null} 	& List of interesting predicates to enrich the model with them and their Objects' values, e.g. \url {http://www.w3.org/2003/01/geo/wgs84_pos#lat}. The list of predicates is given in form of Map structure where the key and value of each entry are the predicate itself. \\
 \bottomrule
 \end{tabular}
@@ -310,45 +315,45 @@ Table \ref{tbl:derefPram} provides details about the \texttt{Dereferencing} modu
 
 \subsubsection{Output}
 \begin{itemize}
- \item \texttt{Data model} data model enriched with additional geographic information using the interested predicates given. The information are represented as triples include interested predicate and its value.
+ \item \texttt{Data model} enriched data model with additional Geo-spatial information adding the given input predicates with its extracted values.
+%  The information are represented as triples including interested predicate and its value.
 \end{itemize}
 
 \subsubsection{Process}
- In this module, a dataset model is given and a list of interested predicates as inputs. The purpose is to  extend the model's geographical information by set of information through the given predicates. This is done by iterating over the model's resources (dubbed as original resources) and for each original resource an extraction of the predicates' values (objects) that are in the form of URI is performed. These URIs (dubbed as dereferenced resources) are more filtered to be the resources used in dbpedia. The dereferenced resources are supoosed to a dereference operation in order to find the interested predicates list for them. Such predicates and their objects' values are fetched and added to the the original resource to extend its information.
+ In this module, a dataset model is given and a list of interested predicates as inputs.
+ The purpose is to  extend the model's Geo-spatial information by set of information through the given predicates.
+ This is done by iterating over the model's resources (dubbed as original resources) 
+ and for each of the original resource an extraction of the predicates' values (objects) that are in the form of URI is performed. 
+ These URIs (dubbed as dereferenced resources) are more filtered to be the resources used in \emph{DBpedia}.
+ The dereferenced resources are supposed to a dereference operation in order to find the interested predicates list for them.
+ Such predicates and their objects' values are fetched and added to the the original resource to extend its information.
 \subsubsection{Sample code to run the module}
-This is sample code shows how to use the URIDereference module:\\
-\begin{lstlisting}
-void main()
-{
-    	/*
-    	Load list of needed parameters usinf function getConfigured(). It is written to read from a file list of parameters. The path to the file is given in args[0].
-    	The parameters include: 
-    	File with to load the original dataset from it.
-    	List of interested predicates list
-    	*/
-    	List<String> configurations= getConfigured(args[0]); 
-    	//Load model with required dataset
-    	Model model=org.aksw.geolift.io.Reader.readModel(configurations.get(0));       //model is loaded with dataset from specified file
-    	List<String> predicates=configurations.subList(1, configurations.size());     //load targeted predicates to be added to enrich information in dataset
-    	//Pre-processing step : Collect list of targeted predicates into Map as process method get them as Map structure
-    	Map<String, String> parameters= new HashMap<String, String>();
-    	for (String predicate : predicates) 
-    	{
-    		parameters.put(predicate, predicate);
-	}
-    	//Create the 'Dereference' object 
-    	URIDereferencing u = new URIDereferencing();
-    	//Run the dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
-    	Model resultedModel = u.process(model, parameters);
-		try 
-		{ 
-		//Write the enriched model into .ttl file
-			org.aksw.geolift.io.Writer.writeModel(resultedModel, "TTL", "src/main/resources/dereferencing/DereferencingEnriched.ttl");
-		} catch (IOException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+Listing \ref{lst:URIDereference} provides a sample code showing how to use the \texttt{URIDereference} module:\\
+
+\begin{lstlisting}[label=lst:URIDereference, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{URIDereferencing} class.]
+void main(){
+// Load list of needed parameters usinf function getConfigured(). 
+// It is written to read from a file list of parameters. The path to the file is given in args[0].
+// The parameters include: File with to load the original dataset from it, and List of interested predicates list
+List<String> configurations = getConfigured(args[0]); 
+// Load model with required dataset
+Model model = org.aksw.geolift.io.Reader.readModel(configurations.get(0));       //model is loaded with dataset from specified file
+List<String> predicates = configurations.subList(1, configurations.size());     //load targeted predicates to be added to enrich information in dataset
+// Pre-processing step : Collect list of targeted predicates into Map as process method get them as Map structure
+Map<String, String> parameters = new HashMap<String, String>();
+for (String predicate : predicates){
+  parameters.put(predicate, predicate);
+}
+// Create the 'Dereference' object 
+URIDereferencing u = new URIDereferencing();
+// Run the dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
+Model resultedModel = u.process(model, parameters);
+try{ 
+// Write the enriched model into .ttl file
+  org.aksw.geolift.io.Writer.writeModel(resultedModel, "TTL", "src/main/resources/dereferencing/DereferencingEnriched.ttl");
+} catch (IOException e){
+    e.printStackTrace();
+  }
 }
 
 \end{lstlisting}
@@ -359,9 +364,10 @@ void main()
 
 \subsubsection{Input}
 \begin{itemize}
- \item \texttt{Data model} contains the triples of the dataset to be enriched (This data model can be an output from previous stage or can be loaded from file directly before using the module). 
- \item \texttt{Parameters list} ist of parameters that will be used during the process. These parameters include:
- \subitem \texttt{Specification file path}, the path to the spec.xml file contains the linking specifications
+ \item \texttt{Data model} contains the triples of the dataset to be enriched 
+ (This data model can be an output from previous stage or can be loaded from file/URI directly before using the module). 
+ \item \texttt{Parameters list} list of parameters that will be used during the process. These parameters include:
+ \subitem \texttt{Specification file path}, the path to the \texttt{spec.xml} file contains the linking specifications
  \subitem \texttt{Links file path}, the path to the file contains the resulted links 
  \subitem \texttt{URI position}, represents the original model's URI position as source/left or target/right in the linking specifications.
 \end{itemize}
@@ -382,80 +388,58 @@ Table \ref{tbl:linkingPram} provides details about the \texttt{Linking} module's
 \end{table*}
 \subsubsection{Output}
 \begin{itemize}
- \item \texttt{Data model} data model enriched with additional geographic information URIs represented in owl:sameAs predicates.
+ \item \texttt{Data model} data model enriched with additional geographic information URIs represented in \texttt{owl:sameAs} predicates.
 \end{itemize}
 
 \subsubsection{Process}
 In this module an input model is given and list of parameters for used files during the process. The process starts by generating links between the dataset model and another dataset as second partner. This is done using LIMES interlinking tool by specifying the linking specification file given as parameter. The links are generated in accept.nt file that is used after to combine such links with their original resources in our dataset model as owl:samAs predicate's objects. The result is a dataset model enriched with geographical information links. \\ \\
 Another forward step is to feed the Dereference module with the resulted enriched model from Linking module as input. The previously generated links in the model in addition to other Objects in the URIs form will be dereferenced adding more and detailed geographical information.
 \subsubsection{Sample code to run the module}
-This is sample code shows how to use the Linking module:\\
+Listing \ref{lst:Linking} provides a sample code showing how to use the Linking module.\\
 \begingroup
     \fontsize{8pt}{10pt}\selectfont
-\begin{lstlisting}
-public static void main(String[] args) 
-{
-Map<String, String> parameters=new HashMap<String, String>();
-
+\begin{lstlisting}[label=lst:Linking, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{Linking} class.]
+public static void main(String[] args){
+Map<String, String> parameters = new HashMap<String, String>();
 // The path to the dataset file to be loaded
 parameters.put("datasetFilePath",args[0]);
-
 //The path to the spec.xml file contains the linking specifications
 parameters.put("specFilePath",args[1]);
-
 // The path to the file contains the resulted links
 parameters.put("linksFilePath",args[2]);// The path to the file contains the resulted links
-
 /*The position of the Original URI to be enriched in the generated links
 (right side/source or left side/target), so the otherside is the enriching 
 owl:sameAs link to be added to it */
 parameters.put("linksPart",args[3]);
-
 //Load model to be enriched from the specified file path
-Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetFilePath"));
-
+Model model = org.aksw.geolift.io.Reader.readModel(parameters.get("datasetFilePath"));
 //Create linking object
-Linking l= new Linking();
-
+Linking l = new Linking();
 //Run the the Linking Model to enrich the original model with links generated
-model=l.process(model, parameters);
-try 
-{
-	org.aksw.geolift.io.Writer.writeModel(model, "TTL", 
-	"src/main/resources/linking/datasetUpdated.nt");
+model = l.process(model, parameters);
+try{
+  org.aksw.geolift.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetUpdated.nt");
 } catch (IOException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
-//Further step is combining the Linking module with Dereferncing module
-URIDereferencing d= new URIDereferencing();
-
+    e.printStackTrace();
+  }
+// Further step is combining the Linking module with Dereferncing module
+URIDereferencing d = new URIDereferencing();
 //prepare Map of interested predicates to enrich by
 Map<String, String> PredicatesParameters= new HashMap<String, String>();
-PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#lat", 
-"http://www.w3.org/2003/01/geo/wgs84_pos#lat");
-PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#long",
-"http://www.w3.org/2003/01/geo/wgs84_pos#long");
-PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#geometry",
-"http://www.w3.org/2003/01/geo/wgs84_pos#geometry");
-PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#lat_long", 
-"http://www.w3.org/2003/01/geo/wgs84_pos#lat_long");
-PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#line", 
-"http://www.w3.org/2003/01/geo/wgs84_pos#line");
-PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#polygon",
-"http://www.w3.org/2003/01/geo/wgs84_pos#polygon");
+PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#lat", "http://www.w3.org/2003/01/geo/wgs84_pos#lat");
+PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#long", "http://www.w3.org/2003/01/geo/wgs84_pos#long");
+PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#geometry", "http://www.w3.org/2003/01/geo/wgs84_pos#geometry");
+PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#lat_long", "http://www.w3.org/2003/01/geo/wgs84_pos#lat_long");
+PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#line", "http://www.w3.org/2003/01/geo/wgs84_pos#line");
+PredicatesParameters.put("http://www.w3.org/2003/01/geo/wgs84_pos#polygon", "http://www.w3.org/2003/01/geo/wgs84_pos#polygon");
 //Run the Dereferencing operation	
-model=d.process(model, PredicatesParameters);
-try 
-{
-//Write the resulted double enriched model in .ttl file
-	org.aksw.geolift.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetLinkingDereferenced.nt");
-} catch (IOException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
-
-System.out.println("Finished");
+model = d.process(model, PredicatesParameters);
+try{
+// Write the resulted double enriched model in .ttl file
+  org.aksw.geolift.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetLinkingDereferenced.nt");
+  } catch (IOException e) {
+      e.printStackTrace();
+    }
 }
 \end{lstlisting}
 \endgroup
@@ -467,27 +451,50 @@ The \texttt{getParameters()} method of the \texttt{NLP} module returns a list of
 which can be set by the user to provide custom control of the \emph{Named entity extraction} provided by the implemented \emph{FOX framework}.
 
 The \texttt{process()} method of the \texttt{NLP} module takes as input a \emph{Jena} model and a \texttt{Map} of different parameters, 
-and it generates also a \emph{Jena} model as output.
+and as output it generates a \emph{Jena} model also.
 Table \ref{tbl:nlpPram} provides details about the \texttt{NLP} module's parameters .
+
+A sample code showing how to call the \texttt{NlpGeoEnricher} class and give it its parameters is introduced in Listing \ref{lst:NlpGeoEnricher}.
+
 \begin{table*}[ht]
 \caption{NLP parameters description} \label{tbl:nlpPram}
 \begin{tabular}{@{}  l  l p{7cm} l p{6cm}@{}}
 \toprule
 \textbf{Parameter Name} & \textbf{Default value} & \textbf{Description}\\
 \midrule
-\texttt{litralProperty}	& \texttt{Top Ranked} 	& Literal property used by FOX for NER, if not set the top ranked property is pecked by \texttt{LiteralPropertyRanker}, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
+\texttt{litralProperty}	& \texttt{Top Ranked} 	& Literal property used by FOX for NER, if not set the top ranked literal property is pecked by \texttt{LiteralPropertyRanker} module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
 \texttt{useFoxLight} 	& \texttt{false} 	& Use the light version of FOX, setting it generates faster execution time but less accurate results) \\
 \texttt{askEndPoint} 	& \texttt{false} 	& Ask the \emph{DBpedia} endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results)\\
-\texttt{foxType} 	& \texttt{TEXT} 	& FOX input type : \{ text $\rvert$ url \}\\
-\texttt{foxTask} 	& \texttt{NER} 		& FOX task :\{NER\} for Named Entity Recognition\\
+\texttt{foxType} 	& \texttt{TEXT} 		& FOX input type : \texttt{\{ text $\rvert$ url \}}\\
+\texttt{foxTask} 	& \texttt{NER} 		& FOX task \texttt{:\{NER\}} for Named Entity Recognition\\
 \texttt{foxInput} 	& \texttt{""} 		& FOX actual input as text or an URL\\
-\texttt{foxOutput} 	& \texttt{TURTLE} 	& FOX output format: \{ JSONLD $\rvert$ N3 $\rvert$ N-TRIPLE $\rvert$ RDF/\{ JSON $\rvert$ XML $\rvert$ XML-ABBREV\} $\rvert$ TURTLE \}\\
+\texttt{foxOutput} 	& \texttt{TURTLE} 	& FOX output format: \texttt{\{ JSONLD $\rvert$ N3 $\rvert$ N-TRIPLE $\rvert$ RDF/\{ JSON $\rvert$ XML $\rvert$ XML-ABBREV\} $\rvert$ TURTLE \}}\\
 \texttt{foxUseNif} 	& \texttt{false} 	& FOX generates NIF: \{ true $\rvert$ false \}\\
-\texttt{foxReturnHtml} & \texttt{false} 	& FOX returns HTML: \{ true $\rvert$ false \}\\ 
+\texttt{foxReturnHtml} & \texttt{false} 	& FOX returns HTML: \texttt{\{ true $\rvert$ false \}}\\ 
 \bottomrule
 \end{tabular}
 \end{table*}
-\newpage \clearpage
+
+\newpage
+
+\begin{lstlisting}[label=lst:NlpGeoEnricher, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{NlpGeoEnricher} class.]
+NlpGeoEnricher geoEnricher= new NlpGeoEnricher();
+Map<String, String> parameters = new HashMap<String, String>();
+// Set parameters
+parameters.put("useFoxLight", "true");
+parameters.put("askEndPoint", "false");
+// read input Model
+Model inputModel = org.aksw.geolift.io.Reader.readModel(inputFileURI);
+Model enrichedModel = geoEnricher.process(inputModel, parameters);
+// print the enriched output model
+enrichedModel.write(System.out,"TTL");
+
+\end{lstlisting}
+ 
+% \newpage 
+% \clearpage
+
+
 \section{Conclusions}
 In this manual, we presented the \geolift component for enriching RDF datasets with geo-spatial data.
 In future work, we aim to implement a graphical user interface on top of \geolift to enable users to specify their workflows graphically.

@@ -1,6 +1,8 @@
 package org.aksw.geolift.nlp;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.aksw.geolift.modules.nlp.LiteralPropertyRanker;
 import org.aksw.geolift.modules.nlp.NlpGeoEnricher;
@@ -14,22 +16,20 @@ import com.hp.hpl.jena.rdf.model.Property;
 public class NLPTest {
     
     public static void main(String args[]) throws IOException {
-		//		NLP app= new NLP(args[0], args[1]);
+		NlpGeoEnricher geoEnricher= new NlpGeoEnricher();
 
-		NlpGeoEnricher nlpEnricher = new NlpGeoEnricher();
-		Model m = nlpEnricher.loadModel(args[0]);
-		LiteralPropertyRanker lpr = new LiteralPropertyRanker(m)	;
-		Property topRankedLetralProperty = lpr.getTopRankedLetralProperty();
-		System.out.println("Top founded Literal Property: " + topRankedLetralProperty); 
-		nlpEnricher.setLitralProperty(topRankedLetralProperty);
-		FileWriter outFile = new FileWriter(args[1]);		
-
-		Model enrichedModel = nlpEnricher.nlpEnrichGeoTriples();
-
+		Map<String, String> parameters = new HashMap<String, String>();
+		
+		parameters.put("useFoxLight", "true");
+		parameters.put("askEndPoint", "false");
+		parameters.put("inputFile",   args[0]);
+		parameters.put("outputFile",  args[1]);
+		
+		Model enrichedModel = geoEnricher.process(null, parameters);
+		
 		System.out.println("Enriched MODEL:");
 		System.out.println("---------------");
 		enrichedModel.write(System.out,"TTL");
-		enrichedModel.write(outFile,"TURTLE");
 	}
 
 }
