@@ -260,50 +260,45 @@ public class URIDereferencing implements GeoLiftModule
 	        }
 			return configurationInfo;
 	    }
-	private static Map<String,String> predicateSplitter (List<String> Predicates)
+	private static Map<String,String> list2map (List<String> Predicates)
 	{
 		Map<String,String> predicatesMap= new HashMap<String, String>();
+		int i=1;
 		for (String predicateLine : Predicates) 
     	{
-    		String[] predicateParts=predicateLine.split(",");
-    		predicatesMap.put(predicateParts[0], predicateParts[1]);
+    		predicatesMap.put("predicate"+i++, predicateLine);
 		}
 		return predicatesMap;
 	}
 	public static void main( String[] args ) 
     {	
-		long startTime = System.currentTimeMillis();// to measure execution time in milliseconds
-		long stopTime=0;
-    	/**
-    	 * reading the configurations file path from user, these configurations include:
-    	 * dataset file/endpoint : includes dataset to be read in Model that dereferencing work on its statements
-    	 * predicates list: include list of predicates in interest to be added and enrich the dataset with
-    	 */
+		String datasetSource="";
+		List<String> predicatesLines=null;
+		if(args.length > 0)
+		{
+			
+			for(int i=0;i<args.length;i+=2)
+			{
+				if(args[i].equals("-d") || args[i].equals("--data"))
+					datasetSource = args[i+1];
+				if(args[i].equals("-p") || args[i].equals("--predicate"))
+					predicatesLines= getConfigurations(args[i+1]);
+			}
+		}
     	try 
     	{ 
     		System.out.println("Start..");
-    		//Open file given by user and read parameters
-	    	List<String> configurations= getConfigurations(args[0]);
-	    	//load model with required dataset
-	    	String datasetSource=configurations.get(0).split(",")[1]; //read the source of the dataset to extend
 	    	Model model=org.aksw.geolift.io.Reader.readModel(datasetSource);//First parameter: model is loaded with dataset from specified file/endpoint
-	    	List<String> predicatesLines=configurations.subList(1, configurations.size());//Rest of Parameters: load targeted predicates to be added to enrich information in dataset
 	    	//Collect list of targeted predicates into Map
-	    	Map<String, String> parameters= predicateSplitter(predicatesLines);
+	    	Map<String, String> parameters= list2map(predicatesLines);
 	    	//create Dereferencing object to start the process
 	    	URIDereferencing u = new URIDereferencing();
 	    	// run the dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
 	    	Model resultedModel = u.process(model, parameters);
-			stopTime = System.currentTimeMillis();
 			resultedModel.write(System.out,"TTL");
-			//org.aksw.geolift.io.Writer.writeModel(resultedModel, "TTL", "src/main/resources/dereferencing/DereferencingEnriched.ttl");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    long elapsedTime = stopTime - startTime;
-	    System.out.println(".");
-	    System.out.println("Elapsed time = "+ elapsedTime/1000.0);
 		System.out.println("Finished");
     }
 	//data members

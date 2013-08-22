@@ -25,6 +25,8 @@ import com.hp.hpl.jena.util.FileManager;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,8 +38,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import org.aksw.geolift.modules.GeoLiftModule;
-
-import riotcmd.printtokens;
 //import org.junit.Test;
 
 /**
@@ -343,7 +343,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 				data += "&" + URLEncoder.encode("returnHtml", "UTF-8")	+ "=" + URLEncoder.encode( (returnHtml)?"TRUE":"FALSE",	"UTF-8");
 
 				// Send data
-				URL url = new URL("http://139.18.2.164:4443/api");
+				URL url = new URL("http://139.18.2.164:4444/api");
 				URLConnection conn = url.openConnection();
 				conn.setDoOutput(true);
 				OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
@@ -514,7 +514,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			//			System.out.println("Object:  " + object);
 			if(object.isLiteral()){
 				//				System.out.println("Object="+object);
-				Model namedEntityModel = getNamedEntityModel(object.toString());
+				Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
 				//				System.out.println("Named Entity Model");
 				//				namedEntityModel.write(System.out,"TTL");
 				if(!namedEntityModel.isEmpty()){
@@ -537,12 +537,12 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 * @see org.aksw.geolift.modules.GeoLiftModule#process(com.hp.hpl.jena.rdf.model.Model, java.util.Map)
 	 */
 	public Model process(Model model, Map<String, String> parameters){
-		
-		if( parameters.containsKey("inputFile")){
-			inputFile = parameters.get("inputFile");
+
+		if( parameters.containsKey("input")){
+			inputFile = parameters.get("input");
 			model = loadModel(inputFile);
 		}	
-		
+
 		if( parameters.containsKey("litralProperty"))
 			litralProperty = ResourceFactory.createProperty(parameters.get("litralProperty"));
 		else{
@@ -550,7 +550,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			litralProperty = lpr.getTopRankedLiteralProperty();
 			System.out.println("Top ranked Literal Property: " + litralProperty); 
 		}
-		
+
 		if( parameters.containsKey("useFoxLight"))
 			useFoxLight = parameters.get("useFoxLight").toLowerCase().equals("true")? true : false;
 		if( parameters.containsKey("askEndPoint"))
@@ -570,8 +570,8 @@ public class NlpGeoEnricher implements GeoLiftModule{
 
 		Model enrichedModel = nlpEnrichGeoTriples();
 
-		if( parameters.containsKey("outputFile")){
-			outputFile = parameters.get("outputFile");
+		if( parameters.containsKey("output")){
+			outputFile = parameters.get("output");
 			FileWriter outFile = null;
 			try {
 				outFile = new FileWriter(outputFile);
@@ -588,6 +588,8 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 */
 	public List<String> getParameters() {
 		List<String> parameters = new ArrayList<String>();
+		parameters.add("input");
+		parameters.add("output");
 		parameters.add("litralProperty");
 		parameters.add("useFoxLight");
 		parameters.add("askEndPoint");
@@ -604,17 +606,60 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		NlpGeoEnricher geoEnricher= new NlpGeoEnricher();
 
 		Map<String, String> parameters = new HashMap<String, String>();
-		
-		parameters.put("useFoxLight", "true");
-		parameters.put("askEndPoint", "false");
-		parameters.put("inputFile",   args[0]);
-		parameters.put("outputFile",  args[1]);
-		
+
+		// set parameters from command line
+		for(int i=0; i<args.length; i+=2){
+			if(args[i].equals("-i") || args[i].toLowerCase().equals("--input")){
+				parameters.put("input",   args[i+1]);
+			}
+			if(args[i].equals("-o") || args[i].toLowerCase().equals("--output")){
+				parameters.put("output",   args[i+1]);
+			}
+			if(args[i].equals("-p") || args[i].toLowerCase().equals("--litralProperty")){
+				parameters.put("litralProperty",   args[i+1]);
+			}
+			if(args[i].equals("-l") || args[i].toLowerCase().equals("--useFoxLight")){
+				parameters.put("useFoxLight",   args[i+1]);
+			}
+			if(args[i].equals("-e") || args[i].toLowerCase().equals("--askEndPoint")){
+				parameters.put("askEndPoint",   args[i+1]);
+			}
+			if(args[i].equals("-p") || args[i].toLowerCase().equals("--litralProperty")){
+				parameters.put("litralProperty",   args[i+1]);}
+			if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")){
+				System.out.println(
+						"Basic parameters:\n" +
+						"\t-i --input: input file/URI" + "\n" +
+						"\t-o --output: output file/URI" + "\n" +
+						"\t-p --litralProperty: litral property used for NER" + "\n" +
+						"\t-l --useFoxLight: { true | false }" + "\n" +
+						"\t-e --askEndPoint: { true | false}"+ "\n" +
+						"Fox parameters (current version use always default values, which is the first one):\n"+
+						"\t--foxType: { text | url }" + "\n" +
+						"\t--foxTask: { NER }" + "\n" +
+						"\t--foxInput: text or an url" + "\n" +
+						"\t--foxOutput: {TURTLE | JSONLD | N3 | N-TRIPLE | RDF/{ JSON | XML | XML-ABBREV} }" + "\n" +
+						"\t--foxUseNif: { false | true }" + "\n" +
+						"\t--foxReturnHtml: { false | true }" );
+				System.exit(0);
+			}
+		} 
+		if(!parameters.containsKey("input")){
+			System.out.println("No input file/URI, Exit with error!!");
+			System.exit(1);
+		}
+		//		parameters.put("useFoxLight", "true");
+		//		parameters.put("askEndPoint", "false");
+		//		parameters.put("inputFile",   args[0]);
+		//		parameters.put("outputFile",  args[1]);
+
 		Model enrichedModel = geoEnricher.process(null, parameters);
-		
-		System.out.println("Enriched MODEL:");
-		System.out.println("---------------");
-		enrichedModel.write(System.out,"TTL");
+
+		if(!parameters.containsKey("output")){
+			System.out.println("Enriched MODEL:");
+			System.out.println("---------------");
+			enrichedModel.write(System.out,"TTL");
+		}
 	}
 }
 
