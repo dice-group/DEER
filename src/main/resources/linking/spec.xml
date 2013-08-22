@@ -73,13 +73,13 @@
  <METRIC>AND(trigrams(a.rdfs:label, b.rdfs:label)|0.5, euclidean(a.wgs84:lat|wgs84:long, b.wgs84:lat|wgs84:long)|0.9)</METRIC>
    <ACCEPTANCE>
       <THRESHOLD>0.6</THRESHOLD>
-      <FILE>accept.nt</FILE>
-      <RELATION/>
+      <FILE>/home/mofeed/Desktop/accept.nt</FILE>
+      <RELATION>owl:sameAs</RELATION>
    </ACCEPTANCE>
    <REVIEW>
       <THRESHOLD>0.5</THRESHOLD>
       <FILE>review.nt</FILE>
-      <RELATION/>
+      <RELATION>owl:sameAs</RELATION>
    </REVIEW>
    <EXECUTION>Simple</EXECUTION>
    <OUTPUT>NT</OUTPUT>

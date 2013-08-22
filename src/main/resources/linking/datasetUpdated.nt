@@ -1,29 +1,2176 @@
 @prefix gn:      <http://www.geonames.org/ontology#> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 
-<http://linkedgeodata.org/triplify/node820252479>
+<http://linkedgeodata.org/triplify/node256889019>
+      owl:sameAs <http://dbpedia.org/resource/Kampong_Thom_(city)> .
+
+<http://linkedgeodata.org/triplify/node244082493>
+      owl:sameAs <http://dbpedia.org/resource/Xuzhou> .
+
+<http://linkedgeodata.org/triplify/node244081835>
+      owl:sameAs <http://dbpedia.org/resource/Suzhou,_Anhui> .
+
+<http://linkedgeodata.org/triplify/node1657756320>
+      owl:sameAs <http://dbpedia.org/resource/Lerdo,_Durango> .
+
+<http://linkedgeodata.org/triplify/node198406387>
+      owl:sameAs <http://dbpedia.org/resource/Neuqu%C3%A9n,_Argentina> .
+
+<http://linkedgeodata.org/triplify/node150906142>
+      owl:sameAs <http://dbpedia.org/resource/Prizren> .
+
+<http://linkedgeodata.org/triplify/node1696924412>
+      owl:sameAs <http://dbpedia.org/resource/Foster_City,_California> .
+
+<http://linkedgeodata.org/triplify/node244081815>
+      owl:sameAs <http://dbpedia.org/resource/Suihua> .
+
+<http://linkedgeodata.org/triplify/node150964064>
+      owl:sameAs <http://dbpedia.org/resource/Phoenix,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node89381749>
+      owl:sameAs <http://dbpedia.org/resource/Timbuktu> .
+
+<http://linkedgeodata.org/triplify/node244080787>
+      owl:sameAs <http://dbpedia.org/resource/Jinhua> .
+
+<http://linkedgeodata.org/triplify/node2135846791>
+      owl:sameAs <http://dbpedia.org/resource/Khorramshahr> .
+
+<http://linkedgeodata.org/triplify/node2047064716>
+      owl:sameAs <http://dbpedia.org/resource/Isfahan> .
+
+<http://linkedgeodata.org/triplify/node268380974>
+      owl:sameAs <http://dbpedia.org/resource/Tlaxcala,_Tlaxcala> .
+
+<http://linkedgeodata.org/triplify/node1979420355>
+      owl:sameAs <http://dbpedia.org/resource/Alexandria,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node257838557>
+      owl:sameAs <http://dbpedia.org/resource/Siem_Reap> .
+
+<http://linkedgeodata.org/triplify/node315342451>
+      owl:sameAs <http://dbpedia.org/resource/Santo_Domingo> .
+
+<http://linkedgeodata.org/triplify/node358015563>
+      owl:sameAs <http://dbpedia.org/resource/Taebaek> .
+
+<http://linkedgeodata.org/triplify/node151904088>
+      owl:sameAs <http://dbpedia.org/resource/Baton_Rouge,_Louisiana> .
+
+<http://linkedgeodata.org/triplify/node1862647434>
+      owl:sameAs <http://dbpedia.org/resource/Ahar> .
+
+<http://linkedgeodata.org/triplify/node153831682>
+      owl:sameAs <http://dbpedia.org/resource/Ormond_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node569005430>
+      owl:sameAs <http://dbpedia.org/resource/Seto,_Aichi> , <http://dbpedia.org/resource/Nagakute,_Aichi> , <http://dbpedia.org/resource/Miyoshi,_Aichi> , <http://dbpedia.org/resource/Nisshin,_Aichi> , <http://dbpedia.org/resource/Owariasahi,_Aichi> .
+
+<http://linkedgeodata.org/triplify/node150918186>
+      owl:sameAs <http://dbpedia.org/resource/Fairbanks,_Alaska> .
+
+<http://linkedgeodata.org/triplify/node244082501>
+      owl:sameAs <http://dbpedia.org/resource/Yancheng> .
+
+<http://linkedgeodata.org/triplify/node608510493>
+      owl:sameAs <http://dbpedia.org/resource/Chandler,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node244076780>
+      owl:sameAs <http://dbpedia.org/resource/Bei'an> .
+
+<http://linkedgeodata.org/triplify/node2020694424>
+      owl:sameAs <http://dbpedia.org/resource/Chapais,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node230628786>
+      owl:sameAs <http://dbpedia.org/resource/Port_Moresby> .
+
+<http://linkedgeodata.org/triplify/node50688894>
+      owl:sameAs <http://dbpedia.org/resource/El_Paso,_Texas> .
+
+<http://linkedgeodata.org/triplify/node229863575>
+      owl:sameAs <http://dbpedia.org/resource/Astara,_Iran> .
+
+<http://linkedgeodata.org/triplify/node28095099>
+      owl:sameAs <http://dbpedia.org/resource/Praia> .
+
+<http://linkedgeodata.org/triplify/node244082340>
+      owl:sameAs <http://dbpedia.org/resource/Yiyang> .
+
+<http://linkedgeodata.org/triplify/node369500555>
+      owl:sameAs <http://dbpedia.org/resource/Jiangmen> .
+
+<http://linkedgeodata.org/triplify/node154036572>
+      owl:sameAs <http://dbpedia.org/resource/Columbus,_Georgia> .
+
+<http://linkedgeodata.org/triplify/node154394726>
+      owl:sameAs <http://dbpedia.org/resource/Naples,_Florida> .
+
+<http://linkedgeodata.org/triplify/node240055326>
+      owl:sameAs <http://dbpedia.org/resource/Duisburg> .
+
+<http://linkedgeodata.org/triplify/node244082038>
+      owl:sameAs <http://dbpedia.org/resource/Tongren,_Guizhou> .
+
+<http://linkedgeodata.org/triplify/node1830695012>
+      owl:sameAs <http://dbpedia.org/resource/Kerch> .
+
+<http://linkedgeodata.org/triplify/node48718610>
+      owl:sameAs <http://dbpedia.org/resource/Everett,_Washington> .
+
+<http://linkedgeodata.org/triplify/node469624375>
+      owl:sameAs <http://dbpedia.org/resource/Qujing> .
+
+<http://linkedgeodata.org/triplify/node244080620>
+      owl:sameAs <http://dbpedia.org/resource/Hohhot> .
+
+<http://linkedgeodata.org/triplify/node122739684>
+      owl:sameAs <http://dbpedia.org/resource/Vientiane> .
+
+<http://linkedgeodata.org/triplify/node244080985>
+      owl:sameAs <http://dbpedia.org/resource/Leshan> .
+
+<http://linkedgeodata.org/triplify/node26707967>
       a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
       <http://www.w3.org/2000/01/rdf-schema#label>
-              "ابهر@fa" , "ابهر" , "Abhar@en" ;
+              "Riika@fi" , "Riga@sv" , "Рига@ru" , "Ryga@pl" , "Riga@es" , "Riga@de" , "Riga@en" , "Riga@hu" , "Rīga" , "Riga@eu" , "Riga@hr" , "ריגה@he" , "Ríga@is" , "Ryga@lt" , "Riia@et" , "Ρίγα@el" ;
+      <http://linkedgeodata.org/ontology/admin_level>
+              "5^^http://www.w3.org/2001/XMLSchema#integer" ;
       <http://linkedgeodata.org/ontology/contributor>
-              <http://linkedgeodata.org/triplify/user13908> ;
+              <http://linkedgeodata.org/triplify/user58338> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/ontology/population>
+              "717371^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/property/capital>
+              "yes" ;
+      <http://linkedgeodata.org/property/int_name>
+              "Riga" ;
+      <http://linkedgeodata.org/property/is_in>
+              "Latvija;Latvia;LV;Europe" ;
+      <http://linkedgeodata.org/property/is_in%3Acontinent>
+              "Europe" ;
+      <http://linkedgeodata.org/property/is_in%3Acountry>
+              "Latvija" ;
+      <http://linkedgeodata.org/property/wikipedia>
+              "Riga" ;
+      owl:sameAs <http://dbpedia.org/resource/Riga> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(24.1052 56.9494)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "56.9493977^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "24.1051844^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node244081833>
+      owl:sameAs <http://dbpedia.org/resource/Suqian> .
+
+<http://linkedgeodata.org/triplify/node244084992>
+      owl:sameAs <http://dbpedia.org/resource/Songyuan> .
+
+<http://linkedgeodata.org/triplify/node27090054>
+      owl:sameAs <http://dbpedia.org/resource/San_Antonio> .
+
+<http://linkedgeodata.org/triplify/node244078507>
+      owl:sameAs <http://dbpedia.org/resource/Dengta> .
+
+<http://linkedgeodata.org/triplify/node245765070>
+      owl:sameAs <http://dbpedia.org/resource/Bareilly> .
+
+<http://linkedgeodata.org/triplify/node226881400>
+      owl:sameAs <http://dbpedia.org/resource/Muscat,_Oman> .
+
+<http://linkedgeodata.org/triplify/node244082125>
+      owl:sameAs <http://dbpedia.org/resource/Xiantao> .
+
+<http://linkedgeodata.org/triplify/node24960107>
+      owl:sameAs <http://dbpedia.org/resource/Braga> .
+
+<http://linkedgeodata.org/triplify/node369487077>
+      owl:sameAs <http://dbpedia.org/resource/Vinh> .
+
+<http://linkedgeodata.org/triplify/node278507994>
+      owl:sameAs <http://dbpedia.org/resource/Tacloban> .
+
+<http://linkedgeodata.org/triplify/node244081164>
+      owl:sameAs <http://dbpedia.org/resource/Lingyuan> .
+
+<http://linkedgeodata.org/triplify/node257764593>
+      owl:sameAs <http://dbpedia.org/resource/Suwon> .
+
+<http://linkedgeodata.org/triplify/node198435275>
+      owl:sameAs <http://dbpedia.org/resource/Villa_Mercedes,_San_Luis> .
+
+<http://linkedgeodata.org/triplify/node27564954>
+      owl:sameAs <http://dbpedia.org/resource/Bamako> .
+
+<http://linkedgeodata.org/triplify/node151776380>
+      owl:sameAs <http://dbpedia.org/resource/Pueblo,_Colorado> .
+
+<http://linkedgeodata.org/triplify/node819610800>
+      owl:sameAs <http://dbpedia.org/resource/Aligudarz> .
+
+<http://linkedgeodata.org/triplify/node332605466>
+      owl:sameAs <http://dbpedia.org/resource/Carmelo,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node1696924414>
+      owl:sameAs <http://dbpedia.org/resource/San_Mateo,_California> .
+
+<http://linkedgeodata.org/triplify/node60327890>
+      owl:sameAs <http://dbpedia.org/resource/Fort_Collins,_Colorado> .
+
+<http://linkedgeodata.org/triplify/node244081288>
+      owl:sameAs <http://dbpedia.org/resource/Luzhou> .
+
+<http://linkedgeodata.org/triplify/node154141895>
+      owl:sameAs <http://dbpedia.org/resource/Miami_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node153983435>
+      owl:sameAs <http://dbpedia.org/resource/Clearwater,_Florida> .
+
+<http://linkedgeodata.org/triplify/node261702404>
+      owl:sameAs <http://dbpedia.org/resource/Kumasi> .
+
+<http://linkedgeodata.org/triplify/node560229438>
+      owl:sameAs <http://dbpedia.org/resource/Phnom_Penh> .
+
+<http://linkedgeodata.org/triplify/node1723065716>
+      owl:sameAs <http://dbpedia.org/resource/Gilroy,_California> .
+
+<http://linkedgeodata.org/triplify/node27564994>
+      owl:sameAs <http://dbpedia.org/resource/Lusaka> .
+
+<http://linkedgeodata.org/triplify/node150935360>
+      owl:sameAs <http://dbpedia.org/resource/Riverside,_California> .
+
+<http://linkedgeodata.org/triplify/node29070193>
+      owl:sameAs <http://dbpedia.org/resource/Nazarabad> .
+
+<http://linkedgeodata.org/triplify/node244080561>
+      owl:sameAs <http://dbpedia.org/resource/Honghu> .
+
+<http://linkedgeodata.org/triplify/node20833623>
+      owl:sameAs <http://dbpedia.org/resource/Hamburg> .
+
+<http://linkedgeodata.org/triplify/node639520629>
+      owl:sameAs <http://dbpedia.org/resource/Hengyang> .
+
+<http://linkedgeodata.org/triplify/node1775484348>
+      owl:sameAs <http://dbpedia.org/resource/South_Gate,_California> .
+
+<http://linkedgeodata.org/triplify/node156782658>
+      owl:sameAs <http://dbpedia.org/resource/Burlington,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node1338631346>
+      owl:sameAs <http://dbpedia.org/resource/Jiande> .
+
+<http://linkedgeodata.org/triplify/node729168061>
+      owl:sameAs <http://dbpedia.org/resource/Tonekabon> .
+
+<http://linkedgeodata.org/triplify/node244078633>
+      owl:sameAs <http://dbpedia.org/resource/Dongyang> .
+
+<http://linkedgeodata.org/triplify/node312595265>
+      owl:sameAs <http://dbpedia.org/resource/Sheberghan> .
+
+<http://linkedgeodata.org/triplify/node332601915>
+      owl:sameAs <http://dbpedia.org/resource/Dolores,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node60655740>
+      owl:sameAs <http://dbpedia.org/resource/Yilan_City> .
+
+<http://linkedgeodata.org/triplify/node34840064>
+      owl:sameAs <http://dbpedia.org/resource/Innsbruck> .
+
+<http://linkedgeodata.org/triplify/node244082124>
+      owl:sameAs <http://dbpedia.org/resource/Xi'an> .
+
+<http://linkedgeodata.org/triplify/node153634645>
+      owl:sameAs <http://dbpedia.org/resource/Panama_City,_Florida> .
+
+<http://linkedgeodata.org/triplify/node151588768>
+      owl:sameAs <http://dbpedia.org/resource/Gunnison,_Colorado> .
+
+<http://linkedgeodata.org/triplify/node151499384>
+      owl:sameAs <http://dbpedia.org/resource/Omaha,_Nebraska> .
+
+<http://linkedgeodata.org/triplify/node85788293>
+      owl:sameAs <http://dbpedia.org/resource/Budapest> .
+
+<http://linkedgeodata.org/triplify/node151517686>
+      owl:sameAs <http://dbpedia.org/resource/Steamboat_Springs,_Colorado> .
+
+<http://linkedgeodata.org/triplify/node154363264>
+      owl:sameAs <http://dbpedia.org/resource/London,_Kentucky> .
+
+<http://linkedgeodata.org/triplify/node347693883>
+      owl:sameAs <http://dbpedia.org/resource/Minas,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node358015526>
+      owl:sameAs <http://dbpedia.org/resource/Yeongju> .
+
+<http://linkedgeodata.org/triplify/node244081515>
+      owl:sameAs <http://dbpedia.org/resource/Qiqihar> .
+
+<http://linkedgeodata.org/triplify/node1513101697>
+      owl:sameAs <http://dbpedia.org/resource/Plano,_Texas> .
+
+<http://linkedgeodata.org/triplify/node150969901>
+      owl:sameAs <http://dbpedia.org/resource/Glendale,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node1640485042>
+      owl:sameAs <http://dbpedia.org/resource/Kosovska_Mitrovica> .
+
+<http://linkedgeodata.org/triplify/node30933440>
+      owl:sameAs <http://dbpedia.org/resource/Tamale,_Ghana> .
+
+<http://linkedgeodata.org/triplify/node244081628>
+      owl:sameAs <http://dbpedia.org/resource/Shenzhou_City> .
+
+<http://linkedgeodata.org/triplify/node244081839>
+      owl:sameAs <http://dbpedia.org/resource/Tai'an> .
+
+<http://linkedgeodata.org/triplify/node153516544>
+      owl:sameAs <http://dbpedia.org/resource/Lynn_Haven,_Florida> .
+
+<http://linkedgeodata.org/triplify/node415154181>
+      owl:sameAs <http://dbpedia.org/resource/Hanam> .
+
+<http://linkedgeodata.org/triplify/node32748684>
+      owl:sameAs <http://dbpedia.org/resource/Burnie,_Tasmania> .
+
+<http://linkedgeodata.org/triplify/node103064457>
+      owl:sameAs <http://dbpedia.org/resource/Reading,_Pennsylvania> .
+
+<http://linkedgeodata.org/triplify/node27565081>
+      owl:sameAs <http://dbpedia.org/resource/Maputo> .
+
+<http://linkedgeodata.org/triplify/node1676617244>
+      owl:sameAs <http://dbpedia.org/resource/Watsonville,_California> .
+
+<http://linkedgeodata.org/triplify/node968039425>
+      owl:sameAs <http://dbpedia.org/resource/Oroquieta> .
+
+<http://linkedgeodata.org/triplify/node226878498>
+      owl:sameAs <http://dbpedia.org/resource/Salalah> .
+
+<http://linkedgeodata.org/triplify/node244080425>
+      owl:sameAs <http://dbpedia.org/resource/Gongzhuling> .
+
+<http://linkedgeodata.org/triplify/node153829615>
+      owl:sameAs <http://dbpedia.org/resource/Canton,_Ohio> .
+
+<http://linkedgeodata.org/triplify/node269909227>
+      owl:sameAs <http://dbpedia.org/resource/Progreso,_Yucat%C3%A1n> .
+
+<http://linkedgeodata.org/triplify/node244082219>
+      owl:sameAs <http://dbpedia.org/resource/Wuhan> .
+
+<http://linkedgeodata.org/triplify/node151572566>
+      owl:sameAs <http://dbpedia.org/resource/San_Juan,_Texas> .
+
+<http://linkedgeodata.org/triplify/node267121995>
+      owl:sameAs <http://dbpedia.org/resource/Hefei> .
+
+<http://linkedgeodata.org/triplify/node151353292>
+      owl:sameAs <http://dbpedia.org/resource/Mesquite,_Texas> .
+
+<http://linkedgeodata.org/triplify/node240072040>
+      owl:sameAs <http://dbpedia.org/resource/Frankfurt> , <http://dbpedia.org/resource/Offenbach_am_Main> .
+
+<http://linkedgeodata.org/triplify/node356814884>
+      owl:sameAs <http://dbpedia.org/resource/Pak_Kret> .
+
+<http://linkedgeodata.org/triplify/node154143132>
+      owl:sameAs <http://dbpedia.org/resource/St._Petersburg,_Florida> .
+
+<http://linkedgeodata.org/triplify/node832464380>
+      owl:sameAs <http://dbpedia.org/resource/Germi> .
+
+<http://linkedgeodata.org/triplify/node48925897>
+      owl:sameAs <http://dbpedia.org/resource/Spokane,_Washington> .
+
+<http://linkedgeodata.org/triplify/node1684098883>
+      owl:sameAs <http://dbpedia.org/resource/Salinas,_California> .
+
+<http://linkedgeodata.org/triplify/node638898575>
+      owl:sameAs <http://dbpedia.org/resource/Sanming> .
+
+<http://linkedgeodata.org/triplify/node244085039>
+      owl:sameAs <http://dbpedia.org/resource/Heyuan> .
+
+<http://linkedgeodata.org/triplify/node27565080>
+      owl:sameAs <http://dbpedia.org/resource/Accra> .
+
+<http://linkedgeodata.org/triplify/node882884991>
+      owl:sameAs <http://dbpedia.org/resource/Shuangliao> .
+
+<http://linkedgeodata.org/triplify/node269913250>
+      owl:sameAs <http://dbpedia.org/resource/Acapulco> .
+
+<http://linkedgeodata.org/triplify/node180544443>
+      owl:sameAs <http://dbpedia.org/resource/Salmas> .
+
+<http://linkedgeodata.org/triplify/node150982036>
+      owl:sameAs <http://dbpedia.org/resource/Mission_Viejo,_California> .
+
+<http://linkedgeodata.org/triplify/node2160450269>
+      owl:sameAs <http://dbpedia.org/resource/Kansas_City,_Kansas> .
+
+<http://linkedgeodata.org/triplify/node205620850>
+      owl:sameAs <http://dbpedia.org/resource/George_Town,_Penang> .
+
+<http://linkedgeodata.org/triplify/node312368833>
+      owl:sameAs <http://dbpedia.org/resource/Lashkar_Gah> .
+
+<http://linkedgeodata.org/triplify/node244081601>
+      owl:sameAs <http://dbpedia.org/resource/Putian> .
+
+<http://linkedgeodata.org/triplify/node415155721>
+      owl:sameAs <http://dbpedia.org/resource/Chungju> .
+
+<http://linkedgeodata.org/triplify/node151626808>
+      owl:sameAs <http://dbpedia.org/resource/Cedar_Rapids,_Iowa> .
+
+<http://linkedgeodata.org/triplify/node249597057>
+      owl:sameAs <http://dbpedia.org/resource/Quevedo,_Ecuador> .
+
+<http://linkedgeodata.org/triplify/node315422127>
+      owl:sameAs <http://dbpedia.org/resource/Charlottetown> .
+
+<http://linkedgeodata.org/triplify/node847933749>
+      owl:sameAs <http://dbpedia.org/resource/Sharjah_(city)> .
+
+<http://linkedgeodata.org/triplify/node151756993>
+      owl:sameAs <http://dbpedia.org/resource/Tyler,_Texas> .
+
+<http://linkedgeodata.org/triplify/node244082306>
+      owl:sameAs <http://dbpedia.org/resource/Yima,_Henan> .
+
+<http://linkedgeodata.org/triplify/node479846228>
+      owl:sameAs <http://dbpedia.org/resource/Stratford,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node154363165>
+      owl:sameAs <http://dbpedia.org/resource/Temple_Terrace,_Florida> .
+
+<http://linkedgeodata.org/triplify/node959199214>
+      owl:sameAs <http://dbpedia.org/resource/Bristol> .
+
+<http://linkedgeodata.org/triplify/node2189893258>
+      owl:sameAs <http://dbpedia.org/resource/Abengourou> .
+
+<http://linkedgeodata.org/triplify/node150966739>
+      owl:sameAs <http://dbpedia.org/resource/Mesa,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node244081837>
+      owl:sameAs <http://dbpedia.org/resource/Tacheng> .
+
+<http://linkedgeodata.org/triplify/node99042439>
+      owl:sameAs <http://dbpedia.org/resource/Lancaster,_Pennsylvania> .
+
+<http://linkedgeodata.org/triplify/node240099833>
+      owl:sameAs <http://dbpedia.org/resource/Bochum> .
+
+<http://linkedgeodata.org/triplify/node150938998>
+      owl:sameAs <http://dbpedia.org/resource/Brea,_California> .
+
+<http://linkedgeodata.org/triplify/node150918835>
+      owl:sameAs <http://dbpedia.org/resource/Juneau,_Alaska> .
+
+<http://linkedgeodata.org/triplify/node244081463>
+      owl:sameAs <http://dbpedia.org/resource/Neijiang> .
+
+<http://linkedgeodata.org/triplify/node244082129>
+      owl:sameAs <http://dbpedia.org/resource/Xiaogan> .
+
+<http://linkedgeodata.org/triplify/node1643504896>
+      owl:sameAs <http://dbpedia.org/resource/Amman> .
+
+<http://linkedgeodata.org/triplify/node150963006>
+      owl:sameAs <http://dbpedia.org/resource/Stockton,_California> .
+
+<http://linkedgeodata.org/triplify/node244080788>
+      owl:sameAs <http://dbpedia.org/resource/Jingzhou> .
+
+<http://linkedgeodata.org/triplify/node244081602>
+      owl:sameAs <http://dbpedia.org/resource/Chibi_City> .
+
+<http://linkedgeodata.org/triplify/node288418022>
+      owl:sameAs <http://dbpedia.org/resource/Blida> .
+
+<http://linkedgeodata.org/triplify/node26576175>
+      owl:sameAs <http://dbpedia.org/resource/Yangon> .
+
+<http://linkedgeodata.org/triplify/node244080395>
+      owl:sameAs <http://dbpedia.org/resource/Guiyang> .
+
+<http://linkedgeodata.org/triplify/node244082394>
+      owl:sameAs <http://dbpedia.org/resource/Xingcheng> .
+
+<http://linkedgeodata.org/triplify/node257710244>
+      owl:sameAs <http://dbpedia.org/resource/Kampong_Cham_(city)> .
+
+<http://linkedgeodata.org/triplify/node427543945>
+      owl:sameAs <http://dbpedia.org/resource/Zalantun> .
+
+<http://linkedgeodata.org/triplify/node244076913>
+      owl:sameAs <http://dbpedia.org/resource/Bengbu> .
+
+<http://linkedgeodata.org/triplify/node150973333>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Clarita,_California> .
+
+<http://linkedgeodata.org/triplify/node82773480>
+      owl:sameAs <http://dbpedia.org/resource/Pocatello,_Idaho> .
+
+<http://linkedgeodata.org/triplify/node21904579>
+      owl:sameAs <http://dbpedia.org/resource/Derby> .
+
+<http://linkedgeodata.org/triplify/node154381880>
+      owl:sameAs <http://dbpedia.org/resource/Dayton,_Ohio> .
+
+<http://linkedgeodata.org/triplify/node313853846>
+      owl:sameAs <http://dbpedia.org/resource/Kragujevac> .
+
+<http://linkedgeodata.org/triplify/node439266635>
+      owl:sameAs <http://dbpedia.org/resource/Bole,_Xinjiang> .
+
+<http://linkedgeodata.org/triplify/node244083479>
+      owl:sameAs <http://dbpedia.org/resource/Meishan> .
+
+<http://linkedgeodata.org/triplify/node244080690>
+      owl:sameAs <http://dbpedia.org/resource/Huangshi> .
+
+<http://linkedgeodata.org/triplify/node319858811>
+      owl:sameAs <http://dbpedia.org/resource/Surigao> .
+
+<http://linkedgeodata.org/triplify/node151352266>
+      owl:sameAs <http://dbpedia.org/resource/Craig,_Colorado> .
+
+<http://linkedgeodata.org/triplify/node1876361846>
+      owl:sameAs <http://dbpedia.org/resource/Appleton,_Wisconsin> .
+
+<http://linkedgeodata.org/triplify/node415154165>
+      owl:sameAs <http://dbpedia.org/resource/Namyangju> .
+
+<http://linkedgeodata.org/triplify/node253924853>
+      owl:sameAs <http://dbpedia.org/resource/Osijek> .
+
+<http://linkedgeodata.org/triplify/node154153690>
+      owl:sameAs <http://dbpedia.org/resource/West_Palm_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node248776568>
+      owl:sameAs <http://dbpedia.org/resource/Sarvestan> .
+
+<http://linkedgeodata.org/triplify/node150959795>
+      owl:sameAs <http://dbpedia.org/resource/Vallejo,_California> .
+
+<http://linkedgeodata.org/triplify/node1382089438>
+      owl:sameAs <http://dbpedia.org/resource/Colonia_del_Sacramento> .
+
+<http://linkedgeodata.org/triplify/node244082236>
+      owl:sameAs <http://dbpedia.org/resource/Wenzhou> .
+
+<http://linkedgeodata.org/triplify/node60655616>
+      owl:sameAs <http://dbpedia.org/resource/Pingzhen> .
+
+<http://linkedgeodata.org/triplify/node244081519>
+      owl:sameAs <http://dbpedia.org/resource/Qionghai> .
+
+<http://linkedgeodata.org/triplify/node60068934>
+      owl:sameAs <http://dbpedia.org/resource/Bethlehem,_Pennsylvania> .
+
+<http://linkedgeodata.org/triplify/node244081928>
+      owl:sameAs <http://dbpedia.org/resource/Wenchang> .
+
+<http://linkedgeodata.org/triplify/node198422654>
+      owl:sameAs <http://dbpedia.org/resource/San_Pedro_de_Jujuy> .
+
+<http://linkedgeodata.org/triplify/node245707150>
+      owl:sameAs <http://dbpedia.org/resource/Kolkata> .
+
+<http://linkedgeodata.org/triplify/node27565085>
+      owl:sameAs <http://dbpedia.org/resource/Djibouti_(city)> .
+
+<http://linkedgeodata.org/triplify/node26396457>
+      owl:sameAs <http://dbpedia.org/resource/Havana> .
+
+<http://linkedgeodata.org/triplify/node151913918>
+      owl:sameAs <http://dbpedia.org/resource/Alamosa,_Colorado> .
+
+<http://linkedgeodata.org/triplify/node150959273>
+      owl:sameAs <http://dbpedia.org/resource/Reno,_Nevada> .
+
+<http://linkedgeodata.org/triplify/node244081667>
+      owl:sameAs <http://dbpedia.org/resource/Shangluo> .
+
+<http://linkedgeodata.org/triplify/node153989578>
+      owl:sameAs <http://dbpedia.org/resource/Macon,_Georgia> .
+
+<http://linkedgeodata.org/triplify/node150979583>
+      owl:sameAs <http://dbpedia.org/resource/Antioch,_California> .
+
+<http://linkedgeodata.org/triplify/node1932879629>
+      owl:sameAs <http://dbpedia.org/resource/Sanandaj> .
+
+<http://linkedgeodata.org/triplify/node25327151>
+      owl:sameAs <http://dbpedia.org/resource/L%C3%BCbeck> .
+
+<http://linkedgeodata.org/triplify/node150938690>
+      owl:sameAs <http://dbpedia.org/resource/Prescott,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node150963981>
+      owl:sameAs <http://dbpedia.org/resource/West_Hollywood,_California> .
+
+<http://linkedgeodata.org/triplify/node244080601>
+      owl:sameAs <http://dbpedia.org/resource/Hengshui> .
+
+<http://linkedgeodata.org/triplify/node1583294719>
+      owl:sameAs <http://dbpedia.org/resource/Kassel> .
+
+<http://linkedgeodata.org/triplify/node358015543>
+      owl:sameAs <http://dbpedia.org/resource/Mungyeong> .
+
+<http://linkedgeodata.org/triplify/node32663613>
+      owl:sameAs <http://dbpedia.org/resource/Baneh> .
+
+<http://linkedgeodata.org/triplify/node1974766376>
+      owl:sameAs <http://dbpedia.org/resource/Faisalabad> .
+
+<http://linkedgeodata.org/triplify/node244081466>
+      owl:sameAs <http://dbpedia.org/resource/Nantong> .
+
+<http://linkedgeodata.org/triplify/node44927060>
+      owl:sameAs <http://dbpedia.org/resource/Mombasa> .
+
+<http://linkedgeodata.org/triplify/node358015168>
+      owl:sameAs <http://dbpedia.org/resource/Gwangju> .
+
+<http://linkedgeodata.org/triplify/node244080402>
+      owl:sameAs <http://dbpedia.org/resource/Guyuan> .
+
+<http://linkedgeodata.org/triplify/node250447778>
+      owl:sameAs <http://dbpedia.org/resource/Santiago_de_los_Caballeros> .
+
+<http://linkedgeodata.org/triplify/node244081986>
+      owl:sameAs <http://dbpedia.org/resource/Wanning> .
+
+<http://linkedgeodata.org/triplify/node244082520>
+      owl:sameAs <http://dbpedia.org/resource/Zhuhai> .
+
+<http://linkedgeodata.org/triplify/node198423933>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Fe,_Argentina> .
+
+<http://linkedgeodata.org/triplify/node158842525>
+      owl:sameAs <http://dbpedia.org/resource/Cambridge,_Massachusetts> .
+
+<http://linkedgeodata.org/triplify/node248783208>
+      owl:sameAs <http://dbpedia.org/resource/Darab> .
+
+<http://linkedgeodata.org/triplify/node25293125>
+      owl:sameAs <http://dbpedia.org/resource/Dortmund> .
+
+<http://linkedgeodata.org/triplify/node244082916>
+      owl:sameAs <http://dbpedia.org/resource/Zhangye> .
+
+<http://linkedgeodata.org/triplify/node150942648>
+      owl:sameAs <http://dbpedia.org/resource/Alameda,_California> .
+
+<http://linkedgeodata.org/triplify/node1222724072>
+      owl:sameAs <http://dbpedia.org/resource/Steinbach,_Manitoba> .
+
+<http://linkedgeodata.org/triplify/node953773702>
+      owl:sameAs <http://dbpedia.org/resource/Pasig> .
+
+<http://linkedgeodata.org/triplify/node415163462>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Cruz_de_la_Sierra> .
+
+<http://linkedgeodata.org/triplify/node542116772>
+      owl:sameAs <http://dbpedia.org/resource/Gorontalo_(city)> .
+
+<http://linkedgeodata.org/triplify/node1256485307>
+      owl:sameAs <http://dbpedia.org/resource/Zhongli> .
+
+<http://linkedgeodata.org/triplify/node32671869>
+      owl:sameAs <http://dbpedia.org/resource/Azarshahr> .
+
+<http://linkedgeodata.org/triplify/node369501901>
+      owl:sameAs <http://dbpedia.org/resource/Prey_Veng_(city)> .
+
+<http://linkedgeodata.org/triplify/node150966449>
+      owl:sameAs <http://dbpedia.org/resource/Calimesa,_California> .
+
+<http://linkedgeodata.org/triplify/node214202817>
+      owl:sameAs <http://dbpedia.org/resource/Los_%C3%81ngeles> .
+
+<http://linkedgeodata.org/triplify/node358015415>
+      owl:sameAs <http://dbpedia.org/resource/Icheon> .
+
+<http://linkedgeodata.org/triplify/node153752355>
+      owl:sameAs <http://dbpedia.org/resource/Gulfport,_Mississippi> .
+
+<http://linkedgeodata.org/triplify/node26292942>
+      owl:sameAs <http://dbpedia.org/resource/T%C3%A2rgu_Mure%C8%99> .
+
+<http://linkedgeodata.org/triplify/node244646675>
+      owl:sameAs <http://dbpedia.org/resource/Launceston,_Tasmania> .
+
+<http://linkedgeodata.org/triplify/node244081031>
+      owl:sameAs <http://dbpedia.org/resource/Kuytun> .
+
+<http://linkedgeodata.org/triplify/node1831812850>
+      owl:sameAs <http://dbpedia.org/resource/Incheon> .
+
+<http://linkedgeodata.org/triplify/node529657658>
+      owl:sameAs <http://dbpedia.org/resource/Gonabad> .
+
+<http://linkedgeodata.org/triplify/node257375894>
+      owl:sameAs <http://dbpedia.org/resource/Dhaka> .
+
+<http://linkedgeodata.org/triplify/node255615843>
+      owl:sameAs <http://dbpedia.org/resource/Tanga,_Tanzania> .
+
+<http://linkedgeodata.org/triplify/node302608467>
+      owl:sameAs <http://dbpedia.org/resource/Young,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node198491046>
+      owl:sameAs <http://dbpedia.org/resource/Tuguegarao> .
+
+<http://linkedgeodata.org/triplify/node244080937>
+      owl:sameAs <http://dbpedia.org/resource/Jiujiang> .
+
+<http://linkedgeodata.org/triplify/node244075969>
+      owl:sameAs <http://dbpedia.org/resource/Anshan> .
+
+<http://linkedgeodata.org/triplify/node281395237>
+      owl:sameAs <http://dbpedia.org/resource/Sheikhupura> .
+
+<http://linkedgeodata.org/triplify/node1856296860>
+      owl:sameAs <http://dbpedia.org/resource/Kansas_City,_Missouri> , <http://dbpedia.org/resource/North_Kansas_City,_Missouri> .
+
+<http://linkedgeodata.org/triplify/node358015455>
+      owl:sameAs <http://dbpedia.org/resource/Nonsan> .
+
+<http://linkedgeodata.org/triplify/node315734346>
+      owl:sameAs <http://dbpedia.org/resource/Jaipur> .
+
+<http://linkedgeodata.org/triplify/node26700977>
+      owl:sameAs <http://dbpedia.org/resource/Newport> .
+
+<http://linkedgeodata.org/triplify/node48723103>
+      owl:sameAs <http://dbpedia.org/resource/Vancouver,_Washington> .
+
+<http://linkedgeodata.org/triplify/node153949865>
+      owl:sameAs <http://dbpedia.org/resource/Pompano_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node265555072>
+      owl:sameAs <http://dbpedia.org/resource/Quchan> .
+
+<http://linkedgeodata.org/triplify/node21323935>
+      owl:sameAs <http://dbpedia.org/resource/Alicante> .
+
+<http://linkedgeodata.org/triplify/node244081669>
+      owl:sameAs <http://dbpedia.org/resource/Shangqiu> .
+
+<http://linkedgeodata.org/triplify/node244079717>
+      owl:sameAs <http://dbpedia.org/resource/Fuzhou> .
+
+<http://linkedgeodata.org/triplify/node1668100219>
+      owl:sameAs <http://dbpedia.org/resource/Valladolid,_Yucat%C3%A1n> .
+
+<http://linkedgeodata.org/triplify/node244081468>
+      owl:sameAs <http://dbpedia.org/resource/Nanxiong> .
+
+<http://linkedgeodata.org/triplify/node358015517>
+      owl:sameAs <http://dbpedia.org/resource/Gimje> .
+
+<http://linkedgeodata.org/triplify/node107363797>
+      owl:sameAs <http://dbpedia.org/resource/Sept-%C3%8Eles,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node1837339298>
+      owl:sameAs <http://dbpedia.org/resource/Alhambra,_California> .
+
+<http://linkedgeodata.org/triplify/node27565027>
+      owl:sameAs <http://dbpedia.org/resource/Dar_es_Salaam> .
+
+<http://linkedgeodata.org/triplify/node2124202500>
+      owl:sameAs <http://dbpedia.org/resource/Khorramabad> .
+
+<http://linkedgeodata.org/triplify/node150944101>
+      owl:sameAs <http://dbpedia.org/resource/St._George,_Utah> .
+
+<http://linkedgeodata.org/triplify/node2021709163>
+      owl:sameAs <http://dbpedia.org/resource/Sarajevo> .
+
+<http://linkedgeodata.org/triplify/node244081625>
+      owl:sameAs <http://dbpedia.org/resource/Shenzhen> .
+
+<http://linkedgeodata.org/triplify/node58950371>
+      owl:sameAs <http://dbpedia.org/resource/Quito> .
+
+<http://linkedgeodata.org/triplify/node198520654>
+      owl:sameAs <http://dbpedia.org/resource/Calamba,_Laguna> .
+
+<http://linkedgeodata.org/triplify/node244082937>
+      owl:sameAs <http://dbpedia.org/resource/Zhaoqing> .
+
+<http://linkedgeodata.org/triplify/node151484093>
+      owl:sameAs <http://dbpedia.org/resource/San_Angelo,_Texas> .
+
+<http://linkedgeodata.org/triplify/node151398889>
+      owl:sameAs <http://dbpedia.org/resource/Donna,_Texas> .
+
+<http://linkedgeodata.org/triplify/node244081881>
+      owl:sameAs <http://dbpedia.org/resource/Shishou> .
+
+<http://linkedgeodata.org/triplify/node244081797>
+      owl:sameAs <http://dbpedia.org/resource/Tangshan> .
+
+<http://linkedgeodata.org/triplify/node154102925>
+      owl:sameAs <http://dbpedia.org/resource/Ashland,_Kentucky> .
+
+<http://linkedgeodata.org/triplify/node52556192>
+      owl:sameAs <http://dbpedia.org/resource/White_Rock,_British_Columbia> .
+
+<http://linkedgeodata.org/triplify/node1837339299>
+      owl:sameAs <http://dbpedia.org/resource/South_El_Monte,_California> , <http://dbpedia.org/resource/El_Monte,_California> .
+
+<http://linkedgeodata.org/triplify/node280165440>
+      owl:sameAs <http://dbpedia.org/resource/Shenyang> .
+
+<http://linkedgeodata.org/triplify/node1886282981>
+      owl:sameAs <http://dbpedia.org/resource/X%C4%B1rdalan> .
+
+<http://linkedgeodata.org/triplify/node218787821>
+      owl:sameAs <http://dbpedia.org/resource/Mtskheta> .
+
+<http://linkedgeodata.org/triplify/node153975164>
+      owl:sameAs <http://dbpedia.org/resource/Massillon,_Ohio> .
+
+<http://linkedgeodata.org/triplify/node100717030>
+      owl:sameAs <http://dbpedia.org/resource/Sanford,_Florida> .
+
+<http://linkedgeodata.org/triplify/node332181950>
+      owl:sameAs <http://dbpedia.org/resource/Kanzaki,_Saga> , <http://dbpedia.org/resource/Ogi,_Saga> .
+
+<http://linkedgeodata.org/triplify/node254036981>
+      owl:sameAs <http://dbpedia.org/resource/Loznica> .
+
+<http://linkedgeodata.org/triplify/node244082212>
+      owl:sameAs <http://dbpedia.org/resource/Wuhu> .
+
+<http://linkedgeodata.org/triplify/node244079849>
+      owl:sameAs <http://dbpedia.org/resource/Fuxin> .
+
+<http://linkedgeodata.org/triplify/node151586942>
+      owl:sameAs <http://dbpedia.org/resource/Phillips,_Wisconsin> .
+
+<http://linkedgeodata.org/triplify/node151330085>
+      owl:sameAs <http://dbpedia.org/resource/Seguin,_Texas> .
+
+<http://linkedgeodata.org/triplify/node244080911>
+      owl:sameAs <http://dbpedia.org/resource/Kaifeng> .
+
+<http://linkedgeodata.org/triplify/node244081266>
+      owl:sameAs <http://dbpedia.org/resource/Luoyang> .
+
+<http://linkedgeodata.org/triplify/node296054949>
+      owl:sameAs <http://dbpedia.org/resource/Haarlem> .
+
+<http://linkedgeodata.org/triplify/node27565089>
+      owl:sameAs <http://dbpedia.org/resource/Ilorin,_Nigeria> .
+
+<http://linkedgeodata.org/triplify/node244080939>
+      owl:sameAs <http://dbpedia.org/resource/Jishou> .
+
+<http://linkedgeodata.org/triplify/node154017676>
+      owl:sameAs <http://dbpedia.org/resource/Fort_Lauderdale,_Florida> .
+
+<http://linkedgeodata.org/triplify/node290866222>
+      owl:sameAs <http://dbpedia.org/resource/Niagara_Falls,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node244077958>
+      owl:sameAs <http://dbpedia.org/resource/Daqing> .
+
+<http://linkedgeodata.org/triplify/node150939853>
+      owl:sameAs <http://dbpedia.org/resource/Carson_City,_Nevada> .
+
+<http://linkedgeodata.org/triplify/node1837289829>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Ana,_California> .
+
+<http://linkedgeodata.org/triplify/node272327246>
+      owl:sameAs <http://dbpedia.org/resource/Lucena,_Philippines> .
+
+<http://linkedgeodata.org/triplify/node244081796>
+      owl:sameAs <http://dbpedia.org/resource/Taizhou,_Jiangsu> .
+
+<http://linkedgeodata.org/triplify/node241542056>
+      owl:sameAs <http://dbpedia.org/resource/Kokshetau> .
+
+<http://linkedgeodata.org/triplify/node154204998>
+      owl:sameAs <http://dbpedia.org/resource/Bradenton,_Florida> .
+
+<http://linkedgeodata.org/triplify/node151336948>
+      owl:sameAs <http://dbpedia.org/resource/Victoria,_Texas> .
+
+<http://linkedgeodata.org/triplify/node32673030>
+      owl:sameAs <http://dbpedia.org/resource/Saqqez> .
+
+<http://linkedgeodata.org/triplify/node150942990>
+      owl:sameAs <http://dbpedia.org/resource/Inglewood,_California> .
+
+<http://linkedgeodata.org/triplify/node244082544>
+      owl:sameAs <http://dbpedia.org/resource/Yichang> .
+
+<http://linkedgeodata.org/triplify/node721818614>
+      owl:sameAs <http://dbpedia.org/resource/Kobe> .
+
+<http://linkedgeodata.org/triplify/node469623710>
+      owl:sameAs <http://dbpedia.org/resource/Mang_City> .
+
+<http://linkedgeodata.org/triplify/node250651151>
+      owl:sameAs <http://dbpedia.org/resource/Puerto_Plata_(city)> .
+
+<http://linkedgeodata.org/triplify/node428883040>
+      owl:sameAs <http://dbpedia.org/resource/Mingguang> .
+
+<http://linkedgeodata.org/triplify/node372813885>
+      owl:sameAs <http://dbpedia.org/resource/Surat_Thani> .
+
+<http://linkedgeodata.org/triplify/node269914489>
+      owl:sameAs <http://dbpedia.org/resource/Morelia> .
+
+<http://linkedgeodata.org/triplify/node154209707>
+      owl:sameAs <http://dbpedia.org/resource/Palm_Coast,_Florida> .
+
+<http://linkedgeodata.org/triplify/node681298011>
+      owl:sameAs <http://dbpedia.org/resource/Kashmar> .
+
+<http://linkedgeodata.org/triplify/node622424880>
+      owl:sameAs <http://dbpedia.org/resource/Hino,_Tokyo> .
+
+<http://linkedgeodata.org/triplify/node1673414219>
+      owl:sameAs <http://dbpedia.org/resource/Higashikurume,_Tokyo> .
+
+<http://linkedgeodata.org/triplify/node244082885>
+      owl:sameAs <http://dbpedia.org/resource/Zhangping> .
+
+<http://linkedgeodata.org/triplify/node1575668118>
+      owl:sameAs <http://dbpedia.org/resource/M%C3%BClheim> .
+
+<http://linkedgeodata.org/triplify/node1569338041>
+      owl:sameAs <http://dbpedia.org/resource/Nuremberg> .
+
+<http://linkedgeodata.org/triplify/node31551114>
+      owl:sameAs <http://dbpedia.org/resource/Las_Vegas> , <http://dbpedia.org/resource/North_Las_Vegas,_Nevada> .
+
+<http://linkedgeodata.org/triplify/node198523357>
+      owl:sameAs <http://dbpedia.org/resource/Tanauan,_Batangas> .
+
+<http://linkedgeodata.org/triplify/node244082287>
+      owl:sameAs <http://dbpedia.org/resource/Yingtan> .
+
+<http://linkedgeodata.org/triplify/node151464452>
+      owl:sameAs <http://dbpedia.org/resource/Texarkana,_Arkansas> , <http://dbpedia.org/resource/Texarkana,_Texas> .
+
+<http://linkedgeodata.org/triplify/node198416817>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Río Cuarto" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user299360> ;
       <http://linkedgeodata.org/ontology/directType>
               <http://linkedgeodata.org/ontology/City> ;
       <http://linkedgeodata.org/property/is_in>
-              "Zanjan Province, Iran" ;
-      <http://linkedgeodata.org/property/is_in%3Acontinent>
-              "Asia" ;
-      <http://linkedgeodata.org/property/is_in%3Acountry>
-              "Iran" ;
-      <http://linkedgeodata.org/property/is_in%3Astate>
-              "Zanjan" ;
-      owl:sameAs <http://dbpedia.org/resource/Abhar> ;
+              "Córdoba, Argentina" ;
+      owl:sameAs <http://dbpedia.org/resource/R%C3%ADo_Cuarto,_C%C3%B3rdoba> ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
-              "POINT(49.22 36.1437)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+              "POINT(-64.3511 -33.1315)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
-              "36.1436784^^http://www.w3.org/2001/XMLSchema#double" ;
+              "-33.1315202^^http://www.w3.org/2001/XMLSchema#double" ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#long>
-              "49.219963^^http://www.w3.org/2001/XMLSchema#double" .
+              "-64.3510601^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node358015143>
+      owl:sameAs <http://dbpedia.org/resource/Busan> .
+
+<http://linkedgeodata.org/triplify/node244082076>
+      owl:sameAs <http://dbpedia.org/resource/Tianmen> .
+
+<http://linkedgeodata.org/triplify/node244083067>
+      owl:sameAs <http://dbpedia.org/resource/Zhenjiang> .
+
+<http://linkedgeodata.org/triplify/node151550191>
+      owl:sameAs <http://dbpedia.org/resource/Odessa,_Texas> .
+
+<http://linkedgeodata.org/triplify/node151473772>
+      owl:sameAs <http://dbpedia.org/resource/Abilene,_Texas> .
+
+<http://linkedgeodata.org/triplify/node1837289828>
+      owl:sameAs <http://dbpedia.org/resource/Garden_Grove,_California> .
+
+<http://linkedgeodata.org/triplify/node819610937>
+      owl:sameAs <http://dbpedia.org/resource/Marivan> .
+
+<http://linkedgeodata.org/triplify/node1952049362>
+      owl:sameAs <http://dbpedia.org/resource/Ogi,_Saga> .
+
+<http://linkedgeodata.org/triplify/node1613672847>
+      owl:sameAs <http://dbpedia.org/resource/Oberhausen> .
+
+<http://linkedgeodata.org/triplify/node244083172>
+      owl:sameAs <http://dbpedia.org/resource/Zhongxiang> .
+
+<http://linkedgeodata.org/triplify/node150972387>
+      owl:sameAs <http://dbpedia.org/resource/Sparks,_Nevada> .
+
+<http://linkedgeodata.org/triplify/node158801380>
+      owl:sameAs <http://dbpedia.org/resource/Atlantic_City,_New_Jersey> .
+
+<http://linkedgeodata.org/triplify/node198445781>
+      owl:sameAs <http://dbpedia.org/resource/Concepci%C3%B3n,_Tucum%C3%A1n> .
+
+<http://linkedgeodata.org/triplify/node299692217>
+      owl:sameAs <http://dbpedia.org/resource/Skikda> .
+
+<http://linkedgeodata.org/triplify/node269905615>
+      owl:sameAs <http://dbpedia.org/resource/Quer%C3%A9taro,_Quer%C3%A9taro> .
+
+<http://linkedgeodata.org/triplify/node244080289>
+      owl:sameAs <http://dbpedia.org/resource/Ganzhou> .
+
+<http://linkedgeodata.org/triplify/node244083006>
+      owl:sameAs <http://dbpedia.org/resource/Zhanjiang> .
+
+<http://linkedgeodata.org/triplify/node198433616>
+      owl:sameAs <http://dbpedia.org/resource/Villa_Carlos_Paz> .
+
+<http://linkedgeodata.org/triplify/node153369793>
+      owl:sameAs <http://dbpedia.org/resource/Louisville,_Kentucky> .
+
+<http://linkedgeodata.org/triplify/node235279115>
+      owl:sameAs <http://dbpedia.org/resource/Qorveh> .
+
+<http://linkedgeodata.org/triplify/node151665940>
+      owl:sameAs <http://dbpedia.org/resource/McAllen,_Texas> .
+
+<http://linkedgeodata.org/triplify/node244081622>
+      owl:sameAs <http://dbpedia.org/resource/Shaoguan> .
+
+<http://linkedgeodata.org/triplify/node150965207>
+      owl:sameAs <http://dbpedia.org/resource/Monterey,_California> .
+
+<http://linkedgeodata.org/triplify/node154104573>
+      owl:sameAs <http://dbpedia.org/resource/Deltona,_Florida> .
+
+<http://linkedgeodata.org/triplify/node876627764>
+      owl:sameAs <http://dbpedia.org/resource/Huntington_Beach,_California> .
+
+<http://linkedgeodata.org/triplify/node469624643>
+      owl:sameAs <http://dbpedia.org/resource/Pu'er_City> .
+
+<http://linkedgeodata.org/triplify/node256990829>
+      owl:sameAs <http://dbpedia.org/resource/Sisophon> .
+
+<http://linkedgeodata.org/triplify/node158658039>
+      owl:sameAs <http://dbpedia.org/resource/Winchester,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node1830216906>
+      owl:sameAs <http://dbpedia.org/resource/Pula> .
+
+<http://linkedgeodata.org/triplify/node158360216>
+      owl:sameAs <http://dbpedia.org/resource/Williamsburg,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node1821458866>
+      owl:sameAs <http://dbpedia.org/resource/Salisbury,_Maryland> .
+
+<http://linkedgeodata.org/triplify/node244082015>
+      owl:sameAs <http://dbpedia.org/resource/Tumen,_Jilin> .
+
+<http://linkedgeodata.org/triplify/node111292780>
+      owl:sameAs <http://dbpedia.org/resource/Yakima,_Washington> .
+
+<http://linkedgeodata.org/triplify/node249420749>
+      owl:sameAs <http://dbpedia.org/resource/Ambato,_Ecuador> .
+
+<http://linkedgeodata.org/triplify/node245712057>
+      owl:sameAs <http://dbpedia.org/resource/Ujjain> .
+
+<http://linkedgeodata.org/triplify/node68558311>
+      owl:sameAs <http://dbpedia.org/resource/Hervey_Bay> .
+
+<http://linkedgeodata.org/triplify/node151425831>
+      owl:sameAs <http://dbpedia.org/resource/Idabel,_Oklahoma> .
+
+<http://linkedgeodata.org/triplify/node244081263>
+      owl:sameAs <http://dbpedia.org/resource/Luohe> .
+
+<http://linkedgeodata.org/triplify/node151407399>
+      owl:sameAs <http://dbpedia.org/resource/Independence,_Missouri> .
+
+<http://linkedgeodata.org/triplify/node158240498>
+      owl:sameAs <http://dbpedia.org/resource/Annapolis,_Maryland> .
+
+<http://linkedgeodata.org/triplify/node2155598516>
+      owl:sameAs <http://dbpedia.org/resource/Palm_Springs,_California> .
+
+<http://linkedgeodata.org/triplify/node154033773>
+      owl:sameAs <http://dbpedia.org/resource/Ocala,_Florida> .
+
+<http://linkedgeodata.org/triplify/node150934574>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Rosa,_California> .
+
+<http://linkedgeodata.org/triplify/node60655645>
+      owl:sameAs <http://dbpedia.org/resource/Magong,_Taiwan> .
+
+<http://linkedgeodata.org/triplify/node244082522>
+      owl:sameAs <http://dbpedia.org/resource/Zhucheng> .
+
+<http://linkedgeodata.org/triplify/node469622197>
+      owl:sameAs <http://dbpedia.org/resource/Baoshan,_Yunnan> .
+
+<http://linkedgeodata.org/triplify/node501540880>
+      owl:sameAs <http://dbpedia.org/resource/Kano> .
+
+<http://linkedgeodata.org/triplify/node150937470>
+      owl:sameAs <http://dbpedia.org/resource/Victorville,_California> .
+
+<http://linkedgeodata.org/triplify/node279034393>
+      owl:sameAs <http://dbpedia.org/resource/Hillsborough,_Carriacou> .
+
+<http://linkedgeodata.org/triplify/node150937386>
+      owl:sameAs <http://dbpedia.org/resource/Helena,_Montana> .
+
+<http://linkedgeodata.org/triplify/node244085017>
+      owl:sameAs <http://dbpedia.org/resource/Leizhou> .
+
+<http://linkedgeodata.org/triplify/node244082074>
+      owl:sameAs <http://dbpedia.org/resource/Tianshui> .
+
+<http://linkedgeodata.org/triplify/node472255720>
+      owl:sameAs <http://dbpedia.org/resource/Minatitl%C3%A1n,_Veracruz> .
+
+<http://linkedgeodata.org/triplify/node198416899>
+      owl:sameAs <http://dbpedia.org/resource/R%C3%ADo_Gallegos,_Santa_Cruz> .
+
+<http://linkedgeodata.org/triplify/node198492634>
+      owl:sameAs <http://dbpedia.org/resource/Vigan> .
+
+<http://linkedgeodata.org/triplify/node358896776>
+      owl:sameAs <http://dbpedia.org/resource/Sejong_City> .
+
+<http://linkedgeodata.org/triplify/node31446304>
+      owl:sameAs <http://dbpedia.org/resource/Townsville> .
+
+<http://linkedgeodata.org/triplify/node21554588>
+      owl:sameAs <http://dbpedia.org/resource/Barrie> .
+
+<http://linkedgeodata.org/triplify/node1152544900>
+      owl:sameAs <http://dbpedia.org/resource/Jhansi> .
+
+<http://linkedgeodata.org/triplify/node282310507>
+      owl:sameAs <http://dbpedia.org/resource/Cagayan_de_Oro> .
+
+<http://linkedgeodata.org/triplify/node257363469>
+      owl:sameAs <http://dbpedia.org/resource/Seongnam> .
+
+<http://linkedgeodata.org/triplify/node1987919961>
+      owl:sameAs <http://dbpedia.org/resource/Ciudad_de_la_Costa> .
+
+<http://linkedgeodata.org/triplify/node369504761>
+      owl:sameAs <http://dbpedia.org/resource/Chongzuo> .
+
+<http://linkedgeodata.org/triplify/node2035269578>
+      owl:sameAs <http://dbpedia.org/resource/Battle_Ground,_Washington> .
+
+<http://linkedgeodata.org/triplify/node244082516>
+      owl:sameAs <http://dbpedia.org/resource/Zhuanghe> .
+
+<http://linkedgeodata.org/triplify/node198420062>
+      owl:sameAs <http://dbpedia.org/resource/San_Fernando_del_Valle_de_Catamarca> .
+
+<http://linkedgeodata.org/triplify/node1721750572>
+      owl:sameAs <http://dbpedia.org/resource/Nizwa> .
+
+<http://linkedgeodata.org/triplify/node429674173>
+      owl:sameAs <http://dbpedia.org/resource/San_Jose,_Nueva_Ecija> .
+
+<http://linkedgeodata.org/triplify/node1932338735>
+      owl:sameAs <http://dbpedia.org/resource/Fukuoka> .
+
+<http://linkedgeodata.org/triplify/node244082842>
+      owl:sameAs <http://dbpedia.org/resource/Zaoyang> .
+
+<http://linkedgeodata.org/triplify/node18948478>
+      owl:sameAs <http://dbpedia.org/resource/Cleveland> .
+
+<http://linkedgeodata.org/triplify/node1933393717>
+      owl:sameAs <http://dbpedia.org/resource/Jeddah> .
+
+<http://linkedgeodata.org/triplify/node299618513>
+      owl:sameAs <http://dbpedia.org/resource/Annaba> .
+
+<http://linkedgeodata.org/triplify/node244083494>
+      owl:sameAs <http://dbpedia.org/resource/Guang'an> .
+
+<http://linkedgeodata.org/triplify/node244081874>
+      owl:sameAs <http://dbpedia.org/resource/Shihezi> .
+
+<http://linkedgeodata.org/triplify/node274122533>
+      owl:sameAs <http://dbpedia.org/resource/Shkod%C3%ABr> .
+
+<http://linkedgeodata.org/triplify/node27023455>
+      owl:sameAs <http://dbpedia.org/resource/Ann_Arbor,_Michigan> .
+
+<http://linkedgeodata.org/triplify/node767964288>
+      owl:sameAs <http://dbpedia.org/resource/Maoming> .
+
+<http://linkedgeodata.org/triplify/node271741224>
+      owl:sameAs <http://dbpedia.org/resource/Kunduz> .
+
+<http://linkedgeodata.org/triplify/node44410812>
+      owl:sameAs <http://dbpedia.org/resource/Rotterdam> .
+
+<http://linkedgeodata.org/triplify/node622868936>
+      owl:sameAs <http://dbpedia.org/resource/Wak%C5%8D,_Saitama> .
+
+<http://linkedgeodata.org/triplify/node279116876>
+      owl:sameAs <http://dbpedia.org/resource/Harbin> .
+
+<http://linkedgeodata.org/triplify/node198423279>
+      owl:sameAs <http://dbpedia.org/resource/San_Salvador_de_Jujuy> .
+
+<http://linkedgeodata.org/triplify/node1467604275>
+      owl:sameAs <http://dbpedia.org/resource/Split,_Croatia> .
+
+<http://linkedgeodata.org/triplify/node268396336>
+      owl:sameAs <http://dbpedia.org/resource/Amsterdam> .
+
+<http://linkedgeodata.org/triplify/node153408478>
+      owl:sameAs <http://dbpedia.org/resource/South_Bend,_Indiana> .
+
+<http://linkedgeodata.org/triplify/node151396582>
+      owl:sameAs <http://dbpedia.org/resource/Killeen,_Texas> .
+
+<http://linkedgeodata.org/triplify/node21034458>
+      owl:sameAs <http://dbpedia.org/resource/Baghdad> .
+
+<http://linkedgeodata.org/triplify/node244081788>
+      owl:sameAs <http://dbpedia.org/resource/Taizhou,_Zhejiang> .
+
+<http://linkedgeodata.org/triplify/node1837324450>
+      owl:sameAs <http://dbpedia.org/resource/Hawthorne,_California> .
+
+<http://linkedgeodata.org/triplify/node1836544894>
+      owl:sameAs <http://dbpedia.org/resource/Pristina> .
+
+<http://linkedgeodata.org/triplify/node154293014>
+      owl:sameAs <http://dbpedia.org/resource/Boynton_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node244076988>
+      owl:sameAs <http://dbpedia.org/resource/Changchun> .
+
+<http://linkedgeodata.org/triplify/node427540643>
+      owl:sameAs <http://dbpedia.org/resource/Yakeshi> .
+
+<http://linkedgeodata.org/triplify/node151467659>
+      owl:sameAs <http://dbpedia.org/resource/Lincoln,_Nebraska> .
+
+<http://linkedgeodata.org/triplify/node244084671>
+      owl:sameAs <http://dbpedia.org/resource/Changshu> .
+
+<http://linkedgeodata.org/triplify/node294107164>
+      owl:sameAs <http://dbpedia.org/resource/Peshawar> .
+
+<http://linkedgeodata.org/triplify/node244081873>
+      owl:sameAs <http://dbpedia.org/resource/Shijiazhuang> .
+
+<http://linkedgeodata.org/triplify/node244078533>
+      owl:sameAs <http://dbpedia.org/resource/Dezhou> .
+
+<http://linkedgeodata.org/triplify/node573757196>
+      owl:sameAs <http://dbpedia.org/resource/Yamagata,_Gifu> , <http://dbpedia.org/resource/Mizuho,_Gifu> , <http://dbpedia.org/resource/Motosu,_Gifu> .
+
+<http://linkedgeodata.org/triplify/node1837335210>
+      owl:sameAs <http://dbpedia.org/resource/Monrovia,_California> .
+
+<http://linkedgeodata.org/triplify/node244081920>
+      owl:sameAs <http://dbpedia.org/resource/Wenling> .
+
+<http://linkedgeodata.org/triplify/node315260631>
+      owl:sameAs <http://dbpedia.org/resource/Ndola> .
+
+<http://linkedgeodata.org/triplify/node20910685>
+      owl:sameAs <http://dbpedia.org/resource/Newcastle_upon_Tyne> .
+
+<http://linkedgeodata.org/triplify/node1917308451>
+      owl:sameAs <http://dbpedia.org/resource/Tulsa,_Oklahoma> .
+
+<http://linkedgeodata.org/triplify/node150949235>
+      owl:sameAs <http://dbpedia.org/resource/Bend,_Oregon> .
+
+<http://linkedgeodata.org/triplify/node470781780>
+      owl:sameAs <http://dbpedia.org/resource/Libertad,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node244081672>
+      owl:sameAs <http://dbpedia.org/resource/Shangrao> .
+
+<http://linkedgeodata.org/triplify/node198450537>
+      owl:sameAs <http://dbpedia.org/resource/Formosa,_Argentina> .
+
+<http://linkedgeodata.org/triplify/node44534470>
+      owl:sameAs <http://dbpedia.org/resource/Galle> .
+
+<http://linkedgeodata.org/triplify/node71723363>
+      owl:sameAs <http://dbpedia.org/resource/Idaho_Falls,_Idaho> .
+
+<http://linkedgeodata.org/triplify/node151339149>
+      owl:sameAs <http://dbpedia.org/resource/Lafayette,_Louisiana> .
+
+<http://linkedgeodata.org/triplify/node26082453>
+      owl:sameAs <http://dbpedia.org/resource/Ahvaz> .
+
+<http://linkedgeodata.org/triplify/node1837332943>
+      owl:sameAs <http://dbpedia.org/resource/Pasadena,_California> .
+
+<http://linkedgeodata.org/triplify/node1260368487>
+      owl:sameAs <http://dbpedia.org/resource/Brandon,_Manitoba> .
+
+<http://linkedgeodata.org/triplify/node244080536>
+      owl:sameAs <http://dbpedia.org/resource/Handan> .
+
+<http://linkedgeodata.org/triplify/node767962695>
+      owl:sameAs <http://dbpedia.org/resource/Wuchuan,_Guangdong> .
+
+<http://linkedgeodata.org/triplify/node273510436>
+      owl:sameAs <http://dbpedia.org/resource/M%C3%BCnster> .
+
+<http://linkedgeodata.org/triplify/node25841904>
+      owl:sameAs <http://dbpedia.org/resource/Newcastle,_New_South_Wales> .
+
+<http://linkedgeodata.org/triplify/node244082165>
+      owl:sameAs <http://dbpedia.org/resource/Xiamen> .
+
+<http://linkedgeodata.org/triplify/node312432807>
+      owl:sameAs <http://dbpedia.org/resource/Herat> .
+
+<http://linkedgeodata.org/triplify/node151700975>
+      owl:sameAs <http://dbpedia.org/resource/Casper,_Wyoming> .
+
+<http://linkedgeodata.org/triplify/node150981381>
+      owl:sameAs <http://dbpedia.org/resource/Richmond,_California> .
+
+<http://linkedgeodata.org/triplify/node734876517>
+      owl:sameAs <http://dbpedia.org/resource/Aomori,_Aomori> .
+
+<http://linkedgeodata.org/triplify/node244081548>
+      owl:sameAs <http://dbpedia.org/resource/Pingxiang> .
+
+<http://linkedgeodata.org/triplify/node2163462352>
+      owl:sameAs <http://dbpedia.org/resource/Manta> .
+
+<http://linkedgeodata.org/triplify/node288369855>
+      owl:sameAs <http://dbpedia.org/resource/Durango,_Durango> .
+
+<http://linkedgeodata.org/triplify/node18954801>
+      owl:sameAs <http://dbpedia.org/resource/Toledo,_Ohio> .
+
+<http://linkedgeodata.org/triplify/node244078570>
+      owl:sameAs <http://dbpedia.org/resource/Dingxi> .
+
+<http://linkedgeodata.org/triplify/node1599491820>
+      owl:sameAs <http://dbpedia.org/resource/Kunshan> .
+
+<http://linkedgeodata.org/triplify/node150978724>
+      owl:sameAs <http://dbpedia.org/resource/Indio,_California> .
+
+<http://linkedgeodata.org/triplify/node21674637>
+      owl:sameAs <http://dbpedia.org/resource/Canberra> .
+
+<http://linkedgeodata.org/triplify/node1837296118>
+      owl:sameAs <http://dbpedia.org/resource/Anaheim,_California> .
+
+<http://linkedgeodata.org/triplify/node249426732>
+      owl:sameAs <http://dbpedia.org/resource/Ibarra,_Ecuador> .
+
+<http://linkedgeodata.org/triplify/node150937357>
+      owl:sameAs <http://dbpedia.org/resource/Tempe,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node1957654404>
+      owl:sameAs <http://dbpedia.org/resource/Merced,_California> .
+
+<http://linkedgeodata.org/triplify/node2271280348>
+      owl:sameAs <http://dbpedia.org/resource/Ankara> .
+
+<http://linkedgeodata.org/triplify/node569005393>
+      owl:sameAs <http://dbpedia.org/resource/Nagoya> .
+
+<http://linkedgeodata.org/triplify/node151364154>
+      owl:sameAs <http://dbpedia.org/resource/Memphis,_Tennessee> .
+
+<http://linkedgeodata.org/triplify/node358015360>
+      owl:sameAs <http://dbpedia.org/resource/Gyeongsan> .
+
+<http://linkedgeodata.org/triplify/node26476059>
+      owl:sameAs <http://dbpedia.org/resource/Bandar-Abbas> .
+
+<http://linkedgeodata.org/triplify/node358015389>
+      owl:sameAs <http://dbpedia.org/resource/Asan> .
+
+<http://linkedgeodata.org/triplify/node244080747>
+      owl:sameAs <http://dbpedia.org/resource/Jian'ou> .
+
+<http://linkedgeodata.org/triplify/node154206530>
+      owl:sameAs <http://dbpedia.org/resource/Sebastian,_Florida> .
+
+<http://linkedgeodata.org/triplify/node150936096>
+      owl:sameAs <http://dbpedia.org/resource/Rancho_Cucamonga,_California> .
+
+<http://linkedgeodata.org/triplify/node158804130>
+      owl:sameAs <http://dbpedia.org/resource/Lowell,_Massachusetts> .
+
+<http://linkedgeodata.org/triplify/node151734278>
+      owl:sameAs <http://dbpedia.org/resource/Sioux_Falls,_South_Dakota> .
+
+<http://linkedgeodata.org/triplify/node244084488>
+      owl:sameAs <http://dbpedia.org/resource/Holingol> .
+
+<http://linkedgeodata.org/triplify/node244084673>
+      owl:sameAs <http://dbpedia.org/resource/Suzhou> .
+
+<http://linkedgeodata.org/triplify/node469623440>
+      owl:sameAs <http://dbpedia.org/resource/Jinghong> .
+
+<http://linkedgeodata.org/triplify/node245748597>
+      owl:sameAs <http://dbpedia.org/resource/Ajmer> .
+
+<http://linkedgeodata.org/triplify/node150965235>
+      owl:sameAs <http://dbpedia.org/resource/Ontario,_California> .
+
+<http://linkedgeodata.org/triplify/node153755267>
+      owl:sameAs <http://dbpedia.org/resource/Chelsea,_Alabama> .
+
+<http://linkedgeodata.org/triplify/node198457357>
+      owl:sameAs <http://dbpedia.org/resource/La_Paz,_Entre_R%C3%ADos> .
+
+<http://linkedgeodata.org/triplify/node244083094>
+      owl:sameAs <http://dbpedia.org/resource/Zhengzhou> .
+
+<http://linkedgeodata.org/triplify/node1849664334>
+      owl:sameAs <http://dbpedia.org/resource/O%C4%9Fuz> .
+
+<http://linkedgeodata.org/triplify/node26876754>
+      owl:sameAs <http://dbpedia.org/resource/Calgary> .
+
+<http://linkedgeodata.org/triplify/node1694984557>
+      owl:sameAs <http://dbpedia.org/resource/Rosemead,_California> .
+
+<http://linkedgeodata.org/triplify/node1882099475>
+      owl:sameAs <http://dbpedia.org/resource/Istanbul> .
+
+<http://linkedgeodata.org/triplify/node26604766>
+      owl:sameAs <http://dbpedia.org/resource/Zahedan> .
+
+<http://linkedgeodata.org/triplify/node244081222>
+      owl:sameAs <http://dbpedia.org/resource/Xinmi> .
+
+<http://linkedgeodata.org/triplify/node244081011>
+      owl:sameAs <http://dbpedia.org/resource/Langfang> .
+
+<http://linkedgeodata.org/triplify/node150916737>
+      owl:sameAs <http://dbpedia.org/resource/Kotzebue,_Alaska> .
+
+<http://linkedgeodata.org/triplify/node1811574522>
+      owl:sameAs <http://dbpedia.org/resource/Hamilton,_Bermuda> .
+
+<http://linkedgeodata.org/triplify/node18998251>
+      owl:sameAs <http://dbpedia.org/resource/Cambridge,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node81590481>
+      owl:sameAs <http://dbpedia.org/resource/Buenos_Aires> .
+
+<http://linkedgeodata.org/triplify/node198425012>
+      owl:sameAs <http://dbpedia.org/resource/Santiago_del_Estero> .
+
+<http://linkedgeodata.org/triplify/node244078510>
+      owl:sameAs <http://dbpedia.org/resource/Dengzhou> .
+
+<http://linkedgeodata.org/triplify/node114123970>
+      owl:sameAs <http://dbpedia.org/resource/Uttaradit> .
+
+<http://linkedgeodata.org/triplify/node158855993>
+      owl:sameAs <http://dbpedia.org/resource/Burlington,_Vermont> .
+
+<http://linkedgeodata.org/triplify/node244077938>
+      owl:sameAs <http://dbpedia.org/resource/Chuzhou> .
+
+<http://linkedgeodata.org/triplify/node1707615618>
+      owl:sameAs <http://dbpedia.org/resource/Fountain_Valley,_California> .
+
+<http://linkedgeodata.org/triplify/node150958886>
+      owl:sameAs <http://dbpedia.org/resource/San_Bernardino,_California> .
+
+<http://linkedgeodata.org/triplify/node1537903913>
+      owl:sameAs <http://dbpedia.org/resource/Zunyi> .
+
+<http://linkedgeodata.org/triplify/node226791840>
+      owl:sameAs <http://dbpedia.org/resource/%C5%9Eamax%C4%B1> .
+
+<http://linkedgeodata.org/triplify/node154167031>
+      owl:sameAs <http://dbpedia.org/resource/North_Port,_Florida> .
+
+<http://linkedgeodata.org/triplify/node1513663393>
+      owl:sameAs <http://dbpedia.org/resource/Hamura,_Tokyo> .
+
+<http://linkedgeodata.org/triplify/node151563130>
+      owl:sameAs <http://dbpedia.org/resource/Waco,_Texas> .
+
+<http://linkedgeodata.org/triplify/node158840157>
+      owl:sameAs <http://dbpedia.org/resource/Jersey_City,_New_Jersey> .
+
+<http://linkedgeodata.org/triplify/node96885398>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Barbara,_California> .
+
+<http://linkedgeodata.org/triplify/node244080930>
+      owl:sameAs <http://dbpedia.org/resource/Jizhou,_Hebei> .
+
+<http://linkedgeodata.org/triplify/node1610810050>
+      owl:sameAs <http://dbpedia.org/resource/St._Thomas,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node153636028>
+      owl:sameAs <http://dbpedia.org/resource/Oxford,_Alabama> .
+
+<http://linkedgeodata.org/triplify/node358015515>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "보령" , "Boryeong@en" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user74529> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/property/name%3Ako_rm>
+              "Boryeong" ;
+      owl:sameAs <http://dbpedia.org/resource/Boryeong> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(126.613 36.334)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "36.33401^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "126.613165^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node150947529>
+      owl:sameAs <http://dbpedia.org/resource/Torrance,_California> .
+
+<http://linkedgeodata.org/triplify/node153519423>
+      owl:sameAs <http://dbpedia.org/resource/Fort_Walton_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node412216178>
+      owl:sameAs <http://dbpedia.org/resource/Mudanjiang> .
+
+<http://linkedgeodata.org/triplify/node1808377239>
+      owl:sameAs <http://dbpedia.org/resource/Fuefuki,_Yamanashi> .
+
+<http://linkedgeodata.org/triplify/node330058453>
+      owl:sameAs <http://dbpedia.org/resource/Wa,_Ghana> .
+
+<http://linkedgeodata.org/triplify/node244083498>
+      owl:sameAs <http://dbpedia.org/resource/Bazhong> .
+
+<http://linkedgeodata.org/triplify/node1910970545>
+      owl:sameAs <http://dbpedia.org/resource/Sioux_City,_Iowa> , <http://dbpedia.org/resource/South_Sioux_City,_Nebraska> .
+
+<http://linkedgeodata.org/triplify/node198503203>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Rosa,_Laguna> .
+
+<http://linkedgeodata.org/triplify/node153386290>
+      owl:sameAs <http://dbpedia.org/resource/Huntsville,_Alabama> .
+
+<http://linkedgeodata.org/triplify/node243993095>
+      owl:sameAs <http://dbpedia.org/resource/Shiki,_Saitama> , <http://dbpedia.org/resource/Hasuda,_Saitama> .
+
+<http://linkedgeodata.org/triplify/node244080874>
+      owl:sameAs <http://dbpedia.org/resource/Jinggangshan_City> .
+
+<http://linkedgeodata.org/triplify/node244081765>
+      owl:sameAs <http://dbpedia.org/resource/Taiyuan> .
+
+<http://linkedgeodata.org/triplify/node244080805>
+      owl:sameAs <http://dbpedia.org/resource/Jingmen> .
+
+<http://linkedgeodata.org/triplify/node1551430781>
+      owl:sameAs <http://dbpedia.org/resource/Iligan> .
+
+<http://linkedgeodata.org/triplify/node151728334>
+      owl:sameAs <http://dbpedia.org/resource/Alexandria,_Louisiana> .
+
+<http://linkedgeodata.org/triplify/node244082752>
+      owl:sameAs <http://dbpedia.org/resource/Yueyang> .
+
+<http://linkedgeodata.org/triplify/node151417132>
+      owl:sameAs <http://dbpedia.org/resource/Hutchinson,_Kansas> .
+
+<http://linkedgeodata.org/triplify/node244076951>
+      owl:sameAs <http://dbpedia.org/resource/Binzhou> .
+
+<http://linkedgeodata.org/triplify/node244080769>
+      owl:sameAs <http://dbpedia.org/resource/Huzhou> .
+
+<http://linkedgeodata.org/triplify/node240074718>
+      owl:sameAs <http://dbpedia.org/resource/Darmstadt> .
+
+<http://linkedgeodata.org/triplify/node344650643>
+      owl:sameAs <http://dbpedia.org/resource/Yasuj> .
+
+<http://linkedgeodata.org/triplify/node248829055>
+      owl:sameAs <http://dbpedia.org/resource/Waterloo,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node1956099531>
+      owl:sameAs <http://dbpedia.org/resource/Fresno,_California> .
+
+<http://linkedgeodata.org/triplify/node530848646>
+      owl:sameAs <http://dbpedia.org/resource/Rason> .
+
+<http://linkedgeodata.org/triplify/node302608615>
+      owl:sameAs <http://dbpedia.org/resource/Trinidad,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node99499209>
+      owl:sameAs <http://dbpedia.org/resource/Kissimmee,_Florida> .
+
+<http://linkedgeodata.org/triplify/node244081060>
+      owl:sameAs <http://dbpedia.org/resource/Liuzhou> .
+
+<http://linkedgeodata.org/triplify/node17859918>
+      owl:sameAs <http://dbpedia.org/resource/Coventry> .
+
+<http://linkedgeodata.org/triplify/node248407024>
+      owl:sameAs <http://dbpedia.org/resource/Banja_Luka> .
+
+<http://linkedgeodata.org/triplify/node244083497>
+      owl:sameAs <http://dbpedia.org/resource/Guangyuan> .
+
+<http://linkedgeodata.org/triplify/node1663173902>
+      owl:sameAs <http://dbpedia.org/resource/Guadalajara,_Jalisco> .
+
+<http://linkedgeodata.org/triplify/node26726183>
+      owl:sameAs <http://dbpedia.org/resource/Regina,_Saskatchewan> .
+
+<http://linkedgeodata.org/triplify/node501517702>
+      owl:sameAs <http://dbpedia.org/resource/Aba,_Abia> .
+
+<http://linkedgeodata.org/triplify/node276289844>
+      owl:sameAs <http://dbpedia.org/resource/Saguenay,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node153578302>
+      owl:sameAs <http://dbpedia.org/resource/Pensacola,_Florida> .
+
+<http://linkedgeodata.org/triplify/node244082431>
+      owl:sameAs <http://dbpedia.org/resource/Xinxiang> .
+
+<http://linkedgeodata.org/triplify/node1922043513>
+      owl:sameAs <http://dbpedia.org/resource/Ikaruga,_Nara> .
+
+<http://linkedgeodata.org/triplify/node283347803>
+      owl:sameAs <http://dbpedia.org/resource/Tagaytay> .
+
+<http://linkedgeodata.org/triplify/node422162>
+      owl:sameAs <http://dbpedia.org/resource/Sheffield> .
+
+<http://linkedgeodata.org/triplify/node269907416>
+      owl:sameAs <http://dbpedia.org/resource/Guanajuato,_Guanajuato> .
+
+<http://linkedgeodata.org/triplify/node820252518>
+      owl:sameAs <http://dbpedia.org/resource/Nahavand> .
+
+<http://linkedgeodata.org/triplify/node1849683437>
+      owl:sameAs <http://dbpedia.org/resource/%C5%9Eabran> .
+
+<http://linkedgeodata.org/triplify/node273991971>
+      owl:sameAs <http://dbpedia.org/resource/Lipa,_Batangas> .
+
+<http://linkedgeodata.org/triplify/node1410097893>
+      owl:sameAs <http://dbpedia.org/resource/Kenora> .
+
+<http://linkedgeodata.org/triplify/node244076954>
+      owl:sameAs <http://dbpedia.org/resource/Baise_City> .
+
+<http://linkedgeodata.org/triplify/node198493613>
+      owl:sameAs <http://dbpedia.org/resource/Manila> .
+
+<http://linkedgeodata.org/triplify/node315046176>
+      owl:sameAs <http://dbpedia.org/resource/Golmud> .
+
+<http://linkedgeodata.org/triplify/node1738808199>
+      owl:sameAs <http://dbpedia.org/resource/Los_Angeles> , <http://dbpedia.org/resource/Downtown_Los_Angeles> .
+
+<http://linkedgeodata.org/triplify/node528558670>
+      owl:sameAs <http://dbpedia.org/resource/Kaiping> .
+
+<http://linkedgeodata.org/triplify/node244081100>
+      owl:sameAs <http://dbpedia.org/resource/Longnan> .
+
+<http://linkedgeodata.org/triplify/node60655922>
+      owl:sameAs <http://dbpedia.org/resource/Chiayi> .
+
+<http://linkedgeodata.org/triplify/node150950536>
+      owl:sameAs <http://dbpedia.org/resource/Henderson,_Nevada> .
+
+<http://linkedgeodata.org/triplify/node1270688265>
+      owl:sameAs <http://dbpedia.org/resource/Madera,_California> .
+
+<http://linkedgeodata.org/triplify/node214200129>
+      owl:sameAs <http://dbpedia.org/resource/Osorno,_Chile> .
+
+<http://linkedgeodata.org/triplify/node1513663390>
+      owl:sameAs <http://dbpedia.org/resource/Fussa,_Tokyo> .
+
+<http://linkedgeodata.org/triplify/node358015330>
+      owl:sameAs <http://dbpedia.org/resource/Gunpo> .
+
+<http://linkedgeodata.org/triplify/node244080835>
+      owl:sameAs <http://dbpedia.org/resource/Jinchang> .
+
+<http://linkedgeodata.org/triplify/node979092789>
+      owl:sameAs <http://dbpedia.org/resource/Laval,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node244081698>
+      owl:sameAs <http://dbpedia.org/resource/Sanmenxia> .
+
+<http://linkedgeodata.org/triplify/node253292160>
+      owl:sameAs <http://dbpedia.org/resource/Tizi_Ouzou> .
+
+<http://linkedgeodata.org/triplify/node251065497>
+      owl:sameAs <http://dbpedia.org/resource/Bahawalpur> .
+
+<http://linkedgeodata.org/triplify/node244078884>
+      owl:sameAs <http://dbpedia.org/resource/Fengcheng,_Liaoning> .
+
+<http://linkedgeodata.org/triplify/node273601416>
+      owl:sameAs <http://dbpedia.org/resource/Le%C3%B3n,_Guanajuato> .
+
+<http://linkedgeodata.org/triplify/node244078483>
+      owl:sameAs <http://dbpedia.org/resource/Dengfeng> .
+
+<http://linkedgeodata.org/triplify/node321117240>
+      owl:sameAs <http://dbpedia.org/resource/Arcadia,_California> .
+
+<http://linkedgeodata.org/triplify/node1328293032>
+      owl:sameAs <http://dbpedia.org/resource/Lacombe,_Alberta> .
+
+<http://linkedgeodata.org/triplify/node1837290046>
+      owl:sameAs <http://dbpedia.org/resource/Fullerton,_California> .
+
+<http://linkedgeodata.org/triplify/node141030472>
+      owl:sameAs <http://dbpedia.org/resource/Roseville,_California> .
+
+<http://linkedgeodata.org/triplify/node760427679>
+      owl:sameAs <http://dbpedia.org/resource/Xichang> .
+
+<http://linkedgeodata.org/triplify/node150960561>
+      owl:sameAs <http://dbpedia.org/resource/Napa,_California> .
+
+<http://linkedgeodata.org/triplify/node302610183>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Luc%C3%ADa,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node198417773>
+      owl:sameAs <http://dbpedia.org/resource/Rosario,_Santa_Fe> .
+
+<http://linkedgeodata.org/triplify/node1415636124>
+      owl:sameAs <http://dbpedia.org/resource/Dongguan> .
+
+<http://linkedgeodata.org/triplify/node141046296>
+      owl:sameAs <http://dbpedia.org/resource/Redding,_California> .
+
+<http://linkedgeodata.org/triplify/node244083499>
+      owl:sameAs <http://dbpedia.org/resource/Suining> .
+
+<http://linkedgeodata.org/triplify/node248777720>
+      owl:sameAs <http://dbpedia.org/resource/Estahban> .
+
+<http://linkedgeodata.org/triplify/node60655901>
+      owl:sameAs <http://dbpedia.org/resource/Douliu> .
+
+<http://linkedgeodata.org/triplify/node150971450>
+      owl:sameAs <http://dbpedia.org/resource/Pomona,_California> .
+
+<http://linkedgeodata.org/triplify/node153512801>
+      owl:sameAs <http://dbpedia.org/resource/Jackson,_Tennessee> .
+
+<http://linkedgeodata.org/triplify/node571122168>
+      owl:sameAs <http://dbpedia.org/resource/Khammam> .
+
+<http://linkedgeodata.org/triplify/node276116741>
+      owl:sameAs <http://dbpedia.org/resource/Hulunbuir> .
+
+<http://linkedgeodata.org/triplify/node244081721>
+      owl:sameAs <http://dbpedia.org/resource/Quanzhou> .
+
+<http://linkedgeodata.org/triplify/node158531401>
+      owl:sameAs <http://dbpedia.org/resource/Myrtle_Beach,_South_Carolina> .
+
+<http://linkedgeodata.org/triplify/node710305755>
+      owl:sameAs <http://dbpedia.org/resource/Morondava> .
+
+<http://linkedgeodata.org/triplify/node66298767>
+      owl:sameAs <http://dbpedia.org/resource/Jhelum> .
+
+<http://linkedgeodata.org/triplify/node1554374769>
+      owl:sameAs <http://dbpedia.org/resource/Castro,_Chile> .
+
+<http://linkedgeodata.org/triplify/node244080667>
+      owl:sameAs <http://dbpedia.org/resource/Hunchun> .
+
+<http://linkedgeodata.org/triplify/node154062914>
+      owl:sameAs <http://dbpedia.org/resource/Homestead,_Florida> .
+
+<http://linkedgeodata.org/triplify/node27193093>
+      owl:sameAs <http://dbpedia.org/resource/Vilnius> .
+
+<http://linkedgeodata.org/triplify/node150972487>
+      owl:sameAs <http://dbpedia.org/resource/Concord,_California> .
+
+<http://linkedgeodata.org/triplify/node154392895>
+      owl:sameAs <http://dbpedia.org/resource/Savannah,_Georgia> .
+
+<http://linkedgeodata.org/triplify/node151565423>
+      owl:sameAs <http://dbpedia.org/resource/Fayetteville,_Arkansas> .
+
+<http://linkedgeodata.org/triplify/node305138115>
+      owl:sameAs <http://dbpedia.org/resource/Tegucigalpa> .
+
+<http://linkedgeodata.org/triplify/node965797331>
+      owl:sameAs <http://dbpedia.org/resource/Pagadian> .
+
+<http://linkedgeodata.org/triplify/node150968654>
+      owl:sameAs <http://dbpedia.org/resource/Elk_Grove,_California> .
+
+<http://linkedgeodata.org/triplify/node1698922081>
+      owl:sameAs <http://dbpedia.org/resource/Amarillo,_Texas> .
+
+<http://linkedgeodata.org/triplify/node415153024>
+      owl:sameAs <http://dbpedia.org/resource/Gangneung> .
+
+<http://linkedgeodata.org/triplify/node150971659>
+      owl:sameAs <http://dbpedia.org/resource/Escondido,_California> .
+
+<http://linkedgeodata.org/triplify/node274295774>
+      owl:sameAs <http://dbpedia.org/resource/Berat> .
+
+<http://linkedgeodata.org/triplify/node244082644>
+      owl:sameAs <http://dbpedia.org/resource/Wuxue> .
+
+<http://linkedgeodata.org/triplify/node152377920>
+      owl:sameAs <http://dbpedia.org/resource/Tarragona> .
+
+<http://linkedgeodata.org/triplify/node150917043>
+      owl:sameAs <http://dbpedia.org/resource/Ketchikan,_Alaska> .
+
+<http://linkedgeodata.org/triplify/node57554537>
+      owl:sameAs <http://dbpedia.org/resource/Thessaloniki> .
+
+<http://linkedgeodata.org/triplify/node244080725>
+      owl:sameAs <http://dbpedia.org/resource/Ji'an,_Jilin> .
+
+<http://linkedgeodata.org/triplify/node244077447>
+      owl:sameAs <http://dbpedia.org/resource/Changzhou> .
+
+<http://linkedgeodata.org/triplify/node60655788>
+      owl:sameAs <http://dbpedia.org/resource/Keelung> .
+
+<http://linkedgeodata.org/triplify/node358015292>
+      owl:sameAs <http://dbpedia.org/resource/Iksan> .
+
+<http://linkedgeodata.org/triplify/node1825646130>
+      owl:sameAs <http://dbpedia.org/resource/San_Pedro_de_la_Paz> .
+
+<http://linkedgeodata.org/triplify/node29811182>
+      owl:sameAs <http://dbpedia.org/resource/Edmonton> .
+
+<http://linkedgeodata.org/triplify/node914310439>
+      owl:sameAs <http://dbpedia.org/resource/Caracas> .
+
+<http://linkedgeodata.org/triplify/node244081017>
+      owl:sameAs <http://dbpedia.org/resource/Laiwu> .
+
+<http://linkedgeodata.org/triplify/node150963169>
+      owl:sameAs <http://dbpedia.org/resource/Whittier,_California> .
+
+<http://linkedgeodata.org/triplify/node244080668>
+      owl:sameAs <http://dbpedia.org/resource/Baishan> .
+
+<http://linkedgeodata.org/triplify/node33259203>
+      owl:sameAs <http://dbpedia.org/resource/Wonsan> .
+
+<http://linkedgeodata.org/triplify/node443044779>
+      owl:sameAs <http://dbpedia.org/resource/Welland> .
+
+<http://linkedgeodata.org/triplify/node415152911>
+      owl:sameAs <http://dbpedia.org/resource/Dongducheon> .
+
+<http://linkedgeodata.org/triplify/node296140043>
+      owl:sameAs <http://dbpedia.org/resource/Montevideo> .
+
+<http://linkedgeodata.org/triplify/node1461491316>
+      owl:sameAs <http://dbpedia.org/resource/Thompson,_Manitoba> .
+
+<http://linkedgeodata.org/triplify/node260034778>
+      owl:sameAs <http://dbpedia.org/resource/Kitchener,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node150936580>
+      owl:sameAs <http://dbpedia.org/resource/Ogden,_Utah> .
+
+<http://linkedgeodata.org/triplify/node244078602>
+      owl:sameAs <http://dbpedia.org/resource/Dingzhou> .
+
+<http://linkedgeodata.org/triplify/node671778599>
+      owl:sameAs <http://dbpedia.org/resource/Paso_de_los_Toros> .
+
+<http://linkedgeodata.org/triplify/node27564968>
+      owl:sameAs <http://dbpedia.org/resource/Tunis> .
+
+<http://linkedgeodata.org/triplify/node150932961>
+      owl:sameAs <http://dbpedia.org/resource/Highland,_California> .
+
+<http://linkedgeodata.org/triplify/node622370223>
+      owl:sameAs <http://dbpedia.org/resource/Yunfu> .
+
+<http://linkedgeodata.org/triplify/node244082143>
+      owl:sameAs <http://dbpedia.org/resource/Xiangyang> .
+
+<http://linkedgeodata.org/triplify/node244080640>
+      owl:sameAs <http://dbpedia.org/resource/Heze> .
+
+<http://linkedgeodata.org/triplify/node1513663376>
+      owl:sameAs <http://dbpedia.org/resource/Akiruno,_Tokyo> .
+
+<http://linkedgeodata.org/triplify/node244076538>
+      owl:sameAs <http://dbpedia.org/resource/Baotou> .
+
+<http://linkedgeodata.org/triplify/node198501313>
+      owl:sameAs <http://dbpedia.org/resource/Mandaluyong> .
+
+<http://linkedgeodata.org/triplify/node232331884>
+      owl:sameAs <http://dbpedia.org/resource/Beylagan_(city)> .
+
+<http://linkedgeodata.org/triplify/node90485996>
+      owl:sameAs <http://dbpedia.org/resource/Granby,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node29546940>
+      owl:sameAs <http://dbpedia.org/resource/Seattle> .
+
+<http://linkedgeodata.org/triplify/node244080455>
+      owl:sameAs <http://dbpedia.org/resource/Dujiangyan_City> .
+
+<http://linkedgeodata.org/triplify/node1700534808>
+      owl:sameAs <http://dbpedia.org/resource/Munich> .
+
+<http://linkedgeodata.org/triplify/node240090160>
+      owl:sameAs <http://dbpedia.org/resource/Jena> .
+
+<http://linkedgeodata.org/triplify/node1835254686>
+      owl:sameAs <http://dbpedia.org/resource/Tirana> .
+
+<http://linkedgeodata.org/triplify/node1824135555>
+      owl:sameAs <http://dbpedia.org/resource/San_Diego> .
+
+<http://linkedgeodata.org/triplify/node255061219>
+      owl:sameAs <http://dbpedia.org/resource/Pasay> .
+
+<http://linkedgeodata.org/triplify/node33364833>
+      owl:sameAs <http://dbpedia.org/resource/Windhoek> .
+
+<http://linkedgeodata.org/triplify/node198411639>
+      owl:sameAs <http://dbpedia.org/resource/Posadas,_Misiones> .
+
+<http://linkedgeodata.org/triplify/node1506264134>
+      owl:sameAs <http://dbpedia.org/resource/Zarqa> .
+
+<http://linkedgeodata.org/triplify/node2115184099>
+      owl:sameAs <http://dbpedia.org/resource/Minamiashigara,_Kanagawa> .
+
+<http://linkedgeodata.org/triplify/node302860561>
+      owl:sameAs <http://dbpedia.org/resource/Gasp%C3%A9,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node18063533>
+      owl:sameAs <http://dbpedia.org/resource/Toronto> .
+
+<http://linkedgeodata.org/triplify/node244082144>
+      owl:sameAs <http://dbpedia.org/resource/Xiangtan> .
+
+<http://linkedgeodata.org/triplify/node44929227>
+      owl:sameAs <http://dbpedia.org/resource/Meru,_Kenya> .
+
+<http://linkedgeodata.org/triplify/node244076981>
+      owl:sameAs <http://dbpedia.org/resource/Changle> .
+
+<http://linkedgeodata.org/triplify/node151673878>
+      owl:sameAs <http://dbpedia.org/resource/Olathe,_Kansas> .
+
+<http://linkedgeodata.org/triplify/node26621545>
+      owl:sameAs <http://dbpedia.org/resource/Lakeridge,_Saskatoon> , <http://dbpedia.org/resource/Haultain,_Saskatoon> , <http://dbpedia.org/resource/Briarwood,_Saskatoon> , <http://dbpedia.org/resource/Adelaide/Churchill,_Saskatoon> , <http://dbpedia.org/resource/Wildwood,_Saskatoon> , <http://dbpedia.org/resource/Saskatoon> , <http://dbpedia.org/resource/Stonebridge,_Saskatoon> , <http://dbpedia.org/resource/Erindale,_Saskatoon> , <http://dbpedia.org/resource/Avalon,_Saskatoon> , <http://dbpedia.org/resource/Holliston,_Saskatoon> , <http://dbpedia.org/resource/Riversdale,_Saskatoon> , <http://dbpedia.org/resource/Westmount,_Saskatoon> , <http://dbpedia.org/resource/Willowgrove,_Saskatoon> , <http://dbpedia.org/resource/Eastview,_Saskatoon> , <http://dbpedia.org/resource/Lakeview,_Saskatoon> , <http://dbpedia.org/resource/Sutherland,_Saskatoon> , <http://dbpedia.org/resource/Nutana,_Saskatoon> .
+
+<http://linkedgeodata.org/triplify/node154000776>
+      owl:sameAs <http://dbpedia.org/resource/Fort_Myers,_Florida> .
+
+<http://linkedgeodata.org/triplify/node244080727>
+      owl:sameAs <http://dbpedia.org/resource/Jiaozuo> .
+
+<http://linkedgeodata.org/triplify/node255062020>
+      owl:sameAs <http://dbpedia.org/resource/Valenzuela,_Philippines> .
+
+<http://linkedgeodata.org/triplify/node798842911>
+      owl:sameAs <http://dbpedia.org/resource/Aqaba> .
+
+<http://linkedgeodata.org/triplify/node244081743>
+      owl:sameAs <http://dbpedia.org/resource/Quzhou> .
+
+<http://linkedgeodata.org/triplify/node968811882>
+      owl:sameAs <http://dbpedia.org/resource/Butuan> .
+
+<http://linkedgeodata.org/triplify/node27043346>
+      owl:sameAs <http://dbpedia.org/resource/Kinshasa> .
+
+<http://linkedgeodata.org/triplify/node1909925519>
+      owl:sameAs <http://dbpedia.org/resource/Kashan> .
+
+<http://linkedgeodata.org/triplify/node1700642536>
+      owl:sameAs <http://dbpedia.org/resource/Iloilo_City> .
+
+<http://linkedgeodata.org/triplify/node415161922>
+      owl:sameAs <http://dbpedia.org/resource/Gongju> .
+
+<http://linkedgeodata.org/triplify/node244082475>
+      owl:sameAs <http://dbpedia.org/resource/Yangjiang> .
+
+<http://linkedgeodata.org/triplify/node358015380>
+      owl:sameAs <http://dbpedia.org/resource/Geoje> .
+
+<http://linkedgeodata.org/triplify/node428039517>
+      owl:sameAs <http://dbpedia.org/resource/Antalya> .
+
+<http://linkedgeodata.org/triplify/node150942402>
+      owl:sameAs <http://dbpedia.org/resource/Oxnard,_California> .
+
+<http://linkedgeodata.org/triplify/node244075947>
+      owl:sameAs <http://dbpedia.org/resource/Anshun> .
+
+<http://linkedgeodata.org/triplify/node965803598>
+      owl:sameAs <http://dbpedia.org/resource/Ozamiz> .
+
+<http://linkedgeodata.org/triplify/node321555078>
+      owl:sameAs <http://dbpedia.org/resource/Rocha,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node154194371>
+      owl:sameAs <http://dbpedia.org/resource/Frankfort,_Kentucky> .
+
+<http://linkedgeodata.org/triplify/node533681139>
+      owl:sameAs <http://dbpedia.org/resource/Kyoto> .
+
+<http://linkedgeodata.org/triplify/node150932281>
+      owl:sameAs <http://dbpedia.org/resource/Thousand_Oaks,_California> .
+
+<http://linkedgeodata.org/triplify/node198451320>
+      owl:sameAs <http://dbpedia.org/resource/General_Alvear,_Mendoza> .
+
+<http://linkedgeodata.org/triplify/node150964675>
+      owl:sameAs <http://dbpedia.org/resource/Hayward,_California> .
+
+<http://linkedgeodata.org/triplify/node246518890>
+      owl:sameAs <http://dbpedia.org/resource/Bridgetown> .
+
+<http://linkedgeodata.org/triplify/node1912558038>
+      owl:sameAs <http://dbpedia.org/resource/Bucheon> .
+
+<http://linkedgeodata.org/triplify/node89313928>
+      owl:sameAs <http://dbpedia.org/resource/Sukkur> .
+
+<http://linkedgeodata.org/triplify/node428224867>
+      owl:sameAs <http://dbpedia.org/resource/Mengzi_City> .
+
+<http://linkedgeodata.org/triplify/node31219396>
+      owl:sameAs <http://dbpedia.org/resource/Lhasa> .
+
+<http://linkedgeodata.org/triplify/node353439335>
+      owl:sameAs <http://dbpedia.org/resource/Kraljevo> .
+
+<http://linkedgeodata.org/triplify/node198457801>
+      owl:sameAs <http://dbpedia.org/resource/La_Rioja,_Argentina> .
+
+<http://linkedgeodata.org/triplify/node244081106>
+      owl:sameAs <http://dbpedia.org/resource/Lianzhou> .
+
+<http://linkedgeodata.org/triplify/node244080010>
+      owl:sameAs <http://dbpedia.org/resource/Fuqing> .
+
+<http://linkedgeodata.org/triplify/node198421467>
+      owl:sameAs <http://dbpedia.org/resource/San_Juan,_Argentina> .
+
+<http://linkedgeodata.org/triplify/node158814029>
+      owl:sameAs <http://dbpedia.org/resource/Presque_Isle,_Maine> .
+
+<http://linkedgeodata.org/triplify/node245612641>
+      owl:sameAs <http://dbpedia.org/resource/Mangalore> .
+
+<http://linkedgeodata.org/triplify/node1837323613>
+      owl:sameAs <http://dbpedia.org/resource/Compton,_California> .
+
+<http://linkedgeodata.org/triplify/node151538698>
+      owl:sameAs <http://dbpedia.org/resource/Minneapolis> .
+
+<http://linkedgeodata.org/triplify/node35829073>
+      owl:sameAs <http://dbpedia.org/resource/Gainesville,_Florida> .
+
+<http://linkedgeodata.org/triplify/node91327012>
+      owl:sameAs <http://dbpedia.org/resource/Billings,_Montana> .
+
+<http://linkedgeodata.org/triplify/node198412412>
+      owl:sameAs <http://dbpedia.org/resource/Presidencia_Roque_S%C3%A1enz_Pe%C3%B1a> .
+
+<http://linkedgeodata.org/triplify/node266478791>
+      owl:sameAs <http://dbpedia.org/resource/La_Paz,_Baja_California_Sur> .
+
+<http://linkedgeodata.org/triplify/node1487544742>
+      owl:sameAs <http://dbpedia.org/resource/Shahreza> .
+
+<http://linkedgeodata.org/triplify/node287687798>
+      owl:sameAs <http://dbpedia.org/resource/Varanasi> .
+
+<http://linkedgeodata.org/triplify/node269912387>
+      owl:sameAs <http://dbpedia.org/resource/Oaxaca,_Oaxaca> .
+
+<http://linkedgeodata.org/triplify/node244082478>
+      owl:sameAs <http://dbpedia.org/resource/Yangchun> .
+
+<http://linkedgeodata.org/triplify/node244080721>
+      owl:sameAs <http://dbpedia.org/resource/Jiaohe,_Jilin> .
+
+<http://linkedgeodata.org/triplify/node244082054>
+      owl:sameAs <http://dbpedia.org/resource/Tongchuan> .
+
+<http://linkedgeodata.org/triplify/node244080794>
+      owl:sameAs <http://dbpedia.org/resource/Jinjiang,_Fujian> .
+
+<http://linkedgeodata.org/triplify/node244077547>
+      owl:sameAs <http://dbpedia.org/resource/Chifeng> .
+
+<http://linkedgeodata.org/triplify/node158293384>
+      owl:sameAs <http://dbpedia.org/resource/Altoona,_Pennsylvania> .
+
+<http://linkedgeodata.org/triplify/node1616078487>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Cruz,_California> .
+
+<http://linkedgeodata.org/triplify/node1961985643>
+      owl:sameAs <http://dbpedia.org/resource/San_Luis,_Argentina> .
+
+<http://linkedgeodata.org/triplify/node415155618>
+      owl:sameAs <http://dbpedia.org/resource/Jecheon> .
+
+<http://linkedgeodata.org/triplify/node338948436>
+      owl:sameAs <http://dbpedia.org/resource/Behshahr> .
+
+<http://linkedgeodata.org/triplify/node231405163>
+      owl:sameAs <http://dbpedia.org/resource/C%C9%99lilabad> .
+
+<http://linkedgeodata.org/triplify/node229639771>
+      owl:sameAs <http://dbpedia.org/resource/Barda,_Azerbaijan> .
 
 <http://linkedgeodata.org/triplify/node158326597>
       a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
@@ -65,6 +2212,87 @@
       <http://www.w3.org/2003/01/geo/wgs84_pos#long>
               "-75.163789^^http://www.w3.org/2001/XMLSchema#double" .
 
+<http://linkedgeodata.org/triplify/node18886011>
+      owl:sameAs <http://dbpedia.org/resource/Ottawa> .
+
+<http://linkedgeodata.org/triplify/node244078626>
+      owl:sameAs <http://dbpedia.org/resource/Ezhou> .
+
+<http://linkedgeodata.org/triplify/node150958992>
+      owl:sameAs <http://dbpedia.org/resource/Lancaster,_California> .
+
+<http://linkedgeodata.org/triplify/node32826332>
+      owl:sameAs <http://dbpedia.org/resource/Bushehr> .
+
+<http://linkedgeodata.org/triplify/node26480571>
+      owl:sameAs <http://dbpedia.org/resource/Van,_Turkey> .
+
+<http://linkedgeodata.org/triplify/node256170687>
+      owl:sameAs <http://dbpedia.org/resource/Tacoma,_Washington> .
+
+<http://linkedgeodata.org/triplify/node313690303>
+      owl:sameAs <http://dbpedia.org/resource/Salem,_Tamil_Nadu> .
+
+<http://linkedgeodata.org/triplify/node2055287338>
+      owl:sameAs <http://dbpedia.org/resource/Torbat-e_Heydarieh> .
+
+<http://linkedgeodata.org/triplify/node244080578>
+      owl:sameAs <http://dbpedia.org/resource/Heshan,_Guangxi> .
+
+<http://linkedgeodata.org/triplify/node151366392>
+      owl:sameAs <http://dbpedia.org/resource/Midland,_Texas> .
+
+<http://linkedgeodata.org/triplify/node244080720>
+      owl:sameAs <http://dbpedia.org/resource/Jianyang,_Fujian> .
+
+<http://linkedgeodata.org/triplify/node244082408>
+      owl:sameAs <http://dbpedia.org/resource/Xinyu> .
+
+<http://linkedgeodata.org/triplify/node158818678>
+      owl:sameAs <http://dbpedia.org/resource/Springfield,_Massachusetts> .
+
+<http://linkedgeodata.org/triplify/node244078642>
+      owl:sameAs <http://dbpedia.org/resource/Dunhua> .
+
+<http://linkedgeodata.org/triplify/node244080519>
+      owl:sameAs <http://dbpedia.org/resource/Haikou> .
+
+<http://linkedgeodata.org/triplify/node353186866>
+      owl:sameAs <http://dbpedia.org/resource/Paju> .
+
+<http://linkedgeodata.org/triplify/node21716195>
+      owl:sameAs <http://dbpedia.org/resource/Kabul> .
+
+<http://linkedgeodata.org/triplify/node528990247>
+      owl:sameAs <http://dbpedia.org/resource/Nanning> .
+
+<http://linkedgeodata.org/triplify/node244081371>
+      owl:sameAs <http://dbpedia.org/resource/Panshi> .
+
+<http://linkedgeodata.org/triplify/node244082438>
+      owl:sameAs <http://dbpedia.org/resource/Xinyang> .
+
+<http://linkedgeodata.org/triplify/node261611194>
+      owl:sameAs <http://dbpedia.org/resource/Abu_Dhabi> .
+
+<http://linkedgeodata.org/triplify/node53371112>
+      owl:sameAs <http://dbpedia.org/resource/Kingston,_Jamaica> .
+
+<http://linkedgeodata.org/triplify/node90644937>
+      owl:sameAs <http://dbpedia.org/resource/Missoula,_Montana> .
+
+<http://linkedgeodata.org/triplify/node468686404>
+      owl:sameAs <http://dbpedia.org/resource/In%C3%ADrida,_Guain%C3%ADa> .
+
+<http://linkedgeodata.org/triplify/node244081127>
+      owl:sameAs <http://dbpedia.org/resource/Linfen> .
+
+<http://linkedgeodata.org/triplify/node266643952>
+      owl:sameAs <http://dbpedia.org/resource/Neiva,_Huila> .
+
+<http://linkedgeodata.org/triplify/node150973283>
+      owl:sameAs <http://dbpedia.org/resource/Downey,_California> .
+
 <http://linkedgeodata.org/triplify/node569005431>
       a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
       <http://www.w3.org/2000/01/rdf-schema#label>
@@ -89,7 +2317,6 @@
               "National-Land Numerical Information (Administrative area) 2008, MLIT Japan" ;
       <http://linkedgeodata.org/property/note%3Aja>
               "国土数値情報（行政区域データ）平成20年　国土交通省" ;
-      owl:sameAs <http://dbpedia.org/resource/Nisshin,_Aichi> ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
               "POINT(137.049 35.1385)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
@@ -97,37 +2324,1214 @@
       <http://www.w3.org/2003/01/geo/wgs84_pos#long>
               "137.049405^^http://www.w3.org/2001/XMLSchema#double" .
 
-<http://linkedgeodata.org/triplify/node26707967>
+<http://linkedgeodata.org/triplify/node151470742>
+      owl:sameAs <http://dbpedia.org/resource/Little_Rock,_Arkansas> , <http://dbpedia.org/resource/North_Little_Rock,_Arkansas> .
+
+<http://linkedgeodata.org/triplify/node245482378>
+      owl:sameAs <http://dbpedia.org/resource/David,_Chiriqu%C3%AD> .
+
+<http://linkedgeodata.org/triplify/node244081108>
+      owl:sameAs <http://dbpedia.org/resource/Lianyungang> .
+
+<http://linkedgeodata.org/triplify/node244082116>
+      owl:sameAs <http://dbpedia.org/resource/Shigatse> .
+
+<http://linkedgeodata.org/triplify/node1792515162>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Monica,_California> .
+
+<http://linkedgeodata.org/triplify/node1651888734>
+      owl:sameAs <http://dbpedia.org/resource/Hanover> .
+
+<http://linkedgeodata.org/triplify/node150980683>
+      owl:sameAs <http://dbpedia.org/resource/Oakland,_California> .
+
+<http://linkedgeodata.org/triplify/node847859864>
+      owl:sameAs <http://dbpedia.org/resource/Sanya> .
+
+<http://linkedgeodata.org/triplify/node703046938>
+      owl:sameAs <http://dbpedia.org/resource/Hezhou> .
+
+<http://linkedgeodata.org/triplify/node1129364490>
+      owl:sameAs <http://dbpedia.org/resource/Hyderabad,_Sindh> .
+
+<http://linkedgeodata.org/triplify/node244080488>
+      owl:sameAs <http://dbpedia.org/resource/Helong> .
+
+<http://linkedgeodata.org/triplify/node198513339>
+      owl:sameAs <http://dbpedia.org/resource/El_Salvador,_Misamis_Oriental> .
+
+<http://linkedgeodata.org/triplify/node158891876>
+      owl:sameAs <http://dbpedia.org/resource/Bridgeport,_Connecticut> .
+
+<http://linkedgeodata.org/triplify/node158838248>
+      owl:sameAs <http://dbpedia.org/resource/Montpelier,_Vermont> .
+
+<http://linkedgeodata.org/triplify/node244080792>
+      owl:sameAs <http://dbpedia.org/resource/Jining> .
+
+<http://linkedgeodata.org/triplify/node51972638>
+      owl:sameAs <http://dbpedia.org/resource/Cold_Lake,_Alberta> .
+
+<http://linkedgeodata.org/triplify/node244082642>
+      owl:sameAs <http://dbpedia.org/resource/Guangshui> .
+
+<http://linkedgeodata.org/triplify/node248708371>
+      owl:sameAs <http://dbpedia.org/resource/Neyriz> .
+
+<http://linkedgeodata.org/triplify/node244084739>
+      owl:sameAs <http://dbpedia.org/resource/Puyang> .
+
+<http://linkedgeodata.org/triplify/node244081109>
+      owl:sameAs <http://dbpedia.org/resource/Liaocheng> .
+
+<http://linkedgeodata.org/triplify/node153938725>
+      owl:sameAs <http://dbpedia.org/resource/Cincinnati> .
+
+<http://linkedgeodata.org/triplify/node107364606>
+      owl:sameAs <http://dbpedia.org/resource/Dryden,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node150963377>
+      owl:sameAs <http://dbpedia.org/resource/Sunnyvale,_California> .
+
+<http://linkedgeodata.org/triplify/node150960022>
+      owl:sameAs <http://dbpedia.org/resource/Poway,_California> .
+
+<http://linkedgeodata.org/triplify/node245723853>
+      owl:sameAs <http://dbpedia.org/resource/Rewa,_Madhya_Pradesh> .
+
+<http://linkedgeodata.org/triplify/node309947253>
+      owl:sameAs <http://dbpedia.org/resource/Cheongju> .
+
+<http://linkedgeodata.org/triplify/node469624814>
+      owl:sameAs <http://dbpedia.org/resource/Wenshan_City> .
+
+<http://linkedgeodata.org/triplify/node27526178>
+      owl:sameAs <http://dbpedia.org/resource/Houston> .
+
+<http://linkedgeodata.org/triplify/node244081206>
+      owl:sameAs <http://dbpedia.org/resource/Mianzhu> .
+
+<http://linkedgeodata.org/triplify/node358015198>
+      owl:sameAs <http://dbpedia.org/resource/Goyang> .
+
+<http://linkedgeodata.org/triplify/node158574313>
+      owl:sameAs <http://dbpedia.org/resource/Charlottesville,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node151399928>
+      owl:sameAs <http://dbpedia.org/resource/Lawrence,_Kansas> .
+
+<http://linkedgeodata.org/triplify/node771232061>
+      owl:sameAs <http://dbpedia.org/resource/Hisar_(city)> .
+
+<http://linkedgeodata.org/triplify/node244082426>
+      owl:sameAs <http://dbpedia.org/resource/Xinle_City> .
+
+<http://linkedgeodata.org/triplify/node244080773>
+      owl:sameAs <http://dbpedia.org/resource/Huozhou> .
+
+<http://linkedgeodata.org/triplify/node146541158>
+      owl:sameAs <http://dbpedia.org/resource/Rivne> .
+
+<http://linkedgeodata.org/triplify/node30391426>
+      owl:sameAs <http://dbpedia.org/resource/Daugavpils> .
+
+<http://linkedgeodata.org/triplify/node151817485>
+      owl:sameAs <http://dbpedia.org/resource/Wichita,_Kansas> .
+
+<http://linkedgeodata.org/triplify/node244076812>
+      owl:sameAs <http://dbpedia.org/resource/Beihai> .
+
+<http://linkedgeodata.org/triplify/node273587922>
+      owl:sameAs <http://dbpedia.org/resource/Chihuahua,_Chihuahua> .
+
+<http://linkedgeodata.org/triplify/node1837177146>
+      owl:sameAs <http://dbpedia.org/resource/Irvine,_California> .
+
+<http://linkedgeodata.org/triplify/node244082510>
+      owl:sameAs <http://dbpedia.org/resource/Zhumadian> .
+
+<http://linkedgeodata.org/triplify/node294326197>
+      owl:sameAs <http://dbpedia.org/resource/Frederick,_Maryland> .
+
+<http://linkedgeodata.org/triplify/node891686054>
+      owl:sameAs <http://dbpedia.org/resource/Semirom> .
+
+<http://linkedgeodata.org/triplify/node151370941>
+      owl:sameAs <http://dbpedia.org/resource/Saint_Paul,_Minnesota> .
+
+<http://linkedgeodata.org/triplify/node256594759>
+      owl:sameAs <http://dbpedia.org/resource/Haeju> .
+
+<http://linkedgeodata.org/triplify/node244082892>
+      owl:sameAs <http://dbpedia.org/resource/Zhangjiakou> .
+
+<http://linkedgeodata.org/triplify/node151363387>
+      owl:sameAs <http://dbpedia.org/resource/Colorado_Springs,_Colorado> .
+
+<http://linkedgeodata.org/triplify/node472255714>
+      owl:sameAs <http://dbpedia.org/resource/Veracruz,_Veracruz> .
+
+<http://linkedgeodata.org/triplify/node2131573925>
+      owl:sameAs <http://dbpedia.org/resource/Flagstaff,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node1979182884>
+      owl:sameAs <http://dbpedia.org/resource/Bakersfield,_California> .
+
+<http://linkedgeodata.org/triplify/node244081610>
+      owl:sameAs <http://dbpedia.org/resource/Shaoyang> .
+
+<http://linkedgeodata.org/triplify/node790126834>
+      owl:sameAs <http://dbpedia.org/resource/Ramhormoz> .
+
+<http://linkedgeodata.org/triplify/node1837300463>
+      owl:sameAs <http://dbpedia.org/resource/Newport_Beach,_California> .
+
+<http://linkedgeodata.org/triplify/node304758391>
+      owl:sameAs <http://dbpedia.org/resource/Jiamusi> .
+
+<http://linkedgeodata.org/triplify/node150964034>
+      owl:sameAs <http://dbpedia.org/resource/Tucson,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node153348187>
+      owl:sameAs <http://dbpedia.org/resource/Grand_Rapids,_Michigan> , <http://dbpedia.org/resource/East_Grand_Rapids,_Michigan> .
+
+<http://linkedgeodata.org/triplify/node1374267802>
+      owl:sameAs <http://dbpedia.org/resource/Treinta_y_Tres> .
+
+<http://linkedgeodata.org/triplify/node30670040>
+      owl:sameAs <http://dbpedia.org/resource/Gaborone> .
+
+<http://linkedgeodata.org/triplify/node52553466>
+      owl:sameAs <http://dbpedia.org/resource/Vancouver> .
+
+<http://linkedgeodata.org/triplify/node358015533>
+      owl:sameAs <http://dbpedia.org/resource/Sacheon> .
+
+<http://linkedgeodata.org/triplify/node244082386>
+      owl:sameAs <http://dbpedia.org/resource/Xining> .
+
+<http://linkedgeodata.org/triplify/node244083185>
+      owl:sameAs <http://dbpedia.org/resource/Zhoukou> .
+
+<http://linkedgeodata.org/triplify/node27564941>
+      owl:sameAs <http://dbpedia.org/resource/Luanda> .
+
+<http://linkedgeodata.org/triplify/node244078559>
+      owl:sameAs <http://dbpedia.org/resource/Dongfang,_Hainan> .
+
+<http://linkedgeodata.org/triplify/node58939613>
+      owl:sameAs <http://dbpedia.org/resource/Karachi> .
+
+<http://linkedgeodata.org/triplify/node244082480>
+      owl:sameAs <http://dbpedia.org/resource/Yangzhou> .
+
+<http://linkedgeodata.org/triplify/node246514396>
+      owl:sameAs <http://dbpedia.org/resource/St._George's,_Grenada> .
+
+<http://linkedgeodata.org/triplify/node27175814>
+      owl:sameAs <http://dbpedia.org/resource/Olongapo> .
+
+<http://linkedgeodata.org/triplify/node244081435>
+      owl:sameAs <http://dbpedia.org/resource/Nan'an,_Fujian> .
+
+<http://linkedgeodata.org/triplify/node158853506>
+      owl:sameAs <http://dbpedia.org/resource/Eastport,_Maine> .
+
+<http://linkedgeodata.org/triplify/node1036673662>
+      owl:sameAs <http://dbpedia.org/resource/San_Crist%C3%B3bal_de_La_Laguna> .
+
+<http://linkedgeodata.org/triplify/node198428967>
+      owl:sameAs <http://dbpedia.org/resource/Tartagal,_Salta> .
+
+<http://linkedgeodata.org/triplify/node244082299>
+      owl:sameAs <http://dbpedia.org/resource/Yingkou> .
+
+<http://linkedgeodata.org/triplify/node234526006>
+      owl:sameAs <http://dbpedia.org/resource/Karaj> .
+
+<http://linkedgeodata.org/triplify/node244082512>
+      owl:sameAs <http://dbpedia.org/resource/Zhuzhou> .
+
+<http://linkedgeodata.org/triplify/node244081586>
+      owl:sameAs <http://dbpedia.org/resource/Qianjiang,_Hubei> .
+
+<http://linkedgeodata.org/triplify/node123860883>
+      owl:sameAs <http://dbpedia.org/resource/Podgorica> .
+
+<http://linkedgeodata.org/triplify/node154029808>
+      owl:sameAs <http://dbpedia.org/resource/Deerfield_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node153541669>
+      owl:sameAs <http://dbpedia.org/resource/Tuscaloosa,_Alabama> .
+
+<http://linkedgeodata.org/triplify/node1864455729>
+      owl:sameAs <http://dbpedia.org/resource/Kampong_Cham_(city)> .
+
+<http://linkedgeodata.org/triplify/node1054320920>
+      owl:sameAs <http://dbpedia.org/resource/Akishima,_Tokyo> .
+
+<http://linkedgeodata.org/triplify/node150950777>
+      owl:sameAs <http://dbpedia.org/resource/Fremont,_California> .
+
+<http://linkedgeodata.org/triplify/node528588415>
+      owl:sameAs <http://dbpedia.org/resource/Wuzhou> .
+
+<http://linkedgeodata.org/triplify/node1695218178>
+      owl:sameAs <http://dbpedia.org/resource/Potsdam> .
+
+<http://linkedgeodata.org/triplify/node244081434>
+      owl:sameAs <http://dbpedia.org/resource/Nanchang> .
+
+<http://linkedgeodata.org/triplify/node2048982952>
+      owl:sameAs <http://dbpedia.org/resource/Shahrud,_Iran> .
+
+<http://linkedgeodata.org/triplify/node244080433>
+      owl:sameAs <http://dbpedia.org/resource/Guanghan> .
+
+<http://linkedgeodata.org/triplify/node244080571>
+      owl:sameAs <http://dbpedia.org/resource/Huaihua> .
+
+<http://linkedgeodata.org/triplify/node154162564>
+      owl:sameAs <http://dbpedia.org/resource/Sterling_Heights,_Michigan> .
+
+<http://linkedgeodata.org/triplify/node36667529>
+      owl:sameAs <http://dbpedia.org/resource/Maribor> .
+
+<http://linkedgeodata.org/triplify/node62270270>
+      owl:sameAs <http://dbpedia.org/resource/Mexico_City> .
+
+<http://linkedgeodata.org/triplify/node1837300461>
+      owl:sameAs <http://dbpedia.org/resource/Costa_Mesa,_California> .
+
+<http://linkedgeodata.org/triplify/node150981937>
+      owl:sameAs <http://dbpedia.org/resource/Chula_Vista,_California> .
+
+<http://linkedgeodata.org/triplify/node27564980>
+      owl:sameAs <http://dbpedia.org/resource/Monrovia> .
+
+<http://linkedgeodata.org/triplify/node114141293>
+      owl:sameAs <http://dbpedia.org/resource/Abbottabad> .
+
+<http://linkedgeodata.org/triplify/node278472603>
+      owl:sameAs <http://dbpedia.org/resource/Tel_Aviv> .
+
+<http://linkedgeodata.org/triplify/node358015422>
+      owl:sameAs <http://dbpedia.org/resource/Uiwang> .
+
+<http://linkedgeodata.org/triplify/node26235714>
+      owl:sameAs <http://dbpedia.org/resource/Niagara_Falls,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node1551865419>
+      owl:sameAs <http://dbpedia.org/resource/Zagreb> .
+
+<http://linkedgeodata.org/triplify/node1046100133>
+      owl:sameAs <http://dbpedia.org/resource/Abidjan> .
+
+<http://linkedgeodata.org/triplify/node214215898>
+      owl:sameAs <http://dbpedia.org/resource/Coronel,_Chile> .
+
+<http://linkedgeodata.org/triplify/node319266313>
+      owl:sameAs <http://dbpedia.org/resource/Vaughan> .
+
+<http://linkedgeodata.org/triplify/node52561496>
+      owl:sameAs <http://dbpedia.org/resource/Winkler,_Manitoba> .
+
+<http://linkedgeodata.org/triplify/node154010688>
+      owl:sameAs <http://dbpedia.org/resource/Lakeland,_Florida> .
+
+<http://linkedgeodata.org/triplify/node244311324>
+      owl:sameAs <http://dbpedia.org/resource/Zaqatala_(city)> .
+
+<http://linkedgeodata.org/triplify/node153480469>
+      owl:sameAs <http://dbpedia.org/resource/Panama_City_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node33150881>
+      owl:sameAs <http://dbpedia.org/resource/Durr%C3%ABs> .
+
+<http://linkedgeodata.org/triplify/node30088324>
+      owl:sameAs <http://dbpedia.org/resource/Kingston,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node244079533>
+      owl:sameAs <http://dbpedia.org/resource/Fengzhen> .
+
+<http://linkedgeodata.org/triplify/node125027380>
+      owl:sameAs <http://dbpedia.org/resource/Des_Moines,_Iowa> , <http://dbpedia.org/resource/West_Des_Moines,_Iowa> .
+
+<http://linkedgeodata.org/triplify/node358015536>
+      owl:sameAs <http://dbpedia.org/resource/Seogwipo> .
+
+<http://linkedgeodata.org/triplify/node1639099539>
+      owl:sameAs <http://dbpedia.org/resource/Darwin,_Northern_Territory> .
+
+<http://linkedgeodata.org/triplify/node317949136>
+      owl:sameAs <http://dbpedia.org/resource/Laoag> .
+
+<http://linkedgeodata.org/triplify/node244081152>
+      owl:sameAs <http://dbpedia.org/resource/Yongzhou> .
+
+<http://linkedgeodata.org/triplify/node154347957>
+      owl:sameAs <http://dbpedia.org/resource/Daytona_Beach,_Florida> , <http://dbpedia.org/resource/Daytona_Beach_Shores,_Florida> .
+
+<http://linkedgeodata.org/triplify/node158860186>
+      owl:sameAs <http://dbpedia.org/resource/Augusta,_Maine> .
+
+<http://linkedgeodata.org/triplify/node31319630>
+      owl:sameAs <http://dbpedia.org/resource/Harrisonburg,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node244083169>
+      owl:sameAs <http://dbpedia.org/resource/Zhijiang,_Hubei> .
+
+<http://linkedgeodata.org/triplify/node244080662>
       a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
       <http://www.w3.org/2000/01/rdf-schema#label>
-              "Riika@fi" , "Riga@sv" , "Рига@ru" , "Ryga@pl" , "Riga@es" , "Riga@de" , "Riga@en" , "Riga@hu" , "Rīga" , "Riga@eu" , "Riga@hr" , "ריגה@he" , "Ríga@is" , "Ryga@lt" , "Riia@et" , "Ρίγα@el" ;
-      <http://linkedgeodata.org/ontology/admin_level>
-              "5^^http://www.w3.org/2001/XMLSchema#integer" ;
+              "化州市@zh" , "化州市" ;
       <http://linkedgeodata.org/ontology/contributor>
-              <http://linkedgeodata.org/triplify/user58338> ;
+              <http://linkedgeodata.org/triplify/user83557> ;
       <http://linkedgeodata.org/ontology/directType>
               <http://linkedgeodata.org/ontology/City> ;
-      <http://linkedgeodata.org/ontology/population>
-              "717371^^http://www.w3.org/2001/XMLSchema#integer" ;
-      <http://linkedgeodata.org/property/capital>
-              "yes" ;
+      <http://linkedgeodata.org/ontology/gns%3AADM1>
+              "30^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/ontology/gns%3AUFI>
+              "-1910786^^http://www.w3.org/2001/XMLSchema#integer" ;
+      <http://linkedgeodata.org/property/gns%3ADSG>
+              "ADM3" ;
+      <http://linkedgeodata.org/property/gns%3AUNI>
+              "6722104" ;
       <http://linkedgeodata.org/property/int_name>
-              "Riga" ;
-      <http://linkedgeodata.org/property/is_in>
-              "Latvija;Latvia;LV;Europe" ;
+              "Huazhou" ;
       <http://linkedgeodata.org/property/is_in%3Acontinent>
-              "Europe" ;
-      <http://linkedgeodata.org/property/is_in%3Acountry>
-              "Latvija" ;
-      <http://linkedgeodata.org/property/wikipedia>
-              "Riga" ;
-      owl:sameAs <http://dbpedia.org/resource/Riga> ;
+              "Asia" ;
+      <http://linkedgeodata.org/property/name%3Azh_pinyin>
+              "Huazhou Shi" ;
+      owl:sameAs <http://dbpedia.org/resource/Huazhou%2C_Guangdong> , <http://dbpedia.org/resource/Huazhou,_Guangdong> ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
-              "POINT(24.1052 56.9494)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+              "POINT(110.64 21.6517)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
-              "56.9493977^^http://www.w3.org/2001/XMLSchema#double" ;
+              "21.6516763^^http://www.w3.org/2001/XMLSchema#double" ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#long>
-              "24.1051844^^http://www.w3.org/2001/XMLSchema#double" .
+              "110.6404799^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node198515351>
+      owl:sameAs <http://dbpedia.org/resource/Bogo,_Cebu> .
+
+<http://linkedgeodata.org/triplify/node244080718>
+      owl:sameAs <http://dbpedia.org/resource/Jianyang,_Sichuan> .
+
+<http://linkedgeodata.org/triplify/node1666626393>
+      owl:sameAs <http://dbpedia.org/resource/Portland,_Oregon> .
+
+<http://linkedgeodata.org/triplify/node1979205040>
+      owl:sameAs <http://dbpedia.org/resource/Knoxville,_Tennessee> .
+
+<http://linkedgeodata.org/triplify/node60656019>
+      owl:sameAs <http://dbpedia.org/resource/Hsinchu> .
+
+<http://linkedgeodata.org/triplify/node302608868>
+      owl:sameAs <http://dbpedia.org/resource/San_Jos%C3%A9_de_Mayo> .
+
+<http://linkedgeodata.org/triplify/node60976089>
+      owl:sameAs <http://dbpedia.org/resource/Maryborough,_Queensland> .
+
+<http://linkedgeodata.org/triplify/node30917625>
+      owl:sameAs <http://dbpedia.org/resource/Urdaneta,_Pangasinan> .
+
+<http://linkedgeodata.org/triplify/node244078242>
+      owl:sameAs <http://dbpedia.org/resource/Dandong> .
+
+<http://linkedgeodata.org/triplify/node158817204>
+      owl:sameAs <http://dbpedia.org/resource/New_Haven,_Connecticut> .
+
+<http://linkedgeodata.org/triplify/node2096444355>
+      owl:sameAs <http://dbpedia.org/resource/Lakeway,_Texas> .
+
+<http://linkedgeodata.org/triplify/node472255718>
+      owl:sameAs <http://dbpedia.org/resource/C%C3%B3rdoba,_Veracruz> .
+
+<http://linkedgeodata.org/triplify/node372812229>
+      owl:sameAs <http://dbpedia.org/resource/Trang,_Trang> .
+
+<http://linkedgeodata.org/triplify/node416470120>
+      owl:sameAs <http://dbpedia.org/resource/Artigas,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node21579127>
+      owl:sameAs <http://dbpedia.org/resource/Melbourne> .
+
+<http://linkedgeodata.org/triplify/node150955222>
+      owl:sameAs <http://dbpedia.org/resource/Fontana,_California> .
+
+<http://linkedgeodata.org/triplify/node1488302778>
+      owl:sameAs <http://dbpedia.org/resource/Rasht> .
+
+<http://linkedgeodata.org/triplify/node198511547>
+      owl:sameAs <http://dbpedia.org/resource/Tacurong> .
+
+<http://linkedgeodata.org/triplify/node198516371>
+      owl:sameAs <http://dbpedia.org/resource/Balanga,_Bataan> .
+
+<http://linkedgeodata.org/triplify/node18996031>
+      owl:sameAs <http://dbpedia.org/resource/Hamilton,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node204462923>
+      owl:sameAs <http://dbpedia.org/resource/Fredericton> .
+
+<http://linkedgeodata.org/triplify/node1596473336>
+      owl:sameAs <http://dbpedia.org/resource/Gonbad-e_Qabus> .
+
+<http://linkedgeodata.org/triplify/node757178432>
+      owl:sameAs <http://dbpedia.org/resource/Nagakute,_Aichi> , <http://dbpedia.org/resource/Miyoshi,_Aichi> , <http://dbpedia.org/resource/Nisshin,_Aichi> , <http://dbpedia.org/resource/Chiry%C5%AB,_Aichi> , <http://dbpedia.org/resource/Toyoake,_Aichi> .
+
+<http://linkedgeodata.org/triplify/node1837289830>
+      owl:sameAs <http://dbpedia.org/resource/Westminster,_California> .
+
+<http://linkedgeodata.org/triplify/node265058149>
+      owl:sameAs <http://dbpedia.org/resource/Kremenchuk> .
+
+<http://linkedgeodata.org/triplify/node244082298>
+      owl:sameAs <http://dbpedia.org/resource/Dashiqiao> .
+
+<http://linkedgeodata.org/triplify/node366272213>
+      owl:sameAs <http://dbpedia.org/resource/Barinas,_Barinas> .
+
+<http://linkedgeodata.org/triplify/node244078435>
+      owl:sameAs <http://dbpedia.org/resource/Danzhou> .
+
+<http://linkedgeodata.org/triplify/node151857553>
+      owl:sameAs <http://dbpedia.org/resource/Del_Rio,_Texas> .
+
+<http://linkedgeodata.org/triplify/node873099231>
+      owl:sameAs <http://dbpedia.org/resource/Milwaukee> .
+
+<http://linkedgeodata.org/triplify/node244082401>
+      owl:sameAs <http://dbpedia.org/resource/Xingping> .
+
+<http://linkedgeodata.org/triplify/node244081239>
+      owl:sameAs <http://dbpedia.org/resource/Lu'an> .
+
+<http://linkedgeodata.org/triplify/node358015235>
+      owl:sameAs <http://dbpedia.org/resource/Jeonju> .
+
+<http://linkedgeodata.org/triplify/node150943467>
+      owl:sameAs <http://dbpedia.org/resource/Orange,_California> .
+
+<http://linkedgeodata.org/triplify/node431728015>
+      owl:sameAs <http://dbpedia.org/resource/Jiayuguan_City> .
+
+<http://linkedgeodata.org/triplify/node158491017>
+      owl:sameAs <http://dbpedia.org/resource/Petersburg,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node198422025>
+      owl:sameAs <http://dbpedia.org/resource/San_Mart%C3%ADn_de_los_Andes> .
+
+<http://linkedgeodata.org/triplify/node60655650>
+      owl:sameAs <http://dbpedia.org/resource/Pingtung_City> .
+
+<http://linkedgeodata.org/triplify/node60655807>
+      owl:sameAs <http://dbpedia.org/resource/Yangmei,_Taiwan> , <http://dbpedia.org/resource/Taoyuan_City> .
+
+<http://linkedgeodata.org/triplify/node52561531>
+      owl:sameAs <http://dbpedia.org/resource/Winnipeg> .
+
+<http://linkedgeodata.org/triplify/node306088791>
+      owl:sameAs <http://dbpedia.org/resource/Dunhuang> .
+
+<http://linkedgeodata.org/triplify/node245638671>
+      owl:sameAs <http://dbpedia.org/resource/Bijapur,_Karnataka> .
+
+<http://linkedgeodata.org/triplify/node158907508>
+      owl:sameAs <http://dbpedia.org/resource/Ellsworth,_Maine> .
+
+<http://linkedgeodata.org/triplify/node244082377>
+      owl:sameAs <http://dbpedia.org/resource/Xingyang> .
+
+<http://linkedgeodata.org/triplify/node170792214>
+      owl:sameAs <http://dbpedia.org/resource/Skopje> .
+
+<http://linkedgeodata.org/triplify/node244082316>
+      owl:sameAs <http://dbpedia.org/resource/Yongkang,_Zhejiang> .
+
+<http://linkedgeodata.org/triplify/node244082295>
+      owl:sameAs <http://dbpedia.org/resource/Yingcheng> .
+
+<http://linkedgeodata.org/triplify/node244076882>
+      owl:sameAs <http://dbpedia.org/resource/Benxi> .
+
+<http://linkedgeodata.org/triplify/node240109189>
+      owl:sameAs <http://dbpedia.org/resource/Berlin> .
+
+<http://linkedgeodata.org/triplify/node244079389>
+      owl:sameAs <http://dbpedia.org/resource/Fu'an> .
+
+<http://linkedgeodata.org/triplify/node296889512>
+      owl:sameAs <http://dbpedia.org/resource/Matamoros,_Tamaulipas> .
+
+<http://linkedgeodata.org/triplify/node244080458>
+      owl:sameAs <http://dbpedia.org/resource/Hanzhong> .
+
+<http://linkedgeodata.org/triplify/node244082404>
+      owl:sameAs <http://dbpedia.org/resource/Xingtai> .
+
+<http://linkedgeodata.org/triplify/node32889204>
+      owl:sameAs <http://dbpedia.org/resource/Jahrom> .
+
+<http://linkedgeodata.org/triplify/node150949475>
+      owl:sameAs <http://dbpedia.org/resource/Simi_Valley,_California> .
+
+<http://linkedgeodata.org/triplify/node358015558>
+      owl:sameAs <http://dbpedia.org/resource/Namwon> .
+
+<http://linkedgeodata.org/triplify/node244081366>
+      owl:sameAs <http://dbpedia.org/resource/Panzhihua> .
+
+<http://linkedgeodata.org/triplify/node502220401>
+      owl:sameAs <http://dbpedia.org/resource/Jixi> .
+
+<http://linkedgeodata.org/triplify/node372811021>
+      owl:sameAs <http://dbpedia.org/resource/Rayong> .
+
+<http://linkedgeodata.org/triplify/node60969658>
+      owl:sameAs <http://dbpedia.org/resource/Erie,_Pennsylvania> .
+
+<http://linkedgeodata.org/triplify/node244081526>
+      owl:sameAs <http://dbpedia.org/resource/Qitaihe> .
+
+<http://linkedgeodata.org/triplify/node270873161>
+      owl:sameAs <http://dbpedia.org/resource/Irbid> .
+
+<http://linkedgeodata.org/triplify/node1340670207>
+      owl:sameAs <http://dbpedia.org/resource/Peoria,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node60655863>
+      owl:sameAs <http://dbpedia.org/resource/Taitung_City> .
+
+<http://linkedgeodata.org/triplify/node153357258>
+      owl:sameAs <http://dbpedia.org/resource/Evansville,_Indiana> .
+
+<http://linkedgeodata.org/triplify/node150953270>
+      owl:sameAs <http://dbpedia.org/resource/Scottsdale,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node21542876>
+      owl:sameAs <http://dbpedia.org/resource/Belleville,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node244080575>
+      owl:sameAs <http://dbpedia.org/resource/Huadian,_Jilin> .
+
+<http://linkedgeodata.org/triplify/node244081612>
+      owl:sameAs <http://dbpedia.org/resource/Shaoxing> .
+
+<http://linkedgeodata.org/triplify/node1235110932>
+      owl:sameAs <http://dbpedia.org/resource/A_Coru%C3%B1a> .
+
+<http://linkedgeodata.org/triplify/node244081470>
+      owl:sameAs <http://dbpedia.org/resource/Nanyang,_Henan> .
+
+<http://linkedgeodata.org/triplify/node198403560>
+      owl:sameAs <http://dbpedia.org/resource/Mendoza,_Argentina> .
+
+<http://linkedgeodata.org/triplify/node240038130>
+      owl:sameAs <http://dbpedia.org/resource/Erfurt> .
+
+<http://linkedgeodata.org/triplify/node1435307555>
+      owl:sameAs <http://dbpedia.org/resource/Baguio> .
+
+<http://linkedgeodata.org/triplify/node244081207>
+      owl:sameAs <http://dbpedia.org/resource/Mianyang> .
+
+<http://linkedgeodata.org/triplify/node936127487>
+      owl:sameAs <http://dbpedia.org/resource/Hoofddorp> .
+
+<http://linkedgeodata.org/triplify/node551367945>
+      owl:sameAs <http://dbpedia.org/resource/Katano> .
+
+<http://linkedgeodata.org/triplify/node1301347099>
+      owl:sameAs <http://dbpedia.org/resource/San_Marcos,_Texas> .
+
+<http://linkedgeodata.org/triplify/node198422869>
+      owl:sameAs <http://dbpedia.org/resource/San_Rafael,_Mendoza> .
+
+<http://linkedgeodata.org/triplify/node269906564>
+      owl:sameAs <http://dbpedia.org/resource/Zacatecas,_Zacatecas> .
+
+<http://linkedgeodata.org/triplify/node30917648>
+      owl:sameAs <http://dbpedia.org/resource/Tarlac_City> .
+
+<http://linkedgeodata.org/triplify/node1494011692>
+      owl:sameAs <http://dbpedia.org/resource/Alwar> .
+
+<http://linkedgeodata.org/triplify/node257372341>
+      owl:sameAs <http://dbpedia.org/resource/Ansan> .
+
+<http://linkedgeodata.org/triplify/node244077729>
+      owl:sameAs <http://dbpedia.org/resource/Chengdu> .
+
+<http://linkedgeodata.org/triplify/node58568637>
+      owl:sameAs <http://dbpedia.org/resource/Gilgit> .
+
+<http://linkedgeodata.org/triplify/node415158162>
+      owl:sameAs <http://dbpedia.org/resource/Cheonan> .
+
+<http://linkedgeodata.org/triplify/node257370655>
+      owl:sameAs <http://dbpedia.org/resource/Andong> .
+
+<http://linkedgeodata.org/triplify/node369487081>
+      owl:sameAs <http://dbpedia.org/resource/My_Tho> .
+
+<http://linkedgeodata.org/triplify/node240423025>
+      owl:sameAs <http://dbpedia.org/resource/Granada> .
+
+<http://linkedgeodata.org/triplify/node244080892>
+      owl:sameAs <http://dbpedia.org/resource/Jilin_City> .
+
+<http://linkedgeodata.org/triplify/node568515366>
+      owl:sameAs <http://dbpedia.org/resource/Nagasaki> .
+
+<http://linkedgeodata.org/triplify/node154328371>
+      owl:sameAs <http://dbpedia.org/resource/Punta_Gorda,_Florida> .
+
+<http://linkedgeodata.org/triplify/node621286703>
+      owl:sameAs <http://dbpedia.org/resource/Ch%C5%8Dfu,_Tokyo> .
+
+<http://linkedgeodata.org/triplify/node198446469>
+      owl:sameAs <http://dbpedia.org/resource/Corrientes> .
+
+<http://linkedgeodata.org/triplify/node244075908>
+      owl:sameAs <http://dbpedia.org/resource/Anqing> .
+
+<http://linkedgeodata.org/triplify/node415154551>
+      owl:sameAs <http://dbpedia.org/resource/Wonju> .
+
+<http://linkedgeodata.org/triplify/node415150369>
+      owl:sameAs <http://dbpedia.org/resource/Ulsan> .
+
+<http://linkedgeodata.org/triplify/node886601234>
+      owl:sameAs <http://dbpedia.org/resource/Rivera> .
+
+<http://linkedgeodata.org/triplify/node295342933>
+      owl:sameAs <http://dbpedia.org/resource/S%C3%A3o_Tom%C3%A9> .
+
+<http://linkedgeodata.org/triplify/node1837296120>
+      owl:sameAs <http://dbpedia.org/resource/Norwalk,_California> .
+
+<http://linkedgeodata.org/triplify/node154286316>
+      owl:sameAs <http://dbpedia.org/resource/Cape_Coral,_Florida> .
+
+<http://linkedgeodata.org/triplify/node244081369>
+      owl:sameAs <http://dbpedia.org/resource/Panjin> .
+
+<http://linkedgeodata.org/triplify/node657059412>
+      owl:sameAs <http://dbpedia.org/resource/Bacolod> .
+
+<http://linkedgeodata.org/triplify/node358015505>
+      owl:sameAs <http://dbpedia.org/resource/Tongyeong> .
+
+<http://linkedgeodata.org/triplify/node151937964>
+      owl:sameAs <http://dbpedia.org/resource/Rochester,_Minnesota> .
+
+<http://linkedgeodata.org/triplify/node171513871>
+      owl:sameAs <http://dbpedia.org/resource/Nakhchivan_(city)> .
+
+<http://linkedgeodata.org/triplify/node244083624>
+      owl:sameAs <http://dbpedia.org/resource/Deyang> .
+
+<http://linkedgeodata.org/triplify/node358015553>
+      owl:sameAs <http://dbpedia.org/resource/Naju> .
+
+<http://linkedgeodata.org/triplify/node151836509>
+      owl:sameAs <http://dbpedia.org/resource/Garland,_Texas> .
+
+<http://linkedgeodata.org/triplify/node153973836>
+      owl:sameAs <http://dbpedia.org/resource/Jackson,_Michigan> .
+
+<http://linkedgeodata.org/triplify/node1690212988>
+      owl:sameAs <http://dbpedia.org/resource/San_Jose,_California> .
+
+<http://linkedgeodata.org/triplify/node244081540>
+      owl:sameAs <http://dbpedia.org/resource/Qinyang> .
+
+<http://linkedgeodata.org/triplify/node198416132>
+      owl:sameAs <http://dbpedia.org/resource/Rawson,_Chubut> .
+
+<http://linkedgeodata.org/triplify/node257370656>
+      owl:sameAs <http://dbpedia.org/resource/Gyeongju> .
+
+<http://linkedgeodata.org/triplify/node1910974426>
+      owl:sameAs <http://dbpedia.org/resource/Gwacheon> .
+
+<http://linkedgeodata.org/triplify/node27350363>
+      owl:sameAs <http://dbpedia.org/resource/Essen> .
+
+<http://linkedgeodata.org/triplify/node158864089>
+      owl:sameAs <http://dbpedia.org/resource/Stamford,_Connecticut> .
+
+<http://linkedgeodata.org/triplify/node1934239893>
+      owl:sameAs <http://dbpedia.org/resource/Larkana> .
+
+<http://linkedgeodata.org/triplify/node244081581>
+      owl:sameAs <http://dbpedia.org/resource/Qian'an,_Hebei> .
+
+<http://linkedgeodata.org/triplify/node59149739>
+      owl:sameAs <http://dbpedia.org/resource/Hobart> .
+
+<http://linkedgeodata.org/triplify/node1756064253>
+      owl:sameAs <http://dbpedia.org/resource/Dniprodzerzhynsk> .
+
+<http://linkedgeodata.org/triplify/node27524177>
+      owl:sameAs <http://dbpedia.org/resource/Bishkek> .
+
+<http://linkedgeodata.org/triplify/node24913081>
+      owl:sameAs <http://dbpedia.org/resource/Nottingham> .
+
+<http://linkedgeodata.org/triplify/node235857686>
+      owl:sameAs <http://dbpedia.org/resource/The_Hague> .
+
+<http://linkedgeodata.org/triplify/node2074461005>
+      owl:sameAs <http://dbpedia.org/resource/Bandar-e_Mahshahr> .
+
+<http://linkedgeodata.org/triplify/node244082273>
+      owl:sameAs <http://dbpedia.org/resource/Yanji> .
+
+<http://linkedgeodata.org/triplify/node1837332937>
+      owl:sameAs <http://dbpedia.org/resource/Chino,_California> , <http://dbpedia.org/resource/Chino_Hills,_California> .
+
+<http://linkedgeodata.org/triplify/node1390375711>
+      owl:sameAs <http://dbpedia.org/resource/Yogyakarta> .
+
+<http://linkedgeodata.org/triplify/node244082003>
+      owl:sameAs <http://dbpedia.org/resource/Wafangdian> .
+
+<http://linkedgeodata.org/triplify/node249599781>
+      owl:sameAs <http://dbpedia.org/resource/Santo_Domingo_(Ecuador)> .
+
+<http://linkedgeodata.org/triplify/node1717099673>
+      owl:sameAs <http://dbpedia.org/resource/Higashiyamato,_Tokyo> .
+
+<http://linkedgeodata.org/triplify/node317405147>
+      owl:sameAs <http://dbpedia.org/resource/Dagupan> .
+
+<http://linkedgeodata.org/triplify/node244080951>
+      owl:sameAs <http://dbpedia.org/resource/Huludao> .
+
+<http://linkedgeodata.org/triplify/node244082332>
+      owl:sameAs <http://dbpedia.org/resource/Yong'an> .
+
+<http://linkedgeodata.org/triplify/node244077962>
+      owl:sameAs <http://dbpedia.org/resource/Datong> .
+
+<http://linkedgeodata.org/triplify/node249596111>
+      owl:sameAs <http://dbpedia.org/resource/Macas_(city)> .
+
+<http://linkedgeodata.org/triplify/node1690220718>
+      owl:sameAs <http://dbpedia.org/resource/Soledad,_California> .
+
+<http://linkedgeodata.org/triplify/node50794342>
+      owl:sameAs <http://dbpedia.org/resource/Colombo> .
+
+<http://linkedgeodata.org/triplify/node339120476>
+      owl:sameAs <http://dbpedia.org/resource/Chittagong> .
+
+<http://linkedgeodata.org/triplify/node59900417>
+      owl:sameAs <http://dbpedia.org/resource/Boise,_Idaho> .
+
+<http://linkedgeodata.org/triplify/node244082898>
+      owl:sameAs <http://dbpedia.org/resource/Zhangzhou> .
+
+<http://linkedgeodata.org/triplify/node150972580>
+      owl:sameAs <http://dbpedia.org/resource/West_Covina,_California> .
+
+<http://linkedgeodata.org/triplify/node2115186710>
+      owl:sameAs <http://dbpedia.org/resource/Sagamihara> .
+
+<http://linkedgeodata.org/triplify/node151682065>
+      owl:sameAs <http://dbpedia.org/resource/Joplin,_Missouri> .
+
+<http://linkedgeodata.org/triplify/node151786910>
+      owl:sameAs <http://dbpedia.org/resource/St._Louis,_Missouri> .
+
+<http://linkedgeodata.org/triplify/node244077910>
+      owl:sameAs <http://dbpedia.org/resource/Chongzhou> .
+
+<http://linkedgeodata.org/triplify/node244082533>
+      owl:sameAs <http://dbpedia.org/resource/Zigong> .
+
+<http://linkedgeodata.org/triplify/node244082207>
+      owl:sameAs <http://dbpedia.org/resource/Wuwei,_Gansu> .
+
+<http://linkedgeodata.org/triplify/node286894978>
+      owl:sameAs <http://dbpedia.org/resource/Cornwall,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node2108742744>
+      owl:sameAs <http://dbpedia.org/resource/Rafsanjan> .
+
+<http://linkedgeodata.org/triplify/node358015429>
+      owl:sameAs <http://dbpedia.org/resource/Seosan> .
+
+<http://linkedgeodata.org/triplify/node154367991>
+      owl:sameAs <http://dbpedia.org/resource/Boca_Raton,_Florida> .
+
+<http://linkedgeodata.org/triplify/node32664078>
+      owl:sameAs <http://dbpedia.org/resource/Maragheh> .
+
+<http://linkedgeodata.org/triplify/node428420612>
+      owl:sameAs <http://dbpedia.org/resource/Bangalore> .
+
+<http://linkedgeodata.org/triplify/node92261014>
+      owl:sameAs <http://dbpedia.org/resource/Redlands,_California> .
+
+<http://linkedgeodata.org/triplify/node469622737>
+      owl:sameAs <http://dbpedia.org/resource/Dali_City> .
+
+<http://linkedgeodata.org/triplify/node244083626>
+      owl:sameAs <http://dbpedia.org/resource/Yinchuan> .
+
+<http://linkedgeodata.org/triplify/node32663279>
+      owl:sameAs <http://dbpedia.org/resource/Kermanshah> .
+
+<http://linkedgeodata.org/triplify/node29660373>
+      owl:sameAs <http://dbpedia.org/resource/Brooks,_Alberta> .
+
+<http://linkedgeodata.org/triplify/node1685767121>
+      owl:sameAs <http://dbpedia.org/resource/Jammu_(city)> .
+
+<http://linkedgeodata.org/triplify/node244082251>
+      owl:sameAs <http://dbpedia.org/resource/Yichun,_Heilongjiang> .
+
+<http://linkedgeodata.org/triplify/node358015507>
+      owl:sameAs <http://dbpedia.org/resource/Sangju> .
+
+<http://linkedgeodata.org/triplify/node27193269>
+      owl:sameAs <http://dbpedia.org/resource/%C5%A0iauliai> .
+
+<http://linkedgeodata.org/triplify/node244080926>
+      owl:sameAs <http://dbpedia.org/resource/Jiyuan> .
+
+<http://linkedgeodata.org/triplify/node244082029>
+      owl:sameAs <http://dbpedia.org/resource/Wuzhishan_City> .
+
+<http://linkedgeodata.org/triplify/node154058069>
+      owl:sameAs <http://dbpedia.org/resource/Delray_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node198458287>
+      owl:sameAs <http://dbpedia.org/resource/Las_Heras,_Santa_Cruz> .
+
+<http://linkedgeodata.org/triplify/node29922899>
+      owl:sameAs <http://dbpedia.org/resource/Pokhara> .
+
+<http://linkedgeodata.org/triplify/node259846383>
+      owl:sameAs <http://dbpedia.org/resource/Santiago_de_Cuba> .
+
+<http://linkedgeodata.org/triplify/node51971888>
+      owl:sameAs <http://dbpedia.org/resource/Leduc,_Alberta> .
+
+<http://linkedgeodata.org/triplify/node12805909>
+      owl:sameAs <http://dbpedia.org/resource/Oxford> .
+
+<http://linkedgeodata.org/triplify/node27120185>
+      owl:sameAs <http://dbpedia.org/resource/Devonport,_Tasmania> .
+
+<http://linkedgeodata.org/triplify/node32673155>
+      owl:sameAs <http://dbpedia.org/resource/Mahabad> .
+
+<http://linkedgeodata.org/triplify/node25730724>
+      owl:sameAs <http://dbpedia.org/resource/Casablanca> .
+
+<http://linkedgeodata.org/triplify/node198507159>
+      owl:sameAs <http://dbpedia.org/resource/Mati,_Davao_Oriental> .
+
+<http://linkedgeodata.org/triplify/node244080550>
+      owl:sameAs <http://dbpedia.org/resource/Hotan> .
+
+<http://linkedgeodata.org/triplify/node151761785>
+      owl:sameAs <http://dbpedia.org/resource/Davenport,_Iowa> .
+
+<http://linkedgeodata.org/triplify/node1979210694>
+      owl:sameAs <http://dbpedia.org/resource/Palmdale,_California> .
+
+<http://linkedgeodata.org/triplify/node416492912>
+      owl:sameAs <http://dbpedia.org/resource/Durazno> .
+
+<http://linkedgeodata.org/triplify/node81363257>
+      owl:sameAs <http://dbpedia.org/resource/North_Bay,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node26506087>
+      owl:sameAs <http://dbpedia.org/resource/Dallas> .
+
+<http://linkedgeodata.org/triplify/node428339453>
+      owl:sameAs <http://dbpedia.org/resource/Limerick> .
+
+<http://linkedgeodata.org/triplify/node257370659>
+      owl:sameAs <http://dbpedia.org/resource/Changwon> .
+
+<http://linkedgeodata.org/triplify/node244077699>
+      owl:sameAs <http://dbpedia.org/resource/Chengde> .
+
+<http://linkedgeodata.org/triplify/node151684091>
+      owl:sameAs <http://dbpedia.org/resource/Grand_Junction,_Colorado> .
+
+<http://linkedgeodata.org/triplify/node244082250>
+      owl:sameAs <http://dbpedia.org/resource/Yichun,_Jiangxi> .
+
+<http://linkedgeodata.org/triplify/node244082246>
+      owl:sameAs <http://dbpedia.org/resource/Yicheng,_Hubei> .
+
+<http://linkedgeodata.org/triplify/node245686245>
+      owl:sameAs <http://dbpedia.org/resource/Aurangabad,_Maharashtra> .
+
+<http://linkedgeodata.org/triplify/node1242998122>
+      owl:sameAs <http://dbpedia.org/resource/Panama_City> .
+
+<http://linkedgeodata.org/triplify/node244079835>
+      owl:sameAs <http://dbpedia.org/resource/Fuyang> .
+
+<http://linkedgeodata.org/triplify/node154191276>
+      owl:sameAs <http://dbpedia.org/resource/Vero_Beach,_Florida> .
+
+<http://linkedgeodata.org/triplify/node415154216>
+      owl:sameAs <http://dbpedia.org/resource/Samcheok> .
+
+<http://linkedgeodata.org/triplify/node214204398>
+      owl:sameAs <http://dbpedia.org/resource/San_Fernando,_Chile> .
+
+<http://linkedgeodata.org/triplify/node2277730366>
+      owl:sameAs <http://dbpedia.org/resource/Changsha> .
+
+<http://linkedgeodata.org/triplify/node1979396823>
+      owl:sameAs <http://dbpedia.org/resource/Round_Rock,_Texas> .
+
+<http://linkedgeodata.org/triplify/node961071984>
+      owl:sameAs <http://dbpedia.org/resource/San_Carlos,_Pangasinan> .
+
+<http://linkedgeodata.org/triplify/node158869918>
+      owl:sameAs <http://dbpedia.org/resource/Caribou,_Maine> .
+
+<http://linkedgeodata.org/triplify/node244082008>
+      owl:sameAs <http://dbpedia.org/resource/Turpan> .
+
+<http://linkedgeodata.org/triplify/node244082535>
+      owl:sameAs <http://dbpedia.org/resource/Zibo> .
+
+<http://linkedgeodata.org/triplify/node1837332934>
+      owl:sameAs <http://dbpedia.org/resource/Chino_Hills,_California> .
+
+<http://linkedgeodata.org/triplify/node25653778>
+      owl:sameAs <http://dbpedia.org/resource/Legazpi,_Albay> .
+
+<http://linkedgeodata.org/triplify/node154003355>
+      owl:sameAs <http://dbpedia.org/resource/Melbourne,_Florida> .
+
+<http://linkedgeodata.org/triplify/node422918346>
+      owl:sameAs <http://dbpedia.org/resource/Las_Piedras,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node156801478>
+      owl:sameAs <http://dbpedia.org/resource/Brampton> .
+
+<http://linkedgeodata.org/triplify/node20953083>
+      owl:sameAs <http://dbpedia.org/resource/Cologne> .
+
+<http://linkedgeodata.org/triplify/node34692633>
+      owl:sameAs <http://dbpedia.org/resource/Clarksville,_Tennessee> .
+
+<http://linkedgeodata.org/triplify/node1837339827>
+      owl:sameAs <http://dbpedia.org/resource/Monterey_Park,_California> .
+
+<http://linkedgeodata.org/triplify/node26701158>
+      owl:sameAs <http://dbpedia.org/resource/Kingston_upon_Hull> .
+
+<http://linkedgeodata.org/triplify/node129992313>
+      owl:sameAs <http://dbpedia.org/resource/Salzgitter> .
+
+<http://linkedgeodata.org/triplify/node150971258>
+      owl:sameAs <http://dbpedia.org/resource/Surprise,_Arizona> .
+
+<http://linkedgeodata.org/triplify/node26528071>
+      owl:sameAs <http://dbpedia.org/resource/Stoke-on-Trent> .
+
+<http://linkedgeodata.org/triplify/node790127360>
+      owl:sameAs <http://dbpedia.org/resource/Behbahan> .
+
+<http://linkedgeodata.org/triplify/node358015368>
+      owl:sameAs <http://dbpedia.org/resource/Yangsan> .
+
+<http://linkedgeodata.org/triplify/node244077983>
+      owl:sameAs <http://dbpedia.org/resource/Dazhou,_Sichuan> .
+
+<http://linkedgeodata.org/triplify/node26576183>
+      owl:sameAs <http://dbpedia.org/resource/Pyay> .
+
+<http://linkedgeodata.org/triplify/node358015496>
+      owl:sameAs <http://dbpedia.org/resource/Jeongeup> .
+
+<http://linkedgeodata.org/triplify/node32965173>
+      owl:sameAs <http://dbpedia.org/resource/York,_Pennsylvania> .
+
+<http://linkedgeodata.org/triplify/node244079972>
+      owl:sameAs <http://dbpedia.org/resource/Fushun> .
+
+<http://linkedgeodata.org/triplify/node244080362>
+      owl:sameAs <http://dbpedia.org/resource/Guilin> .
+
+<http://linkedgeodata.org/triplify/node26373169>
+      owl:sameAs <http://dbpedia.org/resource/Bonn> .
+
+<http://linkedgeodata.org/triplify/node265018692>
+      owl:sameAs <http://dbpedia.org/resource/Tokyo> .
+
+<http://linkedgeodata.org/triplify/node255066773>
+      owl:sameAs <http://dbpedia.org/resource/Makati> .
+
+<http://linkedgeodata.org/triplify/node27564986>
+      owl:sameAs <http://dbpedia.org/resource/Lom%C3%A9> .
+
+<http://linkedgeodata.org/triplify/node244085029>
+      owl:sameAs <http://dbpedia.org/resource/Shanwei> .
+
+<http://linkedgeodata.org/triplify/node244081619>
+      owl:sameAs <http://dbpedia.org/resource/Shantou> .
+
+<http://linkedgeodata.org/triplify/node244081543>
+      owl:sameAs <http://dbpedia.org/resource/Qinhuangdao> .
+
+<http://linkedgeodata.org/triplify/node153832776>
+      owl:sameAs <http://dbpedia.org/resource/Kingsport,_Tennessee> .
+
+<http://linkedgeodata.org/triplify/node32676699>
+      owl:sameAs <http://dbpedia.org/resource/Shahrekord> .
+
+<http://linkedgeodata.org/triplify/node358015347>
+      owl:sameAs <http://dbpedia.org/resource/Chuncheon> .
+
+<http://linkedgeodata.org/triplify/node1297904615>
+      owl:sameAs <http://dbpedia.org/resource/Murrieta,_California> .
+
+<http://linkedgeodata.org/triplify/node244081999>
+      owl:sameAs <http://dbpedia.org/resource/%C3%9Cr%C3%BCmqi> .
+
+<http://linkedgeodata.org/triplify/node244084432>
+      owl:sameAs <http://dbpedia.org/resource/Shishi,_Fujian> .
+
+<http://linkedgeodata.org/triplify/node150953279>
+      owl:sameAs <http://dbpedia.org/resource/Fairfield,_California> .
+
+<http://linkedgeodata.org/triplify/node253421090>
+      owl:sameAs <http://dbpedia.org/resource/Windsor,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node269470262>
+      owl:sameAs <http://dbpedia.org/resource/San_Pablo,_Laguna> .
+
+<http://linkedgeodata.org/triplify/node32677945>
+      owl:sameAs <http://dbpedia.org/resource/Kerman> .
+
+<http://linkedgeodata.org/triplify/node151479029>
+      owl:sameAs <http://dbpedia.org/resource/Trinidad,_Colorado> .
+
+<http://linkedgeodata.org/triplify/node282335934>
+      owl:sameAs <http://dbpedia.org/resource/Harare> .
+
+<http://linkedgeodata.org/triplify/node240076989>
+      owl:sameAs <http://dbpedia.org/resource/Dresden> .
+
+<http://linkedgeodata.org/triplify/node2072015069>
+      owl:sameAs <http://dbpedia.org/resource/Amol> .
+
+<http://linkedgeodata.org/triplify/node245589078>
+      owl:sameAs <http://dbpedia.org/resource/Coimbatore> .
+
+<http://linkedgeodata.org/triplify/node2068274800>
+      owl:sameAs <http://dbpedia.org/resource/Mysore> .
+
+<http://linkedgeodata.org/triplify/node240997338>
+      owl:sameAs <http://dbpedia.org/resource/Woodstock,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node244082203>
+      owl:sameAs <http://dbpedia.org/resource/Wuxi> .
+
+<http://linkedgeodata.org/triplify/node150920450>
+      owl:sameAs <http://dbpedia.org/resource/Barrow,_Alaska> .
+
+<http://linkedgeodata.org/triplify/node315359327>
+      owl:sameAs <http://dbpedia.org/resource/Cuenca,_Ecuador> .
+
+<http://linkedgeodata.org/triplify/node27565105>
+      owl:sameAs <http://dbpedia.org/resource/Nairobi> .
+
+<http://linkedgeodata.org/triplify/node33208756>
+      owl:sameAs <http://dbpedia.org/resource/Vlor%C3%AB> .
+
+<http://linkedgeodata.org/triplify/node151931977>
+      owl:sameAs <http://dbpedia.org/resource/Weslaco,_Texas> .
+
+<http://linkedgeodata.org/triplify/node81008084>
+      owl:sameAs <http://dbpedia.org/resource/Palo_Alto,_California> , <http://dbpedia.org/resource/East_Palo_Alto,_California> .
+
+<http://linkedgeodata.org/triplify/node244078538>
+      owl:sameAs <http://dbpedia.org/resource/Daye,_Hubei> .
+
+<http://linkedgeodata.org/triplify/node150980268>
+      owl:sameAs <http://dbpedia.org/resource/State_Line,_Idaho> .
+
+<http://linkedgeodata.org/triplify/node150938195>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Clara,_California> .
+
+<http://linkedgeodata.org/triplify/node244084431>
+      owl:sameAs <http://dbpedia.org/resource/Wuyishan_City> .
+
+<http://linkedgeodata.org/triplify/node240110547>
+      owl:sameAs <http://dbpedia.org/resource/Hagen> .
+
+<http://linkedgeodata.org/triplify/node244080954>
+      owl:sameAs <http://dbpedia.org/resource/Linghai> .
+
+<http://linkedgeodata.org/triplify/node244081562>
+      owl:sameAs <http://dbpedia.org/resource/Pingliang> .
+
+<http://linkedgeodata.org/triplify/node244081058>
+      owl:sameAs <http://dbpedia.org/resource/Liuyang> .
+
+<http://linkedgeodata.org/triplify/node27122612>
+      owl:sameAs <http://dbpedia.org/resource/Zaporizhia> .
+
+<http://linkedgeodata.org/triplify/node244081506>
+      owl:sameAs <http://dbpedia.org/resource/Qingdao> .
+
+<http://linkedgeodata.org/triplify/node150939016>
+      owl:sameAs <http://dbpedia.org/resource/Rialto,_California> .
+
+<http://linkedgeodata.org/triplify/node244080995>
+      owl:sameAs <http://dbpedia.org/resource/Leiyang> .
+
+<http://linkedgeodata.org/triplify/node249308233>
+      owl:sameAs <http://dbpedia.org/resource/Abadeh> .
+
+<http://linkedgeodata.org/triplify/node153715785>
+      owl:sameAs <http://dbpedia.org/resource/Destin,_Florida> .
+
+<http://linkedgeodata.org/triplify/node906275053>
+      owl:sameAs <http://dbpedia.org/resource/Granby,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node358015263>
+      owl:sameAs <http://dbpedia.org/resource/Gimhae> .
+
+<http://linkedgeodata.org/triplify/node244076327>
+      owl:sameAs <http://dbpedia.org/resource/Baiyin> .
+
+<http://linkedgeodata.org/triplify/node269908858>
+      owl:sameAs <http://dbpedia.org/resource/M%C3%A9rida,_Yucat%C3%A1n> .
+
+<http://linkedgeodata.org/triplify/node2115184119>
+      owl:sameAs <http://dbpedia.org/resource/Ayase,_Kanagawa> .
+
+<http://linkedgeodata.org/triplify/node165952298>
+      owl:sameAs <http://dbpedia.org/resource/Antipolo> .
+
+<http://linkedgeodata.org/triplify/node32826994>
+      owl:sameAs <http://dbpedia.org/resource/Khoy> .
+
+<http://linkedgeodata.org/triplify/node244082064>
+      owl:sameAs <http://dbpedia.org/resource/Tieli> .
+
+<http://linkedgeodata.org/triplify/node244081056>
+      owl:sameAs <http://dbpedia.org/resource/Linxiang,_Hunan> .
+
+<http://linkedgeodata.org/triplify/node210324083>
+      owl:sameAs <http://dbpedia.org/resource/Stepanakert> .
 
 <http://linkedgeodata.org/triplify/node299790200>
       a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
@@ -165,95 +3569,137 @@
       <http://www.w3.org/2003/01/geo/wgs84_pos#long>
               "-73.5912827^^http://www.w3.org/2001/XMLSchema#double" .
 
-<http://linkedgeodata.org/triplify/node244080662>
-      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
-      <http://www.w3.org/2000/01/rdf-schema#label>
-              "化州市@zh" , "化州市" ;
-      <http://linkedgeodata.org/ontology/contributor>
-              <http://linkedgeodata.org/triplify/user83557> ;
-      <http://linkedgeodata.org/ontology/directType>
-              <http://linkedgeodata.org/ontology/City> ;
-      <http://linkedgeodata.org/ontology/gns%3AADM1>
-              "30^^http://www.w3.org/2001/XMLSchema#integer" ;
-      <http://linkedgeodata.org/ontology/gns%3AUFI>
-              "-1910786^^http://www.w3.org/2001/XMLSchema#integer" ;
-      <http://linkedgeodata.org/property/gns%3ADSG>
-              "ADM3" ;
-      <http://linkedgeodata.org/property/gns%3AUNI>
-              "6722104" ;
-      <http://linkedgeodata.org/property/int_name>
-              "Huazhou" ;
-      <http://linkedgeodata.org/property/is_in%3Acontinent>
-              "Asia" ;
-      <http://linkedgeodata.org/property/name%3Azh_pinyin>
-              "Huazhou Shi" ;
-      owl:sameAs <http://dbpedia.org/resource/Huazhou%2C_Guangdong> , <http://dbpedia.org/resource/Huazhou,_Guangdong> ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
-              "POINT(110.64 21.6517)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
-              "21.6516763^^http://www.w3.org/2001/XMLSchema#double" ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
-              "110.6404799^^http://www.w3.org/2001/XMLSchema#double" .
+<http://linkedgeodata.org/triplify/node1590291928>
+      owl:sameAs <http://dbpedia.org/resource/Hiroshima> .
 
-<http://linkedgeodata.org/triplify/node249310458>
-      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
-      <http://www.w3.org/2000/01/rdf-schema#label>
-              "Baft@en" , "بافت" , "بافت@fa" ;
-      <http://linkedgeodata.org/ontology/contributor>
-              <http://linkedgeodata.org/triplify/user13908> ;
-      <http://linkedgeodata.org/ontology/directType>
-              <http://linkedgeodata.org/ontology/City> ;
-      <http://linkedgeodata.org/property/is_in>
-              "Kerman,Iran" ;
-      <http://linkedgeodata.org/property/is_in%3Acontinent>
-              "Asia" ;
-      <http://linkedgeodata.org/property/is_in%3Acountry>
-              "Iran" ;
-      <http://linkedgeodata.org/property/is_in%3Astate>
-              "Kerman" ;
-      owl:sameAs <http://dbpedia.org/resource/Baft> ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
-              "POINT(56.6057 29.234)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
-              "29.2340169^^http://www.w3.org/2001/XMLSchema#double" ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
-              "56.6056569^^http://www.w3.org/2001/XMLSchema#double" .
+<http://linkedgeodata.org/triplify/node146570870>
+      owl:sameAs <http://dbpedia.org/resource/Lutsk> .
 
-<http://linkedgeodata.org/triplify/node198416817>
-      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
-      <http://www.w3.org/2000/01/rdf-schema#label>
-              "Río Cuarto" ;
-      <http://linkedgeodata.org/ontology/contributor>
-              <http://linkedgeodata.org/triplify/user299360> ;
-      <http://linkedgeodata.org/ontology/directType>
-              <http://linkedgeodata.org/ontology/City> ;
-      <http://linkedgeodata.org/property/is_in>
-              "Córdoba, Argentina" ;
-      owl:sameAs <http://dbpedia.org/resource/R%C3%ADo_Cuarto,_C%C3%B3rdoba> ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
-              "POINT(-64.3511 -33.1315)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
-              "-33.1315202^^http://www.w3.org/2001/XMLSchema#double" ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
-              "-64.3510601^^http://www.w3.org/2001/XMLSchema#double" .
+<http://linkedgeodata.org/triplify/node244077127>
+      owl:sameAs <http://dbpedia.org/resource/Changning,_Hunan> .
 
-<http://linkedgeodata.org/triplify/node358015515>
-      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
-      <http://www.w3.org/2000/01/rdf-schema#label>
-              "보령" , "Boryeong@en" ;
-      <http://linkedgeodata.org/ontology/contributor>
-              <http://linkedgeodata.org/triplify/user74529> ;
-      <http://linkedgeodata.org/ontology/directType>
-              <http://linkedgeodata.org/ontology/City> ;
-      <http://linkedgeodata.org/property/name%3Ako_rm>
-              "Boryeong" ;
-      owl:sameAs <http://dbpedia.org/resource/Boryeong> ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
-              "POINT(126.613 36.334)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
-              "36.33401^^http://www.w3.org/2001/XMLSchema#double" ;
-      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
-              "126.613165^^http://www.w3.org/2001/XMLSchema#double" .
+<http://linkedgeodata.org/triplify/node97993575>
+      owl:sameAs <http://dbpedia.org/resource/Kandahar> .
+
+<http://linkedgeodata.org/triplify/node151664734>
+      owl:sameAs <http://dbpedia.org/resource/Corpus_Christi,_Texas> .
+
+<http://linkedgeodata.org/triplify/node1643945522>
+      owl:sameAs <http://dbpedia.org/resource/Ternopil> .
+
+<http://linkedgeodata.org/triplify/node244080887>
+      owl:sameAs <http://dbpedia.org/resource/Jieshou> .
+
+<http://linkedgeodata.org/triplify/node151765056>
+      owl:sameAs <http://dbpedia.org/resource/Edinburg,_Texas> .
+
+<http://linkedgeodata.org/triplify/node244081661>
+      owl:sameAs <http://dbpedia.org/resource/Shangzhi> .
+
+<http://linkedgeodata.org/triplify/node153847849>
+      owl:sameAs <http://dbpedia.org/resource/Akron,_Ohio> .
+
+<http://linkedgeodata.org/triplify/node27565107>
+      owl:sameAs <http://dbpedia.org/resource/Enugu> .
+
+<http://linkedgeodata.org/triplify/node278747579>
+      owl:sameAs <http://dbpedia.org/resource/Lansing,_Michigan> .
+
+<http://linkedgeodata.org/triplify/node153999270>
+      owl:sameAs <http://dbpedia.org/resource/Titusville,_Florida> .
+
+<http://linkedgeodata.org/triplify/node244081864>
+      owl:sameAs <http://dbpedia.org/resource/Siping,_Jilin> .
+
+<http://linkedgeodata.org/triplify/node358015322>
+      owl:sameAs <http://dbpedia.org/resource/Gunsan> .
+
+<http://linkedgeodata.org/triplify/node269908857>
+      owl:sameAs <http://dbpedia.org/resource/Campeche,_Campeche> .
+
+<http://linkedgeodata.org/triplify/node141042171>
+      owl:sameAs <http://dbpedia.org/resource/Marysville,_California> .
+
+<http://linkedgeodata.org/triplify/node280785801>
+      owl:sameAs <http://dbpedia.org/resource/Torbat-e_Jam> .
+
+<http://linkedgeodata.org/triplify/node244081843>
+      owl:sameAs <http://dbpedia.org/resource/Shulan> .
+
+<http://linkedgeodata.org/triplify/node293620554>
+      owl:sameAs <http://dbpedia.org/resource/Tartu> .
+
+<http://linkedgeodata.org/triplify/node1837332930>
+      owl:sameAs <http://dbpedia.org/resource/Burbank,_California> .
+
+<http://linkedgeodata.org/triplify/node2041105604>
+      owl:sameAs <http://dbpedia.org/resource/Senneterre,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node245711197>
+      owl:sameAs <http://dbpedia.org/resource/Ahmedabad> .
+
+<http://linkedgeodata.org/triplify/node244076965>
+      owl:sameAs <http://dbpedia.org/resource/Cangzhou> .
+
+<http://linkedgeodata.org/triplify/node428339505>
+      owl:sameAs <http://dbpedia.org/resource/Chernivtsi> .
+
+<http://linkedgeodata.org/triplify/node1601566699>
+      owl:sameAs <http://dbpedia.org/resource/Brno> .
+
+<http://linkedgeodata.org/triplify/node67157058>
+      owl:sameAs <http://dbpedia.org/resource/Kathmandu> .
+
+<http://linkedgeodata.org/triplify/node248779500>
+      owl:sameAs <http://dbpedia.org/resource/Fasa> .
+
+<http://linkedgeodata.org/triplify/node158576812>
+      owl:sameAs <http://dbpedia.org/resource/Dover,_Delaware> .
+
+<http://linkedgeodata.org/triplify/node1547830258>
+      owl:sameAs <http://dbpedia.org/resource/Subotica> .
+
+<http://linkedgeodata.org/triplify/node244080132>
+      owl:sameAs <http://dbpedia.org/resource/Gaoyao> .
+
+<http://linkedgeodata.org/triplify/node198421733>
+      owl:sameAs <http://dbpedia.org/resource/San_Lorenzo,_Santa_Fe> .
+
+<http://linkedgeodata.org/triplify/node244075993>
+      owl:sameAs <http://dbpedia.org/resource/Anyang> .
+
+<http://linkedgeodata.org/triplify/node69141853>
+      owl:sameAs <http://dbpedia.org/resource/Fall_River,_Massachusetts> .
+
+<http://linkedgeodata.org/triplify/node244081738>
+      owl:sameAs <http://dbpedia.org/resource/Renhuai> .
+
+<http://linkedgeodata.org/triplify/node369486903>
+      owl:sameAs <http://dbpedia.org/resource/Ha_Giang> .
+
+<http://linkedgeodata.org/triplify/node150936088>
+      owl:sameAs <http://dbpedia.org/resource/La_Habra_Heights,_California> , <http://dbpedia.org/resource/La_Habra,_California> .
+
+<http://linkedgeodata.org/triplify/node151642587>
+      owl:sameAs <http://dbpedia.org/resource/Rock_Springs,_Wyoming> .
+
+<http://linkedgeodata.org/triplify/node244081348>
+      owl:sameAs <http://dbpedia.org/resource/Pingdingshan> .
+
+<http://linkedgeodata.org/triplify/node1551411011>
+      owl:sameAs <http://dbpedia.org/resource/Denton,_Texas> .
+
+<http://linkedgeodata.org/triplify/node153970120>
+      owl:sameAs <http://dbpedia.org/resource/Tampa,_Florida> .
+
+<http://linkedgeodata.org/triplify/node27418664>
+      owl:sameAs <http://dbpedia.org/resource/Frankfurt> .
+
+<http://linkedgeodata.org/triplify/node244080490>
+      owl:sameAs <http://dbpedia.org/resource/Haicheng,_Liaoning> .
+
+<http://linkedgeodata.org/triplify/node229503490>
+      owl:sameAs <http://dbpedia.org/resource/Goygol_(city)> .
 
 <http://linkedgeodata.org/triplify/node150919109>
       a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
@@ -283,10 +3729,928 @@
               "bb7269ee-502a-5391-8056-e3ce0e66489c" ;
       <http://linkedgeodata.org/property/is_in>
               "Kodiak Island,Alaska,Alaska,AK,USA" ;
-      owl:sameAs <http://dbpedia.org/resource/Kodiak%2C_Alaska> , <http://dbpedia.org/resource/Kodiak,_Alaska> ;
+      owl:sameAs <http://dbpedia.org/resource/Kodiak%2C_Alaska> ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
               "POINT(-152.407 57.79)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
               "57.79^^http://www.w3.org/2001/XMLSchema#double" ;
       <http://www.w3.org/2003/01/geo/wgs84_pos#long>
               "-152.4072222^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node244081009>
+      owl:sameAs <http://dbpedia.org/resource/Langzhong> .
+
+<http://linkedgeodata.org/triplify/node61785451>
+      owl:sameAs <http://dbpedia.org/resource/New_York_City> .
+
+<http://linkedgeodata.org/triplify/node415719961>
+      owl:sameAs <http://dbpedia.org/resource/Rosario,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node100571506>
+      owl:sameAs <http://dbpedia.org/resource/Berkeley,_California> .
+
+<http://linkedgeodata.org/triplify/node158820730>
+      owl:sameAs <http://dbpedia.org/resource/Glens_Falls,_New_York> .
+
+<http://linkedgeodata.org/triplify/node415151931>
+      owl:sameAs <http://dbpedia.org/resource/Sokcho> .
+
+<http://linkedgeodata.org/triplify/node244082679>
+      owl:sameAs <http://dbpedia.org/resource/Xinzhou> .
+
+<http://linkedgeodata.org/triplify/node154343044>
+      owl:sameAs <http://dbpedia.org/resource/Mackinac_Island,_Michigan> .
+
+<http://linkedgeodata.org/triplify/node153976053>
+      owl:sameAs <http://dbpedia.org/resource/Cumming,_Georgia> .
+
+<http://linkedgeodata.org/triplify/node150980416>
+      owl:sameAs <http://dbpedia.org/resource/Visalia,_California> .
+
+<http://linkedgeodata.org/triplify/node348300128>
+      owl:sameAs <http://dbpedia.org/resource/Kangavar> .
+
+<http://linkedgeodata.org/triplify/node2115186708>
+      owl:sameAs <http://dbpedia.org/resource/Ebina,_Kanagawa> .
+
+<http://linkedgeodata.org/triplify/node1669842684>
+      owl:sameAs <http://dbpedia.org/resource/Porto-Novo> .
+
+<http://linkedgeodata.org/triplify/node27121360>
+      owl:sameAs <http://dbpedia.org/resource/Poltava> .
+
+<http://linkedgeodata.org/triplify/node27286467>
+      owl:sameAs <http://dbpedia.org/resource/Fort_Worth,_Texas> .
+
+<http://linkedgeodata.org/triplify/node244081716>
+      owl:sameAs <http://dbpedia.org/resource/Qufu> .
+
+<http://linkedgeodata.org/triplify/node151954093>
+      owl:sameAs <http://dbpedia.org/resource/Fort_Smith,_Arkansas> .
+
+<http://linkedgeodata.org/triplify/node244081049>
+      owl:sameAs <http://dbpedia.org/resource/Linxia_City> .
+
+<http://linkedgeodata.org/triplify/node418286525>
+      owl:sameAs <http://dbpedia.org/resource/Zhaotong> .
+
+<http://linkedgeodata.org/triplify/node244081093>
+      owl:sameAs <http://dbpedia.org/resource/Longyan> .
+
+<http://linkedgeodata.org/triplify/node248691069>
+      owl:sameAs <http://dbpedia.org/resource/Hillah> .
+
+<http://linkedgeodata.org/triplify/node154194802>
+      owl:sameAs <http://dbpedia.org/resource/Port_St._Lucie,_Florida> .
+
+<http://linkedgeodata.org/triplify/node27023456>
+      owl:sameAs <http://dbpedia.org/resource/Flint,_Michigan> .
+
+<http://linkedgeodata.org/triplify/node154133674>
+      owl:sameAs <http://dbpedia.org/resource/Warren,_Michigan> .
+
+<http://linkedgeodata.org/triplify/node244081073>
+      owl:sameAs <http://dbpedia.org/resource/Longjing,_Jilin> .
+
+<http://linkedgeodata.org/triplify/node244078618>
+      owl:sameAs <http://dbpedia.org/resource/Enshi_City> .
+
+<http://linkedgeodata.org/triplify/node154160458>
+      owl:sameAs <http://dbpedia.org/resource/Athens,_Georgia> .
+
+<http://linkedgeodata.org/triplify/node1558720842>
+      owl:sameAs <http://dbpedia.org/resource/Eastvale,_California> .
+
+<http://linkedgeodata.org/triplify/node257363455>
+      owl:sameAs <http://dbpedia.org/resource/Daejeon> .
+
+<http://linkedgeodata.org/triplify/node776083782>
+      owl:sameAs <http://dbpedia.org/resource/Kanzaki,_Saga> .
+
+<http://linkedgeodata.org/triplify/node198529093>
+      owl:sameAs <http://dbpedia.org/resource/San_Jose_del_Monte> .
+
+<http://linkedgeodata.org/triplify/node150959696>
+      owl:sameAs <http://dbpedia.org/resource/Ventura,_California> .
+
+<http://linkedgeodata.org/triplify/node1734071341>
+      owl:sameAs <http://dbpedia.org/resource/Ya'an> .
+
+<http://linkedgeodata.org/triplify/node244082443>
+      owl:sameAs <http://dbpedia.org/resource/Xuchang> .
+
+<http://linkedgeodata.org/triplify/node20830918>
+      owl:sameAs <http://dbpedia.org/resource/Chemnitz> .
+
+<http://linkedgeodata.org/triplify/node6968827>
+      owl:sameAs <http://dbpedia.org/resource/Center,_Ljubljana> , <http://dbpedia.org/resource/Ljubljana> .
+
+<http://linkedgeodata.org/triplify/node249310574>
+      owl:sameAs <http://dbpedia.org/resource/Bardsir> .
+
+<http://linkedgeodata.org/triplify/node244084437>
+      owl:sameAs <http://dbpedia.org/resource/Chizhou> .
+
+<http://linkedgeodata.org/triplify/node32662365>
+      owl:sameAs <http://dbpedia.org/resource/Dezful> .
+
+<http://linkedgeodata.org/triplify/node150948325>
+      owl:sameAs <http://dbpedia.org/resource/Culver_City,_California> .
+
+<http://linkedgeodata.org/triplify/node244080944>
+      owl:sameAs <http://dbpedia.org/resource/Jinzhou> .
+
+<http://linkedgeodata.org/triplify/node158262043>
+      owl:sameAs <http://dbpedia.org/resource/Roanoke,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node154155357>
+      owl:sameAs <http://dbpedia.org/resource/Elizabethton,_Tennessee> .
+
+<http://linkedgeodata.org/triplify/node244082763>
+      owl:sameAs <http://dbpedia.org/resource/Yulin,_Shaanxi> .
+
+<http://linkedgeodata.org/triplify/node60655639>
+      owl:sameAs <http://dbpedia.org/resource/Hualien_City> .
+
+<http://linkedgeodata.org/triplify/node332598161>
+      owl:sameAs <http://dbpedia.org/resource/Mercedes,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node129999186>
+      owl:sameAs <http://dbpedia.org/resource/Saint_John,_New_Brunswick> .
+
+<http://linkedgeodata.org/triplify/node158862401>
+      owl:sameAs <http://dbpedia.org/resource/Bangor,_Maine> .
+
+<http://linkedgeodata.org/triplify/node1719474006>
+      owl:sameAs <http://dbpedia.org/resource/Sohar> .
+
+<http://linkedgeodata.org/triplify/node332268980>
+      owl:sameAs <http://dbpedia.org/resource/Salto,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node244077923>
+      owl:sameAs <http://dbpedia.org/resource/Cixi_City> .
+
+<http://linkedgeodata.org/triplify/node427239178>
+      owl:sameAs <http://dbpedia.org/resource/La_Paz,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node284141675>
+      owl:sameAs <http://dbpedia.org/resource/Barranquilla> .
+
+<http://linkedgeodata.org/triplify/node151629400>
+      owl:sameAs <http://dbpedia.org/resource/Brownsville,_Texas> .
+
+<http://linkedgeodata.org/triplify/node158488639>
+      owl:sameAs <http://dbpedia.org/resource/Norfolk,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node25264008>
+      owl:sameAs <http://dbpedia.org/resource/Aveiro,_Portugal> .
+
+<http://linkedgeodata.org/triplify/node21261083>
+      owl:sameAs <http://dbpedia.org/resource/Bergen> .
+
+<http://linkedgeodata.org/triplify/node60647966>
+      owl:sameAs <http://dbpedia.org/resource/Hartford,_Connecticut> .
+
+<http://linkedgeodata.org/triplify/node244080945>
+      owl:sameAs <http://dbpedia.org/resource/Jinzhong> .
+
+<http://linkedgeodata.org/triplify/node244078803>
+      owl:sameAs <http://dbpedia.org/resource/Fenghua> .
+
+<http://linkedgeodata.org/triplify/node32675333>
+      owl:sameAs <http://dbpedia.org/resource/Sabzevar> .
+
+<http://linkedgeodata.org/triplify/node244081133>
+      owl:sameAs <http://dbpedia.org/resource/Lichuan,_Hubei> .
+
+<http://linkedgeodata.org/triplify/node150938628>
+      owl:sameAs <http://dbpedia.org/resource/Modesto,_California> .
+
+<http://linkedgeodata.org/triplify/node953358774>
+      owl:sameAs <http://dbpedia.org/resource/Silay> .
+
+<http://linkedgeodata.org/triplify/node150967832>
+      owl:sameAs <http://dbpedia.org/resource/Provo,_Utah> .
+
+<http://linkedgeodata.org/triplify/node244084438>
+      owl:sameAs <http://dbpedia.org/resource/Bozhou> .
+
+<http://linkedgeodata.org/triplify/node244082258>
+      owl:sameAs <http://dbpedia.org/resource/Yibin> .
+
+<http://linkedgeodata.org/triplify/node151367745>
+      owl:sameAs <http://dbpedia.org/resource/Lubbock,_Texas> .
+
+<http://linkedgeodata.org/triplify/node154128007>
+      owl:sameAs <http://dbpedia.org/resource/Winter_Haven,_Florida> .
+
+<http://linkedgeodata.org/triplify/node247807315>
+      owl:sameAs <http://dbpedia.org/resource/Gladstone,_Queensland> .
+
+<http://linkedgeodata.org/triplify/node153726164>
+      owl:sameAs <http://dbpedia.org/resource/Decatur,_Illinois> .
+
+<http://linkedgeodata.org/triplify/node244083205>
+      owl:sameAs <http://dbpedia.org/resource/Zhongshan> .
+
+<http://linkedgeodata.org/triplify/node16175031>
+      owl:sameAs <http://dbpedia.org/resource/Islamabad> .
+
+<http://linkedgeodata.org/triplify/node244081008>
+      owl:sameAs <http://dbpedia.org/resource/Lechang> .
+
+<http://linkedgeodata.org/triplify/node244080884>
+      owl:sameAs <http://dbpedia.org/resource/Jiexiu> .
+
+<http://linkedgeodata.org/triplify/node154045159>
+      owl:sameAs <http://dbpedia.org/resource/Palm_Bay,_Florida> .
+
+<http://linkedgeodata.org/triplify/node469625698>
+      owl:sameAs <http://dbpedia.org/resource/Yuxi> .
+
+<http://linkedgeodata.org/triplify/node244083618>
+      owl:sameAs <http://dbpedia.org/resource/Delhi,_Qinghai> .
+
+<http://linkedgeodata.org/triplify/node1558720844>
+      owl:sameAs <http://dbpedia.org/resource/Jurupa_Valley,_California> .
+
+<http://linkedgeodata.org/triplify/node48714460>
+      owl:sameAs <http://dbpedia.org/resource/Bellevue,_Washington> .
+
+<http://linkedgeodata.org/triplify/node244080861>
+      owl:sameAs <http://dbpedia.org/resource/Jinan> .
+
+<http://linkedgeodata.org/triplify/node415154093>
+      owl:sameAs <http://dbpedia.org/resource/Guri> .
+
+<http://linkedgeodata.org/triplify/node150949200>
+      owl:sameAs <http://dbpedia.org/resource/Temecula,_California> .
+
+<http://linkedgeodata.org/triplify/node244082817>
+      owl:sameAs <http://dbpedia.org/resource/Yuyao> .
+
+<http://linkedgeodata.org/triplify/node1505783342>
+      owl:sameAs <http://dbpedia.org/resource/Sitka,_Alaska> .
+
+<http://linkedgeodata.org/triplify/node257363453>
+      owl:sameAs <http://dbpedia.org/resource/Daegu> .
+
+<http://linkedgeodata.org/triplify/node198437989>
+      owl:sameAs <http://dbpedia.org/resource/Aguilares,_Argentina> .
+
+<http://linkedgeodata.org/triplify/node158854043>
+      owl:sameAs <http://dbpedia.org/resource/North_Adams,_Massachusetts> .
+
+<http://linkedgeodata.org/triplify/node276113734>
+      owl:sameAs <http://dbpedia.org/resource/Manzhouli> .
+
+<http://linkedgeodata.org/triplify/node428039507>
+      owl:sameAs <http://dbpedia.org/resource/Izmir> .
+
+<http://linkedgeodata.org/triplify/node151895218>
+      owl:sameAs <http://dbpedia.org/resource/New_Braunfels,_Texas> .
+
+<http://linkedgeodata.org/triplify/node107775>
+      owl:sameAs <http://dbpedia.org/resource/City_of_London> .
+
+<http://linkedgeodata.org/triplify/node198530652>
+      owl:sameAs <http://dbpedia.org/resource/Alaminos,_Pangasinan> .
+
+<http://linkedgeodata.org/triplify/node244080522>
+      owl:sameAs <http://dbpedia.org/resource/Hailun> .
+
+<http://linkedgeodata.org/triplify/node244081026>
+      owl:sameAs <http://dbpedia.org/resource/Kunming> .
+
+<http://linkedgeodata.org/triplify/node302610933>
+      owl:sameAs <http://dbpedia.org/resource/Canelones,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node2102107935>
+      owl:sameAs <http://dbpedia.org/resource/Ciudad_del_Plata> .
+
+<http://linkedgeodata.org/triplify/node151777734>
+      owl:sameAs <http://dbpedia.org/resource/Sweeny,_Texas> .
+
+<http://linkedgeodata.org/triplify/node19188464>
+      owl:sameAs <http://dbpedia.org/resource/Duluth,_Minnesota> .
+
+<http://linkedgeodata.org/triplify/node158826181>
+      owl:sameAs <http://dbpedia.org/resource/Saratoga_Springs,_New_York> .
+
+<http://linkedgeodata.org/triplify/node154321322>
+      owl:sameAs <http://dbpedia.org/resource/Jacksonville,_Florida> .
+
+<http://linkedgeodata.org/triplify/node1837335201>
+      owl:sameAs <http://dbpedia.org/resource/Azusa,_California> .
+
+<http://linkedgeodata.org/triplify/node81458885>
+      owl:sameAs <http://dbpedia.org/resource/Quetta> .
+
+<http://linkedgeodata.org/triplify/node256631409>
+      owl:sameAs <http://dbpedia.org/resource/Chongjin> .
+
+<http://linkedgeodata.org/triplify/node244078404>
+      owl:sameAs <http://dbpedia.org/resource/Danjiangkou> .
+
+<http://linkedgeodata.org/triplify/node151425953>
+      owl:sameAs <http://dbpedia.org/resource/Eagle_Pass,_Texas> .
+
+<http://linkedgeodata.org/triplify/node244081045>
+      owl:sameAs <http://dbpedia.org/resource/Linyi> .
+
+<http://linkedgeodata.org/triplify/node158519358>
+      owl:sameAs <http://dbpedia.org/resource/Hagerstown,_Maryland> .
+
+<http://linkedgeodata.org/triplify/node154320458>
+      owl:sameAs <http://dbpedia.org/resource/Lexington,_Kentucky> .
+
+<http://linkedgeodata.org/triplify/node1837285602>
+      owl:sameAs <http://dbpedia.org/resource/Long_Beach,_California> .
+
+<http://linkedgeodata.org/triplify/node59609477>
+      owl:sameAs <http://dbpedia.org/resource/Mount_Gambier,_South_Australia> .
+
+<http://linkedgeodata.org/triplify/node57563779>
+      owl:sameAs <http://dbpedia.org/resource/Osaka> .
+
+<http://linkedgeodata.org/triplify/node153724548>
+      owl:sameAs <http://dbpedia.org/resource/Terre_Haute,_Indiana> .
+
+<http://linkedgeodata.org/triplify/node656582484>
+      owl:sameAs <http://dbpedia.org/resource/Constituci%C3%B3n,_Chile> .
+
+<http://linkedgeodata.org/triplify/node252344877>
+      owl:sameAs <http://dbpedia.org/resource/Saint-J%C3%A9r%C3%B4me,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node244078540>
+      owl:sameAs <http://dbpedia.org/resource/Zhangjiajie> .
+
+<http://linkedgeodata.org/triplify/node244080543>
+      owl:sameAs <http://dbpedia.org/resource/Hangzhou> .
+
+<http://linkedgeodata.org/triplify/node249310458>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Baft@en" , "بافت" , "بافت@fa" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user13908> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/property/is_in>
+              "Kerman,Iran" ;
+      <http://linkedgeodata.org/property/is_in%3Acontinent>
+              "Asia" ;
+      <http://linkedgeodata.org/property/is_in%3Acountry>
+              "Iran" ;
+      <http://linkedgeodata.org/property/is_in%3Astate>
+              "Kerman" ;
+      owl:sameAs <http://dbpedia.org/resource/Baft> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(56.6057 29.234)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "29.2340169^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "56.6056569^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node27170104>
+      owl:sameAs <http://dbpedia.org/resource/Angeles,_Philippines> .
+
+<http://linkedgeodata.org/triplify/node245712627>
+      owl:sameAs <http://dbpedia.org/resource/Bhopal> .
+
+<http://linkedgeodata.org/triplify/node32678220>
+      owl:sameAs <http://dbpedia.org/resource/Zabol> .
+
+<http://linkedgeodata.org/triplify/node244080943>
+      owl:sameAs <http://dbpedia.org/resource/Tongliao> .
+
+<http://linkedgeodata.org/triplify/node244082760>
+      owl:sameAs <http://dbpedia.org/resource/Yulin,_Guangxi> .
+
+<http://linkedgeodata.org/triplify/node244081111>
+      owl:sameAs <http://dbpedia.org/resource/Liaoyang> .
+
+<http://linkedgeodata.org/triplify/node151818703>
+      owl:sameAs <http://dbpedia.org/resource/Rio_Rancho,_New_Mexico> .
+
+<http://linkedgeodata.org/triplify/node244081077>
+      owl:sameAs <http://dbpedia.org/resource/Longhai_City> .
+
+<http://linkedgeodata.org/triplify/node244080523>
+      owl:sameAs <http://dbpedia.org/resource/Haimen> .
+
+<http://linkedgeodata.org/triplify/node244078319>
+      owl:sameAs <http://dbpedia.org/resource/Dangyang> .
+
+<http://linkedgeodata.org/triplify/node244080882>
+      owl:sameAs <http://dbpedia.org/resource/Jiaxing> .
+
+<http://linkedgeodata.org/triplify/node17898859>
+      owl:sameAs <http://dbpedia.org/resource/Edinburgh> .
+
+<http://linkedgeodata.org/triplify/node158806819>
+      owl:sameAs <http://dbpedia.org/resource/Brockton,_Massachusetts> .
+
+<http://linkedgeodata.org/triplify/node151422010>
+      owl:sameAs <http://dbpedia.org/resource/Overland_Park,_Kansas> .
+
+<http://linkedgeodata.org/triplify/node415166392>
+      owl:sameAs <http://dbpedia.org/resource/Cobija> .
+
+<http://linkedgeodata.org/triplify/node24487450>
+      owl:sameAs <http://dbpedia.org/resource/Kiel> .
+
+<http://linkedgeodata.org/triplify/node244081003>
+      owl:sameAs <http://dbpedia.org/resource/Laohekou> .
+
+<http://linkedgeodata.org/triplify/node818944615>
+      owl:sameAs <http://dbpedia.org/resource/Kazerun> .
+
+<http://linkedgeodata.org/triplify/node150939691>
+      owl:sameAs <http://dbpedia.org/resource/Corona,_California> .
+
+<http://linkedgeodata.org/triplify/node150921144>
+      owl:sameAs <http://dbpedia.org/resource/Anchorage,_Alaska> .
+
+<http://linkedgeodata.org/triplify/node358015396>
+      owl:sameAs <http://dbpedia.org/resource/Anseong> .
+
+<http://linkedgeodata.org/triplify/node342117043>
+      owl:sameAs <http://dbpedia.org/resource/Chandigarh> .
+
+<http://linkedgeodata.org/triplify/node244081189>
+      owl:sameAs <http://dbpedia.org/resource/Meizhou> .
+
+<http://linkedgeodata.org/triplify/node150940343>
+      owl:sameAs <http://dbpedia.org/resource/Moreno_Valley,_California> .
+
+<http://linkedgeodata.org/triplify/node151340686>
+      owl:sameAs <http://dbpedia.org/resource/Springfield,_Missouri> .
+
+<http://linkedgeodata.org/triplify/node158867610>
+      owl:sameAs <http://dbpedia.org/resource/Portland,_Maine> .
+
+<http://linkedgeodata.org/triplify/node60571493>
+      owl:sameAs <http://dbpedia.org/resource/Belgrade> .
+
+<http://linkedgeodata.org/triplify/node244081731>
+      owl:sameAs <http://dbpedia.org/resource/Rizhao> .
+
+<http://linkedgeodata.org/triplify/node1617730500>
+      owl:sameAs <http://dbpedia.org/resource/Resistencia,_Chaco> .
+
+<http://linkedgeodata.org/triplify/node116056557>
+      owl:sameAs <http://dbpedia.org/resource/Luang_Prabang> .
+
+<http://linkedgeodata.org/triplify/node244080867>
+      owl:sameAs <http://dbpedia.org/resource/Jincheng> .
+
+<http://linkedgeodata.org/triplify/node244075861>
+      owl:sameAs <http://dbpedia.org/resource/Anlu> .
+
+<http://linkedgeodata.org/triplify/node240090728>
+      owl:sameAs <http://dbpedia.org/resource/Wuppertal> .
+
+<http://linkedgeodata.org/triplify/node306151463>
+      owl:sameAs <http://dbpedia.org/resource/San_Miguel,_El_Salvador> .
+
+<http://linkedgeodata.org/triplify/node820252479>
+      a       <http://linkedgeodata.org/ontology/Node> , <http://linkedgeodata.org/ontology/City> , <http://linkedgeodata.org/ontology/Place> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "ابهر@fa" , "ابهر" , "Abhar@en" ;
+      <http://linkedgeodata.org/ontology/contributor>
+              <http://linkedgeodata.org/triplify/user13908> ;
+      <http://linkedgeodata.org/ontology/directType>
+              <http://linkedgeodata.org/ontology/City> ;
+      <http://linkedgeodata.org/property/is_in>
+              "Zanjan Province, Iran" ;
+      <http://linkedgeodata.org/property/is_in%3Acontinent>
+              "Asia" ;
+      <http://linkedgeodata.org/property/is_in%3Acountry>
+              "Iran" ;
+      <http://linkedgeodata.org/property/is_in%3Astate>
+              "Zanjan" ;
+      owl:sameAs <http://dbpedia.org/resource/Abhar> ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+              "POINT(49.22 36.1437)^^http://www.openlinksw.com/schemas/virtrdf#Geometry" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+              "36.1436784^^http://www.w3.org/2001/XMLSchema#double" ;
+      <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+              "49.219963^^http://www.w3.org/2001/XMLSchema#double" .
+
+<http://linkedgeodata.org/triplify/node198451606>
+      owl:sameAs <http://dbpedia.org/resource/General_Roca,_R%C3%ADo_Negro> .
+
+<http://linkedgeodata.org/triplify/node244081004>
+      owl:sameAs <http://dbpedia.org/resource/Lanzhou> .
+
+<http://linkedgeodata.org/triplify/node153693025>
+      owl:sameAs <http://dbpedia.org/resource/Crestview,_Florida> .
+
+<http://linkedgeodata.org/triplify/node321555240>
+      owl:sameAs <http://dbpedia.org/resource/San_Carlos,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node1875557678>
+      owl:sameAs <http://dbpedia.org/resource/Mackay,_Queensland> .
+
+<http://linkedgeodata.org/triplify/node150919100>
+      owl:sameAs <http://dbpedia.org/resource/Bethel,_Alaska> .
+
+<http://linkedgeodata.org/triplify/node315390382>
+      owl:sameAs <http://dbpedia.org/resource/Naypyidaw> .
+
+<http://linkedgeodata.org/triplify/node82799640>
+      owl:sameAs <http://dbpedia.org/resource/Al_Ain> .
+
+<http://linkedgeodata.org/triplify/node244082487>
+      owl:sameAs <http://dbpedia.org/resource/Yan'an> .
+
+<http://linkedgeodata.org/triplify/node150977729>
+      owl:sameAs <http://dbpedia.org/resource/Santa_Maria,_California> .
+
+<http://linkedgeodata.org/triplify/node244080868>
+      owl:sameAs <http://dbpedia.org/resource/Jingdezhen> .
+
+<http://linkedgeodata.org/triplify/node153638526>
+      owl:sameAs <http://dbpedia.org/resource/Mobile,_Alabama> .
+
+<http://linkedgeodata.org/triplify/node244081381>
+      owl:sameAs <http://dbpedia.org/resource/Nanjing> .
+
+<http://linkedgeodata.org/triplify/node244082101>
+      owl:sameAs <http://dbpedia.org/resource/Gaobeidian> .
+
+<http://linkedgeodata.org/triplify/node1673414230>
+      owl:sameAs <http://dbpedia.org/resource/Higashimurayama,_Tokyo> .
+
+<http://linkedgeodata.org/triplify/node1324391734>
+      owl:sameAs <http://dbpedia.org/resource/Florida,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node38451000>
+      owl:sameAs <http://dbpedia.org/resource/Nashville,_Tennessee> .
+
+<http://linkedgeodata.org/triplify/node17193023>
+      owl:sameAs <http://dbpedia.org/resource/Erlangen> .
+
+<http://linkedgeodata.org/triplify/node19188467>
+      owl:sameAs <http://dbpedia.org/resource/Thunder_Bay> .
+
+<http://linkedgeodata.org/triplify/node25342557>
+      owl:sameAs <http://dbpedia.org/resource/City_of_St_Albans> .
+
+<http://linkedgeodata.org/triplify/node29090735>
+      owl:sameAs <http://dbpedia.org/resource/Jerusalem> .
+
+<http://linkedgeodata.org/triplify/node1889910974>
+      owl:sameAs <http://dbpedia.org/resource/Kuala_Lumpur> .
+
+<http://linkedgeodata.org/triplify/node244083665>
+      owl:sameAs <http://dbpedia.org/resource/Hezuo> .
+
+<http://linkedgeodata.org/triplify/node153458138>
+      owl:sameAs <http://dbpedia.org/resource/Chattanooga,_Tennessee> .
+
+<http://linkedgeodata.org/triplify/node445968232>
+      owl:sameAs <http://dbpedia.org/resource/Pando,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node2003168609>
+      owl:sameAs <http://dbpedia.org/resource/Gongqingcheng> .
+
+<http://linkedgeodata.org/triplify/node198529227>
+      owl:sameAs <http://dbpedia.org/resource/San_Fernando,_La_Union> .
+
+<http://linkedgeodata.org/triplify/node244081343>
+      owl:sameAs <http://dbpedia.org/resource/Ningbo> .
+
+<http://linkedgeodata.org/triplify/node1912365631>
+      owl:sameAs <http://dbpedia.org/resource/Seoul> .
+
+<http://linkedgeodata.org/triplify/node302611004>
+      owl:sameAs <http://dbpedia.org/resource/Maldonado,_Uruguay> .
+
+<http://linkedgeodata.org/triplify/node840984825>
+      owl:sameAs <http://dbpedia.org/resource/Menifee,_California> .
+
+<http://linkedgeodata.org/triplify/node158550889>
+      owl:sameAs <http://dbpedia.org/resource/Cumberland,_Maryland> .
+
+<http://linkedgeodata.org/triplify/node198418541>
+      owl:sameAs <http://dbpedia.org/resource/Salta> .
+
+<http://linkedgeodata.org/triplify/node244076990>
+      owl:sameAs <http://dbpedia.org/resource/Jinshi,_Hunan> , <http://dbpedia.org/resource/Changde> .
+
+<http://linkedgeodata.org/triplify/node240126753>
+      owl:sameAs <http://dbpedia.org/resource/D%C3%BCsseldorf> .
+
+<http://linkedgeodata.org/triplify/node358015281>
+      owl:sameAs <http://dbpedia.org/resource/Jinju> .
+
+<http://linkedgeodata.org/triplify/node198445828>
+      owl:sameAs <http://dbpedia.org/resource/Concordia,_Entre_R%C3%ADos> .
+
+<http://linkedgeodata.org/triplify/node81013838>
+      owl:sameAs <http://dbpedia.org/resource/Mountain_View,_California> .
+
+<http://linkedgeodata.org/triplify/node1785584728>
+      owl:sameAs <http://dbpedia.org/resource/Glendale,_California> .
+
+<http://linkedgeodata.org/triplify/node274323115>
+      owl:sameAs <http://dbpedia.org/resource/Gjirokast%C3%ABr> .
+
+<http://linkedgeodata.org/triplify/node151493609>
+      owl:sameAs <http://dbpedia.org/resource/Irving,_Texas> .
+
+<http://linkedgeodata.org/triplify/node198525392>
+      owl:sameAs <http://dbpedia.org/resource/Samal,_Davao_del_Norte> .
+
+<http://linkedgeodata.org/triplify/node245517446>
+      owl:sameAs <http://dbpedia.org/resource/L%C3%A9vis,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node244079402>
+      owl:sameAs <http://dbpedia.org/resource/Foshan> .
+
+<http://linkedgeodata.org/triplify/node1933473774>
+      owl:sameAs <http://dbpedia.org/resource/Heihe> .
+
+<http://linkedgeodata.org/triplify/node151739449>
+      owl:sameAs <http://dbpedia.org/resource/Lake_Charles,_Louisiana> .
+
+<http://linkedgeodata.org/triplify/node198492704>
+      owl:sameAs <http://dbpedia.org/resource/Bislig> .
+
+<http://linkedgeodata.org/triplify/node198493666>
+      owl:sameAs <http://dbpedia.org/resource/Ligao> .
+
+<http://linkedgeodata.org/triplify/node153982815>
+      owl:sameAs <http://dbpedia.org/resource/Columbus,_Ohio> .
+
+<http://linkedgeodata.org/triplify/node244077309>
+      owl:sameAs <http://dbpedia.org/resource/Chaoyang,_Liaoning> .
+
+<http://linkedgeodata.org/triplify/node1405754324>
+      owl:sameAs <http://dbpedia.org/resource/Bikaner> .
+
+<http://linkedgeodata.org/triplify/node244082508>
+      owl:sameAs <http://dbpedia.org/resource/Zhuozhou> .
+
+<http://linkedgeodata.org/triplify/node244082041>
+      owl:sameAs <http://dbpedia.org/resource/Tongling> .
+
+<http://linkedgeodata.org/triplify/node244081029>
+      owl:sameAs <http://dbpedia.org/resource/Laibin> .
+
+<http://linkedgeodata.org/triplify/node10671639>
+      owl:sameAs <http://dbpedia.org/resource/Lincoln,_England> .
+
+<http://linkedgeodata.org/triplify/node1837293388>
+      owl:sameAs <http://dbpedia.org/resource/Buena_Park,_California> .
+
+<http://linkedgeodata.org/triplify/node293929556>
+      owl:sameAs <http://dbpedia.org/resource/Erdenet> .
+
+<http://linkedgeodata.org/triplify/node369502341>
+      owl:sameAs <http://dbpedia.org/resource/Kampong_Chhnang_(city)> .
+
+<http://linkedgeodata.org/triplify/node244080466>
+      owl:sameAs <http://dbpedia.org/resource/Hechi> .
+
+<http://linkedgeodata.org/triplify/node244075820>
+      owl:sameAs <http://dbpedia.org/resource/Ankang> .
+
+<http://linkedgeodata.org/triplify/node151585166>
+      owl:sameAs <http://dbpedia.org/resource/Lebanon,_Missouri> .
+
+<http://linkedgeodata.org/triplify/node665326357>
+      owl:sameAs <http://dbpedia.org/resource/Taishan> .
+
+<http://linkedgeodata.org/triplify/node734866113>
+      owl:sameAs <http://dbpedia.org/resource/Fukushima,_Fukushima> .
+
+<http://linkedgeodata.org/triplify/node1837335207>
+      owl:sameAs <http://dbpedia.org/resource/Covina,_California> .
+
+<http://linkedgeodata.org/triplify/node244080566>
+      owl:sameAs <http://dbpedia.org/resource/Huainan> .
+
+<http://linkedgeodata.org/triplify/node244081341>
+      owl:sameAs <http://dbpedia.org/resource/Ningde> .
+
+<http://linkedgeodata.org/triplify/node151757071>
+      owl:sameAs <http://dbpedia.org/resource/Jefferson_City,_Missouri> .
+
+<http://linkedgeodata.org/triplify/node358015241>
+      owl:sameAs <http://dbpedia.org/resource/Pohang> .
+
+<http://linkedgeodata.org/triplify/node158556083>
+      owl:sameAs <http://dbpedia.org/resource/Chesapeake,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node244081930>
+      owl:sameAs <http://dbpedia.org/resource/Weifang> .
+
+<http://linkedgeodata.org/triplify/node245715359>
+      owl:sameAs <http://dbpedia.org/resource/Asansol> .
+
+<http://linkedgeodata.org/triplify/node244080677>
+      owl:sameAs <http://dbpedia.org/resource/Huizhou> .
+
+<http://linkedgeodata.org/triplify/node244080476>
+      owl:sameAs <http://dbpedia.org/resource/Hegang> .
+
+<http://linkedgeodata.org/triplify/node244081848>
+      owl:sameAs <http://dbpedia.org/resource/Shuangyashan> .
+
+<http://linkedgeodata.org/triplify/node26399215>
+      owl:sameAs <http://dbpedia.org/resource/Urmia> .
+
+<http://linkedgeodata.org/triplify/node30915641>
+      owl:sameAs <http://dbpedia.org/resource/Quebec_City> , <http://dbpedia.org/resource/L%C3%A9vis,_Quebec> .
+
+<http://linkedgeodata.org/triplify/node150918612>
+      owl:sameAs <http://dbpedia.org/resource/Nome,_Alaska> .
+
+<http://linkedgeodata.org/triplify/node244081272>
+      owl:sameAs <http://dbpedia.org/resource/Liupanshui> .
+
+<http://linkedgeodata.org/triplify/node151895198>
+      owl:sameAs <http://dbpedia.org/resource/Florissant,_Missouri> .
+
+<http://linkedgeodata.org/triplify/node244080750>
+      owl:sameAs <http://dbpedia.org/resource/Jiangyou> .
+
+<http://linkedgeodata.org/triplify/node153875174>
+      owl:sameAs <http://dbpedia.org/resource/Largo,_Florida> .
+
+<http://linkedgeodata.org/triplify/node244080443>
+      owl:sameAs <http://dbpedia.org/resource/Guangzhou> .
+
+<http://linkedgeodata.org/triplify/node153806548>
+      owl:sameAs <http://dbpedia.org/resource/Montgomery,_Alabama> .
+
+<http://linkedgeodata.org/triplify/node256629919>
+      owl:sameAs <http://dbpedia.org/resource/Hamhung> .
+
+<http://linkedgeodata.org/triplify/node244081071>
+      owl:sameAs <http://dbpedia.org/resource/Lishui> .
+
+<http://linkedgeodata.org/triplify/node485248691>
+      owl:sameAs <http://dbpedia.org/resource/London,_Ontario> .
+
+<http://linkedgeodata.org/triplify/node153633254>
+      owl:sameAs <http://dbpedia.org/resource/Biloxi,_Mississippi> .
+
+<http://linkedgeodata.org/triplify/node153744573>
+      owl:sameAs <http://dbpedia.org/resource/Fort_Wayne,_Indiana> .
+
+<http://linkedgeodata.org/triplify/node244081931>
+      owl:sameAs <http://dbpedia.org/resource/Weihai> .
+
+<http://linkedgeodata.org/triplify/node1815856037>
+      owl:sameAs <http://dbpedia.org/resource/Moquegua> .
+
+<http://linkedgeodata.org/triplify/node29405229>
+      owl:sameAs <http://dbpedia.org/resource/Cairns> .
+
+<http://linkedgeodata.org/triplify/node114123967>
+      owl:sameAs <http://dbpedia.org/resource/Phitsanulok> .
+
+<http://linkedgeodata.org/triplify/node158479306>
+      owl:sameAs <http://dbpedia.org/resource/Fredericksburg,_Virginia> .
+
+<http://linkedgeodata.org/triplify/node1601621650>
+      owl:sameAs <http://dbpedia.org/resource/Jiuquan> .
+
+<http://linkedgeodata.org/triplify/node2023401079>
+      owl:sameAs <http://dbpedia.org/resource/Barstow,_California> .
+
+<http://linkedgeodata.org/triplify/node154335770>
+      owl:sameAs <http://dbpedia.org/resource/Augusta,_Georgia> .
+
+<http://linkedgeodata.org/triplify/node472114145>
+      owl:sameAs <http://dbpedia.org/resource/Guatemala_City> .
+
+<http://linkedgeodata.org/triplify/node25141246>
+      owl:sameAs <http://dbpedia.org/resource/Topeka,_Kansas> .
+
+<http://linkedgeodata.org/triplify/node158822651>
+      owl:sameAs <http://dbpedia.org/resource/New_Brunswick,_New_Jersey> .
+
+<http://linkedgeodata.org/triplify/node244082067>
+      owl:sameAs <http://dbpedia.org/resource/Diaobingshan> .
+
+<http://linkedgeodata.org/triplify/node2124695673>
+      owl:sameAs <http://dbpedia.org/resource/Baoding> .
+
+<http://linkedgeodata.org/triplify/node244082839>
+      owl:sameAs <http://dbpedia.org/resource/Zaozhuang> .
+
+<http://linkedgeodata.org/triplify/node958923586>
+      owl:sameAs <http://dbpedia.org/resource/San_Fernando,_Pampanga> .
+
+<http://linkedgeodata.org/triplify/node153543923>
+      owl:sameAs <http://dbpedia.org/resource/Gary,_Indiana> .
+
+<http://linkedgeodata.org/triplify/node151559537>
+      owl:sameAs <http://dbpedia.org/resource/Beaumont,_Texas> .
+
+<http://linkedgeodata.org/triplify/node244081932>
+      owl:sameAs <http://dbpedia.org/resource/Weinan> .
+
+<http://linkedgeodata.org/triplify/node251608378>
+      owl:sameAs <http://dbpedia.org/resource/Calabar> .
+
+<http://linkedgeodata.org/triplify/node151965971>
+      owl:sameAs <http://dbpedia.org/resource/Laredo,_Texas> .
+
+<http://linkedgeodata.org/triplify/node32013127>
+      owl:sameAs <http://dbpedia.org/resource/Pyongyang> .
+
+<http://linkedgeodata.org/triplify/node256991275>
+      owl:sameAs <http://dbpedia.org/resource/Battambang> .
+
+<http://linkedgeodata.org/triplify/node244076127>
+      owl:sameAs <http://dbpedia.org/resource/Baicheng> .
+
+<http://linkedgeodata.org/triplify/node244082469>
+      owl:sameAs <http://dbpedia.org/resource/Xuancheng> .
+
+<http://linkedgeodata.org/triplify/node32539072>
+      owl:sameAs <http://dbpedia.org/resource/Nampho> .
+
+<http://linkedgeodata.org/triplify/node358015308>
+      owl:sameAs <http://dbpedia.org/resource/Yeosu> .
+
+<http://linkedgeodata.org/triplify/node150947906>
+      owl:sameAs <http://dbpedia.org/resource/San_Luis_Obispo,_California> .
+
+<http://linkedgeodata.org/triplify/node330756068>
+      owl:sameAs <http://dbpedia.org/resource/Concepci%C3%B3n,_Chile> .
+
+<http://linkedgeodata.org/triplify/node277023297>
+      owl:sameAs <http://dbpedia.org/resource/Oldenburg> .
+
+<http://linkedgeodata.org/triplify/node1501909943>
+      owl:sameAs <http://dbpedia.org/resource/Valletta> .
+
+<http://linkedgeodata.org/triplify/node150946956>
+      owl:sameAs <http://dbpedia.org/resource/Oceanside,_California> .
+
+<http://linkedgeodata.org/triplify/node154158458>
+      owl:sameAs <http://dbpedia.org/resource/Miami_Beach,_Florida> , <http://dbpedia.org/resource/Miami> , <http://dbpedia.org/resource/Miami_Springs,_Florida> .
+
+<http://linkedgeodata.org/triplify/node244082066>
+      owl:sameAs <http://dbpedia.org/resource/Tieling> .
+
+<http://linkedgeodata.org/triplify/node29941752>
+      owl:sameAs <http://dbpedia.org/resource/Madison,_Wisconsin> .
+
+<http://linkedgeodata.org/triplify/node244080676>
+      owl:sameAs <http://dbpedia.org/resource/Huangshan_City> .
+
+<http://linkedgeodata.org/triplify/node271613766>
+      owl:sameAs <http://dbpedia.org/resource/Cairo> .
+
+<http://linkedgeodata.org/triplify/node150971818>
+      owl:sameAs <http://dbpedia.org/resource/Post_Falls,_Idaho> .
+
+<http://linkedgeodata.org/triplify/node244083482>
+      owl:sameAs <http://dbpedia.org/resource/Ziyang> .
+
+<http://linkedgeodata.org/triplify/node244082131>
+      owl:sameAs <http://dbpedia.org/resource/Xianyang> .
+
+<http://linkedgeodata.org/triplify/node344623598>
+      owl:sameAs <http://dbpedia.org/resource/Jiroft> .
+
+<http://linkedgeodata.org/triplify/node154399353>
+      owl:sameAs <http://dbpedia.org/resource/Venice,_Florida> .
+
+<http://linkedgeodata.org/triplify/node153901280>
+      owl:sameAs <http://dbpedia.org/resource/Johnson_City,_Tennessee> .
+
+<http://linkedgeodata.org/triplify/node151618934>
+      owl:sameAs <http://dbpedia.org/resource/Jackson,_Mississippi> .
+
+<http://linkedgeodata.org/triplify/node26850966>
+      owl:sameAs <http://dbpedia.org/resource/San_Gabriel,_California> .
+
+<http://linkedgeodata.org/triplify/node344170750>
+      owl:sameAs <http://dbpedia.org/resource/Chennai> .
+
+<http://linkedgeodata.org/triplify/node244081732>
+      owl:sameAs <http://dbpedia.org/resource/Renqiu> .
+
+<http://linkedgeodata.org/triplify/node244080783>
+      owl:sameAs <http://dbpedia.org/resource/Ordos_City> .
+
+<http://linkedgeodata.org/triplify/node244082389>
+      owl:sameAs <http://dbpedia.org/resource/Pulandian> .
+
+<http://linkedgeodata.org/triplify/node335253618>
+      owl:sameAs <http://dbpedia.org/resource/Trincomalee> .
+
+<http://linkedgeodata.org/triplify/node153599677>
+      owl:sameAs <http://dbpedia.org/resource/Elgin,_Illinois> .
+
+<http://linkedgeodata.org/triplify/node141032858>
+      owl:sameAs <http://dbpedia.org/resource/Yuba_City,_California> .

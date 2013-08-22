@@ -1,17 +1,27 @@
 package org.aksw.geolift.modules.linking;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.modules.GeoLiftModule;
+import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
@@ -35,7 +45,8 @@ public class Linking implements GeoLiftModule
 	public Model process(Model model, Map<String, String> parameters) 
 	{
 		// TODO Auto-generated method stub
-		String datasetFilePath = parameters.get("datasetFilePath"); parametersList.add(datasetFilePath);
+		//Copy parameters from Map into List
+		String datasetSource = parameters.get("datasetSource"); parametersList.add(datasetSource);
 		String specFilePath = parameters.get("specFilePath"); parametersList.add(specFilePath);
 		String linksFilePath = parameters.get("linksFilePath"); parametersList.add(linksFilePath);
 		String linksPart=parameters.get("linksPart"); parametersList.add(linksPart);
@@ -73,6 +84,7 @@ public class Linking implements GeoLiftModule
 	private Model addLinksToModel(Model model,String linksFilePath, String linksPart)
 	{
 		Model linksModel = getLinks(linksFilePath);
+		System.out.println(linksFilePath);
 		linksModel=setPrefixes(linksModel);
 		StmtIterator iter = linksModel.listStatements();
 
@@ -81,7 +93,7 @@ public class Linking implements GeoLiftModule
 		{
 		    Statement stmt      = iter.nextStatement();  // get next statement
 		    Resource  subject   = stmt.getSubject();     // get the subject
-		    Property  predicate = model.createProperty(model.expandPrefix(stmt.getPredicate().toString())) ;// get the predicate
+		    Property  predicate = model.createProperty(stmt.getPredicate().toString()) ;//model.createProperty(model.expandPrefix(stmt.getPredicate().toString())) ;// get the predicate
 		    RDFNode   object    = stmt.getObject();      // get the object
 		    Resource resource;
 		    //model.expandPrefix(predicate.toString())
@@ -147,5 +159,26 @@ public class Linking implements GeoLiftModule
 		model.setNsPrefix( "gn", gn );
 		model.setNsPrefix( "owl", owl );
 		return model;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Map<String, String> parameters=new HashMap<String, String>();
+		
+		parameters.put("datasetSource",args[0]);// The path to the dataset file/endpoint to be loaded
+		parameters.put("specFilePath",args[1]);//The path to the spec.xml file contains the linking specifications
+		parameters.put("linksFilePath",args[2]);// The path to the file contains the resulted links
+		parameters.put("linksPart",args[3]);//The position of the Original URI to be enriched in the links generated (right side or left side), so the otherside is the link partner to be added to it
+		
+		Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
+		Linking l= new Linking();
+		model=l.process(model, parameters);
+		try {
+			org.aksw.geolift.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetUpdated.nt");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Finished");
 	}
 }

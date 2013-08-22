@@ -13,7 +13,8 @@ import com.hp.hpl.jena.util.FileManager;
  */
 public class Reader {
 
-	public static Model readModel(String fileNameOrUri){
+	public static Model readModel(String fileNameOrUri)
+	{
 		Model model=ModelFactory.createDefaultModel();
 		java.io.InputStream in = FileManager.get().open( fileNameOrUri );
 		if (in == null) {

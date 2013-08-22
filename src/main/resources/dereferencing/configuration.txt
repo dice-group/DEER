@@ -1,7 +1,7 @@
-src/main/resources/dereferencing/demo2.ttl
-http://www.w3.org/2003/01/geo/wgs84_pos#lat
-http://www.w3.org/2003/01/geo/wgs84_pos#long
-http://www.w3.org/2003/01/geo/wgs84_pos#geometry
-http://www.w3.org/2003/01/geo/wgs84_pos#lat_long
-http://www.w3.org/2003/01/geo/wgs84_pos#line
-http://www.w3.org/2003/01/geo/wgs84_pos#polygon
+datasetSource,src/main/resources/dereferencing/demo2.ttl
+predicate1,http://www.w3.org/2003/01/geo/wgs84_pos#lat
+predicate2,http://www.w3.org/2003/01/geo/wgs84_pos#long
+predicate3,http://www.w3.org/2003/01/geo/wgs84_pos#geometry
+predicate4,http://www.w3.org/2003/01/geo/wgs84_pos#lat_long
+predicate5,http://www.w3.org/2003/01/geo/wgs84_pos#line
+predicate6,http://www.w3.org/2003/01/geo/wgs84_pos#polygon
