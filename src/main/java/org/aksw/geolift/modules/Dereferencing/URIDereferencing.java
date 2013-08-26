@@ -62,7 +62,7 @@ public class URIDereferencing implements GeoLiftModule
 		    {
 		        Map.Entry pairs = (Map.Entry)it.next();
 		        predicates.add(pairs.getValue().toString());
-		        parametersList.add(pairs.getValue().toString());
+		        parametersList.add(pairs.getKey().toString());
 		        it.remove(); // avoids a ConcurrentModificationException
 		    }
 		    //extend the model with the required information of interesting predicates
@@ -74,7 +74,10 @@ public class URIDereferencing implements GeoLiftModule
 	{
 		// TODO Auto-generated method stub
 		if(parametersList.size() > 0)
+		{
+			parametersList.add("input");
 			return parametersList;
+		}
 		else
 			return null;
 	}

@@ -47,10 +47,10 @@ public class Linking implements GeoLiftModule
 	{
 		// TODO Auto-generated method stub
 		//Copy parameters from Map into List
-		String datasetSource = parameters.get("datasetSource"); parametersList.add(datasetSource);
-		String specFilePath = parameters.get("specFilePath"); parametersList.add(specFilePath);
-		String linksFilePath = parameters.get("linksFilePath"); parametersList.add(linksFilePath);
-		String linksPart=parameters.get("linksPart"); parametersList.add(linksPart);
+		String datasetSource = parameters.get("datasetSource"); parametersList.add("datasetSource");
+		String specFilePath = parameters.get("specFilePath"); parametersList.add("specFilePath");
+		String linksFilePath = parameters.get("linksFilePath"); parametersList.add("linksFilePath");
+		String linksPart=parameters.get("linksPart"); parametersList.add("linksPart");
 
 		model = setPrefixes(model);
 		linkingProcess(specFilePath);
@@ -62,7 +62,10 @@ public class Linking implements GeoLiftModule
 	{
 		// TODO Auto-generated method stub
 		if(parametersList.size()>0)
+		{
+			parametersList.add("input");
 			return parametersList;
+		}
 		else
 			return null;
 	}
