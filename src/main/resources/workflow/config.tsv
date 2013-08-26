@@ -1,0 +1,6 @@
+1 dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat
+2 nlp useFoxLight true
+2 nlp askEndPoint false
+3 nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment
+3 nlp useFoxLight false
+4 nlp useFoxLight true

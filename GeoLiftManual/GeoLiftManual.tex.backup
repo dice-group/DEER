@@ -386,7 +386,6 @@ Table \ref{tbl:linkingPram} provides details about the \texttt{Linking} module's
 \toprule
 \textbf{Parameter Name} & \textbf{Default value} & \textbf{Description}\\
 \midrule
-\texttt{model}	& \texttt{null} 	& Original Model to be enriched with geographical information.\\
 \texttt{Specification file} 	& \texttt{N/A} 	& The path to specification file used for linking process, the original dataset to be enriched must be on the source dataset , e.g. \url {linkingModuleData/linking/spec.xml}. The parameter's entry in th Map structure has key 'specFilePath'.\\
 \texttt{Links file} 	& \texttt{N/A} 	& The path to links file resulted from the linking process. This file's path is the same as the one specified in LIME's specifications file as output file, e.g. \url {linkingModuleData/linking/links.nt}. The parameter's entry in th Map structure has key 'linksFilePath'.\\
 \texttt{Original URI position} 	& \texttt{N/A} 	& represents the original model's URI position as source/left or target/right in the linking specifications. Its value is either 'source' or 'target'. The parameter's entry in th Map structure has key 'linksPart'.\\ 
@@ -411,9 +410,9 @@ Listing \ref{lst:Linking} provides a sample code showing how to use the Linking 
 \begin{lstlisting}[label=lst:Linking, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{Linking} class.]
 public static void main(String[] args){
   Map<String, String> parameters=new HashMap<String, String>();
-  String linksPath="";
+  String linksPath = "";
   if(args.length > 0){
-    for(int i=0;i<args.length;i+=2){
+    for(int i=0 ; i<args.length ; i+=2){
       if(args[i].equals("-d"))
       parameters.put("datasetSource",args[i+1]);
       if(args[i].equals("-s")){
@@ -426,9 +425,9 @@ public static void main(String[] args){
     }
   }
   try{
-    Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
-    Linking l= new Linking();
-    model=l.process(model, parameters);
+    Model model = org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
+    Linking l = new Linking();
+    model = l.process(model, parameters);
     try{
       File file = new File(linksPath);
       file.delete();
@@ -454,9 +453,9 @@ The following example introduces its execution to enrich loaded dataset from \em
 \begin{itemize}
  \item \texttt{Data model} contains the dataset to be enriched 
  (This data model can be an output from previous module or can be loaded from file/URI directly before using the module). 
- \item \texttt{Parameters list} that will be used during the process. 
- The \texttt{getParameters()} method of the \texttt{NlpGeoEnricher} class returns a list of parameters,
+ \item \texttt{Parameters list} that will be used during the process. The \texttt{getParameters()} method of the \texttt{NlpGeoEnricher} class returns a list of parameters,
  which can be set by the user to provide custom control of the \emph{Named entity extraction} provided by the implemented \emph{FOX framework}.
+\end{itemize}
 
 \subsubsection{Output}
 \begin{itemize}
@@ -469,12 +468,13 @@ and as output it generates a \emph{Jena} model also.
 Table \ref{tbl:nlpPram} provides details about the \texttt{NlpGeoEnricher} module's parameters .
 
 \subsubsection{Sample code to run the module}
-A sample code showing how to call the \texttt{NlpGeoEnricher} class and give it its parameters is introduced in Listing \ref{lst:NlpGeoEnricher}.
+A sample code showing how to call the \texttt{NlpGeoEnricher} class and giving it its parameters is introduced in Listing \ref{lst:NlpGeoEnricher}.
 
 The Nlp module can be directly executed from command line using the provided \texttt{nlp.jar} file.
-The following example introduces its execution to enrich loaded dataset from \emph{dataset.ttl} with additional links to another dataset according to specifications in \texttt{spec.xml} file.
+The following example introduces its execution to enrich \emph{DBpedia Berlin} resource with additional Geo-spatial data through NLP using the FOX light version (-l true).
+The output will be written in the \texttt{enriched.ttl} file.
 
-{\flushleft\texttt{java -jar linking.jar -d dataset.ttl -s spec.xml -p target}}
+{\flushleft\texttt{java -jar nlp.jar -i http://dbpedia.org/resource/Berlin -o output.ttl -l true}}
 
 \begin{table*}[ht]
 \caption{NLP parameters description} \label{tbl:nlpPram}
@@ -482,10 +482,13 @@ The following example introduces its execution to enrich loaded dataset from \em
 \toprule
 \textbf{Parameter Name} & \textbf{Default value} & \textbf{Description}\\
 \midrule
+\texttt{input} 		& \texttt{N/A} 		& The input file/URI to be enriched\\
+\texttt{output} 	& \texttt{N/A} 		& The output file to write the enriched model to it\\
+
 \texttt{litralProperty}	& \texttt{Top Ranked} 	& Literal property used by FOX for NER, if not set the top ranked literal property is pecked by \texttt{LiteralPropertyRanker} module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
 \texttt{useFoxLight} 	& \texttt{false} 	& Use the light version of FOX, setting it generates faster execution time but less accurate results) \\
 \texttt{askEndPoint} 	& \texttt{false} 	& Ask the \emph{DBpedia} endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results)\\
-\texttt{foxType} 	& \texttt{TEXT} 		& FOX input type : \texttt{\{ text $\rvert$ url \}}\\
+\texttt{foxType} 	& \texttt{TEXT} 	& FOX input type : \texttt{\{ text $\rvert$ url \}}\\
 \texttt{foxTask} 	& \texttt{NER} 		& FOX task \texttt{:\{NER\}} for Named Entity Recognition\\
 \texttt{foxInput} 	& \texttt{""} 		& FOX actual input as text or an URL\\
 \texttt{foxOutput} 	& \texttt{TURTLE} 	& FOX output format: \texttt{\{ JSONLD $\rvert$ N3 $\rvert$ N-TRIPLE $\rvert$ RDF/\{ JSON $\rvert$ XML $\rvert$ XML-ABBREV\} $\rvert$ TURTLE \}}\\
@@ -495,18 +498,21 @@ The following example introduces its execution to enrich loaded dataset from \em
 \end{tabular}
 \end{table*}
 
-\newpage
+% \newpage
 
 \begin{lstlisting}[label=lst:NlpGeoEnricher, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{NlpGeoEnricher} class.]
+// Define geoEnricher object
 NlpGeoEnricher geoEnricher= new NlpGeoEnricher();
+// Define parameters Map
 Map<String, String> parameters = new HashMap<String, String>();
 // Set parameters
 parameters.put("useFoxLight", "true");
 parameters.put("askEndPoint", "false");
 // read input Model
 Model inputModel = org.aksw.geolift.io.Reader.readModel(inputFileURI);
+// Enrich the Model
 Model enrichedModel = geoEnricher.process(inputModel, parameters);
-// print the enriched output model
+// Use the enriched output model
 enrichedModel.write(System.out,"TTL");
 
 \end{lstlisting}
@@ -514,6 +520,10 @@ enrichedModel.write(System.out,"TTL");
 % \newpage 
 % \clearpage
 
+\section{Running \geolift From Command Line }
+The \geolift different modules can be directly executed from command line using the provided \texttt{geolift.jar} file.
+The following example introduces its execution to enrich \emph{ww} resource with additional Geo-spatial data through NLP using the FOX light version (-l true).
+The output will be written in the \texttt{enriched.ttl} file.
 
 \section{Conclusions}
 In this manual, we presented the \geolift component for enriching RDF datasets with geo-spatial data.

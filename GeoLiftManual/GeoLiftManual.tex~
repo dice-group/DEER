@@ -410,9 +410,9 @@ Listing \ref{lst:Linking} provides a sample code showing how to use the Linking 
 \begin{lstlisting}[label=lst:Linking, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{Linking} class.]
 public static void main(String[] args){
   Map<String, String> parameters=new HashMap<String, String>();
-  String linksPath="";
+  String linksPath = "";
   if(args.length > 0){
-    for(int i=0;i<args.length;i+=2){
+    for(int i=0 ; i<args.length ; i+=2){
       if(args[i].equals("-d"))
       parameters.put("datasetSource",args[i+1]);
       if(args[i].equals("-s")){
@@ -425,9 +425,9 @@ public static void main(String[] args){
     }
   }
   try{
-    Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
-    Linking l= new Linking();
-    model=l.process(model, parameters);
+    Model model = org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
+    Linking l = new Linking();
+    model = l.process(model, parameters);
     try{
       File file = new File(linksPath);
       file.delete();
@@ -520,7 +520,13 @@ enrichedModel.write(System.out,"TTL");
 % \newpage 
 % \clearpage
 
+\section{Running \geolift From Command Line }
+The \geolift different modules can be directly executed from command line using the provided \texttt{geolift.jar} file.
+The following example introduces the command line execution of \geolift to enrich \emph{example.ttl} with additional Geo-spatial data.
+the \geolift command line read the input model from the configuration from a tape separated file \emph{config.tsv}.
+The output will be written in the \texttt{output.ttl} file.
 
+{\flushleft\texttt{java -jar geolift.jar -i example.ttl -c config.tsv -o output.ttl}}
 \section{Conclusions}
 In this manual, we presented the \geolift component for enriching RDF datasets with geo-spatial data.
 In future work, we aim to implement a graphical user interface on top of \geolift to enable users to specify their workflows graphically.

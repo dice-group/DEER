@@ -22,4 +22,5 @@
 \contentsline {subsubsection}{\numberline {4.3.2}Output}{16}
 \contentsline {subsubsection}{\numberline {4.3.3}Process}{17}
 \contentsline {subsubsection}{\numberline {4.3.4}Sample code to run the module}{17}
-\contentsline {section}{\numberline {5}Conclusions}{17}
+\contentsline {section}{\numberline {5}Running \textsc {GeoLift}\xspace From Command Line }{17}
+\contentsline {section}{\numberline {6}Conclusions}{18}

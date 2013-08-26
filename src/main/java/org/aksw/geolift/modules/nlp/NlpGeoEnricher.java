@@ -49,7 +49,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	private Model model;
 
 	// parameters list
-	private Property 	litralProperty;
+	private Property 	LiteralProperty;
 	private boolean 	useFoxLight		= false;
 	private boolean 	askEndPoint 	= false;
 	private String 		foxType 		= "TEXT";
@@ -212,13 +212,13 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	public NlpGeoEnricher(Model model, Property litralProperty) {
 		super();
 		this.model = model;
-		this.litralProperty = litralProperty;
+		this.LiteralProperty = litralProperty;
 	}
 
 	public NlpGeoEnricher(String fileNameOrUri, String litralPropartyUri) {
 		super();
 		this.model = loadModel(fileNameOrUri);
-		this.litralProperty = ResourceFactory.createProperty(litralPropartyUri);
+		this.LiteralProperty = ResourceFactory.createProperty(litralPropartyUri);
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	public NlpGeoEnricher() {
 		super();
 		this.model = null;
-		this.litralProperty = null;
+		this.LiteralProperty = null;
 	}
 
 	/**
@@ -243,7 +243,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 * @return the litralProperty
 	 */
 	public Property getLitralProperty() {
-		return litralProperty;
+		return LiteralProperty;
 	}
 
 
@@ -256,10 +256,10 @@ public class NlpGeoEnricher implements GeoLiftModule{
 
 
 	/**
-	 * @param litralProperty the litralProperty to set
+	 * @param LiteralProperty the litralProperty to set
 	 */
 	public void setLitralProperty(Property p) {
-		this.litralProperty = p;
+		this.LiteralProperty = p;
 	}
 
 
@@ -516,7 +516,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	public Model nlpEnrichGeoTriples(){
 
 		Model resultModel = model;
-		StmtIterator stItr = model.listStatements(null, litralProperty, (RDFNode) null);
+		StmtIterator stItr = model.listStatements(null, LiteralProperty, (RDFNode) null);
 		System.out.println("--------------- Added triples through  NLP ---------------");
 		while (stItr.hasNext()) {
 			Statement st = stItr.nextStatement();
@@ -558,11 +558,11 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		}	
 
 		if( parameters.containsKey("litralProperty"))
-			litralProperty = ResourceFactory.createProperty(parameters.get("litralProperty"));
+			LiteralProperty = ResourceFactory.createProperty(parameters.get("litralProperty"));
 		else{
 			LiteralPropertyRanker lpr=new LiteralPropertyRanker(model)	;
-			litralProperty = lpr.getTopRankedLiteralProperty();
-			System.out.println("Top ranked Literal Property: " + litralProperty); 
+			LiteralProperty = lpr.getTopRankedLiteralProperty();
+			System.out.println("Top ranked Literal Property: " + LiteralProperty); 
 		}
 
 		if( parameters.containsKey("useFoxLight"))
@@ -639,7 +639,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 				parameters.put("askEndPoint",   args[i+1]);
 			}
 			if(args[i].equals("-p") || args[i].toLowerCase().equals("--litralProperty")){
-				parameters.put("litralProperty",   args[i+1]);}
+				parameters.put("LiteralProperty",   args[i+1]);}
 			if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")){
 				System.out.println(
 						"Basic parameters:\n" +

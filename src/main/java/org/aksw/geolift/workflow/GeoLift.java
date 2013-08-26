@@ -33,7 +33,7 @@ public class GeoLift {
 				"Config File Example:\n" +
 				"\t1 nlp useFoxLight true" + "\n"+
 				"\t1 nlp askEndPoint false" + "\n"+
-				"\t2 nlp litralProperty http://www.w3.org/2000/01/rdf-schema#comment" + "\n"+
+				"\t2 nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment" + "\n"+
 				"\t2 nlp useFoxLight false" + "\n"+
 				"\t3 nlp useFoxLight true");
 	}
