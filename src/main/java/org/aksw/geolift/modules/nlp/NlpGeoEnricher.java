@@ -60,7 +60,22 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	private boolean 	foxReturnHtml 	= false;
 	private String 		inputFile		= "";
 	private String 		outputFile		= "";
+	private Property 	addedGeoProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
 
+
+	/**
+	 * @return the relatedToProperty
+	 */
+	public Property getRelatedToProperty() {
+		return addedGeoProperty;
+	}
+
+	/**
+	 * @param relatedToProperty the relatedToProperty to set
+	 */
+	public void setRelatedToProperty(Property relatedToProperty) {
+		this.addedGeoProperty = relatedToProperty;
+	}
 
 	/**
 	 * @return the outputFile
@@ -251,7 +266,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	public Model getNamedEntityModel( String inputText){
 		String buffer = getNamedEntity(foxType, foxTask, foxOutput, inputText, useFoxLight, foxUseNif, foxReturnHtml);
 
-		System.out.println(buffer);
+//		System.out.println(buffer);
 
 		ByteArrayInputStream stream=null;
 		try {
@@ -399,11 +414,9 @@ public class NlpGeoEnricher implements GeoLiftModule{
 				//			System.out.println("OBJECT:"+object);
 				if(object.isResource()){
 					if(isPlace(object)){
-						Property relatedToProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
-						resultModel.add( (Resource) subject , relatedToProperty, object);
+						resultModel.add( (Resource) subject , addedGeoProperty, object);
 						//					TODO add more data ??
-						System.out.println("--------------- RELATED GEO FOUND ---------------\n<"
-								+subject.toString() + "> <" + relatedToProperty + "> <" + object + ">");
+						System.out.println("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
 					}	
 				}
 			}
@@ -413,11 +426,10 @@ public class NlpGeoEnricher implements GeoLiftModule{
 				RDFNode object = objectsIter.nextNode();
 				//			System.out.println("OBJECT:"+object);
 				if(object.isResource()){
-					Property relatedToProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
-					resultModel.add( (Resource) subject , relatedToProperty, object);
+					
+					resultModel.add( (Resource) subject , addedGeoProperty, object);
 					//					TODO add more data ??
-					System.out.println("--------------- RELATED GEO FOUND ---------------\n<"
-							+subject.toString() + "> <" + relatedToProperty + "> <" + object + ">");
+					System.out.println("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
 				}
 			}
 		}
@@ -465,12 +477,12 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		if(uri.toString().contains("http://ns.aksw.org/scms/"))
 			return false;
 		String queryString="ask {<" +uri.toString() + "> a <http://dbpedia.org/ontology/Place>}";
-		System.out.println("================================ queryString="+ queryString);
+		System.out.println("Asking DBpedia for: "+ queryString);
 		Query query = QueryFactory.create(queryString);
 		//		QueryExecution qexec = QueryExecutionFactory.sparqlService(DBpedia.endPoint, query);
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(DBpedia.endPoint, query);
 		result = qexec.execAsk();
-		System.out.println("ASK="+result);
+		System.out.println("Answer: "+result);
 		return result;
 	}
 
@@ -503,9 +515,9 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 */
 	public Model nlpEnrichGeoTriples(){
 
-		Model resultModel=ModelFactory.createDefaultModel();
+		Model resultModel = model;
 		StmtIterator stItr = model.listStatements(null, litralProperty, (RDFNode) null);
-
+		System.out.println("--------------- Added triples through  NLP ---------------");
 		while (stItr.hasNext()) {
 			Statement st = stItr.nextStatement();
 			RDFNode object = st.getObject();
@@ -517,6 +529,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 				Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
 				//				System.out.println("Named Entity Model");
 				//				namedEntityModel.write(System.out,"TTL");
+				
 				if(!namedEntityModel.isEmpty()){
 					resultModel= resultModel.union(getPlaces(namedEntityModel, subject));
 				}				
@@ -536,8 +549,9 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.modules.GeoLiftModule#process(com.hp.hpl.jena.rdf.model.Model, java.util.Map)
 	 */
-	public Model process(Model model, Map<String, String> parameters){
-
+	public Model process(Model inputModel, Map<String, String> parameters){
+		model = inputModel;
+		
 		if( parameters.containsKey("input")){
 			inputFile = parameters.get("input");
 			model = loadModel(inputFile);
@@ -662,4 +676,3 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		}
 	}
 }
-
