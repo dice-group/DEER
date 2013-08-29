@@ -293,7 +293,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
  Moreover, a \emph{Java} jar file is generated for each module, which can be executed directly from command line along with each module parameters.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Dereferencing Module%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Dereferencing module}
+\subsection{Dereferencing Module}
  The purpose of the dereferencing module is to extend the model's Geo-spatial information by set of information through specified predicates.
 
 \subsubsection{Input}
@@ -329,7 +329,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
  These URIs (dubbed as dereferenced resources) are more filtered to be the resources used in \emph{DBpedia}.
  The dereferenced resources are handled by a dereference operation in order to find the interested predicates list for them.
  Such predicates and their objects' values are fetched and added to the the original resource to extend its information.
-\subsubsection{Sample code to run the module}
+\subsubsection{Code Sample}
 Listing \ref{lst:URIDereference} provides a sample code showing how to use the \texttt{URIDereference} module:\\
 
 \begin{lstlisting}[label=lst:URIDereference, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{URIDereferencing} class.]
@@ -360,14 +360,9 @@ public static void main( String[] args ){
 
 \end{lstlisting}
 
-The dereferencing module can be also directly executed from command line using the provided \texttt{dereferencing.jar} file.
-The following example introduce calling it to enrich the \emph{Berlin DBpedia} resource with additional predicates located at \texttt{predicatesList.txt} file.
-
-{\flushleft\texttt{java -jar dereferencing.jar -d \url{http://dbpedia.org/page/Berlin} -p predicatesList.txt}}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Linking Module%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Linking module}
+\subsection{Linking Module}
 
 \subsubsection{Input}
 \begin{itemize}
@@ -403,7 +398,7 @@ This is done using LIMES link discovery framework by specifying the linking spec
 The links are generated in \texttt{accept.nt} file that is used after to combine such links with their original resources in the source dataset model as \texttt{owl:samAs} predicates objects. The result is a dataset model enriched with geographical information links. 
 Another forward step is to feed the Dereference module with the resulted enriched model from Linking module as input. 
 The previously generated links in the model in addition to other objects in the URIs form will be dereferenced adding more and detailed geographical information.
-\subsubsection{Sample code to run the module}
+\subsubsection{Code Sample}
 Listing \ref{lst:Linking} provides a sample code showing how to use the Linking module.
 \begingroup
     \fontsize{8pt}{10pt}\selectfont
@@ -441,14 +436,11 @@ public static void main(String[] args){
 }
 \end{lstlisting}
 \endgroup
-The linking module can be directly executed from command line using the provided \texttt{linking.jar} file.
-The following example introduces its execution to enrich loaded dataset from \emph{dataset.ttl} with additional links to another dataset according to specifications in \texttt{spec.xml} file.
 
-{\flushleft\texttt{java -jar linking.jar -d dataset.ttl -s spec.xml -p target}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NLP Module%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsection{NLP module}
+\subsection{NLP Module}
 \subsubsection{Input}
 \begin{itemize}
  \item \texttt{Data model} contains the dataset to be enriched 
@@ -467,14 +459,8 @@ The \texttt{process()} method of the \texttt{NlpGeoEnricher} class takes as inpu
 and as output it generates a \emph{Jena} model also.
 Table \ref{tbl:nlpPram} provides details about the \texttt{NlpGeoEnricher} module's parameters .
 
-\subsubsection{Sample code to run the module}
+\subsubsection{Code Sample}
 A sample code showing how to call the \texttt{NlpGeoEnricher} class and giving it its parameters is introduced in Listing \ref{lst:NlpGeoEnricher}.
-
-The Nlp module can be directly executed from command line using the provided \texttt{nlp.jar} file.
-The following example introduces its execution to enrich \emph{DBpedia Berlin} resource with additional Geo-spatial data through NLP using the FOX light version (-l true).
-The output will be written in the \texttt{enriched.ttl} file.
-
-{\flushleft\texttt{java -jar nlp.jar -i http://dbpedia.org/resource/Berlin -o output.ttl -l true}}
 
 \begin{table*}[ht]
 \caption{NLP parameters description} \label{tbl:nlpPram}
@@ -484,7 +470,6 @@ The output will be written in the \texttt{enriched.ttl} file.
 \midrule
 \texttt{input} 		& \texttt{N/A} 		& The input file/URI to be enriched\\
 \texttt{output} 	& \texttt{N/A} 		& The output file to write the enriched model to it\\
-
 \texttt{litralProperty}	& \texttt{Top Ranked} 	& Literal property used by FOX for NER, if not set the top ranked literal property is pecked by \texttt{LiteralPropertyRanker} module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
 \texttt{useFoxLight} 	& \texttt{false} 	& Use the light version of FOX, setting it generates faster execution time but less accurate results) \\
 \texttt{askEndPoint} 	& \texttt{false} 	& Ask the \emph{DBpedia} endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results)\\
@@ -498,7 +483,7 @@ The output will be written in the \texttt{enriched.ttl} file.
 \end{tabular}
 \end{table*}
 
-% \newpage
+\newpage
 
 \begin{lstlisting}[label=lst:NlpGeoEnricher, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{NlpGeoEnricher} class.]
 // Define geoEnricher object
@@ -520,13 +505,53 @@ enrichedModel.write(System.out,"TTL");
 % \newpage 
 % \clearpage
 
-\section{Running \geolift From Command Line }
-The \geolift different modules can be directly executed from command line using the provided \texttt{geolift.jar} file.
-The following example introduces the command line execution of \geolift to enrich \texttt{example.ttl} with additional Geo-spatial data.
-the \geolift command line read the input model from the configuration from a tape separated file \texttt{config.tsv}.
+\section{Running \geolift From Command-Line }
+
+The \geolift different modules can be directly executed from command-line using the provided \texttt{geolift.jar} file.
+Table \ref{tbl:geoLiftPram} explains the various parameters that can be used with the \geolift through command-line. 
+
+Command-line execution of \geolift enable user-defined workflow of different modules using configuration file.
+Through the configuration file user can give different parameters to different modules.
+Currently, simple tab-separated values file format is implemented as configuration file, 
+where values are set in form of \texttt{(executionModelIndex moduleName moduleParameterName moduleParameterVale)}.
+
+The \texttt{executionModelIndex} is just an index starts with one and repeats for all \texttt{moduleParameterName moduleParameterVale} pairs for the same \texttt{moduleName}.
+listing \ref{lst:geoliftConfig} provides a example of a configuration file to run four modules.
+Note that the third and the forth module have the same \texttt{moduleName}, but using the \texttt{executionModelIndex} the \geolift can differentiate between them.
+
+\newpage
+
+\begin{lstlisting}[label=lst:geoliftConfig, caption =\geolift configuration file example class.]
+1 nlp useFoxLight true
+1 nlp askEndPoint false
+2 dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat
+3 nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment
+3 nlp useFoxLight false
+4 nlp useFoxLight true
+\end{lstlisting}
+
+The following example introduces the command-line execution of \geolift to enrich data contained in input file \texttt{example.ttl} with additional Geo-spatial data.
+the \geolift command-line read the input configurations from the tab-separated file \texttt{config.tsv}.
 The output will be written in the \texttt{output.ttl} file.
 
 {\flushleft\texttt{java -jar geolift.jar -i example.ttl -c config.tsv -o output.ttl}}
+
+\begin{table*}[ht]
+\caption{\geolift parameters description} \label{tbl:geoLiftPram}
+\begin{tabular}{@{}  l  l p{10.5cm} l p{cm}@{}}
+\toprule
+\textbf{Parameter} 	& \textbf{name}	& \textbf{Description}\\
+\midrule
+\texttt{--input} 	&\texttt{-i}	& The input file/URI to be enriched\\
+\texttt{--output} 	&\texttt{-o} 	& The output file to write the enriched model to it\\
+\texttt{--config} 	&\texttt{-c} 	& The configuration file to read the workflow configurations from\\
+\texttt{--help}		&\texttt{-?} 	& provides some help about the \geolift command line \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
+
 \section{Conclusions}
 In this manual, we presented the \geolift component for enriching RDF datasets with geo-spatial data.
 In future work, we aim to implement a graphical user interface on top of \geolift to enable users to specify their workflows graphically.
