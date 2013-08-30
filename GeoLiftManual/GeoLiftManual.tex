@@ -333,29 +333,14 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
 Listing \ref{lst:URIDereference} provides a sample code showing how to use the \texttt{URIDereference} module:\\
 
 \begin{lstlisting}[label=lst:URIDereference, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{URIDereferencing} class.]
-public static void main( String[] args ){	
-  String datasetSource="";
-  List<String> predicatesLines=null;
-  if(args.length > 0){
-    for(int i=0;i<args.length;i+=2){
-      if(args[i].equals("-d") || args[i].equals("--data"))
-	datasetSource = args[i+1];
-	if(args[i].equals("-p") || args[i].equals("--predicate"))
-	  predicatesLines= getConfigurations(args[i+1]);
-	}
-    }
-    try{ 
+public static void main( String[] args ){
+      ..
       Model model=org.aksw.geolift.io.Reader.readModel(datasetSource);//First parameter: model is loaded with dataset from specified file/endpoint
-      //Collect list of targeted predicates into Map
-      Map<String, String> parameters= list2map(predicatesLines);
       //create Dereferencing object to start the process
       URIDereferencing u = new URIDereferencing();
       // run the dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
       Model resultedModel = u.process(model, parameters);
       resultedModel.write(System.out,"TTL");
-    } catch (Exception e) {
-      e.printStackTrace();
-      }
 }
 
 \end{lstlisting}
@@ -404,35 +389,20 @@ Listing \ref{lst:Linking} provides a sample code showing how to use the Linking 
     \fontsize{8pt}{10pt}\selectfont
 \begin{lstlisting}[label=lst:Linking, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{Linking} class.]
 public static void main(String[] args){
-  Map<String, String> parameters=new HashMap<String, String>();
-  String linksPath = "";
-  if(args.length > 0){
-    for(int i=0 ; i<args.length ; i+=2){
-      if(args[i].equals("-d"))
+      
+      Map<String, String> parameters=new HashMap<String, String>();
       parameters.put("datasetSource",args[i+1]);
-      if(args[i].equals("-s")){
-	parameters.put("specFilePath",args[i+1]);
-	linksPath = args[i+1].substring(0,args[i+1].lastIndexOf("/"))+"/accept.nt";
-	parameters.put("linksFilePath",linksPath);
-      }
-      if(args[i].equals("-p"))
-	parameters.put("linksPart",args[i+1]);
-    }
-  }
-  try{
-    Model model = org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
-    Linking l = new Linking();
-    model = l.process(model, parameters);
-    try{
-      File file = new File(linksPath);
-      file.delete();
-    }catch(Exception e){
-	e.printStackTrace();
-      }
-    model.write(System.out,"TTL");
-  } catch (Exception e) {
-      e.printStackTrace();
-    }
+      parameters.put("specFilePath",args[i+1]);
+      parameters.put("linksFilePath",linksPath);
+      parameters.put("linksPart",args[i+1]);
+
+      ..
+      
+      Model model = org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
+      Linking l = new Linking();
+      model = l.process(model, parameters);
+      model.write(System.out,"TTL");
+ 
 }
 \end{lstlisting}
 \endgroup
@@ -535,7 +505,8 @@ the \geolift command-line read the input configurations from the tab-separated f
 The output will be written in the \texttt{output.ttl} file.
 
 {\flushleft\texttt{java -jar geolift.jar -i example.ttl -c config.tsv -o output.ttl}}
-
+\newline
+\\Note: The file limes.dtd (which exists in the package jar folder) must be in the same folder of linking.jar/geolift.jar files.
 \begin{table*}[ht]
 \caption{\geolift parameters description} \label{tbl:geoLiftPram}
 \begin{tabular}{@{}  l  l p{10.5cm} l p{cm}@{}}

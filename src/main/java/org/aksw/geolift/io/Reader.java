@@ -21,7 +21,7 @@ public class Reader {
 			throw new IllegalArgumentException(
 					"File: " + fileNameOrUri + " not found");
 		}
-		if(fileNameOrUri.contains(".ttl")){
+		if(fileNameOrUri.contains(".ttl") || fileNameOrUri.contains(".n3")){
 			System.out.println("Opening Turtle file");
 			model.read(in, null, "TTL");
 		}else if(fileNameOrUri.contains(".rdf")){

@@ -57,16 +57,12 @@ public class URIDereferencing implements GeoLiftModule
 			setPrefixes();//list of predicates in interest
 			List<String> predicates= new ArrayList<String>();
 			//copy interesting predicates from map to list in order to pass it to method putAdditionalInfo()
-			Iterator it = parameters.entrySet().iterator();
-		    while (it.hasNext()) 
-		    {
-		        Map.Entry pairs = (Map.Entry)it.next();
-		        predicates.add(pairs.getValue().toString());
-		        parametersList.add(pairs.getKey().toString());
-		        it.remove(); // avoids a ConcurrentModificationException
-		    }
+			for (String predicateName : parameters.keySet()) {
+				parametersList.add(predicateName);
+			}
+			
 		    //extend the model with the required information of interesting predicates
-	   		URIDereferencing.putAdditionalInfo(predicates);
+	   		URIDereferencing.putAdditionalInfo(parameters);
 		}
 		return localModel;
 	}
@@ -90,7 +86,7 @@ public class URIDereferencing implements GeoLiftModule
 	 * An iteration is made over targeted predicates. For each predicate list of statements with the targeted predicate is 
 	 * retrieved and extracting its value in order to be added to hashmap<predicate,Value>
 	 */
-	private static HashMap<String, String> getURIInfo(String uri,List<String> predicates)
+	private static HashMap<String, String> getURIInfo(String uri,Map<String,String> predicates)
 	{
 		//to store each predicate and its value
 		HashMap<String, String> resourceFocusedInfo = new HashMap<String, String>();
@@ -104,7 +100,7 @@ public class URIDereferencing implements GeoLiftModule
 		   Model model = ModelFactory.createDefaultModel();
 		   InputStream in = conn.getInputStream();
 		   model.read(in, null);
-		   for(String predicate: predicates)
+		   for(String predicate: predicates.values())
 		   {
 			   for(Statement st : model.listStatements(model.getResource(uri),ResourceFactory.createProperty(predicate) , (RDFNode)null).toList())
 			   {
@@ -132,7 +128,7 @@ public class URIDereferencing implements GeoLiftModule
 	 * method to dereference the URI-typed object in hashmap and retrieve the targeted predicates values "if exist", 
 	 * it iterates over the hashmap and add them to the resources in the model.
 	 */
-	private static void putAdditionalInfo(List<String> predicates)
+	private static void putAdditionalInfo(Map<String,String> predicates)
 	{
 		//list will contain triples having URIs as their Objects
 		List<Triple> triplesURIsObjects=null;
@@ -145,8 +141,6 @@ public class URIDereferencing implements GeoLiftModule
 			//iterate over each triple to dereference each URI object and add its information to its resource subject
 			for (Triple triple : triplesURIsObjects) 
 			{
-				if(triple.Object.contains("dbpedia")) // This is to check for the dereferencing to the dbpedia URI-typed objects as dbpedia is biggest dataset
-				{
 					// for a URI object get the required information about it (e.g. Leipzig uri is dereferenced as rdf/xml and its information are extracted)
 					resourceInterestingInfoExtension= URIDereferencing.getURIInfo(triple.Object,predicates);
 					//create new triple with empty node as its subject where this subject will be an object of the targeted resource to be extended
@@ -160,7 +154,6 @@ public class URIDereferencing implements GeoLiftModule
 					//add the empty node as an object to the enriched subject
 					Resource resource= localModel.getResource(triple.subject);
 					resource.addProperty(ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature"), object);
-				}
 			}
 		}
 	}
@@ -197,7 +190,7 @@ public class URIDereferencing implements GeoLiftModule
 	{
 		List<Triple> objectsURIs = new ArrayList<Triple>(); 
 		//create a query to retrieve URIs objects
-		String queryString =  "SELECT ?s ?p ?o WHERE  { ?s ?p ?o . FILTER isURI(?o)}";
+		String queryString =  "SELECT * WHERE { ?s ?p ?o . FILTER (isURI(?o)) . FILTER (STRSTARTS(STR(?o), \"http://dbpedia.org/\"))}";
     	Query query = QueryFactory.create(queryString);
     	QueryExecution exec = QueryExecutionFactory.create(query, localModel);
     	ResultSet rs = exec.execSelect();
@@ -231,9 +224,9 @@ public class URIDereferencing implements GeoLiftModule
 		localModel.setNsPrefix( "gn", gn );
 	}
 	//This method get the Dereferencing parameters from the given file by the user
-	private static List<String> getConfigurations(String file)
+	private static Map<String,String> getConfigurations(String file)
 	    {	
-	    	List<String> configurationInfo = new ArrayList<String>(); 
+		Map<String,String> configurationInfo = new HashMap<String, String>();
 	    	BufferedReader br=null;
 			try {
 				br = new BufferedReader(new FileReader(file));
@@ -242,7 +235,8 @@ public class URIDereferencing implements GeoLiftModule
 
 	            while (line != null) 
 	            {
-	            	configurationInfo.add(line);
+	            	String[] predicateLine= line.split(",");
+	            	configurationInfo.put(predicateLine[0],predicateLine[1]);
 	                line = br.readLine();
 	            }
 	        }
@@ -276,7 +270,7 @@ public class URIDereferencing implements GeoLiftModule
 	public static void main( String[] args ) 
     {	
 		String datasetSource="";
-		List<String> predicatesLines=null;
+		Map<String,String> predicates=null;
 		if(args.length > 0)
 		{
 			
@@ -285,7 +279,7 @@ public class URIDereferencing implements GeoLiftModule
 				if(args[i].equals("-d") || args[i].equals("--data"))
 					datasetSource = args[i+1];
 				if(args[i].equals("-p") || args[i].equals("--predicate"))
-					predicatesLines= getConfigurations(args[i+1]);
+					predicates= getConfigurations(args[i+1]);
 			}
 		}
     	try 
@@ -293,13 +287,15 @@ public class URIDereferencing implements GeoLiftModule
     		System.out.println("Start..");
 	    	Model model=org.aksw.geolift.io.Reader.readModel(datasetSource);//First parameter: model is loaded with dataset from specified file/endpoint
 	    	//Collect list of targeted predicates into Map
-	    	Map<String, String> parameters= list2map(predicatesLines);
+	    	//Map<String, String> parameters= list2map(predicatesLines);
 	    	//create Dereferencing object to start the process
 	    	URIDereferencing u = new URIDereferencing();
 	    	// run the dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
-	    	Model resultedModel = u.process(model, parameters);
-			resultedModel.write(System.out,"TTL");
-		} catch (Exception e) {
+	    	Model resultedModel = u.process(model, predicates);
+/*			resultedModel.write(System.out,"TTL");*/
+	    	org.aksw.geolift.io.Writer.writeModel(resultedModel, "TTL", "/media/A0621C46621C2416/BerlinEnriched.ttl");
+	    	
+	    } catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println("Finished");
