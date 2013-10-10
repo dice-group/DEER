@@ -564,7 +564,8 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			LiteralProperty = lpr.getTopRankedLiteralProperty();
 			System.out.println("Top ranked Literal Property: " + LiteralProperty); 
 		}
-
+		if( parameters.containsKey("addedGeoProperty"))
+			addedGeoProperty = ResourceFactory.createProperty("addedGeoProperty");
 		if( parameters.containsKey("useFoxLight"))
 			useFoxLight = parameters.get("useFoxLight").toLowerCase().equals("true")? true : false;
 		if( parameters.containsKey("askEndPoint"))
@@ -613,6 +614,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		parameters.add("foxOutput");
 		parameters.add("foxUseNif");
 		parameters.add("foxReturnHtml");
+		parameters.add("addedGeoProperty");
 		return parameters;
 	}
 
