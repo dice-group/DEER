@@ -53,7 +53,7 @@ public class WorkflowHandler{
 	 * 			information through the usage of different module
 	 * @author sherif
 	 */
-	Model executeModule(String moduleName,Model inputModel, Map<String, String> modueParameters){
+	Model executeModule(String moduleName, Model inputModel, Map<String, String> modueParameters){
 		Model enrichedModel = ModelFactory.createDefaultModel();
 
 		if(moduleName.toLowerCase().equals("nlp")){
@@ -103,10 +103,7 @@ public class WorkflowHandler{
 					"\n("+ count++ + ") Runing module: " + moduleName.toUpperCase() + 
 					"\twith parameters: " + param);
 			
-			Model enrichedModule =  executeModule(moduleName, inputModel, param);
-			inputModel.removeAll();
-			inputModel = enrichedModule;
-
+			inputModel =  executeModule(moduleName, inputModel, param);
 		}
 	}
 

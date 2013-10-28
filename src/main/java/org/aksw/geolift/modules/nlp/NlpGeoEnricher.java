@@ -39,12 +39,15 @@ import java.net.URLEncoder;
 
 import org.aksw.geolift.modules.GeoLiftModule;
 //import org.junit.Test;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author sherif
  */
 public class NlpGeoEnricher implements GeoLiftModule{
+	
+	private static final Logger logger = Logger.getLogger(GeoLiftModule.class.getName());
 
 	private Model model;
 
@@ -266,8 +269,6 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	public Model getNamedEntityModel( String inputText){
 		String buffer = getNamedEntity(foxType, foxTask, foxOutput, inputText, useFoxLight, foxUseNif, foxReturnHtml);
 
-//		System.out.println(buffer);
-
 		ByteArrayInputStream stream=null;
 		try {
 			stream = new ByteArrayInputStream(buffer.getBytes("UTF-8"));
@@ -276,7 +277,6 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		}
 
 		Model NamedEntitymodel = ModelFactory.createDefaultModel();
-		//		System.out.println(buffer);
 		if(buffer.contains("<!--")){
 			return NamedEntitymodel;
 		}
@@ -384,7 +384,6 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		buffer= URLDecoder.decode(buffer);
 		buffer = buffer.substring(buffer.indexOf("@"), buffer.lastIndexOf("log")-4).toString();
 
-		//		System.out.println(buffer); System.exit(1);
 		return buffer;
 	}
 
@@ -411,12 +410,11 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		if(askEndPoint){
 			while (objectsIter.hasNext()) {
 				RDFNode object = objectsIter.nextNode();
-				//			System.out.println("OBJECT:"+object);
 				if(object.isResource()){
 					if(isPlace(object)){
 						resultModel.add( (Resource) subject , addedGeoProperty, object);
 						//					TODO add more data ??
-						System.out.println("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
+						logger.info("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
 					}	
 				}
 			}
@@ -424,12 +422,11 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		else{
 			while (objectsIter.hasNext()) {
 				RDFNode object = objectsIter.nextNode();
-				//			System.out.println("OBJECT:"+object);
 				if(object.isResource()){
 					
 					resultModel.add( (Resource) subject , addedGeoProperty, object);
 					//					TODO add more data ??
-					System.out.println("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
+					logger.info("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
 				}
 			}
 		}
@@ -449,19 +446,19 @@ public class NlpGeoEnricher implements GeoLiftModule{
 					"File: " + fileNameOrUri + " not found");
 		}
 		if(fileNameOrUri.contains(".ttl")){
-			System.out.println("Opening Turtle file ...");
+			logger.info("Opening Turtle file ...");
 			model.read(in, null, "TTL");
 		}else if(fileNameOrUri.contains(".rdf")){
-			System.out.println("Opening RDF/XML file ...");
+			logger.info("Opening RDF/XML file ...");
 			model.read(in, null);
 		}else if(fileNameOrUri.contains(".nt")){
-			System.out.println("Opening N-Triples file ...");
+			logger.info("Opening N-Triples file ...");
 			model.read(in, null, "N-TRIPLE");
 		}else{
-			System.out.println("Content negotiation to get RDF/XML from " + fileNameOrUri + " ...");
+			logger.info("Content negotiation to get RDF/XML from " + fileNameOrUri + " ...");
 			model.read(fileNameOrUri);
 		}
-		System.out.println("Loading "+ fileNameOrUri + " is done!!");
+		logger.info("Loading "+ fileNameOrUri + " is done!!");
 		return model;
 	}
 
@@ -477,12 +474,12 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		if(uri.toString().contains("http://ns.aksw.org/scms/"))
 			return false;
 		String queryString="ask {<" +uri.toString() + "> a <http://dbpedia.org/ontology/Place>}";
-		System.out.println("Asking DBpedia for: "+ queryString);
+		logger.info("Asking DBpedia for: "+ queryString);
 		Query query = QueryFactory.create(queryString);
 		//		QueryExecution qexec = QueryExecutionFactory.sparqlService(DBpedia.endPoint, query);
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(DBpedia.endPoint, query);
 		result = qexec.execAsk();
-		System.out.println("Answer: "+result);
+		logger.info("Answer: " + result);
 		return result;
 	}
 
@@ -517,24 +514,17 @@ public class NlpGeoEnricher implements GeoLiftModule{
 
 		Model resultModel = model;
 		StmtIterator stItr = model.listStatements(null, LiteralProperty, (RDFNode) null);
-		System.out.println("--------------- Added triples through  NLP ---------------");
+		logger.info("--------------- Added triples through  NLP ---------------");
 		while (stItr.hasNext()) {
 			Statement st = stItr.nextStatement();
 			RDFNode object = st.getObject();
 			RDFNode subject = st.getSubject();
-			//			System.out.println("Subject: " + subject);
-			//			System.out.println("Object:  " + object);
 			if(object.isLiteral()){
-				//				System.out.println("Object="+object);
 				Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
-				//				System.out.println("Named Entity Model");
-				//				namedEntityModel.write(System.out,"TTL");
 				
 				if(!namedEntityModel.isEmpty()){
 					resultModel= resultModel.union(getPlaces(namedEntityModel, subject));
 				}				
-				//				System.out.println("result Model");
-				//				resultModel.write(System.out,"TTL");
 			}
 		}
 		return resultModel;
@@ -562,7 +552,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		else{
 			LiteralPropertyRanker lpr=new LiteralPropertyRanker(model)	;
 			LiteralProperty = lpr.getTopRankedLiteralProperty();
-			System.out.println("Top ranked Literal Property: " + LiteralProperty); 
+			logger.info("Top ranked Literal Property: " + LiteralProperty); 
 		}
 		if( parameters.containsKey("addedGeoProperty"))
 			addedGeoProperty = ResourceFactory.createProperty("addedGeoProperty");
@@ -643,7 +633,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			if(args[i].equals("-p") || args[i].toLowerCase().equals("--litralProperty")){
 				parameters.put("LiteralProperty",   args[i+1]);}
 			if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")){
-				System.out.println(
+				logger.info(
 						"Basic parameters:\n" +
 						"\t-i --input: input file/URI" + "\n" +
 						"\t-o --output: output file/URI" + "\n" +
@@ -661,7 +651,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			}
 		} 
 		if(!parameters.containsKey("input")){
-			System.out.println("No input file/URI, Exit with error!!");
+			logger.error("No input file/URI, Exit with error!!");
 			System.exit(1);
 		}
 		//		parameters.put("useFoxLight", "true");
@@ -672,8 +662,8 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		Model enrichedModel = geoEnricher.process(null, parameters);
 
 		if(!parameters.containsKey("output")){
-			System.out.println("Enriched MODEL:");
-			System.out.println("---------------");
+			logger.info("Enriched MODEL:");
+			logger.info("---------------");
 			enrichedModel.write(System.out,"TTL");
 		}
 	}

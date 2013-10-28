@@ -18,6 +18,7 @@ import org.scilab.forge.jlatexmath.NewCommandMacro;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sparql.pfunction.library.container;
 import com.ibm.icu.util.StringTokenizer;
 
 /**
@@ -50,6 +51,8 @@ public class TSVConfigReader {
 		String parameterValue = "";
 
 		while ((line = reader.readLine()) != null) {  
+			if(line.length() == 0)
+				continue;
 			Map<String, String> param = new HashMap<String, String>();
 			StringTokenizer tokenizer = new StringTokenizer(line,separator);  
 			moduleId = tokenizer.nextToken();  

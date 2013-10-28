@@ -284,7 +284,7 @@ public class URIDereferencing implements GeoLiftModule
 		List<Triple> triplesURIsObjects=null;
 		//Get list of all statement containing URI objects
 		triplesURIsObjects = getObjectsAreURI();
-		System.out.println("Strting model enriching");
+		System.out.println("Starting model enriching");
 		if(triplesURIsObjects.size()>0)
 		{
 			//The resource of URI object will be to the subject of each statement with predicate gn:Feature
