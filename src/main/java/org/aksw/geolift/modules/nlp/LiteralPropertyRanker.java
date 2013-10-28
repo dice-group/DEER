@@ -8,6 +8,9 @@ package org.aksw.geolift.modules.nlp;
 import java.util.Collections;
 import java.util.TreeMap;
 import java.util.Map.Entry;
+
+import org.apache.log4j.Logger;
+
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -28,6 +31,7 @@ import com.hp.hpl.jena.util.FileManager;
  * size of each lateral property by the number of instances of such property
  */
 public class LiteralPropertyRanker {
+	private static final Logger logger = Logger.getLogger(LiteralPropertyRanker.class.getName());
 
 	Model model;
 	TreeMap<Float, Property> rank2LiteralProperties;
@@ -63,21 +67,20 @@ public class LiteralPropertyRanker {
 					"File/URI: " + fileNameOrUri + " not found");
 		}
 		if(fileNameOrUri.endsWith(".ttl")){
-			System.out.println("Opening Turtle file");
+			logger.info("Opening Turtle file");
 			model.read(in, null, "TTL");
 		}else if(fileNameOrUri.endsWith(".rdf")){
-			System.out.println("Opening RDFXML file");
+			logger.info("Opening RDFXML file");
 			model.read(in, null);
 		}else if(fileNameOrUri.endsWith(".nt")){
-			System.out.println("Opening N-Triples file");
+			logger.info("Opening N-Triples file");
 			model.read(in, null, "N-TRIPLE");
 		}else{
-			System.out.println("Content negotiation to get RDFXML from " + fileNameOrUri);
+			logger.info("Content negotiation to get RDFXML from " + fileNameOrUri);
 			model.read(fileNameOrUri);
 		}
 
-		System.out.println("loading "+ fileNameOrUri + " is done!!");
-		System.out.println();
+		logger.info("loading "+ fileNameOrUri + " is done!!");
 		return model;
 	}
 
@@ -187,15 +190,14 @@ public class LiteralPropertyRanker {
 
 
 	public static void main(String args[]){
-		LiteralPropertyRanker l=new LiteralPropertyRanker();
+		LiteralPropertyRanker l = new LiteralPropertyRanker();
 		l.loadModel(args[0]);
 		TreeMap<Float, Property> 	map = l.getRank2LiteralProperties();
 		int index=1;
 		for (Entry<Float, Property> entry : map.entrySet()) {
-			System.out.println(index++ + ". Rank = " + entry.getKey() + ", Property: " + entry.getValue() );
+			logger.info(index++ + ". Rank = " + entry.getKey() + ", Property: " + entry.getValue() );
 		}
-		System.out.println();
-		System.out.println("TOP PROPERTY: "+l.getTopRankedLiteralProperty());
+		logger.info("TOP PROPERTY: "+l.getTopRankedLiteralProperty());
 
 	}
 }

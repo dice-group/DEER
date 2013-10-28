@@ -1,0 +1,8 @@
+14:46:31,947 INFO  Reader: Content negotiation to get RDFXML from http://dbpedia.org/resource/Berlin
+14:46:32,975 INFO  Reader: Loading http://dbpedia.org/resource/Berlin is done in 1367ms.
+14:46:32,995 INFO  WorkflowHandler: ----------------------------------------------------------------------------------------------------------------
+14:46:32,995 INFO  WorkflowHandler: (1) Runing module: DEREFERENCING with parameters: {predicate1=http://www.w3.org/2003/01/geo/wgs84_pos#lat}
+14:46:38,464 INFO  WorkflowHandler: ----------------------------------------------------------------------------------------------------------------
+14:46:38,465 INFO  WorkflowHandler: (2) Runing module: NLP with parameters: {useFoxLight=true, askEndPoint=false}
+14:46:38,561 INFO  NlpGeoEnricher: Top ranked Literal Property: http://dbpedia.org/ontology/abstract
+14:46:38,561 INFO  NlpGeoEnricher: --------------- Added triples through  NLP ---------------

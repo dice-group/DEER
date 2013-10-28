@@ -25,8 +25,6 @@ import com.hp.hpl.jena.util.FileManager;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -654,10 +652,6 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			logger.error("No input file/URI, Exit with error!!");
 			System.exit(1);
 		}
-		//		parameters.put("useFoxLight", "true");
-		//		parameters.put("askEndPoint", "false");
-		//		parameters.put("inputFile",   args[0]);
-		//		parameters.put("outputFile",  args[1]);
 
 		Model enrichedModel = geoEnricher.process(null, parameters);
 
