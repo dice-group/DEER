@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.modules.GeoLiftModule;
+import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -48,7 +49,7 @@ public class URIDereferencing implements GeoLiftModule
 	List<String> parametersList= new ArrayList<String>();
 	//static Map<String,Map<String, String>> objectsDerefInfo= new HashMap<String, Map<String,String>>();
 	static Map<String,Resource> objectsDerefModelAdded= new HashMap<String, Resource>();
-	
+	private static final Logger logger = Logger.getLogger(URIDereferencing.class.getName());
 	/* (non-Javadoc)
 	 * This method starts processing to retrieve information from the interesting predicates
 	 */
@@ -254,7 +255,7 @@ public class URIDereferencing implements GeoLiftModule
 		//Get list of unique URI objects in the data source as http://dbpedia.org/resource/XXXX 
 		urisObjects= getObjectsAreURI2();
 		//Get information for each single distinct objectURI according to interesting predicates
-		System.out.println("Number of unique URI object to be extended: "+urisObjects.size());
+		logger.info("Number of unique URI object to find extension: "+urisObjects.size());
 		if(urisObjects.size()>0) 
 		{
 			//The object resource that will have each URI object extended data
@@ -263,7 +264,7 @@ public class URIDereferencing implements GeoLiftModule
 			//For each URI object a resource is created, filled with information,add the object with its data resource into map 
 			for (String uriObject : urisObjects)  
 			{
-				System.out.println("Predicate "+ count++ +" of "+ urisObjects.size()+":"+ uriObject);
+				logger.info("Predicate "+ count++ +" of "+ urisObjects.size()+":"+ uriObject);
 				// Create a resource with empty node
 				object=localModel.createResource();
 				//Retrieve all interesting <predicate,object> info. for such URI object
@@ -284,7 +285,7 @@ public class URIDereferencing implements GeoLiftModule
 		List<Triple> triplesURIsObjects=null;
 		//Get list of all statement containing URI objects
 		triplesURIsObjects = getObjectsAreURI();
-		System.out.println("Starting model enriching");
+		logger.info("Starting model enriching");
 		if(triplesURIsObjects.size()>0)
 		{
 			//The resource of URI object will be to the subject of each statement with predicate gn:Feature
@@ -294,7 +295,7 @@ public class URIDereferencing implements GeoLiftModule
 			{
 				//Check if this object's resource was added to the model before as a resource with empty node using gn:Feature,
 				//so attach it to this subject (if the subject has the same object with different predicates that will happen repeatedly)
-					if(objectsDerefModelAdded.containsKey(triple.Object)) 
+					/*if(objectsDerefModelAdded.containsKey(triple.Object)) 
 					{
 						//Get the object's resource
 						object=objectsDerefModelAdded.get(triple.Object);
@@ -302,15 +303,20 @@ public class URIDereferencing implements GeoLiftModule
 						Resource resource= localModel.getResource(triple.subject);
 						resource.addProperty(ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature"), object);
 					}
-					else //otherwise create a resource for it
+					else //otherwise create a resource for it*/
 					{
 						//create new triple with empty node as its subject where this subject will be an object of the targeted resource to be extended
-						object=objectFilledResource.get(triple.Object);
-						objectsDerefModelAdded.put(triple.Object, object);
-						//Attach the object's resource to this subject
-						Resource resource= localModel.getResource(triple.subject);
-						resource.addProperty(ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature"), object);
-						resourceInterestingInfoExtension= null;
+						if(!objectFilledResource.containsKey(triple.subject))
+						{
+							object=objectFilledResource.get(triple.Object);
+							objectsDerefModelAdded.put(triple.Object, object);
+							//Attach the object's resource to this subject
+							Resource resource= localModel.getResource(triple.subject);
+							resource.addProperty(ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature"), object);
+							/*Statement s = ResourceFactory.createStatement(resource, ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature"), object);
+							localModel.add(s);*/
+							resourceInterestingInfoExtension= null;
+						}
 					}
 			}
 		}
@@ -330,9 +336,9 @@ public class URIDereferencing implements GeoLiftModule
     		System.out.print(("<"+sol.getResource("?s"))+"> ");
     		System.out.print(("<"+sol.getResource("?p"))+"> ");
     		if(sol.get("?o").isResource())
-    			System.out.println(("<"+sol.get("?o"))+"> ");
+    			logger.info(("<"+sol.get("?o"))+"> ");
     		else
-    			System.out.println(("\""+sol.get("?o"))+"\"");
+    			logger.info(("\""+sol.get("?o"))+"\"");
 
     	}
     return triples;
@@ -430,8 +436,8 @@ public class URIDereferencing implements GeoLiftModule
 		String datasetSource="";
 		String datasetOutput="";
 		Map<String,String> predicates=null;
-		System.out.println("Start Dereferencing module.");
-		System.out.println("Reading parameters......");
+		logger.info("Start Dereferencing module.");
+		logger.info("Reading parameters......");
 		if(args.length > 0)
 		{
 			for(int i=0;i<args.length;i+=2)
@@ -445,23 +451,23 @@ public class URIDereferencing implements GeoLiftModule
 			}
 		}
 		else
-			System.out.println("Missed parameter");	
+			logger.error("Missed parameter");	
     	try 
     	{ 
-			System.out.println("Loading resource information into model");
+			logger.info("Loading resource information into model");
 			//First parameter: model is loaded with dataset from specified file/resource
     		Model model=org.aksw.geolift.io.Reader.readModel(datasetSource);
 	    	//Create Dereferencing object to start the process
 	    	URIDereferencing URID = new URIDereferencing();
 	    	// run the dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
 	    	Model resultedModel = URID.process(model, predicates);
-	    	System.out.println("Saving enriched model into file");
+	    	logger.info("Saving enriched model into file");
 	    	org.aksw.geolift.io.Writer.writeModel(resultedModel, "TTL", datasetOutput);
 	    	
 	    } catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Finished");
+		logger.info("Finished");
     }
 	//data members
 	private static Model localModel=null;
