@@ -16,6 +16,7 @@ import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
 import org.aksw.geolift.modules.linking.Linking;
 import org.aksw.geolift.modules.nlp.NlpGeoEnricher;
+import org.apache.log4j.Logger;
 
 import com.google.common.collect.Multimap;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -27,6 +28,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  */
 public class WorkflowHandler{
+	private static final Logger logger = Logger.getLogger(GeoLiftModule.class.getName());
 
 	private Model inputModel = ModelFactory.createDefaultModel();
 
@@ -71,7 +73,7 @@ public class WorkflowHandler{
 			enrichedModel = geoEnricher.process(inputModel, modueParameters);
 			return enrichedModel;
 		}
-		System.out.println(moduleName + " module is not yet implemented,\n" +
+		logger.error(moduleName + " module is not yet implemented,\n" +
 				"Currently,the nlp, linking and dereferencing) modules are implemented\n" +
 				"Exit with error ...");
 		System.exit(1);
@@ -99,9 +101,8 @@ public class WorkflowHandler{
 			while(itr.hasNext()){
 				param.putAll((Map<String, String>) itr.next());
 			}		
-			System.out.println("----------------------------------------------------------------------------------------------------------------" +
-					"\n("+ count++ + ") Runing module: " + moduleName.toUpperCase() + 
-					"\twith parameters: " + param);
+			logger.info("----------------------------------------------------------------------------------------------------------------");
+			logger.info("("+ count++ + ") Runing module: " + moduleName.toUpperCase() + " with parameters: " + param);
 			
 			inputModel =  executeModule(moduleName, inputModel, param);
 		}
