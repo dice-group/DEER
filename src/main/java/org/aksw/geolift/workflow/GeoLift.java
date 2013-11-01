@@ -69,8 +69,6 @@ public class GeoLift {
 		}else{
 			wfh.getEnrichedModel().write(System.out, "TTL");
 		}
-		System.out.println("GeoLift Finished");
-		
 	}
 	
 	
