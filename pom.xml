@@ -38,11 +38,7 @@
 			<artifactId>jena-arq</artifactId>
 			<version>2.9.0-incubating</version>
 		</dependency>
-		<dependency>
-      <groupId>de.uni_leipzig.simba.limes</groupId>
-      <artifactId>limes-core</artifactId>
-      <version>2013-06-10</version>
-    </dependency>
+		
 	</dependencies>
 <build>
         <pluginManagement>
