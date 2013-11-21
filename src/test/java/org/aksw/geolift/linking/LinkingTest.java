@@ -30,7 +30,7 @@ public class LinkingTest {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Map<String, String> parameters=new HashMap<String, String>();
-		
+		System.out.println("Start processing......");
 		parameters.put("datasetFilePath",args[0]);// The path to the dataset file to be loaded
 		parameters.put("specFilePath",args[1]);//The path to the spec.xml file contains the linking specifications
 		parameters.put("linksFilePath",args[2]);// The path to the file contains the resulted links
