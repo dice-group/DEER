@@ -1,28 +1,18 @@
 package org.aksw.geolift.modules.linking;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.modules.GeoLiftModule;
-import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
@@ -167,46 +157,46 @@ public class Linking implements GeoLiftModule
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-				Map<String, String> parameters=new HashMap<String, String>();
-				String linksPath="";
-				if(args.length > 0)
+		Map<String, String> parameters=new HashMap<String, String>();
+		String linksPath="";
+		if(args.length > 0)
+		{
+			for(int i=0;i<args.length;i+=2)
+			{
+				if(args[i].equals("-d"))
+					parameters.put("datasetSource",args[i+1]);
+				if(args[i].equals("-s"))
 				{
-					for(int i=0;i<args.length;i+=2)
-					{
-						if(args[i].equals("-d"))
-							parameters.put("datasetSource",args[i+1]);
-						if(args[i].equals("-s"))
-						{
-							parameters.put("specFilePath",args[i+1]);
-							linksPath = args[i+1].substring(0,args[i+1].lastIndexOf("/"))+"/accept.nt";
-							parameters.put("linksFilePath",linksPath);
-						}
-						if(args[i].equals("-p"))
-							parameters.put("linksPart",args[i+1]);
-
-					}
+					parameters.put("specFilePath",args[i+1]);
+					linksPath = args[i+1].substring(0,args[i+1].lastIndexOf("/"))+"/accept.nt";
+					parameters.put("linksFilePath",linksPath);
 				}
-			try {
-				Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
-				Linking l= new Linking();
-				model=l.process(model, parameters);
-				try{
-					 
-		    		File file = new File(linksPath);
-		 
-		    		file.delete();
-		 
-		    	}catch(Exception e){
-		 
-		    		e.printStackTrace();
-		 
-		    	}
-				model.write(System.out,"TTL");
+				if(args[i].equals("-p"))
+					parameters.put("linksPart",args[i+1]);
 
-				} catch (Exception e) {
+			}
+		}
+		try {
+			Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
+			Linking l= new Linking();
+			model=l.process(model, parameters);
+			try{
 
-					e.printStackTrace();
-				}
-				System.out.println("Finished");
+				File file = new File(linksPath);
+
+				file.delete();
+
+			}catch(Exception e){
+
+				e.printStackTrace();
+
+			}
+			model.write(System.out,"TTL");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		System.out.println("Finished");
 	}
 }

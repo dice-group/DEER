@@ -4,21 +4,15 @@
 package org.aksw.geolift.workflow;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import org.scilab.forge.jlatexmath.NewCommandMacro;
+import org.apache.log4j.Logger;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.pfunction.library.container;
 import com.ibm.icu.util.StringTokenizer;
 
 /**
@@ -26,23 +20,34 @@ import com.ibm.icu.util.StringTokenizer;
  *
  */
 public class TSVConfigReader {
+	private static final Logger logger = Logger.getLogger(TSVConfigReader.class.getName());
 
-	static public Multimap<String, Map<String, String>> parameters = HashMultimap.create();
-	public String separator = " ";
+	public static  Multimap<String, Map<String, String>> parameters = HashMultimap.create();
+	public static String separator = " ";
 	
-	public static void main(String args[]) throws IOException{
-//		parameters = getParameters(args[0]);
-		TSVConfigReader cr= new TSVConfigReader(args[0]);
-		System.out.println(cr.parameters);
-	}
-	
-	public void setSeparator(String s){
-		separator = s;
-	}
 	
 	public TSVConfigReader(String inputFile) throws IOException{
-		if(inputFile.endsWith(".csv"))
+		getParameters(inputFile);
+	}
+	
+	
+	/**
+	 * read parameters from TSV or CSV input File
+	 * @param inputFile
+	 * @return Multimap<String, Map<String, String>> map of parameters
+	 * @throws IOException
+	 * @author sherif
+	 */
+	public static Multimap<String, Map<String, String>> getParameters(String inputFile) throws IOException{
+		if(inputFile.endsWith(".csv")){
 			separator = ",";
+		}else if(inputFile.endsWith(".tsv")){
+			separator = " ";
+		}else {
+			logger.error("Unrecognized configuration file only csv and tsv are acceptable. Exit with error. ");
+			System.exit(1);
+		}
+			
 		BufferedReader reader = new BufferedReader(new FileReader(inputFile));  
 		String line = "";
 		String moduleId ="1";
@@ -62,13 +67,11 @@ public class TSVConfigReader {
 			param.put(parameterKey, parameterValue);
 			parameters.put(moduleId + "_" + moduleName, param);
 		}
+		return parameters;
 	}
 	
-	
-	
-	public static Multimap<String, Map<String, String>> getParameters(){
-		return parameters;
-
+	public static void main(String args[]) throws IOException{
+		System.out.println(TSVConfigReader.getParameters(args[0]));
 	}
 }
 

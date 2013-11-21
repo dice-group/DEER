@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.aksw.geolift.io.Reader;
+import org.apache.log4j.Logger;
 
 import com.google.common.collect.Multimap;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -17,14 +18,9 @@ import com.hp.hpl.jena.rdf.model.Model;
  *
  */
 public class GeoLift {
-
-	/**
-	 * 
-	 * @author sherif
-	 */
-	public static void printHelp() {
-		System.out.println(
-				"parameters:\n" +
+	private static final Logger logger = Logger.getLogger(GeoLift.class.getName());
+	private static final String helpMessage = 
+			"parameters:\n" +
 				"\t-i --input: input file/URI" + "\n" +
 				"\t-o --output: output file/URI" + "\n" +
 				"\t-c --Config: config file to read the parameters for each module from" + "\n" +
@@ -35,13 +31,20 @@ public class GeoLift {
 				"\t1 nlp askEndPoint false" + "\n"+
 				"\t2 nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment" + "\n"+
 				"\t2 nlp useFoxLight false" + "\n"+
-				"\t3 nlp useFoxLight true");
-	}
+				"\t3 nlp useFoxLight true";
 
 	
+	/**
+	 * run GeoLift through command line
+	 * @param args
+	 * @throws IOException
+	 * @author sherif
+	 */
 	public static void runGeoLiftTSVConfig(String args[]) throws IOException{
-		
-		String inputFile = "", configFile = "", outputFile = "";
+		long startTime = System.currentTimeMillis();
+		String inputFile	= "";
+		String configFile	= "";
+		String outputFile	= "";
 		
 		for(int i=0; i<args.length; i+=2){
 			if(args[i].equals("-i") || args[i].toLowerCase().equals("--input")){
@@ -54,14 +57,13 @@ public class GeoLift {
 				outputFile = args[i+1];
 			}
 			if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")){
-				printHelp();
+				logger.info(GeoLift.helpMessage);
 				System.exit(0);
 			}
 		} 
 		
 		Model startModel =  Reader.readModel(inputFile);
-		TSVConfigReader cr= new TSVConfigReader(configFile);
-		Multimap<String, Map<String, String>> parameters = cr.getParameters();
+		Multimap<String, Map<String, String>> parameters = TSVConfigReader.getParameters(configFile);
 		WorkflowHandler wfh = new WorkflowHandler(startModel, parameters);
 		
 		if(!outputFile.equals("")){
@@ -69,6 +71,8 @@ public class GeoLift {
 		}else{
 			wfh.getEnrichedModel().write(System.out, "TTL");
 		}
+		Long totalTime = System.currentTimeMillis() - startTime;
+		logger.info("***** Done in " + totalTime + "ms *****");
 	}
 	
 	
