@@ -41,5 +41,9 @@ public class Reader {
 		logger.info("Loading " + fileNameOrUri + " is done in " + (System.currentTimeMillis()-startTime) + "ms.");
 		return model;
 	}
+	
+	public static void main(String args[]){
+		readModel(args[0]).write(System.out, "TTL");
+	}
 
 }

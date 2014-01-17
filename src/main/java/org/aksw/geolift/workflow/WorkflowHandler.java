@@ -110,8 +110,7 @@ public class WorkflowHandler{
 
 	public static void main(String args[]) throws IOException{
 		Model startModel =  Reader.readModel(args[0]);
-		TSVConfigReader cr= new TSVConfigReader(args[1]);
-		Multimap<String, Map<String, String>> parameters = cr.getParameters();
+		Multimap<String, Map<String, String>> parameters = TSVConfigReader.getParameters(args[1]);
 		WorkflowHandler wfh = new WorkflowHandler(startModel, parameters);
 		wfh.getEnrichedModel().write(System.out, "TTL");
 	}

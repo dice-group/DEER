@@ -123,13 +123,13 @@ public class URIDereferencing implements GeoLiftModule
 	 * An iteration is made over targeted predicates. For each predicate list of statements with the targeted predicate is 
 	 * retrieved and extracting its value in order to be added to hashmap<predicate,Value>
 	 */
-	private static HashMap<String, String> getURIInfo(String uri,Map<String,String> predicates)
+	private static HashMap<String, RDFNode> getURIInfo(String uri,Map<String,String> predicates)
 	{
 		//to store each predicate and its value
-		HashMap<String, String> resourceFocusedInfo = new HashMap<String, String>();
+		HashMap<String, RDFNode> resourceFocusedInfo = new HashMap<String, RDFNode>();
 		//define local model to have the data of the uri and extract focused info through built sparql query
 
-	    String value = null;
+	    RDFNode value = null;
 	    try 
 	    {
 		   URLConnection conn = new URL(uri).openConnection();
@@ -141,7 +141,7 @@ public class URIDereferencing implements GeoLiftModule
 		   {
 			   for(Statement st : model.listStatements(model.getResource(uri),ResourceFactory.createProperty(predicate) , (RDFNode)null).toList())
 			   {
-				   value=st.getObject().asLiteral().toString();
+				   value = st.getObject();
 				   resourceFocusedInfo.put(predicate, value);
 			   }
 		   }
@@ -174,7 +174,7 @@ public class URIDereferencing implements GeoLiftModule
 		triplesURIsObjects= getObjectsAreURI();
 		if(triplesURIsObjects.size()>0)
 		{
-			Map<String, String> resourceInterestingInfoExtension= null;
+			Map<String, RDFNode> resourceInterestingInfoExtension= new HashMap<String, RDFNode>();
 			Resource object=null;
 			//iterate over each triple to dereference each URI object and add its information to its resource subject
 			for (Triple triple : triplesURIsObjects) 
@@ -249,7 +249,7 @@ public class URIDereferencing implements GeoLiftModule
 		//List to save all distinct URI objects in the data source
 		List<String> urisObjects=null;
 		//Map <predicate,value> save each interesting predicate of the URI object
-		Map<String, String> resourceInterestingInfoExtension= null;
+		Map<String, RDFNode> resourceInterestingInfoExtension= new HashMap<String, RDFNode>();
 		//Map<object,objectResourceData> to save each object with its related data resource and be retrieved whenever a URI object data needed to be added for extension 
 		Map<String,Resource> objectFilledResource= new HashMap<String, Resource>();
 		//Get list of unique URI objects in the data source as http://dbpedia.org/resource/XXXX 
@@ -273,7 +273,12 @@ public class URIDereferencing implements GeoLiftModule
 				for (String key : resourceInterestingInfoExtension.keySet())
 				{
 					//add the new properties to the new triple
-					object.addProperty(ResourceFactory.createProperty(key), resourceInterestingInfoExtension.get(key));
+					RDFNode subject = resourceInterestingInfoExtension.get(key);
+					if(subject.isLiteral()){
+						object.addProperty(ResourceFactory.createProperty(key), resourceInterestingInfoExtension.get(key).asLiteral().toString());
+					}else{
+						object.addProperty(ResourceFactory.createProperty(key), subject);
+					}
 				}
 				//Add to list of object's resource that is filled with information
 				objectFilledResource.put(uriObject, object);
