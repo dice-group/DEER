@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
  * @author sherif
  */
 public class NlpGeoEnricher implements GeoLiftModule{
-	
+
 	private static final Logger logger = Logger.getLogger(GeoLiftModule.class.getName());
 
 	private Model model;
@@ -421,7 +421,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			while (objectsIter.hasNext()) {
 				RDFNode object = objectsIter.nextNode();
 				if(object.isResource()){
-					
+
 					resultModel.add( (Resource) subject , addedGeoProperty, object);
 					//					TODO add more data ??
 					logger.info("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
@@ -518,11 +518,13 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			RDFNode object = st.getObject();
 			RDFNode subject = st.getSubject();
 			if(object.isLiteral()){
-				Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
-				
-				if(!namedEntityModel.isEmpty()){
-					resultModel= resultModel.union(getPlaces(namedEntityModel, subject));
-				}				
+				if(!object.asLiteral().toString().contains("^^")){
+					Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
+
+					if(!namedEntityModel.isEmpty()){
+						resultModel= resultModel.union(getPlaces(namedEntityModel, subject));
+					}				
+				}
 			}
 		}
 		return resultModel;
@@ -539,7 +541,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 */
 	public Model process(Model inputModel, Map<String, String> parameters){
 		model = inputModel;
-		
+
 		if( parameters.containsKey("input")){
 			inputFile = parameters.get("input");
 			model = loadModel(inputFile);
@@ -633,17 +635,17 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")){
 				logger.info(
 						"Basic parameters:\n" +
-						"\t-i --input: input file/URI" + "\n" +
-						"\t-o --output: output file/URI" + "\n" +
-						"\t-p --litralProperty: litral property used for NER" + "\n" +
-						"\t-l --useFoxLight: { true | false }" + "\n" +
-						"\t-e --askEndPoint: { true | false}"+ "\n" +
-						"Fox parameters (current version use always default values, which is the first one):\n"+
-						"\t--foxType: { text | url }" + "\n" +
-						"\t--foxTask: { NER }" + "\n" +
-						"\t--foxInput: text or an url" + "\n" +
-						"\t--foxOutput: {TURTLE | JSONLD | N3 | N-TRIPLE | RDF/{ JSON | XML | XML-ABBREV} }" + "\n" +
-						"\t--foxUseNif: { false | true }" + "\n" +
+								"\t-i --input: input file/URI" + "\n" +
+								"\t-o --output: output file/URI" + "\n" +
+								"\t-p --litralProperty: litral property used for NER" + "\n" +
+								"\t-l --useFoxLight: { true | false }" + "\n" +
+								"\t-e --askEndPoint: { true | false}"+ "\n" +
+								"Fox parameters (current version use always default values, which is the first one):\n"+
+								"\t--foxType: { text | url }" + "\n" +
+								"\t--foxTask: { NER }" + "\n" +
+								"\t--foxInput: text or an url" + "\n" +
+								"\t--foxOutput: {TURTLE | JSONLD | N3 | N-TRIPLE | RDF/{ JSON | XML | XML-ABBREV} }" + "\n" +
+								"\t--foxUseNif: { false | true }" + "\n" +
 						"\t--foxReturnHtml: { false | true }" );
 				System.exit(0);
 			}
