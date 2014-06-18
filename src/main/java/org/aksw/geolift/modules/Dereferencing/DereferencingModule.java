@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.OWL;
-
+import org.aksw.geolift.json.ParameterType;
 /**
  * @author mofeed
  * This class includes methods in order to load dataset in Model from file.
@@ -200,6 +200,18 @@ public class DereferencingModule implements GeoLiftModule
 
 
 
+
+	public List<String> getParameters() 
+	{
+		// TODO Auto-generated method stub
+		if(parametersList.size() > 0)
+		{
+			parametersList.add("input");
+			return parametersList;
+		}
+		else
+			return null;
+	}
 
 	/*private static Map<String, String> getURIInfo2(String uri,Map<String,String> predicates)
 	{
@@ -757,5 +769,11 @@ public class DereferencingModule implements GeoLiftModule
 		logger.info("Finished");
 	}
 
+    @Override
+    public List<ParameterType> getParameterWithTypes() {
+        List<ParameterType> parameters = new ArrayList<ParameterType>();
+        parameters.add(new ParameterType(ParameterType.STRING, "input"));
+        return parameters;
+    }
 
 }

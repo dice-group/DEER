@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import de.uni_leipzig.simba.controller.PPJoinController;
+import org.aksw.geolift.json.ParameterType;
 
 /**
  * @author mofeed
@@ -233,4 +234,15 @@ public class LinkingModule implements GeoLiftModule
 	}
 
 
+
+    @Override
+    public List<ParameterType> getParameterWithTypes() {
+        List<ParameterType> parameters = new ArrayList<ParameterType>();
+        parameters.add(new ParameterType(ParameterType.STRING, "datasetSource"));
+        parameters.add(new ParameterType(ParameterType.STRING, "specFilePath"));
+        parameters.add(new ParameterType(ParameterType.STRING, "linksFilePath"));
+        parameters.add(new ParameterType(ParameterType.STRING, "linksPart"));
+
+        return parameters;
+    }
 }
