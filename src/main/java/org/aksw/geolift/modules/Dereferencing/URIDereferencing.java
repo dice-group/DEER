@@ -30,6 +30,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
+import org.aksw.geolift.json.ParameterType;
 /**
  * @author mofeed
  * This class includes methods in order to load dataset in Model from file.
@@ -566,5 +567,12 @@ public class URIDereferencing implements GeoLiftModule
 	}
 	//data members
 	private static Model localModel=null;
+
+    @Override
+    public List<ParameterType> getParameterWithTypes() {
+        List<ParameterType> parameters = new ArrayList<ParameterType>();
+        parameters.add(new ParameterType(ParameterType.STRING, "input"));
+        return parameters;
+    }
 
 }

@@ -48,7 +48,7 @@ public class ModuleFactory {
 	 * @return list of names of all implemented modules
 	 * @author sherif
 	 */
-	List<String> getNames(){
+	public List<String> getNames(){
 		List<String> result = new ArrayList<String>();
 		result.add(DEREFERENCING_MODULE);
 		result.add(LINKING_MODULE);
@@ -57,7 +57,7 @@ public class ModuleFactory {
 		return result;
 	}
 	
-	List<GeoLiftModule> getImplementations(){
+	public List<GeoLiftModule> getImplementations(){
 		List<GeoLiftModule> result = new ArrayList<GeoLiftModule>();
 		result.add(new URIDereferencing());
 		result.add(new Linking());

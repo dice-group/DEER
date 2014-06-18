@@ -42,7 +42,7 @@ public class ModelOperatorFactory {
 	 * @return list of names of all implemented operators
 	 * @author sherif
 	 */
-	List<String> getNames(){
+	public List<String> getNames(){
 		List<String> result = new ArrayList<String>();
 		result.add(MERGE_MODEL);
 		result.add(SPLIT_MODEL);
@@ -54,7 +54,7 @@ public class ModelOperatorFactory {
 	 * @return list of instances of all implemented operators 
 	 * @author sherif
 	 */
-	List<ModelOperator> getImplementations(){
+	public List<ModelOperator> getImplementations(){
 		List<ModelOperator> result = new ArrayList<ModelOperator>();
 		result.add(new MergeOperator());
 		result.add(new SplitOperator());

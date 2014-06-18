@@ -34,6 +34,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import org.aksw.geolift.json.ParameterType;
 
 import org.aksw.geolift.modules.GeoLiftModule;
 //import org.junit.Test;
@@ -663,4 +664,23 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			enrichedModel.write(System.out,"TTL");
 		}
 	}
+
+    @Override
+    public List<ParameterType> getParameterWithTypes() {
+        List<ParameterType> parameters = new ArrayList<ParameterType>();
+        parameters.add(new ParameterType(ParameterType.STRING, "input"));
+        parameters.add(new ParameterType(ParameterType.STRING, "output"));
+        parameters.add(new ParameterType(ParameterType.STRING, "litralProperty"));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "useFoxLight"));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "askEndPoint"));
+        parameters.add(new ParameterType(ParameterType.STRING, "foxType"));
+        parameters.add(new ParameterType(ParameterType.STRING, "foxTask", "NER"));
+        parameters.add(new ParameterType(ParameterType.STRING, "foxInput")); 
+        parameters.add(new ParameterType(ParameterType.STRING, "foxOutput", "TURTLE,JSONLD,N3,N-TRIPLE,RDF/JSON,RDF/XML,RDF/XML-ABBREV"));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxUseNif"));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxReturnHtml"));
+        parameters.add(new ParameterType(ParameterType.STRING, "addedGeoProperty"));
+        
+        return parameters;
+    }
 }

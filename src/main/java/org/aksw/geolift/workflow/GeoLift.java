@@ -56,10 +56,6 @@ public class GeoLift {
 			if(args[i].equals("-o") || args[i].toLowerCase().equals("--output")){
 				outputFile = args[i+1];
 			}
-			if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")){
-				logger.info(GeoLift.helpMessage);
-				System.exit(0);
-			}
 		} 
 		
 		Model startModel =  Reader.readModel(inputFile);
@@ -74,13 +70,28 @@ public class GeoLift {
 		Long totalTime = System.currentTimeMillis() - startTime;
 		logger.info("***** Done in " + totalTime + "ms *****");
 	}
-	
+        
+        public static void determineRunMode(String args[]) throws IOException {            
+            for(int i=0; i<args.length; i+=2){
+                    if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")) {
+                            //show help message
+                            logger.info(GeoLift.helpMessage);
+                            System.exit(0);
+                    }
+                    if(args[i].equals("-l") || args[i].toLowerCase().equals("--list")) {
+                            org.aksw.geolift.json.JSONConfigWriter.write();
+                            System.exit(0);
+                    }
+            } 
+            //program didn't terminate until here so run TSV config mode
+            runGeoLiftTSVConfig(args);
+        }
 	
 	/**
 	 * @param args
 	 * @author sherif
 	 */
 	public static void main(String args[]) throws IOException{
-		runGeoLiftTSVConfig(args);
+		determineRunMode(args);
 	}
 }
