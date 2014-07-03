@@ -34,8 +34,8 @@ public class MergeOperator implements GeoLiftOperator {
 		result.add(merge);
 		return result;
 	}
-
 	
+        
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.modules.GeoLiftModule#getParameters()
 	 */
@@ -52,5 +52,5 @@ public class MergeOperator implements GeoLiftOperator {
 		List<String> parameters = new ArrayList<String>();
 		return parameters;
 	}
-
+        
 }

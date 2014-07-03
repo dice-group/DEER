@@ -38,21 +38,45 @@
 			<artifactId>jena-arq</artifactId>
 			<version>2.9.0-incubating</version>
 		</dependency>
-		
+	 <dependency>
+	  <groupId>com.google.collections</groupId>
+	  <artifactId>google-collections</artifactId>
+	  <version>1.0</version>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
+	  <groupId>de.uni_leipzig.simba.limes</groupId>
+	  <artifactId>limes-core</artifactId>
+	  <version>2013-10-02</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
-<build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.2</version>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                        <compilerArgument></compilerArgument>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+        <build>
+            <pluginManagement>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>2.3.2</version>
+                        <configuration>
+                            <source>1.6</source>
+                            <target>1.6</target>
+                            <compilerArgument></compilerArgument>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>org.aksw.geolift.workflow.GeoLift</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </pluginManagement>
+        </build>
 </project>

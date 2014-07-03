@@ -18,6 +18,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import org.aksw.geolift.json.ParameterType;
 
 /**
  * @author sherif
@@ -143,5 +144,13 @@ public class FilterModule implements GeoLiftModule{
 		logger.info("Self configuration: " + parameters);
 		return parameters;
 	}
+    
+    @Override
+    public List<ParameterType> getParameterWithTypes() {
+        List<ParameterType> parameters = new ArrayList<ParameterType>();
+        parameters.add(new ParameterType(ParameterType.STRING, "triplesPattern", "The tripple pattern", true));
+
+        return parameters;
+    }
 
 }

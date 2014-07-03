@@ -10,7 +10,6 @@ import java.util.Map;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.apache.log4j.Logger;
 
-import com.google.common.collect.Sets;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
@@ -57,5 +56,5 @@ public class SplitOperator implements GeoLiftOperator {
 		List<String> parameters = new ArrayList<String>();
 		return parameters;
 	}
-
+        
 }
