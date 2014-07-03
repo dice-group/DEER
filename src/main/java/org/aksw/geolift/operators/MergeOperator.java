@@ -28,5 +28,5 @@ public class MergeOperator implements ModelOperator {
 		result.add(merge);
 		return result;
 	}
-
+        
 }

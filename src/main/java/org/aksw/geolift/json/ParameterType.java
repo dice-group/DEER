@@ -4,8 +4,6 @@
 
 package org.aksw.geolift.json;
 
-import java.util.List;
-
 /**
  *
  * @author eugen
@@ -17,27 +15,54 @@ public class ParameterType {
     private String type = "";
     private String name = null;
     private String[] values = null;
+    private String description = "";
+    private boolean required = false;
     
-    public ParameterType(String type, String name) {
+    public ParameterType(String type, String name, String description) {
         this.type = type;
         this.name = name;
+        this.description = description;
     }
     
-    public ParameterType(String type, String name, String values) {
+    public ParameterType(String type, String name, String description, boolean required) {
+        this.type = type;
+        this.name = name;
+        this.required = required;
+        this.description = description;
+    }
+    
+    public ParameterType(String type, String name, String values, String description) {
         this.type = type;
         this.name = name;
         this.values = values.split(",");
+        this.description = description;
+    }
+    
+     public ParameterType(String type, String name, String values, String description, boolean required) {
+        this.type = type;
+        this.name = name;
+        this.values = values.split(",");
+        this.description = description;
+        this.required = required;
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public String[] getValues() {
-        return values;
+        return this.values;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+    
+    public boolean getRequired() {
+        return this.required;
     }
 }

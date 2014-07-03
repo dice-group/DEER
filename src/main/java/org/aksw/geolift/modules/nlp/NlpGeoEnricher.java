@@ -668,18 +668,16 @@ public class NlpGeoEnricher implements GeoLiftModule{
     @Override
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
-        parameters.add(new ParameterType(ParameterType.STRING, "input"));
-        parameters.add(new ParameterType(ParameterType.STRING, "output"));
-        parameters.add(new ParameterType(ParameterType.STRING, "litralProperty"));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "useFoxLight"));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "askEndPoint"));
-        parameters.add(new ParameterType(ParameterType.STRING, "foxType"));
-        parameters.add(new ParameterType(ParameterType.STRING, "foxTask", "NER"));
-        parameters.add(new ParameterType(ParameterType.STRING, "foxInput")); 
-        parameters.add(new ParameterType(ParameterType.STRING, "foxOutput", "TURTLE,JSONLD,N3,N-TRIPLE,RDF/JSON,RDF/XML,RDF/XML-ABBREV"));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxUseNif"));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxReturnHtml"));
-        parameters.add(new ParameterType(ParameterType.STRING, "addedGeoProperty"));
+        parameters.add(new ParameterType(ParameterType.STRING, "litralProperty", "litral property used for NER", false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "useFoxLight", "use fox light or not", false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "askEndPoint", "ask for end point or not", false));
+        parameters.add(new ParameterType(ParameterType.STRING, "foxType", "the fox type (text or URL)", false));
+        parameters.add(new ParameterType(ParameterType.STRING, "foxTask", "NER", "the fox task", false));
+        parameters.add(new ParameterType(ParameterType.STRING, "foxInput", "the fox input (text or URL)", false)); 
+        parameters.add(new ParameterType(ParameterType.STRING, "foxOutput", "TURTLE,JSONLD,N3,N-TRIPLE,RDF/JSON,RDF/XML,RDF/XML-ABBREV", "the fox output format", false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxUseNif", "use nif or not", false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxReturnHtml", "return fox as HTML", false));
+        parameters.add(new ParameterType(ParameterType.STRING, "addedGeoProperty", "the added geo property", false));
         
         return parameters;
     }

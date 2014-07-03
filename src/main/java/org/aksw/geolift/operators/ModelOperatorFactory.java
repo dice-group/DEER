@@ -18,6 +18,9 @@ public class ModelOperatorFactory {
 
 	public static final String MERGE_MODEL = "merge";
 	public static final String SPLIT_MODEL = "split";
+        
+        public static final String MERGE_MODEL_DESCRIPTION =   "The purpose of the merge operator is to merge two models to one single model";
+        public static final String SPLIT_MODEL_DESCRIPTION =   "The purpose of the split operator is to split one model into two separate models";
 
 	/**
 	 * @param name
@@ -37,6 +40,18 @@ public class ModelOperatorFactory {
 		System.exit(1);
 		return null;
 	}
+
+        public static String getDescription(String name) {
+            String description = "";
+
+            if(name.equalsIgnoreCase(MERGE_MODEL)) {
+                description = MERGE_MODEL_DESCRIPTION;
+            } else if (name.equalsIgnoreCase(SPLIT_MODEL)) {
+                description = SPLIT_MODEL_DESCRIPTION;
+            } 
+
+            return description;
+        }
 	
 	/**
 	 * @return list of names of all implemented operators

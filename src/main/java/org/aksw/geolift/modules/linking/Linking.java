@@ -204,10 +204,9 @@ public class Linking implements GeoLiftModule
     @Override
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
-        parameters.add(new ParameterType(ParameterType.STRING, "datasetSource"));
-        parameters.add(new ParameterType(ParameterType.STRING, "specFilePath"));
-        parameters.add(new ParameterType(ParameterType.STRING, "linksFilePath"));
-        parameters.add(new ParameterType(ParameterType.STRING, "linksPart"));
+        parameters.add(new ParameterType(ParameterType.STRING, "specFilePath", "The path to specification file used for linking process", true));
+        parameters.add(new ParameterType(ParameterType.STRING, "linksFilePath", "The path to links file resulted from the linking process", true));
+        parameters.add(new ParameterType(ParameterType.STRING, "linksPart", "Represents the position of the URI to be enriched in the links file", true));
 
         return parameters;
     }

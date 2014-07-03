@@ -38,5 +38,5 @@ public class SplitOperator implements ModelOperator {
 	public void setSplitsCount(int n){
 		splitsCount = n;
 	}
-
+        
 }
