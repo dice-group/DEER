@@ -6,7 +6,6 @@ package org.aksw.geolift.operators;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Sets;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 

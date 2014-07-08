@@ -23,8 +23,8 @@ public class ModuleFactory {
 	public static final String LINKING_MODULE 		= "linking";
 	public static final String NLP_MODULE 			= "nlp";
         
-        public static final String DEREFERENCING_MODULE_DESCRIPTION =   "The purpose of the dereferencing module is to extend the model’s Geo-spatial" +
-                                                                        "information by set of information through speciﬁed predicates";
+        public static final String DEREFERENCING_MODULE_DESCRIPTION =   "The purpose of the dereferencing module is to extend the model's Geo-spatial" +
+                                                                        "information by set of information through specified predicates";
         public static final String LINKING_MODULE_DESCRIPTION       =   "The purpose of the linking module is to enrich a model with additional " +
                                                                         "geographic information URIs resented in owl:sameAs predicates";
         public static final String NLP_MODULE_DESCRIPTION           =   "The purpose of the NLP module is to enrich a model with additional Geo-"+
@@ -59,7 +59,7 @@ public class ModuleFactory {
                 description = DEREFERENCING_MODULE_DESCRIPTION;
             } else if (name.equalsIgnoreCase(LINKING_MODULE)) {
                 description = LINKING_MODULE_DESCRIPTION;
-            } else if (name.equalsIgnoreCase(NLP_MODULE_DESCRIPTION)) {
+            } else if (name.equalsIgnoreCase(NLP_MODULE)) {
                 description = NLP_MODULE_DESCRIPTION;
             }
 

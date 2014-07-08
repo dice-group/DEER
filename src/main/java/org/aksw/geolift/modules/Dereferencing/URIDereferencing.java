@@ -572,7 +572,7 @@ public class URIDereferencing implements GeoLiftModule
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
         
-        String description =    "List of interesting predicates to enrich the model, and their Objects’ values. " +
+        String description =    "List of interesting predicates to enrich the model, and their Objects' values. " +
                                 "The predicates are given in form of map structure where the key is a user-defined" +
                                 "name for the predicate and the map value is the predicate itself. e.g. " + 
                                 "predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat";

@@ -13,7 +13,8 @@ import org.apache.log4j.Logger;
  * @author eugen
  */
 public class JSONConfigWriter {
-    private static final Logger logger = Logger.getLogger(GeoLiftModule.class.getName());
+    private static final Logger module_logger = Logger.getLogger(GeoLiftModule.class.getName());
+    private static final Logger operator_logger = Logger.getLogger(ModelOperatorFactory.class.getName());
     
     private static String join(String[] values) {
         StringBuilder joined = new StringBuilder();
@@ -146,7 +147,8 @@ public class JSONConfigWriter {
     }
     
     public static void write() {
-        JSONConfigWriter.logger.setLevel(Level.OFF);
+        JSONConfigWriter.module_logger.setLevel(Level.OFF);
+        JSONConfigWriter.operator_logger.setLevel(Level.OFF);
         String jsonConfig = JSONConfigWriter.buildJSONString();
         System.out.println(jsonConfig);
     }
