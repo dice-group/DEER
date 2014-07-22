@@ -19,6 +19,7 @@
 \usepackage{lscape}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{tabularx}
 
 \graphicspath{{.}{../Common/}{../../Common/}}
 
@@ -434,27 +435,31 @@ Table \ref{tbl:nlpPram} provides details about the \texttt{NlpGeoEnricher} modul
 \subsubsection{Code Sample}
 A sample code showing how to call the \texttt{NlpGeoEnricher} class and giving it its parameters is introduced in Listing \ref{lst:NlpGeoEnricher}.
 
-\begin{table*}[ht]
+\begin{table}
+
 \caption{NLP parameters description} \label{tbl:nlpPram}
-\begin{tabular}{@{}  l  l p{7cm} l p{6cm}@{}}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}llX@{}}
+% \begin{tabular}{@{}  l  l  l @{}}
 \toprule
 \textbf{Parameter Name} & \textbf{Default value} & \textbf{Description}\\
 \midrule
 \texttt{input} 		& \texttt{N/A} 		& The input file/URI to be enriched\\
 \texttt{output} 	& \texttt{N/A} 		& The output file to write the enriched model to it\\
-\texttt{litralProperty}	& \texttt{Top Ranked} 	& Literal property used by FOX for NER, if not set the top ranked literal property is pecked by \texttt{LiteralPropertyRanker} module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
+\texttt{literalProperty}	& \texttt{Top Ranked} 	& Literal property used by FOX for NER, if not set the top ranked literal property is pecked by \texttt{LiteralPropertyRanker} module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
 \texttt{addedGeoProperty}& \texttt{geoknow:relatedTo\footnotemark[11]}& property added to the input model with additional Geo-spatial knowledge through NLP.\\
-\texttt{useFoxLight} 	& \texttt{false} 	& Use the light version of FOX, setting it generates faster execution time but less accurate results) \\
+\texttt{useFoxLight} 	& \texttt{OFF} 	& An implemented NER class name (\url{org.aksw.fox.nertools.NEROpenNLP}, \url{org.aksw.fox.nertools.NERIllinoisExtended}, \url{org.aksw.fox.nertools.NERBalie}, \url{org.aksw.fox.nertools.NERStanford}) or \texttt{OFF}, If this parameter is given with a wrong value, \url{org.aksw.fox.nertools.NERStanford} will be used. \\
 \texttt{askEndPoint} 	& \texttt{false} 	& Ask the \emph{DBpedia} endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results)\\
-\texttt{foxType} 	& \texttt{TEXT} 	& FOX input type : \texttt{\{ text $\rvert$ url \}}\\
+\texttt{foxType} 	& \texttt{TEXT} 	&  text or an url (e.g.: `G. W. Leibniz was born in Leipzig`, '\url{http://en.wikipedia.org/wiki/Leipzig_University}`) \\
 \texttt{foxTask} 	& \texttt{NER} 		& FOX task \texttt{:\{NER\}} for Named Entity Recognition\\
 \texttt{foxInput} 	& \texttt{""} 		& FOX actual input as text or an URL\\
-\texttt{foxOutput} 	& \texttt{TURTLE} 	& FOX output format: \texttt{\{ JSONLD $\rvert$ N3 $\rvert$ N-TRIPLE $\rvert$ RDF/\{ JSON $\rvert$ XML $\rvert$ XML-ABBREV\} $\rvert$ TURTLE \}}\\
+\texttt{foxOutput} 	& \texttt{TURTLE} 	& FOX output format: \{\texttt{ JSON-LD | N-Triples | RDF/\{ JSON | XML \}}\}\\
 \texttt{foxUseNif} 	& \texttt{false} 	& FOX generates NIF: \{ true $\rvert$ false \}\\
 \texttt{foxReturnHtml} & \texttt{false} 	& FOX returns HTML: \texttt{\{ true $\rvert$ false \}}\\ 
 \bottomrule
-\end{tabular}
-\end{table*}
+% \end{tabular}
+\end{tabularx}
+\end{table}
 
 \begin{lstlisting}[label=lst:NlpGeoEnricher, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{NlpGeoEnricher} class.]
 // Define NlpGeoEnricher object
@@ -462,7 +467,7 @@ NlpGeoEnricher geoEnricher= new NlpGeoEnricher();
 // Define parameters Map
 Map<String, String> parameters = new HashMap<String, String>();
 // Set parameters
-parameters.put("useFoxLight", "true");
+parameters.put("useFoxLight", "OFF");
 parameters.put("askEndPoint", "false");
 // read input Model
 Model inputModel = org.aksw.geolift.io.Reader.readModel(inputFileValue);
@@ -475,6 +480,12 @@ enrichedModel.write(System.out,"TTL");
  
 % \newpage 
 % \clearpage
+
+\subsection{Conformation Module}
+Change a specified source URI to a specified target URI
+
+\subsection{Filter Module}
+Runs a set of triples patterns' against an input model to filter some triples and export them to an output model.  
 
 \section{Running \geolift From Command-Line }
 
@@ -491,12 +502,12 @@ listing \ref{lst:geoliftConfig} provides a example of a configuration file to ru
 Note that the third and the forth module have the same \texttt{moduleName}, but using the \texttt{executionModelIndex} the \geolift can differentiate between them.
 
 \begin{lstlisting}[label=lst:geoliftConfig, caption =\geolift configuration file example class.]
-1 nlp useFoxLight true
+1 nlp useFoxLight OFF
 1 nlp askEndPoint false
 2 dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat
 3 nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment
-3 nlp useFoxLight false
-4 nlp useFoxLight true
+3 nlp useFoxLight org.aksw.fox.nertools.NEROpenNLP
+4 nlp useFoxLight org.aksw.fox.nertools.NERStanford
 \end{lstlisting}
 
 The following example introduces the command-line execution of \geolift to enrich data contained in input file \texttt{example.ttl} with additional Geo-spatial data.

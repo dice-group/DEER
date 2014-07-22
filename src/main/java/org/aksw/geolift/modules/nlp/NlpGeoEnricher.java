@@ -329,9 +329,9 @@ public class NlpGeoEnricher implements GeoLiftModule{
 
 
 	/**
-	 * @param type: { text | url }
+	 * @param type: text or an url (e.g.: `G. W. Leibniz was born in Leipzig`, `http://en.wikipedia.org/wiki/Leipzig_University`)
 	 * @param task: { NER }
-	 * @param output: { JSONLD | N3 | N-TRIPLE | RDF/{ JSON | XML | XML-ABBREV} | TURTLE }
+	 * @param output: { JSON-LD | N-Triples | RDF/{ JSON | XML } | Turtle | TriG | N-Quads}
 	 * @param input: text or an url
 	 * @param foxlight: an implemented INER class name (e.g.: `org.aksw.fox.nertools.NEROpenNLP`) or `OFF`. 
 	 * 		org.aksw.fox.nertools.NERIllinoisExtended
@@ -651,7 +651,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 								"\t--foxType: { text | url }" + "\n" +
 								"\t--foxTask: { NER }" + "\n" +
 								"\t--foxInput: text or an url" + "\n" +
-								"\t--foxOutput: {TURTLE | JSONLD | N3 | N-TRIPLE | RDF/{ JSON | XML | XML-ABBREV} }" + "\n" +
+								"\t--foxOutput: { JSON-LD | N-Triples | RDF/{ JSON | XML } | Turtle | TriG | N-Quads}" + "\n" +
 								"\t--foxUseNif: { false | true }" + "\n" +
 								"\t--foxReturnHtml: { false | true }" );
 				System.exit(0);
