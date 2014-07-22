@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -30,6 +28,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
+
 /**
  * @author mofeed
  * This class includes methods in order to load dataset in Model from file.
@@ -39,11 +38,54 @@ import com.hp.hpl.jena.rdf.model.Statement;
  */
 public class URIDereferencing implements GeoLiftModule
 {
-	public static boolean useBlankNodes = false;
+	public static boolean useCache = true;
+	public static boolean useBlankNodes = true;
+	public static List<Property> inputProperties = new ArrayList<Property>();
+	public static List<Property> outputProperties = new ArrayList<Property>();
 	//TODO find appropriate property since Feature is a class
-	public static Property featureProperty = ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature");
+	//	public static Property addedProperty = ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature");
+	public static Property addedProperty = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
 
 
+	/**
+	 * @param parameters
+	 * @author sherif
+	 */
+	private void readParameters(Map<String, String> parameters) {
+		for(String key : parameters.keySet()){
+			if(key.toLowerCase().equals("useblanknodes")){
+				useBlankNodes = Boolean.parseBoolean(parameters.get(key));
+			}if(key.toLowerCase().equals("useCache")){
+				useCache = Boolean.parseBoolean(parameters.get(key));
+			}else if(key.toLowerCase().startsWith("inputproperty")){
+				inputProperties.add(ResourceFactory.createProperty(parameters.get(key)));
+			}else if(key.toLowerCase().startsWith("outputproperty")){
+				outputProperties.add(ResourceFactory.createProperty(parameters.get(key)));
+			}else{
+				logger.error("Invalid parameter key: " + key + ", allowed parameters for the dereferencing module are: " + getParameters());
+				logger.error("Exit GeoLift");
+				System.exit(1);
+			}
+		}
+		if(outputProperties.size() == 0){
+			logger.error("The inputProperty is a mandatory parameter(s) for the dereferencing module");
+			logger.error("No inputProperty provided, Exit GeoLift");
+			System.exit(1);
+		}
+	}
+
+	/**
+	 * @author sherif
+	 */
+	public List<String> getParameters() 
+	{
+		List<String> parameters = new ArrayList<String>();
+		parameters.add("inputProperty<n>");
+		parameters.add("outputProperty<n>");
+		parameters.add("useBlankNodes");
+		parameters.add("useCache");
+		return parameters;
+	}
 
 	/**
 	 * @param model : the model to be enriched
@@ -54,7 +96,7 @@ public class URIDereferencing implements GeoLiftModule
 	 */
 	//list of parameters passed to the module
 	List<String> parametersList= new ArrayList<String>();
-	static Map<String,Resource> objectsDerefModelAdded= new HashMap<String, Resource>();
+	static Map<RDFNode,Resource> objectsDerefModelAdded= new HashMap<RDFNode, Resource>();
 	private static final Logger logger = Logger.getLogger(URIDereferencing.class.getName());
 	/* (non-Javadoc)
 	 * This method starts processing to retrieve information from the interesting predicates
@@ -63,34 +105,19 @@ public class URIDereferencing implements GeoLiftModule
 
 		if(model!= null)
 		{
-			//Assign the local model of the class to the model read by the reader module
+			readParameters(parameters);
 			localModel = model;
-			//Add the gn:Feature predicate and it can be used to add other predicates
 			setPrefixes();
 			if(useBlankNodes)
-				putAdditionalInfoUsingBlankNode(parameters); //Extend the model with the required information of interesting predicates attached through blank node
+				addAdditionalPropertiesUsingBlankNode(parameters); 
 			else
-				putAdditionalInfoNoBlankNode(parameters); 	//Extend the model with the required information of interesting predicates attached through blank node
+				addAdditionalPropertiesNoBlankNode();
 
 		}
+		
 		return localModel;
 	}
 
-
-
-
-
-	public List<String> getParameters() 
-	{
-		// TODO Auto-generated method stub
-		if(parametersList.size() > 0)
-		{
-			parametersList.add("input");
-			return parametersList;
-		}
-		else
-			return null;
-	}
 
 	/*private static Map<String, String> getURIInfo2(String uri,Map<String,String> predicates)
 	{
@@ -139,12 +166,38 @@ public class URIDereferencing implements GeoLiftModule
 	 * An iteration is made over targeted predicates. For each predicate list of statements with the targeted predicate is 
 	 * retrieved and extracting its value in order to be added to hashmap<predicate,Value>
 	 */
-	private static HashMap<String, List<RDFNode>> getURIInfo(String uri,Map<String,String> predicates)
+	private static HashMap<Property, List<RDFNode>> getURIInfo(RDFNode p)
 	{
+		String uri = p.asResource().getURI(); 
 		//to store each predicate and its value
-		HashMap<String, List<RDFNode>> resourceFocusedInfo = new HashMap<String, List<RDFNode>>();
-		//define local model to have the data of the uri and extract focused info through built sparql query
+		HashMap<Property, List<RDFNode>> resourceFocusedInfo = new HashMap<Property, List<RDFNode>>();
 
+//		//Deserialize the results if exists (For Demo purpose)
+//		if(useCache){
+//			try {
+//				HashMap<String, List<String>> ser = new HashMap<String, List<String>>();
+//				File file = new File("resourceFocusedInfo.ser");
+//				if(file.exists()){
+//					ObjectInputStream in;
+//					in = new ObjectInputStream(new FileInputStream(file));
+//					ser = (HashMap<String, List<String>>) in.readObject();
+//					// convert every object back from string
+//					for(String prop : ser.keySet()){
+//						List<String> l = ser.get(prop);
+//						List<RDFNode> nodes = new ArrayList<RDFNode>();
+//						for(String n : l){
+//							nodes.add(ResourceFactory.createResource(n));
+//						}
+//						resourceFocusedInfo.put(ResourceFactory.createProperty(prop), nodes);
+//					}
+//					return resourceFocusedInfo;
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+
+		//define local model to have the data of the uri and extract focused info through built sparql query
 		List<RDFNode> values = new ArrayList<RDFNode>();
 		try 
 		{
@@ -154,9 +207,9 @@ public class URIDereferencing implements GeoLiftModule
 			Model model = ModelFactory.createDefaultModel();
 			InputStream in = conn.getInputStream();
 			model.read(in, null);
-			for(String predicate: predicates.values())
+			for(Property outputProperty: outputProperties)
 			{
-				for(Statement st : model.listStatements(model.getResource(uri),ResourceFactory.createProperty(predicate) , (RDFNode)null).toList())
+				for(Statement st : model.listStatements(model.getResource(uri), outputProperty , (RDFNode) null).toList())
 				{
 					RDFNode value = st.getObject();
 					if(value.isLiteral()){
@@ -165,21 +218,33 @@ public class URIDereferencing implements GeoLiftModule
 					}else{
 						values.add(value);
 					}
-					
+
 				}
-				resourceFocusedInfo.put(predicate, values);
-				values=new ArrayList<RDFNode>();//create new list for new predicate
+				resourceFocusedInfo.put(outputProperty, values);
+				values = new ArrayList<RDFNode>();//create new list for new predicate
 			}
-		} catch (MalformedURLException e) 
-		{
-			e.printStackTrace();
-		} catch (IOException e) 
-		{
-			e.printStackTrace();
-		}catch (Exception e) 
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+//		//serialize the output (for Demo purpose)
+//		try {
+//			HashMap<String, List<String>> ser = new HashMap<String, List<String>>();
+//			FileOutputStream fileOut = new FileOutputStream("resourceFocusedInfo.ser");
+//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+//			//convert to Serializabe Strings
+//			for(Property prop : resourceFocusedInfo.keySet()){
+//				List<String> l = new ArrayList<String>();
+//				for(RDFNode n : resourceFocusedInfo.get(prop)){
+//					l.add(n.toString());
+//				}
+//				ser.put(prop.toString(), l);
+//			}
+//			out.writeObject(ser);
+//		} catch (Exception e2) {
+//			e2.printStackTrace();
+//		}
+
 		return resourceFocusedInfo;
 	}
 
@@ -210,7 +275,7 @@ public class URIDereferencing implements GeoLiftModule
 					//resourceInterestingInfoExtension=objectsDerefInfo.get(triple.Object);
 					object=objectsDerefModelAdded.get(triple.Object);
 					Resource resource= localModel.getResource(triple.subject);
-					resource.addProperty(featureProperty, object);
+					resource.addProperty(addedProperty, object);
 				}
 				else
 				{
@@ -225,7 +290,7 @@ public class URIDereferencing implements GeoLiftModule
 					objectsDerefModelAdded.put(triple.Object, object);
 					//add the empty node as an object to the enriched subject
 					Resource resource= localModel.getResource(triple.subject);
-					resource.addProperty(featureProperty, object);
+					resource.addProperty(addedProperty, object);
 					resourceInterestingInfoExtension= null;
 				}
 				//create new triple with empty node as its subject where this subject will be an object of the targeted resource to be extended
@@ -238,31 +303,60 @@ public class URIDereferencing implements GeoLiftModule
 					}
 					//add the empty node as an object to the enriched subject
 					Resource resource= localModel.getResource(triple.subject);
-					resource.addProperty(ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature"), object);
+					resource.addProperty(addedProperty, object);
 					resourceInterestingInfoExtension= null;
 			}
 		}
 	}*/
-	private static List<String> getObjectsAreURI()
-	{		
-		List<String> objectsURIs = new ArrayList<String>(); 
+	private static List<RDFNode> getURIObjects()
+	{	
+		List<RDFNode> objectsURIs = new ArrayList<RDFNode>();
+//		//Deserialize the results if exists (For Demo purpose)
+//		if(useCache){
+//			try {
+//				List<String> ser = new ArrayList<String>();
+//				File file = new File("URIObjects.ser");
+//				if(file.exists()){
+//					ObjectInputStream in;
+//					in = new ObjectInputStream(new FileInputStream(file));
+//					ser = (List<String>) in.readObject();
+//					// convert every object back from string
+//					for(String n : ser){
+//						objectsURIs.add(ResourceFactory.createResource(n));
+//					}
+//					return objectsURIs;
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+
 		//create a query to retrieve URIs objects
-		String queryString =  "SELECT DISTINCT ?o WHERE {  ?s ?p ?o . FILTER (isURI(?o)) . FILTER (STRSTARTS(STR(?o), \"http://dbpedia.org/resource\"))}";
+		String queryString =  "SELECT DISTINCT ?o WHERE {  ?s ?p ?o . FILTER (isURI(?o)) . FILTER (STRSTARTS(STR(?o), \"http://dbpedia.org/resource\"))}";// 
 		Query query = QueryFactory.create(queryString);
-		/*try {
-			org.aksw.geolift.io.Writer.writeModel(localModel, "TTL", "/home/mofeed/Desktop/dummy.ttl");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		QueryExecution exec = QueryExecutionFactory.create(query, localModel);
 		ResultSet rs = exec.execSelect();
 		while(rs.hasNext())
 		{
-			QuerySolution sol = rs.next();
-			String object=sol.get("?o").toString();
+			QuerySolution sol    = rs.next();
+			RDFNode 	  object = sol.get("?o");
 			objectsURIs.add(object);   	
 		}
+
+//		//serialize the output (for Demo purpose)
+//		try {
+//			FileOutputStream fileOut = new FileOutputStream("URIObjects.ser");
+//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+//			//convert to Serializabe Strings
+//			List<String> l = new ArrayList<String>();
+//			for(RDFNode n : objectsURIs){
+//				l.add(n.toString());
+//			}
+//			out.writeObject(l);
+//		} catch (Exception e2) {
+//			e2.printStackTrace();
+//		}
+
 		return objectsURIs;
 	}
 
@@ -273,16 +367,16 @@ public class URIDereferencing implements GeoLiftModule
 	 * method to dereference the URI-typed object in hashmap and retrieve the targeted predicates values "if exist", 
 	 * it iterates over the hashmap and add them to the resources in the model.
 	 */
-	private static void putAdditionalInfoUsingBlankNode(Map<String,String> predicates)
+	private static void addAdditionalPropertiesUsingBlankNode(Map<String,String> predicates)
 	{
 		//List to save all distinct URI objects in the data source
-		List<String> urisObjects = null;
+		List<RDFNode> urisObjects = new ArrayList<RDFNode>();
 		//Map <predicate,value> save each interesting predicate of the URI object
-		Map<String, List<RDFNode>> resourceInterestingInfoExtension= new HashMap<String, List<RDFNode>>();
+		Map<Property, List<RDFNode>> resourceInterestingInfoExtension= new HashMap<Property, List<RDFNode>>();
 		//Map<object,objectResourceData> to save each object with its related data resource and be retrieved whenever a URI object data needed to be added for extension 
-		Map<String,Resource> objectFilledResource= new HashMap<String, Resource>();
+		Map<RDFNode,Resource> objectFilledResource= new HashMap<RDFNode, Resource>();
 		//Get list of unique URI objects in the data source as http://dbpedia.org/resource/XXXX 
-		urisObjects= getObjectsAreURI();
+		urisObjects= getURIObjects();
 		//Get information for each single distinct objectURI according to interesting predicates
 		logger.info("Number of unique URI object to find extension: "+urisObjects.size());
 		if(urisObjects.size()>0) 
@@ -291,23 +385,23 @@ public class URIDereferencing implements GeoLiftModule
 			Resource object=null;
 			int count=1; 
 			//For each URI object a resource is created, filled with information,add the object with its data resource into map 
-			for (String uriObject : urisObjects)  
+			for (RDFNode uriObject : urisObjects)  
 			{
 				logger.info("Predicate "+ count++ +" of "+ urisObjects.size()+":"+ uriObject);
 				// Create a resource with empty node
-				object=localModel.createResource();
+				object = localModel.createResource();
 				//Retrieve all interesting <predicate,object> info. for such URI object
-				resourceInterestingInfoExtension= URIDereferencing.getURIInfo(uriObject,predicates);
+				resourceInterestingInfoExtension= URIDereferencing.getURIInfo(uriObject);
 				//Add information to the resource 
-				for (String key : resourceInterestingInfoExtension.keySet())
+				for (Property key : resourceInterestingInfoExtension.keySet())
 				{
 					//add the new properties to the new triple
 					List<RDFNode> subjects = resourceInterestingInfoExtension.get(key);
 					for(RDFNode subject: subjects){
 						if(subject.isLiteral()){
-							object.addProperty(ResourceFactory.createProperty(key), subject.asLiteral().toString());
+							object.addProperty(key, subject.asLiteral().toString());
 						}else{
-							object.addProperty(ResourceFactory.createProperty(key), subject);
+							object.addProperty(key, subject);
 						}
 					}
 				}
@@ -318,18 +412,17 @@ public class URIDereferencing implements GeoLiftModule
 		else //othrewise no URI objects to be extended
 			return;
 		//List of all statements have URI object it include for each entry <s,p,o>
-		List<Triple> triplesURIsObjects=null;
+		List<Statement> triplesURIsObjects=null;
 		//Get list of all statement containing URI objects
-		triplesURIsObjects = getTriplesWithObjectsAreURI();
+		triplesURIsObjects = getTriplesWithURIObjects();
 		logger.info("Starting model enriching");
 		if(triplesURIsObjects.size()>0)
 		{
-			//The resource of URI object will be to the subject of each statement with predicate gn:Feature
 			Resource object=null;
 			//iterate over each triple to dereference each URI object and add its information to its resource subject
-			for (Triple triple : triplesURIsObjects) 
+			for (Statement triple : triplesURIsObjects) 
 			{
-				//Check if this object's resource was added to the model before as a resource with empty node using gn:Feature,
+				//Check if this object's resource was added to the model before as a resource with empty node using addedProperty,
 				//so attach it to this subject (if the subject has the same object with different predicates that will happen repeatedly)
 				/*if(objectsDerefModelAdded.containsKey(triple.Object)) 
 					{
@@ -337,19 +430,19 @@ public class URIDereferencing implements GeoLiftModule
 						object=objectsDerefModelAdded.get(triple.Object);
 						//Attach the object's resource to this subject
 						Resource resource= localModel.getResource(triple.subject);
-						resource.addProperty(ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature"), object);
+						resource.addProperty(addedProperty, object);
 					}
 					else //otherwise create a resource for it*/
 				{
 					//create new triple with empty node as its subject where this subject will be an object of the targeted resource to be extended
-					if(!objectFilledResource.containsKey(triple.subject))
+					if(!objectFilledResource.containsKey(triple.getSubject()))
 					{
-						object=objectFilledResource.get(triple.Object);
-						objectsDerefModelAdded.put(triple.Object, object);
+						object = objectFilledResource.get(triple.getObject());
+						objectsDerefModelAdded.put(triple.getObject(), object);
 						//Attach the object's resource to this subject
-						Resource resource= localModel.getResource(triple.subject);
-						resource.addProperty(ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature"), object);
-						/*Statement s = ResourceFactory.createStatement(resource, ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature"), object);
+						Resource resource= localModel.getResource(triple.getSubject().getURI());
+						resource.addProperty(addedProperty, object);
+						/*Statement s = ResourceFactory.createStatement(resource, addedProperty, object);
 							localModel.add(s);*/
 						resourceInterestingInfoExtension= null;
 					}
@@ -358,27 +451,27 @@ public class URIDereferencing implements GeoLiftModule
 		}
 	}
 
-	private static void putAdditionalInfoNoBlankNode(Map<String,String> predicates)
+	private static void addAdditionalPropertiesNoBlankNode()
 	{
 		//List to save all distinct URI objects in the data source
-		List<String> urisObjects = null;
+		List<RDFNode> urisObjects = null;
 		//Map <predicate,value> save each interesting predicate of the URI object
-		Map<String, List<RDFNode>> resourceInterestingInfoExtension= new HashMap<String, List<RDFNode>>();
+		Map<Property, List<RDFNode>> resourceInterestingInfoExtension= new HashMap<Property, List<RDFNode>>();
 		//Map<object,objectResourceData> to save each object with its related data resource and be retrieved whenever a URI object data needed to be added for extension 
-		Map<String,Map<String, List<RDFNode>>> objectWithInfoAttached= new HashMap<String, Map<String, List<RDFNode>>>();
+		Map<RDFNode,Map<Property, List<RDFNode>>> objectWithInfoAttached= new HashMap<RDFNode, Map<Property, List<RDFNode>>>();
 		//Get list of unique URI objects in the data source as http://dbpedia.org/resource/XXXX 
-		urisObjects= getObjectsAreURI();
+		urisObjects= getURIObjects();
 		//Get information for each single distinct objectURI according to interesting predicates
 		logger.info("Number of unique URI object to find extension: "+urisObjects.size());
 		if(urisObjects.size()>0) 
 		{
 			int count=1; 
 			//For each unique URI object, its predicate-value pairs are retrieved then add them attached to their object in a map 
-			for (String uriObject : urisObjects)  
+			for (RDFNode uriObject : urisObjects)  
 			{
 				logger.info("Enriching " + uriObject + "(" + count++ + "/" + urisObjects.size()+")");
 				//Retrieve all interesting <predicate,object> info. for current URI object
-				resourceInterestingInfoExtension= URIDereferencing.getURIInfo(uriObject,predicates);
+				resourceInterestingInfoExtension = getURIInfo(uriObject);
 				//Add retrieved predicate-value pair attached to the object in the map 
 				objectWithInfoAttached.put(uriObject, resourceInterestingInfoExtension);//enriched list of objects
 			}
@@ -386,28 +479,28 @@ public class URIDereferencing implements GeoLiftModule
 		else //othrewise no URI objects to be extended
 			return;
 		//List of all statements have URI-object
-		List<Triple> triplesURIsObjects=null;
+		List<Statement> triplesURIsObjects = null;
 		//Get list of all statement containing URI-objects
-		triplesURIsObjects = getTriplesWithObjectsAreURI();
+		triplesURIsObjects = getTriplesWithURIObjects();
 		logger.info("Starting model enriching");
 		if(triplesURIsObjects.size()>0)
 		{
 			//iterate over each triple to add each URI object information to its resource subject
-			for (Triple triple : triplesURIsObjects) 
+			for (Statement triple : triplesURIsObjects) 
 			{
 				//put a hand over the required subject
-				Resource mainResource= localModel.getResource(triple.subject);
-				Resource enrichedResource = ResourceFactory.createResource(triple.Object);
+				Resource mainResource= triple.getSubject();
+				Resource enrichedResource = (Resource) triple.getObject();
 				//for the subject's related object in the enriched list get the related predicate-value pairs
-				Map<String, List<RDFNode>> objectPredicateValuePairs = objectWithInfoAttached.get(triple.Object);
-				for (String predicate : objectPredicateValuePairs.keySet()) {
+				Map<Property, List<RDFNode>> objectPredicateValuePairs = objectWithInfoAttached.get(triple.getObject());
+				for (Property predicate : objectPredicateValuePairs.keySet()) {
 					for(RDFNode value : objectPredicateValuePairs.get(predicate)){
 						if(value.isLiteral()){
 							//mainResource.addProperty(ResourceFactory.createProperty(predicate), objectPredicateValuePairs.get(predicate).asLiteral().toString());
-							localModel.add(enrichedResource,ResourceFactory.createProperty(predicate),value.asLiteral().toString());
+							localModel.add(enrichedResource, predicate, value.asLiteral().toString());
 						}else{
 							//mainResource.addProperty(ResourceFactory.createProperty(predicate), objectPredicateValuePairs.get(predicate));
-							localModel.add(enrichedResource,ResourceFactory.createProperty(predicate), value);
+							localModel.add(enrichedResource, predicate, value);
 
 						}
 					}
@@ -445,9 +538,34 @@ public class URIDereferencing implements GeoLiftModule
 	 * it queries  the model for all its URI-typed objects as it check every object if it is a resource (URI).
 	 *  if so then add them to the list.
 	 */
-	private static List<Triple> getTriplesWithObjectsAreURI()
+	private static List<Statement> getTriplesWithURIObjects()
 	{
-		List<Triple> objectsURIs = new ArrayList<Triple>(); 
+		List<Statement> triplesWithURIObjects = new ArrayList<Statement>(); 
+
+//		//Deserialize the results if exists (For Demo purpose)
+//		if(useCache){
+//			try {
+//				List<String> ser = new ArrayList<String>();
+//				File file = new File("triplesWithURIObjects.ser");
+//				if(file.exists()){
+//					ObjectInputStream in;
+//					in = new ObjectInputStream(new FileInputStream(file));
+//					ser = (List<String>) in.readObject();
+//					// convert every object back from string
+//					for(String st : ser){
+//						triplesWithURIObjects.add(ResourceFactory.createStatement(
+//								ResourceFactory.createResource(st.split(" ")[0]), 
+//								ResourceFactory.createProperty(st.split(" ")[1]), 
+//								ResourceFactory.createResource(st.split(" ")[2])));
+//					}
+//					return triplesWithURIObjects;
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+
+//		}
+
 		//create a query to retrieve URIs objects
 		String queryString =  "SELECT * WHERE { ?s ?p ?o . FILTER (isURI(?o)) . FILTER (STRSTARTS(STR(?o), \"http://dbpedia.org/resource\"))}";
 		Query query = QueryFactory.create(queryString);
@@ -456,25 +574,35 @@ public class URIDereferencing implements GeoLiftModule
 		while(rs.hasNext())
 		{
 			QuerySolution sol = rs.next();
-			/*    		if(sol.get("?o").isResource())
-    		{*/
-			String s = sol.get("?s").toString();
-			String p = sol.get("?p").toString();
-			String o = sol.get("?o").toString();
-			Triple triple= new Triple(s,p,o);
-			objectsURIs.add(triple);
-			/*    		}*/
-
+			RDFNode s = sol.get("?s");
+			RDFNode p = sol.get("?p");
+			RDFNode o = sol.get("?o");
+			Statement triple = ResourceFactory.createStatement(s.asResource(), ResourceFactory.createProperty(p.toString()), o);
+			triplesWithURIObjects.add(triple);
 		}	
-		return objectsURIs;
+
+//		//serialize the output (for Demo purpose)
+//		try {
+//			FileOutputStream fileOut = new FileOutputStream("triplesWithURIObjects.ser");
+//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+//			List<String> l = new ArrayList<String>();
+//			for(Statement s : triplesWithURIObjects){
+//				l.add(s.getSubject() + " " + s.getPredicate() + " " + s.getObject());
+//			}
+//			out.writeObject(l);
+//		} catch (Exception e2) {
+//			e2.printStackTrace();
+//		}
+
+		return triplesWithURIObjects;
 	}
+
+
 
 	private static void querySparqlService(String service,String query)
 	{
 		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
 		ResultSet results = qe.execSelect();
-		ResultSetFormatter.out(System.out, results);
-		// end method
 	}
 
 	private void setPrefixes()

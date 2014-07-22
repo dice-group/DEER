@@ -45,18 +45,17 @@ import org.apache.log4j.Logger;
  */
 public class NlpGeoEnricher implements GeoLiftModule{
 
-	private static final Logger logger = Logger.getLogger(GeoLiftModule.class.getName());
-
+	private static final Logger logger = Logger.getLogger(NlpGeoEnricher.class.getName());
 	private Model model;
 
 	// parameters list
 	private Property 	LiteralProperty;
-	private boolean 	useFoxLight		= false;
+	private String 	useFoxLight			= "OFF"; //"org.aksw.fox.nertools.NERStanford"; ;
 	private boolean 	askEndPoint 	= false;
 	private String 		foxType 		= "TEXT";
 	private String 		foxTask 		= "NER";
 	private String 		foxInput 		= "";
-	private String 		foxOutput		= "TURTLE";
+	private String 		foxOutput		= "Turtle";
 	private boolean 	foxUseNif		= false;
 	private boolean 	foxReturnHtml 	= false;
 	private String 		inputFile		= "";
@@ -194,32 +193,32 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	/**
 	 * @return the useFoxLight
 	 */
-	public boolean getUseFoxLight() {
+	public String getUseFoxLight() {
 		return useFoxLight;
 	}
 
 	/**
 	 * @param useFoxLight the useFoxLight to set
 	 */
-	public void setUseFoxLight(boolean useFL) {
+	public void setUseFoxLight(String useFL) {
 		useFoxLight = useFL;
 	}
 
 	/**
 	 * @param model
-	 * @param litralProperty
+	 * @param literalProperty
 	 *@author sherif
 	 */
-	public NlpGeoEnricher(Model model, Property litralProperty) {
+	public NlpGeoEnricher(Model model, Property literalProperty) {
 		super();
 		this.model = model;
-		this.LiteralProperty = litralProperty;
+		this.LiteralProperty = literalProperty;
 	}
 
-	public NlpGeoEnricher(String fileNameOrUri, String litralPropartyUri) {
+	public NlpGeoEnricher(String fileNameOrUri, String literalPropartyUri) {
 		super();
 		this.model = loadModel(fileNameOrUri);
-		this.LiteralProperty = ResourceFactory.createProperty(litralPropartyUri);
+		this.LiteralProperty = ResourceFactory.createProperty(literalPropartyUri);
 	}
 
 	/**
@@ -241,9 +240,9 @@ public class NlpGeoEnricher implements GeoLiftModule{
 
 
 	/**
-	 * @return the litralProperty
+	 * @return the literalProperty
 	 */
-	public Property getLitralProperty() {
+	public Property getliteralProperty() {
 		return LiteralProperty;
 	}
 
@@ -257,9 +256,9 @@ public class NlpGeoEnricher implements GeoLiftModule{
 
 
 	/**
-	 * @param LiteralProperty the litralProperty to set
+	 * @param LiteralProperty the literalProperty to set
 	 */
-	public void setLitralProperty(Property p) {
+	public void setliteralProperty(Property p) {
 		this.LiteralProperty = p;
 	}
 
@@ -334,26 +333,30 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 * @param task: { NER }
 	 * @param output: { JSONLD | N3 | N-TRIPLE | RDF/{ JSON | XML | XML-ABBREV} | TURTLE }
 	 * @param input: text or an url
-	 * @param foxlight: { true | false }
+	 * @param foxlight: an implemented INER class name (e.g.: `org.aksw.fox.nertools.NEROpenNLP`) or `OFF`. 
+	 * 		org.aksw.fox.nertools.NERIllinoisExtended
+	 * 		org.aksw.fox.nertools.NEROpenNLP
+	 * 		org.aksw.fox.nertools.NERBalie
+	 * 		org.aksw.fox.nertools.NERStanford
 	 * @param nif: { true | false }
 	 * @param returnHtml: { true | false }
 	 * @return Named entity buffer containing annotation of the input text
 	 * @author sherif
 	 */
-	private String getNamedEntity(String type, String task, String output, String input, boolean foxlight, boolean nif, boolean returnHtml){
+	private String getNamedEntity(String type, String task, String output, String input, String foxlight, boolean nif, boolean returnHtml){
 		String buffer = "", line; 
 		boolean error = true;
 		while (error) {
 			try {
 				input=refineString(input);
 				// Construct data
-				String data = URLEncoder.encode("type",	 	"UTF-8") 	+ "=" + URLEncoder.encode(type, 						"UTF-8");
-				data += "&" + URLEncoder.encode("task",		"UTF-8") 	+ "=" + URLEncoder.encode(task,	 						"UTF-8");
-				data += "&" + URLEncoder.encode("output", 	"UTF-8") 	+ "=" + URLEncoder.encode(output, 						"UTF-8");
+				String data = URLEncoder.encode("type",	 	"UTF-8") 	+ "=" + URLEncoder.encode(type,						    "UTF-8");
+				data += "&" + URLEncoder.encode("task",		"UTF-8") 	+ "=" + URLEncoder.encode(task, 						"UTF-8");
+				data += "&" + URLEncoder.encode("output", 	"UTF-8") 	+ "=" + URLEncoder.encode(output,						"UTF-8");
 				data += "&" + URLEncoder.encode("input", 	"UTF-8") 	+ "=" + URLEncoder.encode(input, 						"UTF-8");
-				data += "&" + URLEncoder.encode("foxlight", "UTF-8")	+ "=" + URLEncoder.encode( (foxlight) ? "TRUE":"FALSE",	"UTF-8");
-				data += "&" + URLEncoder.encode("nif", 		"UTF-8")	+ "=" + URLEncoder.encode( (nif) ? "TRUE":"FALSE", 		"UTF-8");
-				data += "&" + URLEncoder.encode("returnHtml", "UTF-8")	+ "=" + URLEncoder.encode( (returnHtml)?"TRUE":"FALSE",	"UTF-8");
+				data += "&" + URLEncoder.encode("foxlight", "UTF-8")	+ "=" + URLEncoder.encode(foxlight,						"UTF-8");
+				data += "&" + URLEncoder.encode("nif", 		"UTF-8")	+ "=" + URLEncoder.encode((nif)       ? "TRUE":"FALSE", "UTF-8");
+				data += "&" + URLEncoder.encode("returnHtml", "UTF-8")	+ "=" + URLEncoder.encode((returnHtml)? "TRUE":"FALSE", "UTF-8");
 
 				// Send data
 				URL url = new URL("http://139.18.2.164:4444/api");
@@ -377,9 +380,9 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			}
 		}
 
-		//TODO use JASON parser
+		//TODO use a JASON parser
 
-		buffer= URLDecoder.decode(buffer);
+		buffer= URLDecoder.decode(buffer); System.out.println(buffer); System.exit(1);
 		buffer = buffer.substring(buffer.indexOf("@"), buffer.lastIndexOf("log")-4).toString();
 
 		return buffer;
@@ -394,7 +397,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 */
 	public Model getPlaces(Model namedEntityModel, RDFNode subject){
 
-		Model resultModel=ModelFactory.createDefaultModel();
+		Model resultModel = ModelFactory.createDefaultModel();
 
 		String sparqlQueryString= 	"CONSTRUCT {?s ?p ?o} " +
 				" WHERE {?s a <http://ns.aksw.org/scms/annotations/LOCATION>. ?s ?p ?o} " ;
@@ -547,8 +550,8 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			model = loadModel(inputFile);
 		}	
 
-		if( parameters.containsKey("litralProperty"))
-			LiteralProperty = ResourceFactory.createProperty(parameters.get("litralProperty"));
+		if( parameters.containsKey("literalProperty"))
+			LiteralProperty = ResourceFactory.createProperty(parameters.get("literalProperty"));
 		else{
 			LiteralPropertyRanker lpr=new LiteralPropertyRanker(model)	;
 			LiteralProperty = lpr.getTopRankedLiteralProperty();
@@ -557,7 +560,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		if( parameters.containsKey("addedGeoProperty"))
 			addedGeoProperty = ResourceFactory.createProperty("addedGeoProperty");
 		if( parameters.containsKey("useFoxLight"))
-			useFoxLight = parameters.get("useFoxLight").toLowerCase().equals("true")? true : false;
+			useFoxLight = parameters.get("useFoxLight").toLowerCase();
 		if( parameters.containsKey("askEndPoint"))
 			askEndPoint = parameters.get("askEndPoint").toLowerCase().equals("true")? true : false;
 		if( parameters.containsKey("foxType"))
@@ -593,17 +596,17 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 */
 	public List<String> getParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("input");
-		parameters.add("output");
-		parameters.add("litralProperty");
+//		parameters.add("input");
+//		parameters.add("output");
+		parameters.add("literalProperty");
 		parameters.add("useFoxLight");
 		parameters.add("askEndPoint");
-		parameters.add("foxType");
-		parameters.add("foxTask");
-		parameters.add("foxInput");
-		parameters.add("foxOutput");
-		parameters.add("foxUseNif");
-		parameters.add("foxReturnHtml");
+//		parameters.add("foxType");
+//		parameters.add("foxTask");
+//		parameters.add("foxInput");
+//		parameters.add("foxOutput");
+//		parameters.add("foxUseNif");
+//		parameters.add("foxReturnHtml");
 		parameters.add("addedGeoProperty");
 		return parameters;
 	}
@@ -621,8 +624,8 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			if(args[i].equals("-o") || args[i].toLowerCase().equals("--output")){
 				parameters.put("output",   args[i+1]);
 			}
-			if(args[i].equals("-p") || args[i].toLowerCase().equals("--litralProperty")){
-				parameters.put("litralProperty",   args[i+1]);
+			if(args[i].equals("-p") || args[i].toLowerCase().equals("--literalProperty")){
+				parameters.put("literalProperty",   args[i+1]);
 			}
 			if(args[i].equals("-l") || args[i].toLowerCase().equals("--useFoxLight")){
 				parameters.put("useFoxLight",   args[i+1]);
@@ -630,15 +633,19 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			if(args[i].equals("-e") || args[i].toLowerCase().equals("--askEndPoint")){
 				parameters.put("askEndPoint",   args[i+1]);
 			}
-			if(args[i].equals("-p") || args[i].toLowerCase().equals("--litralProperty")){
+			if(args[i].equals("-p") || args[i].toLowerCase().equals("--literalProperty")){
 				parameters.put("LiteralProperty",   args[i+1]);}
 			if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")){
 				logger.info(
 						"Basic parameters:\n" +
 								"\t-i --input: input file/URI" + "\n" +
 								"\t-o --output: output file/URI" + "\n" +
-								"\t-p --litralProperty: litral property used for NER" + "\n" +
-								"\t-l --useFoxLight: { true | false }" + "\n" +
+								"\t-p --literalProperty: literal property used for NER" + "\n" +
+								"\t-l --useFoxLight: foxlight: an implemented INER class name (e.g.: `org.aksw.fox.nertools.NEROpenNLP`) or `OFF`." + "\n" +
+										  		"\t org.aksw.fox.nertools.NERIllinoisExtended"+ "\n" +
+										  		"\t org.aksw.fox.nertools.NEROpenNLP"+ "\n" +
+										  		"\t org.aksw.fox.nertools.NERBalie"+ "\n" +
+										  		"\t org.aksw.fox.nertools.NERStanford" + "\n" +
 								"\t-e --askEndPoint: { true | false}"+ "\n" +
 								"Fox parameters (current version use always default values, which is the first one):\n"+
 								"\t--foxType: { text | url }" + "\n" +
@@ -646,7 +653,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 								"\t--foxInput: text or an url" + "\n" +
 								"\t--foxOutput: {TURTLE | JSONLD | N3 | N-TRIPLE | RDF/{ JSON | XML | XML-ABBREV} }" + "\n" +
 								"\t--foxUseNif: { false | true }" + "\n" +
-						"\t--foxReturnHtml: { false | true }" );
+								"\t--foxReturnHtml: { false | true }" );
 				System.exit(0);
 			}
 		} 

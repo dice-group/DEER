@@ -57,6 +57,10 @@ public class ModuleFactory {
 		return result;
 	}
 	
+	/**
+	 * @return list of instances of all implemented modules
+	 * @author sherif
+	 */
 	List<GeoLiftModule> getImplementations(){
 		List<GeoLiftModule> result = new ArrayList<GeoLiftModule>();
 		result.add(new URIDereferencing());
