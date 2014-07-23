@@ -1,0 +1,83 @@
+@prefix : <http://geoknow.org/ontology/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+
+:d1		a				:Dataset ;
+		:hasUrl			<http://dbpedia.org/resource/Berlin> .
+:d2		a				:Dataset .
+:d3		a				:Dataset .
+:d4		a				:Dataset .
+:d5		a				:Dataset .
+
+:s1		a 				:Step;
+		:isFirstStep		true ;
+		rdfs:label		"Step(1) Dereferincing" ;
+		:hasModule		:m1 ;
+		:hasInput		:d1 ;
+		:hasOutput		:d2 ;
+		:nextStep		:s2 .
+
+:m1		a				:Module, :DereferencingModule  ;
+		rdfs:lable		"Dereferencing" ;
+		:hasParameter	:p1-1 .
+
+:p1-1	a				:ModuleParameter, :DereferencingModuleParameter ;
+		:hasKey			"Predicate1" ;
+		:hasValue		geo:lat .
+
+:s2		a 				:Step ;
+		rdfs:label		"Step(2) NLP" ;
+		:hasModule 		:m2 ;
+		:hasInput		:d2 ;
+		:hasOutput		:d3 ;
+		:nextStep		:s3 .
+
+:m2		a				:Module, :NLPModule  ;
+		rdfs:lable		"NLP" ;
+		:hasParameter	:p2-1, :p2-2 .
+
+:p2-1	a				:ModuleParameter, :NLPModuleParameter ;
+		:hasKey			"useFoxLight" ;
+		:hasValue		"OFF" .
+
+:p2-2	a				:ModuleParameter, :NLPModuleParameter ;
+		:hasKey			"askEndPoint" ;
+		:hasValue		false .
+
+:s3		a 				:Step ;
+		rdfs:label		"Step(3) NLP" ;
+		:hasModule 		:m3 ;
+		:hasInput		:d3 ;
+		:hasOutput		:d4 ;
+		:nextStep		:s4 .
+
+:m3		a				:Module, :NLPModule  ;
+		rdfs:lable		"NLP" ;
+		:hasParameter	:p3-1, :p3-2 .
+
+:p3-1	a				:ModuleParameter, :NLPModuleParameter ;
+		:hasKey			"LiteralProperty" ;
+		:hasValue		rdfs:comment .
+
+:p3-2	a				:ModuleParameter, :NLPModuleParameter ;
+		:hasKey			"useFoxLight" ;
+		:hasValue		"org.aksw.fox.nertools.NERStanford" .
+
+:s4		a 				:Step ;
+		rdfs:label		"Step(4) NLP" ;
+		:hasModule 		:m4 ;
+		:hasInput		:d4 ;
+		:hasOutput		:d5 ;
+		:isLastStep		true .
+
+:m4		a				:Module, :NLPModule  ;
+		rdfs:lable		"NLP" ;
+		:hasParameter	:p4-1 .
+
+:p4-1	a				:ModuleParameter, :NLPModuleParameter ;
+		:hasKey			"useFoxLight" ;
+		:hasValue		"org.aksw.fox.nertools.NEROpenNLP" .
+
+
+	
+

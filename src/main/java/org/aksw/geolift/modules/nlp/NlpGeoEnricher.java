@@ -382,7 +382,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 
 		//TODO use a JASON parser
 
-		buffer= URLDecoder.decode(buffer); System.out.println(buffer); System.exit(1);
+		buffer= URLDecoder.decode(buffer); 
 		buffer = buffer.substring(buffer.indexOf("@"), buffer.lastIndexOf("log")-4).toString();
 
 		return buffer;

@@ -309,13 +309,19 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
 
 \begin{table*}[ht]
 \caption{Dereferencing parameters description} \label{tbl:derefPram}
-\begin{tabular}{@{}  l  l p{7cm} l p{6cm}@{}}
+% \begin{tabular}{@{}  l  l p{7cm} l p{6cm}@{}}
+\begin{tabularx}{\textwidth}{@{}llX@{}}
 \toprule
-\textbf{Parameter Name} & \textbf{Default value} & \textbf{Description}\\
+\textbf{Parameter Name} & \textbf{Default} & \textbf{Description}\\
 \midrule
-\texttt{predicates} 	& \texttt{null} 	& List of interesting predicates to enrich the model, and their Objects' values.  The predicates are given in form of Map structure where the key is a user-defined name for the predicate and the map value is the predicate itself. e.g. $\langle$``predicate1'',``\url{http://www.w3.org/2003/01/geo/wgs84_pos#lat}''$\rangle$. \\
+\texttt{inputProperty<n>} 	& \texttt{null} 	& List of interesting predicates to enrich the model, and their Objects' values. e.g.$\langle$``inputProperty1'',``\url{http://www.w3.org/2003/01/geo/wgs84_pos#lat}''$\rangle$. \textbf{Mandatory parameter}\\
+\midrule
+\texttt{outputProperty<n>} 	& \texttt{null} 	& The enriched output property.\\
+\midrule
+\texttt{useBlankNodes}		& \texttt{false} & Use blank node in output dataset.\\
 \bottomrule
-\end{tabular}
+% \end{tabular}
+\end{tabularx}
 \end{table*}
 
 \subsubsection{Output}
@@ -364,15 +370,19 @@ resultedModel.write(System.out,"TTL");
 The parameters, other than the data model parameter, are  collected in Map structure form,
 where each entry's value in the Map represents the parameter itself.
 Table \ref{tbl:linkingPram} provides details about the \texttt{Linking} module's parameters .
+
+
 \begin{table*}[ht]
 \caption{Linking parameters description} \label{tbl:linkingPram}
 \begin{tabular}{@{}  l  l p{7cm} l p{6cm}@{}}
 \toprule
-\textbf{Parameter Name} & \textbf{Default value} & \textbf{Description}\\
+\textbf{Parameter Name} & \textbf{Default} & \textbf{Description}\\
 \midrule
-\texttt{Specification file} 	& \texttt{N/A} 	& The path to specification file used for linking process, the original dataset to be enriched must be on the source dataset , e.g. \url {linkingModuleData/linking/spec.xml}. The parameter's entry in th Map structure has key 'specFilePath'.\\
-\texttt{Links file} 	& \texttt{N/A} 	& The path to links file resulted from the linking process. This file's path is the same as the one specified in LIME's specifications file as output file, e.g. \url {linkingModuleData/linking/links.nt}. The parameter's entry in th Map structure has key 'linksFilePath'.\\
-\texttt{Original URI position} 	& \texttt{N/A} 	& represents the original model's URI position as source/left or target/right in the linking specifications. Its value is either 'source' or 'target'. The parameter's entry in th Map structure has key 'linksPart'.\\ 
+\texttt{specFilePath} 	& \texttt{N/A} 	& The path to specification file used for linking process, the original dataset to be enriched must be on the source dataset , e.g. \url {linkingModuleData/linking/spec.xml}. \\
+\midrule
+\texttt{linksFilePath} 	& \texttt{N/A} 	& The path to links file resulted from the linking process. This file's path is the same as the one specified in LIME's specifications file as output file, e.g. \url {linkingModuleData/linking/links.nt}. \\
+\midrule
+\texttt{linksPart} 	& \texttt{N/A} 	& Represents the original model's URI position as source/left or target/right in the linking specifications. Its value is either 'source' or 'target'.\\ 
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -424,7 +434,7 @@ model.write(System.out,"TTL");
 \subsubsection{Output}
 \begin{itemize}
  \item \texttt{Data model} enriched with additional Geo-spatial information URIs represented by the \texttt{addedGeoProperty} predicates, 
- witch by default is \texttt{geoknow:relatedTo\footnote{Prefix \texttt{geolift} stands for \texttt{http://geoknow.org/ontology/}}} predicates.
+ witch by default is \texttt{gn:relatedTo\footnote{Prefix \texttt{gn} stands for \texttt{http://geoknow.org/ontology/}}} predicates.
 \end{itemize}
 
 \subsubsection{Process}
@@ -438,23 +448,34 @@ A sample code showing how to call the \texttt{NlpGeoEnricher} class and giving i
 \begin{table}
 
 \caption{NLP parameters description} \label{tbl:nlpPram}
-\footnotesize
+\small
 \begin{tabularx}{\textwidth}{@{}llX@{}}
 % \begin{tabular}{@{}  l  l  l @{}}
 \toprule
-\textbf{Parameter Name} & \textbf{Default value} & \textbf{Description}\\
+\textbf{Parameter Name} & \textbf{Default} & \textbf{Description}\\
 \midrule
 \texttt{input} 		& \texttt{N/A} 		& The input file/URI to be enriched\\
+\midrule
 \texttt{output} 	& \texttt{N/A} 		& The output file to write the enriched model to it\\
+\midrule
 \texttt{literalProperty}	& \texttt{Top Ranked} 	& Literal property used by FOX for NER, if not set the top ranked literal property is pecked by \texttt{LiteralPropertyRanker} module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
-\texttt{addedGeoProperty}& \texttt{geoknow:relatedTo\footnotemark[11]}& property added to the input model with additional Geo-spatial knowledge through NLP.\\
+\midrule
+\texttt{addedGeoProperty}& \texttt{gn:relatedTo\footnotemark[11]}& property added to the input model with additional Geo-spatial knowledge through NLP.\\
+\midrule
 \texttt{useFoxLight} 	& \texttt{OFF} 	& An implemented NER class name (\url{org.aksw.fox.nertools.NEROpenNLP}, \url{org.aksw.fox.nertools.NERIllinoisExtended}, \url{org.aksw.fox.nertools.NERBalie}, \url{org.aksw.fox.nertools.NERStanford}) or \texttt{OFF}, If this parameter is given with a wrong value, \url{org.aksw.fox.nertools.NERStanford} will be used. \\
+\midrule
 \texttt{askEndPoint} 	& \texttt{false} 	& Ask the \emph{DBpedia} endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results)\\
+\midrule
 \texttt{foxType} 	& \texttt{TEXT} 	&  text or an url (e.g.: `G. W. Leibniz was born in Leipzig`, '\url{http://en.wikipedia.org/wiki/Leipzig_University}`) \\
+\midrule
 \texttt{foxTask} 	& \texttt{NER} 		& FOX task \texttt{:\{NER\}} for Named Entity Recognition\\
+\midrule
 \texttt{foxInput} 	& \texttt{""} 		& FOX actual input as text or an URL\\
+\midrule
 \texttt{foxOutput} 	& \texttt{TURTLE} 	& FOX output format: \{\texttt{ JSON-LD | N-Triples | RDF/\{ JSON | XML \}}\}\\
+\midrule
 \texttt{foxUseNif} 	& \texttt{false} 	& FOX generates NIF: \{ true $\rvert$ false \}\\
+\midrule
 \texttt{foxReturnHtml} & \texttt{false} 	& FOX returns HTML: \texttt{\{ true $\rvert$ false \}}\\ 
 \bottomrule
 % \end{tabular}

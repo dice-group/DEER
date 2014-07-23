@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.modules.GeoLiftModule;
+import org.aksw.geolift.modules.nlp.NlpGeoEnricher;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.Query;
@@ -38,8 +39,12 @@ import com.hp.hpl.jena.rdf.model.Statement;
  */
 public class URIDereferencing implements GeoLiftModule
 {
-	public static boolean useCache = true;
-	public static boolean useBlankNodes = true;
+	private static final Logger logger = Logger.getLogger(URIDereferencing.class.getName());
+	//list of parameters passed to the module
+	List<String> parametersList= new ArrayList<String>();
+	static Map<RDFNode,Resource> objectsDerefModelAdded= new HashMap<RDFNode, Resource>();
+	public static boolean useCache = false;
+	public static boolean useBlankNodes = false;
 	public static List<Property> inputProperties = new ArrayList<Property>();
 	public static List<Property> outputProperties = new ArrayList<Property>();
 	//TODO find appropriate property since Feature is a class
@@ -55,7 +60,7 @@ public class URIDereferencing implements GeoLiftModule
 		for(String key : parameters.keySet()){
 			if(key.toLowerCase().equals("useblanknodes")){
 				useBlankNodes = Boolean.parseBoolean(parameters.get(key));
-			}if(key.toLowerCase().equals("useCache")){
+			}if(key.toLowerCase().equals("usecache")){
 				useCache = Boolean.parseBoolean(parameters.get(key));
 			}else if(key.toLowerCase().startsWith("inputproperty")){
 				inputProperties.add(ResourceFactory.createProperty(parameters.get(key)));
@@ -67,7 +72,7 @@ public class URIDereferencing implements GeoLiftModule
 				System.exit(1);
 			}
 		}
-		if(outputProperties.size() == 0){
+		if(inputProperties.size() == 0){
 			logger.error("The inputProperty is a mandatory parameter(s) for the dereferencing module");
 			logger.error("No inputProperty provided, Exit GeoLift");
 			System.exit(1);
@@ -83,7 +88,7 @@ public class URIDereferencing implements GeoLiftModule
 		parameters.add("inputProperty<n>");
 		parameters.add("outputProperty<n>");
 		parameters.add("useBlankNodes");
-		parameters.add("useCache");
+//		parameters.add("useCache");
 		return parameters;
 	}
 
@@ -94,10 +99,7 @@ public class URIDereferencing implements GeoLiftModule
 	 * This method assigns the localmodel inside the class to the one given, collects targeted predicates into list, 
 	 * and calls another method putAdditionalInfoUsingBlankNode to make the enrichment
 	 */
-	//list of parameters passed to the module
-	List<String> parametersList= new ArrayList<String>();
-	static Map<RDFNode,Resource> objectsDerefModelAdded= new HashMap<RDFNode, Resource>();
-	private static final Logger logger = Logger.getLogger(URIDereferencing.class.getName());
+
 	/* (non-Javadoc)
 	 * This method starts processing to retrieve information from the interesting predicates
 	 */

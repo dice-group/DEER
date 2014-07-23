@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.modules.GeoLiftModule;
+import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
+import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
@@ -24,8 +27,10 @@ import de.uni_leipzig.simba.controller.PPJoinController;
  */
 public class Linking implements GeoLiftModule
 {
-
-	List<String> parametersList= new ArrayList<String>();
+	private static final Logger logger = Logger.getLogger(Linking.class.getName());
+	String specFilePath;
+	String linksFilePath;
+	String linksPart;
 	/**
 	 * @param model: the model of the dataset to be enriched
 	 * @param parameters: list of parameters needed for the processing include:
@@ -35,13 +40,23 @@ public class Linking implements GeoLiftModule
 
 	public Model process(Model model, Map<String, String> parameters) 
 	{
-		// TODO Auto-generated method stub
 		//Copy parameters from Map into List
-		String datasetSource = parameters.get("datasetSource"); parametersList.add("datasetSource");
-		String specFilePath = parameters.get("specFilePath"); parametersList.add("specFilePath");
-		String linksFilePath = parameters.get("linksFilePath"); parametersList.add("linksFilePath");
-		String linksPart=parameters.get("linksPart"); parametersList.add("linksPart");
-
+//		String datasetSource = parameters.get("datasetSource"); 
+		
+		for(String key : parameters.keySet()){
+			if(key.equals("specFilePath")){
+				specFilePath = parameters.get("specFilePath");
+			}if(key.equals("linksfFilePath")){
+				linksFilePath = parameters.get("linksFilePath");
+			}else if(key.startsWith("linksPart")){
+				linksPart = parameters.get("linksPart");
+			}else{
+				logger.error("Invalid parameter key: " + key + ", allowed parameters for the linking module are: " + getParameters());
+				logger.error("Exit GeoLift");
+				System.exit(1);
+			}
+		}
+	
 		model = setPrefixes(model);
 		linkingProcess(specFilePath);
 		model= addLinksToModel(model, linksFilePath,linksPart);
@@ -50,14 +65,12 @@ public class Linking implements GeoLiftModule
 
 	public List<String> getParameters() 
 	{
-		// TODO Auto-generated method stub
-		if(parametersList.size()>0)
-		{
-			parametersList.add("input");
-			return parametersList;
-		}
-		else
-			return null;
+		List<String> parameters = new ArrayList<String>();
+//		parameters.add("datasetSource");
+		parameters.add("specFilePath");
+		parameters.add("linksFilePath");
+		parameters.add("linksPart");
+		return parameters;
 	}
 
 	/**
