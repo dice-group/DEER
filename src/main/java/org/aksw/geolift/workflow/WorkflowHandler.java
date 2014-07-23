@@ -14,6 +14,8 @@ import java.util.TreeSet;
 import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
+import org.aksw.geolift.modules.conformation.ConformationModule;
+import org.aksw.geolift.modules.filter.FilterModule;
 import org.aksw.geolift.modules.linking.Linking;
 import org.aksw.geolift.modules.nlp.NlpGeoEnricher;
 import org.apache.log4j.Logger;
@@ -73,6 +75,16 @@ public class WorkflowHandler{
 			enrichedModel = geoEnricher.process(inputModel, modueParameters);
 			return enrichedModel;
 		}
+		if(moduleName.toLowerCase().equals("conformation")){
+			ConformationModule geoEnricher= new ConformationModule();
+			enrichedModel = geoEnricher.process(inputModel, modueParameters);
+			return enrichedModel;
+		}
+		if(moduleName.toLowerCase().equals("filter")){
+			FilterModule geoEnricher= new FilterModule();
+			enrichedModel = geoEnricher.process(inputModel, modueParameters);
+			return enrichedModel;
+		}
 		logger.error(moduleName + " module is not yet implemented,\n" +
 				"Currently,the nlp, linking and dereferencing) modules are implemented\n" +
 				"Exit with error ...");
@@ -96,7 +108,7 @@ public class WorkflowHandler{
 			String moduleName = key.substring(key.indexOf("_")+1);
 
 			Collection<Map<String, String>> moduleParameters = parameters.get(key);
-			Iterator itr = moduleParameters.iterator();
+			Iterator<Map<String, String>> itr = moduleParameters.iterator();
 			Map<String, String> param = new HashMap<String, String>();
 			while(itr.hasNext()){
 				param.putAll((Map<String, String>) itr.next());

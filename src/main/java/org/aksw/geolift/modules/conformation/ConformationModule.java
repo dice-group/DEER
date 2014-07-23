@@ -49,6 +49,14 @@ public class ConformationModule implements GeoLiftModule{
 	}
 
 	/**
+	 * 
+	 *@author sherif
+	 */
+	public ConformationModule() {
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
 	 * @param args
 	 * @author sherif
 	 */

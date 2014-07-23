@@ -40,6 +40,14 @@ public class FilterModule implements GeoLiftModule{
 	}
 
 	/**
+	 * 
+	 *@author sherif
+	 */
+	public FilterModule() {
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
 	 * @param args
 	 * @author sherif
 	 */
