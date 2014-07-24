@@ -18,11 +18,11 @@
 		:nextStep		:s2 .
 
 :m1		a				:Module, :DereferencingModule  ;
-		rdfs:lable		"Dereferencing" ;
+		rdfs:label		"Dereferencing" ;
 		:hasParameter	:p1-1 .
 
 :p1-1	a				:ModuleParameter, :DereferencingModuleParameter ;
-		:hasKey			"Predicate1" ;
+		:hasKey			"inputProperty1" ;
 		:hasValue		geo:lat .
 
 :s2		a 				:Step ;
@@ -33,7 +33,7 @@
 		:nextStep		:s3 .
 
 :m2		a				:Module, :NLPModule  ;
-		rdfs:lable		"NLP" ;
+		rdfs:label		"NLP" ;
 		:hasParameter	:p2-1, :p2-2 .
 
 :p2-1	a				:ModuleParameter, :NLPModuleParameter ;
@@ -52,7 +52,7 @@
 		:nextStep		:s4 .
 
 :m3		a				:Module, :NLPModule  ;
-		rdfs:lable		"NLP" ;
+		rdfs:label		"NLP" ;
 		:hasParameter	:p3-1, :p3-2 .
 
 :p3-1	a				:ModuleParameter, :NLPModuleParameter ;
@@ -71,7 +71,7 @@
 		:isLastStep		true .
 
 :m4		a				:Module, :NLPModule  ;
-		rdfs:lable		"NLP" ;
+		rdfs:label		"NLP" ;
 		:hasParameter	:p4-1 .
 
 :p4-1	a				:ModuleParameter, :NLPModuleParameter ;
