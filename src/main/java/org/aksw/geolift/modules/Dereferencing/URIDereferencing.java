@@ -47,8 +47,6 @@ public class URIDereferencing implements GeoLiftModule
 	public static boolean useBlankNodes = false;
 	public static List<Property> inputProperties = new ArrayList<Property>();
 	public static List<Property> outputProperties = new ArrayList<Property>();
-	//TODO find appropriate property since Feature is a class
-	//	public static Property addedProperty = ResourceFactory.createProperty("http://www.geonames.org/ontology#Feature");
 	public static Property addedProperty = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
 
 
@@ -89,6 +87,16 @@ public class URIDereferencing implements GeoLiftModule
 		parameters.add("outputProperty<n>");
 		parameters.add("useBlankNodes");
 //		parameters.add("useCache");
+		return parameters;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.aksw.geolift.modules.GeoLiftModule#getNecessaryParameters()
+	 */
+	@Override
+	public List<String> getNecessaryParameters() {
+		List<String> parameters = new ArrayList<String>();
+		parameters.add("inputProperty<n>");
 		return parameters;
 	}
 

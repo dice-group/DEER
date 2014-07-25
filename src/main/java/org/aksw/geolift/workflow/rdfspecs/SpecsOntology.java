@@ -40,14 +40,14 @@ public class SpecsOntology {
 	public static final Resource Step 						= resource( "Step" );
 	public static final Resource Dataset 						= resource( "Dataset" );
 	public static final Resource Module 						= resource( "Module" );
-	public static final Resource DereferencingModule 			= resource( "DereferencingModule" );
+	public static final Resource DereferencengModule 			= resource( "DereferencengModule" );
 	public static final Resource LinkingModule 				= resource( "LinkingModule" );
 	public static final Resource NLPModule 					= resource( "NLPModule" );
 	public static final Resource FilterModule 				= resource( "FilterModule" );
 	public static final Resource ConformationModule 			= resource( "ConformationModule" );
 	public static final Resource ModuleParameter 				= resource( "ModuleParameter" );
 	public static final Resource NLPModuleParameter 			= resource( "NLPModuleParameter" );
-	public static final Resource DereferencingModuleParameter	= resource( "DereferencingModuleParameter" );
+	public static final Resource DereferencengModuleParameter	= resource( "DereferencengModuleParameter" );
 	public static final Resource LinkingModuleParameter 		= resource( "linkingModuleParameter" );
 	public static final Resource FilterModuleParameter 		= resource( "FilterModuleParameter" );
 	public static final Resource ConformationModuleParameter 	= resource( "ConformationModuleParameter" );

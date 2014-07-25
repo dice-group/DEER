@@ -601,13 +601,22 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		parameters.add("literalProperty");
 		parameters.add("useFoxLight");
 		parameters.add("askEndPoint");
-//		parameters.add("foxType");
-//		parameters.add("foxTask");
-//		parameters.add("foxInput");
-//		parameters.add("foxOutput");
-//		parameters.add("foxUseNif");
-//		parameters.add("foxReturnHtml");
+		parameters.add("foxType");
+		parameters.add("foxTask");
+		parameters.add("foxInput");
+		parameters.add("foxOutput");
+		parameters.add("foxUseNif");
+		parameters.add("foxReturnHtml");
 		parameters.add("addedGeoProperty");
+		return parameters;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.aksw.geolift.modules.GeoLiftModule#getNecessaryParameters()
+	 */
+	@Override
+	public List<String> getNecessaryParameters() {
+		List<String> parameters = new ArrayList<String>();
 		return parameters;
 	}
 

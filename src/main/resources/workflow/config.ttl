@@ -11,17 +11,17 @@
 
 :s1		a 				:Step;
 		:isFirstStep		true ;
-		rdfs:label		"Step(1) Dereferincing" ;
+		rdfs:label		"Step(1) Dereferencing" ;
 		:hasModule		:m1 ;
 		:hasInput		:d1 ;
 		:hasOutput		:d2 ;
 		:nextStep		:s2 .
 
-:m1		a				:Module, :DereferencingModule  ;
-		rdfs:label		"Dereferencing" ;
+:m1		a				:Module, :DereferencengModule  ;
+		rdfs:label		"Dereferenceng" ;
 		:hasParameter	:p1-1 .
 
-:p1-1	a				:ModuleParameter, :DereferencingModuleParameter ;
+:p1-1	a				:ModuleParameter, :DereferencengModuleParameter ;
 		:hasKey			"inputProperty1" ;
 		:hasValue		geo:lat .
 

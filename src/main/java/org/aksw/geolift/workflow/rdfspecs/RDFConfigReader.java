@@ -56,7 +56,6 @@ public class RDFConfigReader {
 				break;
 			}
 		}
-		System.out.println("@@@@@@@@@@@@@@@@@@@@ " + parameters);
 		return parameters;
 	}
 

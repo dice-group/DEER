@@ -72,6 +72,15 @@ public class Linking implements GeoLiftModule
 		parameters.add("linksPart");
 		return parameters;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.aksw.geolift.modules.GeoLiftModule#getNecessaryParameters()
+	 */
+	@Override
+	public List<String> getNecessaryParameters() {
+		List<String> parameters = new ArrayList<String>();
+		return parameters;
+	}
 
 	/**
 	 * @param specFilePath: the spec/xml file path for the linking process
@@ -212,4 +221,6 @@ public class Linking implements GeoLiftModule
 		}
 		System.out.println("Finished");
 	}
+
+
 }

@@ -110,4 +110,15 @@ public class ConformationModule implements GeoLiftModule{
 		return parameters;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.aksw.geolift.modules.GeoLiftModule#getNecessaryParameters()
+	 */
+	@Override
+	public List<String> getNecessaryParameters() {
+		List<String> parameters = new ArrayList<String>();
+		parameters.add("sourceURI");
+		parameters.add("targetURI");
+		return parameters;
+	}
+
 }
