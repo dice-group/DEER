@@ -5,6 +5,7 @@ package org.aksw.geolift.operators;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Sets;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -20,7 +21,10 @@ public class SplitOperator implements ModelOperator {
 	 * @see org.aksw.geolift.operators.ModelOperator#run(java.util.List)
 	 */
 	@Override
-	public List<Model> run(List<Model> models) {
+	public List<Model> process(List<Model> models, Map<String, String> parameters) {
+		if(parameters.containsKey("splitsCount")){
+			splitsCount = Integer.parseInt(parameters.get("splitsCount"));
+		}
 		List<Model> result = new ArrayList<Model>();
 		for (int i=0; i<splitsCount ; i++) {
 			Model split = ModelFactory.createDefaultModel();
@@ -30,13 +34,23 @@ public class SplitOperator implements ModelOperator {
 		return result;
 	}
 	
-	public List<Model> run(List<Model> models, int n) {
-		setSplitsCount(n);
-		return run(models);
+	
+	/* (non-Javadoc)
+	 * @see org.aksw.geolift.modules.GeoLiftModule#getParameters()
+	 */
+	public List<String> getParameters() {
+		List<String> parameters = new ArrayList<String>();
+		parameters.add("splitsCount");
+		return parameters;
 	}
 	
-	public void setSplitsCount(int n){
-		splitsCount = n;
+	/* (non-Javadoc)
+	 * @see org.aksw.geolift.modules.GeoLiftModule#getNecessaryParameters()
+	 */
+	@Override
+	public List<String> getNecessaryParameters() {
+		List<String> parameters = new ArrayList<String>();
+		return parameters;
 	}
 
 }

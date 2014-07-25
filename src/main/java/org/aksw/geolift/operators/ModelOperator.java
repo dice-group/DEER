@@ -4,6 +4,7 @@
 package org.aksw.geolift.operators;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -12,5 +13,7 @@ import com.hp.hpl.jena.rdf.model.Model;
  *
  */
 public interface ModelOperator {
-	public List<Model> run(List<Model> models);
+	public List<Model> process(List<Model> models, Map<String, String> parameters);
+	public List<String> getParameters();
+	public List<String> getNecessaryParameters(); 
 }
