@@ -27,7 +27,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *
  */
 public class RDFConfigReader {
-	private static final Logger logger = Logger.getLogger(Linking.class.getName());
+	private static final Logger logger = Logger.getLogger(RDFConfigReader.class.getName());
 	public static 	Model configModel;
 	public static Multimap<String, Map<String, String>> parameters = HashMultimap.create();
 

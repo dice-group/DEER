@@ -26,6 +26,7 @@ public class SpecsOntology {
 
 	public static String getURI(){ return uri;	}
 
+	public static final Property hasUri	= property("hasUri");
 	public static final Property hasParameter	= property("hasParameter");
 	public static final Property hasKey 		= property("hasKey");
 	public static final Property hasValue 	= property("hasValue");
@@ -51,5 +52,8 @@ public class SpecsOntology {
 	public static final Resource LinkingModuleParameter 		= resource( "linkingModuleParameter" );
 	public static final Resource FilterModuleParameter 		= resource( "FilterModuleParameter" );
 	public static final Resource ConformationModuleParameter 	= resource( "ConformationModuleParameter" );
+	public static final Resource Operator 					= resource( "Operator" );
+	public static final Resource SplitOperator 				= resource( "SplitOperator" );
+	public static final Resource MergeOperator 				= resource( "MergeOperator" );
 	
 }

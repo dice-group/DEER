@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
+import org.apache.log4j.Logger;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
@@ -15,12 +18,14 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  */
 public class MergeOperator implements ModelOperator {
+	private static final Logger logger = Logger.getLogger(URIDereferencing.class.getName());
 
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.operators.ModelOperator#run(java.util.List)
 	 */
 	@Override
 	public List<Model> process(List<Model> models, Map<String, String> parameters) {
+		logger.info("--------------- Merge Operator ---------------");
 		List<Model> result = new ArrayList<Model>();
 		Model merge = ModelFactory.createDefaultModel();
 		for (Model model : models) {

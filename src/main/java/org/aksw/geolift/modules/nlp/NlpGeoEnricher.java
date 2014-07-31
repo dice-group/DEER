@@ -543,17 +543,16 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 * @see org.aksw.geolift.modules.GeoLiftModule#process(com.hp.hpl.jena.rdf.model.Model, java.util.Map)
 	 */
 	public Model process(Model inputModel, Map<String, String> parameters){
+		logger.info("--------------- NLP Module ---------------");
 		model = inputModel;
-
 		if( parameters.containsKey("input")){
 			inputFile = parameters.get("input");
 			model = loadModel(inputFile);
 		}	
-
 		if( parameters.containsKey("literalProperty"))
 			LiteralProperty = ResourceFactory.createProperty(parameters.get("literalProperty"));
 		else{
-			LiteralPropertyRanker lpr=new LiteralPropertyRanker(model)	;
+			LiteralPropertyRanker lpr = new LiteralPropertyRanker(model)	;
 			LiteralProperty = lpr.getTopRankedLiteralProperty();
 			logger.info("Top ranked Literal Property: " + LiteralProperty); 
 		}

@@ -70,28 +70,23 @@ public class ConformationModule implements GeoLiftModule{
 	 */
 	@Override
 	public Model process(Model model, Map<String, String> parameters) {
-		logger.info("--------------- Conform model ---------------");
+		this.model = model;
+		logger.info("--------------- Conformation Module ---------------");
 		if( parameters.containsKey("sourceURI")){
 			sourceURI = parameters.get("sourceURI");
 		}
 		if( parameters.containsKey("targetURI")){
-			sourceURI = parameters.get("targetURI");
+			targetURI = parameters.get("targetURI");
 		}
-		Model resultModel = conformarModel();
-		return resultModel;
-	}
-	
-	public Model conformarModel(){
 		Model resultModel = ModelFactory.createDefaultModel();
 		StmtIterator statmentsIter = model.listStatements();
-
 		while (statmentsIter.hasNext()) {
 			Statement statment = statmentsIter.nextStatement();
 			Resource s = statment.getSubject();
 			Property p = statment.getPredicate();
 			RDFNode  o = statment.getObject();
-			if(s.isResource() && s.asLiteral().toString().startsWith(sourceURI)){
-				Resource newSubject = ResourceFactory.createResource(s.asLiteral().toString().replaceFirst(sourceURI, targetURI));
+			if(s.isResource() && s.toString().startsWith(sourceURI)){
+				Resource newSubject = ResourceFactory.createResource(s.toString().replaceFirst(sourceURI, targetURI));
 				resultModel.add( newSubject , p, o);
 			}
 		}

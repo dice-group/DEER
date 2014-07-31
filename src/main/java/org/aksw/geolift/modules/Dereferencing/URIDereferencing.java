@@ -112,7 +112,7 @@ public class URIDereferencing implements GeoLiftModule
 	 * This method starts processing to retrieve information from the interesting predicates
 	 */
 	public Model process(Model model, Map<String, String> parameters) {
-
+		logger.info("--------------- Dereferencing Module ---------------");
 		if(model!= null)
 		{
 			readParameters(parameters);

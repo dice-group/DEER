@@ -61,7 +61,7 @@ public class FilterModule implements GeoLiftModule{
 	 */
 	@Override
 	public Model process(Model model, Map<String, String> parameters) {
-		logger.info("--------------- Filter model ---------------");
+		logger.info("--------------- Filter Module ---------------");
 		if( parameters.containsKey("triplesPattern")){
 			triplesPattern = parameters.get("triplesPattern");
 		}

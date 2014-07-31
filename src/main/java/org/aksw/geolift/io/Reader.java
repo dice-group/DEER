@@ -22,8 +22,7 @@ public class Reader {
 		Model model=ModelFactory.createDefaultModel();
 		java.io.InputStream in = FileManager.get().open( fileNameOrUri );
 		if (in == null) {
-			throw new IllegalArgumentException(
-					"File: " + fileNameOrUri + " not found");
+			throw new IllegalArgumentException(fileNameOrUri + " not found");
 		}
 		if(fileNameOrUri.contains(".ttl") || fileNameOrUri.contains(".n3")){
 			logger.info("Opening Turtle file");

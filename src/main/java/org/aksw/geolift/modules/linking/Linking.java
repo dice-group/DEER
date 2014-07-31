@@ -40,6 +40,7 @@ public class Linking implements GeoLiftModule
 
 	public Model process(Model model, Map<String, String> parameters) 
 	{
+		logger.info("--------------- Linking Module ---------------");
 		//Copy parameters from Map into List
 //		String datasetSource = parameters.get("datasetSource"); 
 		

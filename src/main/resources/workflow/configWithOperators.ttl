@@ -3,7 +3,7 @@
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 
 :d1		a				:Dataset ;
-		:hasUrl			<http://dbpedia.org/resource/Berlin> .
+		:hasUri			<http://dbpedia.org/resource/Berlin> .
 :d2		a				:Dataset .
 :d3		a				:Dataset .
 :d4		a				:Dataset .
@@ -70,7 +70,7 @@
 		:hasKey			"sourceURI" ;
 		:hasValue		"http://dbpedia.org" .
 		
-:p4-1	a				:ModuleParameter, :NLPModuleParameter ;
+:p4-2	a				:ModuleParameter, :NLPModuleParameter ;
 		:hasKey			"targetURI" ;
 		:hasValue		"http://geolift.org" .
 
