@@ -381,7 +381,6 @@ public class NlpGeoEnricher implements GeoLiftModule{
 		}
 
 		//TODO use a JASON parser
-
 		buffer= URLDecoder.decode(buffer); 
 		buffer = buffer.substring(buffer.indexOf("@"), buffer.lastIndexOf("log")-4).toString();
 
@@ -521,7 +520,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			RDFNode object = st.getObject();
 			RDFNode subject = st.getSubject();
 			if(object.isLiteral()){
-				if(!object.asLiteral().toString().contains("^^")){ System.out.println("********************\n" + object.toString());
+				if(!object.asLiteral().toString().contains("^^")){ 
 					Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
 
 					if(!namedEntityModel.isEmpty()){
