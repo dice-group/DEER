@@ -3,37 +3,37 @@
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 
 :d1		a				:Dataset ;
-		:hasUrl			<http://dbpedia.org/resource/Berlin> .
+		:hasUri			<http://dbpedia.org/resource/Berlin> ;
+		:FromEndPoint	<http://dbpedia.org/sparql> .
 :d2		a				:Dataset .
 :d3		a				:Dataset .
 :d4		a				:Dataset .
 :d5		a				:Dataset .
-
-:s1		a 				:Step;
-		:isFirstStep		true ;
-		rdfs:label		"Step(1) Dereferencing" ;
-		:hasModule		:m1 ;
-		:hasInput		:d1 ;
-		:hasOutput		:d2 ;
-		:nextStep		:s2 .
+:d6		a				:Dataset .
+:d7		a				:Dataset .
+:d8		a				:Dataset ;
+		:outputFile		"Berlin.ttl" ;
+		:outputFormat	"Turtle" .
 
 :m1		a				:Module, :DereferencengModule  ;
-		rdfs:label		"Dereferenceng" ;
+		rdfs:label		"Dereferenceng module" ;
+		:hasInput		:d1 ;
+		:hasOutput		:d2 ;
 		:hasParameter	:p1-1 .
 
 :p1-1	a				:ModuleParameter, :DereferencengModuleParameter ;
 		:hasKey			"inputProperty1" ;
 		:hasValue		geo:lat .
-
-:s2		a 				:Step ;
-		rdfs:label		"Step(2) NLP" ;
-		:hasModule 		:m2 ;
+		
+:o1		a				:Operator, :SplitOperator  ;
+		rdfs:label		"Split operator" ;
 		:hasInput		:d2 ;
-		:hasOutput		:d3 ;
-		:nextStep		:s3 .
+		:hasOutput		:d3, :d4 .
 
 :m2		a				:Module, :NLPModule  ;
-		rdfs:label		"NLP" ;
+		rdfs:label		"NLP module" ;
+		:hasInput		:d3 ;
+		:hasOutput		:d5 ;
 		:hasParameter	:p2-1, :p2-2 .
 
 :p2-1	a				:ModuleParameter, :NLPModuleParameter ;
@@ -44,15 +44,10 @@
 		:hasKey			"askEndPoint" ;
 		:hasValue		false .
 
-:s3		a 				:Step ;
-		rdfs:label		"Step(3) NLP" ;
-		:hasModule 		:m3 ;
-		:hasInput		:d3 ;
-		:hasOutput		:d4 ;
-		:nextStep		:s4 .
-
 :m3		a				:Module, :NLPModule  ;
-		rdfs:label		"NLP" ;
+		rdfs:label		"NLP module" ;
+		:hasInput		:d4 ;
+		:hasOutput		:d6 ;
 		:hasParameter	:p3-1, :p3-2 .
 
 :p3-1	a				:ModuleParameter, :NLPModuleParameter ;
@@ -62,21 +57,25 @@
 :p3-2	a				:ModuleParameter, :NLPModuleParameter ;
 		:hasKey			"useFoxLight" ;
 		:hasValue		"org.aksw.fox.nertools.NERStanford" .
+		
+:o2		a				:Operator, :MergeOperator  ;
+		rdfs:label		"Merge operator" ;
+		:hasInput		:d6, :d5 ;
+		:hasOutput		:d7 .
 
-:s4		a 				:Step ;
-		rdfs:label		"Step(4) NLP" ;
-		:hasModule 		:m4 ;
-		:hasInput		:d4 ;
-		:hasOutput		:d5 ;
-		:isLastStep		true .
-
-:m4		a				:Module, :NLPModule  ;
-		rdfs:label		"NLP" ;
-		:hasParameter	:p4-1 .
+:m4		a				:Module, :ConformationModule  ;
+		rdfs:label		"Conformation module" ;
+		:hasInput		:d7 ;
+		:hasOutput		:d8 ;
+		:hasParameter	:p4-1, :p4-2 .
 
 :p4-1	a				:ModuleParameter, :NLPModuleParameter ;
-		:hasKey			"useFoxLight" ;
-		:hasValue		"org.aksw.fox.nertools.NEROpenNLP" .
+		:hasKey			"sourceURI" ;
+		:hasValue		"http://dbpedia.org" .
+		
+:p4-2	a				:ModuleParameter, :NLPModuleParameter ;
+		:hasKey			"targetURI" ;
+		:hasValue		"http://geolift.org" .
 
 
 	

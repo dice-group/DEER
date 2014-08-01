@@ -27,6 +27,10 @@ public class SpecsOntology {
 	public static String getURI(){ return uri;	}
 
 	public static final Property hasUri	= property("hasUri");
+	public static final Property inputFile	= property("inputFile");
+	public static final Property outputFile	= property("outputFile");
+	public static final Property outputFormat	= property("outputFormat");
+	public static final Property FromEndPoint	= property("FromEndPoint");
 	public static final Property hasParameter	= property("hasParameter");
 	public static final Property hasKey 		= property("hasKey");
 	public static final Property hasValue 	= property("hasValue");
