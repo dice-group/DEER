@@ -61,37 +61,10 @@ public class RDFConfigHandler {
 		List<Resource> finalDatasets = getFinalDatasets();
 		logger.info("Found " + finalDatasets.size() + " output Datasets: " + finalDatasets);
 		for(Resource finalDataset : finalDatasets){
-			Resource moduleOrOperator = getModuleOrOperator(null, finalDataset);
-			List<Resource> inputDatasets = getInputDatasetsUris(moduleOrOperator);
-			List<Model> datasetsModels = new ArrayList<Model>();
-			for(Resource inputDataset : inputDatasets){
-				datasetsModels.add(readDataset(inputDataset));
-			}
-			Model result = executeModuleOrOperator(moduleOrOperator, datasetsModels);
-			logger.info("Found " + finalDataset + " with " + result.size() + " triples");
-//			result.write(System.out,"TTL");
+			readDataset(finalDataset);
 		}
 	}
 
-
-	/**
-	 * @param moduleOrOperator
-	 * @author sherif
-	 */
-	private Model executeModuleOrOperator(Resource moduleOrOperator, List<Model> datasetsModels) {
-		NodeIterator typeItr = configModel.listObjectsOfProperty(moduleOrOperator, RDF.type);
-		while(typeItr.hasNext()){
-			RDFNode type = typeItr.next();
-			if(type.equals(SpecsOntology.Module)){
-				return executeModule(moduleOrOperator, datasetsModels);
-			}
-			else if(type.equals(SpecsOntology.Operator)){
-				return executeOperator(moduleOrOperator, datasetsModels);
-			}
-		}
-		return null;
-	}
-	
 
 	/**
 	 * @param module

@@ -521,7 +521,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			RDFNode object = st.getObject();
 			RDFNode subject = st.getSubject();
 			if(object.isLiteral()){
-				if(!object.asLiteral().toString().contains("^^")){
+				if(!object.asLiteral().toString().contains("^^")){ System.out.println("********************\n" + object.toString());
 					Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
 
 					if(!namedEntityModel.isEmpty()){

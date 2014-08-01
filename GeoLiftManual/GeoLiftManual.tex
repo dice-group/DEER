@@ -20,6 +20,8 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{calc,positioning,shapes.geometric,arrows,shapes}
 
 \graphicspath{{.}{../Common/}{../../Common/}}
 
@@ -382,7 +384,7 @@ Table \ref{tbl:linkingPram} provides details about the \texttt{Linking} module's
 \midrule
 \texttt{linksFilePath} 	& \texttt{N/A} 	& The path to links file resulted from the linking process. This file's path is the same as the one specified in LIME's specifications file as output file, e.g. \url {linkingModuleData/linking/links.nt}. \\
 \midrule
-\texttt{linksPart} 	& \texttt{N/A} 	& Represents the original model's URI position as source/left or target/right in the linking specifications. Its value is either 'source' or 'target'p;pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp.\\ 
+\texttt{linksPart} 	& \texttt{N/A} 	& Represents the original model's URI position as source/left or target/right in the linking specifications. Its value is either 'source' or 'target'.\\ 
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -512,9 +514,119 @@ Runs a set of triples patterns' against an input model to filter some triples an
 
 The \geolift can be directly executed from command-line using the provided \texttt{geolift.jar}\footnote{the \texttt{geolift.jar} file is in the \texttt{jars} folder of the project} file.
 % Table \ref{tbl:geoLiftPram} explains the various parameters that can be used with the \geolift through command-line. 
-Simple provide the RDf configuration file as the only one parameter for the \geolift jar file.
+Simpley, provide the RDf configuration file as the only one parameter for the \geolift jar file.
+\begin{equation*}
+  Example: \texttt{ geolift.jar src/main/resources/workflow/config.ttl }
+\end{equation*}
 
-Example: \texttt{ geolift.jar src/main/resources/workflow }
+
+
+Listing~\ref{lst:rdfconf} introduces an example of RDF configuration file, to make it easer to be understood we represent the configuration file in form of graph in figure~\ref{fig:rdfconf} .
+
+\newpage
+\begin{lstlisting}[label=lst:rdfconf, numbers=left, numberstyle=\tiny, caption = Example of RDF configuration file.]
+@prefix : <http://geoknow.org/specsontology/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+:d1		a		:Dataset ;
+		:hasUri		<http://dbpedia.org/resource/Berlin> ;
+		:FromEndPoint	<http://dbpedia.org/sparql> .
+:d2		a		:Dataset .
+:d3		a		:Dataset .
+:d4		a		:Dataset .
+:d5		a		:Dataset .
+:d6		a		:Dataset .
+:d7		a		:Dataset .
+:d8		a		:Dataset ;
+		:outputFile	"GeoLiftBerlin.ttl" ;
+		:outputFormat	"Turtle" .
+:deref		a		:Module, :DereferencengModule  ;
+		rdfs:label	"Dereferenceng module" ;
+		:hasInput	:d1 ;
+		:hasOutput	:d2 ;
+		:hasParameter	:derefParam1 .
+:derefParam1	a   :ModuleParameter, :DereferencengModuleParameter ;
+		:hasKey		"inputProperty1" ;
+		:hasValue	geo:lat .
+:split		a		:Operator, :SplitOperator  ;
+		rdfs:label	"Split operator" ;
+		:hasInput	:d2 ;
+		:hasOutput	:d3, :d4 .
+:nlp		a		:Module, :NLPModule  ;
+		rdfs:label	"NLP module" ;
+		:hasInput	:d3 ;
+		:hasOutput	:d5 ;
+		:hasParameter	:nlpPram1, :nlpPram2 .
+:nlpPram1	a		:ModuleParameter, :NLPModuleParameter ;
+		:hasKey		"useFoxLight" ;
+		:hasValue	"OFF" .
+:nlpPram2 	a		:ModuleParameter, :NLPModuleParameter ;
+		:hasKey		"askEndPoint" ;
+		:hasValue	false .
+:filter		a		:Module, :FilterModule  ;
+		rdfs:label	"Filter module" ;
+		:hasInput	:d4 ;
+		:hasOutput	:d6 ;
+		:hasParameter	:FilterPram1 .
+:filterPram1	a      :ModuleParameter, :NLPModuleParameter ;
+	    :hasKey    "triplesPattern" ;
+	    :hasValue "?s <http://dbpedia.org/ontology/abstract> ?o".
+:merge		a		:Operator, :MergeOperator  ;
+		rdfs:label	"Merge operator" ;
+		:hasInput	:d6, :d5 ;
+		:hasOutput	:d7 .
+:conform	a			:Module, :ConformationModule  ;
+		rdfs:label	"Conformation module" ;
+		:hasInput	:d7 ;
+		:hasOutput	:d8 ;
+		:hasParameter	:conformPram1, :conformPram2 .
+:conformPram1	a		:ModuleParameter, :NLPModuleParameter ;
+		:hasKey		"sourceURI" ;
+		:hasValue	"http://dbpedia.org" .
+:conformPram2	a		:ModuleParameter, :NLPModuleParameter ;
+		:hasKey		"targetURI" ;
+		:hasValue	"http://geolift.org" .
+\end{lstlisting}
+
+
+\begin{figure}[!h]
+\centering
+  \begin{tikzpicture}[scale = 0.8, every node/.style={scale=0.9}, >=stealth, node distance=3cm, 
+      database/.style={cylinder, cylinder uses custom fill, cylinder body fill=yellow!50, cylinder end fill=yellow!50, shape border rotate=90, aspect=0.25, inner sep=10pt, draw},
+      operator/.style={draw=black,fill=blue!20,thick,inner sep=5pt, diamond, aspect=2, draw},
+      module/.style={draw=black,fill=green!20,thick,rounded corners,inner sep=10pt, draw}]
+      \node[database] (d1) at (15,5) {\textbf{$d_1$}};
+      \node (deref)  at (15,3) [module] {\texttt{Dereferencing}};
+      \draw[thick,->] (d1) -- (deref);
+      \node[database] (d2) at (15,1) {\textbf{$d_2$}};
+      \node (split)  at (15,-1) [operator] {\texttt{Split}};
+      \draw[thick,->] (deref) -- (d2);
+      \draw[thick,->] (d2) -- (split);
+      \node[database] (d3) at (10,-1) {\textbf{$d_3$}};
+      \draw[thick,->] (split) -- (d3);
+      \node (nlpleft)  at (10,-3) [module] {\texttt{NLP}};
+      \draw[thick,->] (d3) -- (nlpleft);
+      \node[database] (d4) at (20,-1) {\textbf{$d_4$}};
+      \draw[thick,->] (split) -- (d4);
+      \node (filter)  at (20,-3) [module] {\texttt{Filter}};
+      \draw[thick,->] (d4) -- (filter);
+      \node[database] (d5) at (10,-5) {\textbf{$d_5$}};
+      \draw[thick,->] (nlpleft) -- (d5);
+      \node[database] (d6) at (20,-5) {\textbf{$d_6$}};
+      \draw[thick,->] (filter) -- (d6);
+      \node (merge)  at (15,-5) [operator] {\texttt{Merge}};
+      \draw[thick,->] (d5) -- (merge);
+      \draw[thick,->] (d6) -- (merge);
+      \node[database] (d7) at (15,-7.5) {\textbf{$d_7$}};
+      \draw[thick,->] (merge) -- (d7);
+      \node (conform)  at (15,-9.5) [module] {\texttt{Conformation}};
+      \draw[thick,->] (d7) -- (conform);
+      \node[database] (d8) at (15,-11.5) {\textbf{$d_8$}};
+      \draw[thick,->] (conform) -- (d8);
+  \end{tikzpicture}
+  \caption{Graph representation of configuration file presented by listing \ref{lst:rdfconf}}
+  \label{fig:rdfconf}
+\end{figure}
 
 \textbf{Details of RDF configuration file will be here soon}
 % Command-line execution of \geolift enable user-defined workflow of different modules using configuration file.
