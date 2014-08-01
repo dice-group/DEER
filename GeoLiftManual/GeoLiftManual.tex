@@ -510,47 +510,51 @@ Runs a set of triples patterns' against an input model to filter some triples an
 
 \section{Running \geolift From Command-Line }
 
-The \geolift different modules can be directly executed from command-line using the provided \texttt{geolift.jar} file.
-Table \ref{tbl:geoLiftPram} explains the various parameters that can be used with the \geolift through command-line. 
+The \geolift can be directly executed from command-line using the provided \texttt{geolift.jar}\footnote{the \texttt{geolift.jar} file is in the \texttt{jars} folder of the project} file.
+% Table \ref{tbl:geoLiftPram} explains the various parameters that can be used with the \geolift through command-line. 
+Simple provide the RDf configuration file as the only one parameter for the \geolift jar file.
 
-Command-line execution of \geolift enable user-defined workflow of different modules using configuration file.
-Through the configuration file user can give different parameters to different modules.
-Currently, simple tab-separated values file format is implemented as configuration file, 
-where values are set in form of \texttt{(executionModelIndex moduleName moduleParameterName moduleParameterVale)}.
+Example: \texttt{ geolift.jar src/main/resources/workflow }
 
-The \texttt{executionModelIndex} is just an index starts with one and repeats for all \texttt{moduleParameterName moduleParameterVale} pairs for the same \texttt{moduleName}.
-listing \ref{lst:geoliftConfig} provides a example of a configuration file to run four modules.
-Note that the third and the forth module have the same \texttt{moduleName}, but using the \texttt{executionModelIndex} the \geolift can differentiate between them.
-
-\begin{lstlisting}[label=lst:geoliftConfig, caption =\geolift configuration file example class.]
-1 nlp useFoxLight OFF
-1 nlp askEndPoint false
-2 dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat
-3 nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment
-3 nlp useFoxLight org.aksw.fox.nertools.NEROpenNLP
-4 nlp useFoxLight org.aksw.fox.nertools.NERStanford
-\end{lstlisting}
-
-The following example introduces the command-line execution of \geolift to enrich data contained in input file \texttt{example.ttl} with additional Geo-spatial data.
-the \geolift command-line read the input configurations from the tab-separated file \texttt{config.tsv}.
-The output will be written in the \texttt{output.ttl} file.
-
-{\flushleft\texttt{java -jar geolift.jar -i example.ttl -c config.tsv -o output.ttl}}
-\newline
-\\Note: The file limes.dtd (which exists in the package jar folder) must be in the same folder of linking.jar/geolift.jar files.
-\begin{table*}[ht]
-\caption{\geolift parameters description} \label{tbl:geoLiftPram}
-\begin{tabular}{@{}  l  l p{10.5cm} l p{cm}@{}}
-\toprule
-\textbf{Parameter} 	& \textbf{}	& \textbf{Description}\\
-\midrule
-\texttt{--input} 	&\texttt{-i}	& The input file/URI to be enriched\\
-\texttt{--output} 	&\texttt{-o} 	& The output file to write the enriched model to it\\
-\texttt{--config} 	&\texttt{-c} 	& The configuration file to read the workflow configurations from\\
-\texttt{--help}		&\texttt{-?} 	& provides some help about the \geolift command line \\
-\bottomrule
-\end{tabular}
-\end{table*}
+\textbf{Details of RDF configuration file will be here soon}
+% Command-line execution of \geolift enable user-defined workflow of different modules using configuration file.
+% Through the configuration file user can give different parameters to different modules.
+% Currently, simple tab-separated values file format is implemented as configuration file, 
+% where values are set in form of \texttt{(executionModelIndex moduleName moduleParameterName moduleParameterVale)}.
+% 
+% The \texttt{executionModelIndex} is just an index starts with one and repeats for all \texttt{moduleParameterName moduleParameterVale} pairs for the same \texttt{moduleName}.
+% listing \ref{lst:geoliftConfig} provides a example of a configuration file to run four modules.
+% Note that the third and the forth module have the same \texttt{moduleName}, but using the \texttt{executionModelIndex} the \geolift can differentiate between them.
+% 
+% \begin{lstlisting}[label=lst:geoliftConfig, caption =\geolift configuration file example class.]
+% 1 nlp useFoxLight OFF
+% 1 nlp askEndPoint false
+% 2 dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat
+% 3 nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment
+% 3 nlp useFoxLight org.aksw.fox.nertools.NEROpenNLP
+% 4 nlp useFoxLight org.aksw.fox.nertools.NERStanford
+% \end{lstlisting}
+% 
+% The following example introduces the command-line execution of \geolift to enrich data contained in input file \texttt{example.ttl} with additional Geo-spatial data.
+% the \geolift command-line read the input configurations from the tab-separated file \texttt{config.tsv}.
+% The output will be written in the \texttt{output.ttl} file.
+% 
+% {\flushleft\texttt{java -jar geolift.jar -i example.ttl -c config.tsv -o output.ttl}}
+% \newline
+% \\Note: The file limes.dtd (which exists in the package jar folder) must be in the same folder of linking.jar/geolift.jar files.
+% \begin{table*}[ht]
+% \caption{\geolift parameters description} \label{tbl:geoLiftPram}
+% \begin{tabular}{@{}  l  l p{10.5cm} l p{cm}@{}}
+% \toprule
+% \textbf{Parameter} 	& \textbf{}	& \textbf{Description}\\
+% \midrule
+% \texttt{--input} 	&\texttt{-i}	& The input file/URI to be enriched\\
+% \texttt{--output} 	&\texttt{-o} 	& The output file to write the enriched model to it\\
+% \texttt{--config} 	&\texttt{-c} 	& The configuration file to read the workflow configurations from\\
+% \texttt{--help}		&\texttt{-?} 	& provides some help about the \geolift command line \\
+% \bottomrule
+% \end{tabular}
+% \end{table*}
 
 
 
