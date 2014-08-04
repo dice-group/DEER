@@ -28,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -44,8 +45,8 @@ import org.apache.log4j.Logger;
  * @author sherif
  */
 public class NlpGeoEnricher implements GeoLiftModule{
-
 	private static final Logger logger = Logger.getLogger(NlpGeoEnricher.class.getName());
+	private static final String FOX_API_URL = "http://139.18.2.164:4444/api";
 	private Model model;
 
 	// parameters list
@@ -303,7 +304,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 				data += "&" + URLEncoder.encode("output", 	"UTF-8") 	+ "=" + URLEncoder.encode(output, 	"UTF-8");
 				data += "&" + URLEncoder.encode("text", 	"UTF-8") 	+ "=" + URLEncoder.encode(text, 	"UTF-8");
 				// Send data
-				URL url = new URL("http://139.18.2.164:4444/api");
+				URL url = new URL(FOX_API_URL);
 				URLConnection conn = url.openConnection();
 				conn.setDoOutput(true);
 				OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
@@ -359,7 +360,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 				data += "&" + URLEncoder.encode("returnHtml", "UTF-8")	+ "=" + URLEncoder.encode((returnHtml)? "TRUE":"FALSE", "UTF-8");
 
 				// Send data
-				URL url = new URL("http://139.18.2.164:4444/api");
+				URL url = new URL(FOX_API_URL);
 				URLConnection conn = url.openConnection();
 				conn.setDoOutput(true);
 				OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
@@ -376,6 +377,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 				rd.close();
 				error = false;
 			} catch (Exception e) {
+				logger.error("FOX Exception: " + e);
 				e.printStackTrace();
 			}
 		}

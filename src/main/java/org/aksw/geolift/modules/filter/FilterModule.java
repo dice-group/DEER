@@ -26,7 +26,7 @@ public class FilterModule implements GeoLiftModule{
 	private Model model = null;
 
 	// parameters list
-	private String 	triplesPattern = "SELECT * WHERE { ?s ?p ?o }";
+	private String 	triplesPattern = "?s ?p ?o";
 
 	
 

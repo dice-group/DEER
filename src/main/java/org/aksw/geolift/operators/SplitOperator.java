@@ -26,7 +26,7 @@ public class SplitOperator implements ModelOperator {
 	 */
 	@Override
 	public List<Model> process(List<Model> models, Map<String, String> parameters) {
-		logger.info("--------------- Merge Operator ---------------");
+		logger.info("--------------- Split Operator ---------------");
 		if(parameters.containsKey("splitsCount")){
 			splitsCount = Integer.parseInt(parameters.get("splitsCount"));
 		}
