@@ -88,6 +88,8 @@ public class ConformationModule implements GeoLiftModule{
 			if(s.isResource() && s.toString().startsWith(sourceURI)){
 				Resource newSubject = ResourceFactory.createResource(s.toString().replaceFirst(sourceURI, targetURI));
 				resultModel.add( newSubject , p, o);
+			}else{
+				resultModel.add( s , p, o);
 			}
 		}
 		return resultModel;

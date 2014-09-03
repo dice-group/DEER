@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.modules.GeoLiftModule;
-import org.aksw.geolift.modules.nlp.NlpGeoEnricher;
+import org.aksw.geolift.modules.nlp.NlpModule;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.Query;
@@ -37,9 +37,9 @@ import com.hp.hpl.jena.rdf.model.Statement;
  * targeted predicates to be added. This is done by following each URI-typed 
  * objects in the model and query for such information in the dereferenced target
  */
-public class URIDereferencing implements GeoLiftModule
+public class DereferencingModule implements GeoLiftModule
 {
-	private static final Logger logger = Logger.getLogger(URIDereferencing.class.getName());
+	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
 	//list of parameters passed to the module
 	List<String> parametersList= new ArrayList<String>();
 	static Map<RDFNode,Resource> objectsDerefModelAdded= new HashMap<RDFNode, Resource>();
@@ -401,7 +401,7 @@ public class URIDereferencing implements GeoLiftModule
 				// Create a resource with empty node
 				object = localModel.createResource();
 				//Retrieve all interesting <predicate,object> info. for such URI object
-				resourceInterestingInfoExtension= URIDereferencing.getURIInfo(uriObject);
+				resourceInterestingInfoExtension= DereferencingModule.getURIInfo(uriObject);
 				//Add information to the resource 
 				for (Property key : resourceInterestingInfoExtension.keySet())
 				{
@@ -691,7 +691,7 @@ public class URIDereferencing implements GeoLiftModule
 			//First parameter: model is loaded with dataset from specified file/resource
 			Model model=org.aksw.geolift.io.Reader.readModel(datasetSource);
 			//Create Dereferencing object to start the process
-			URIDereferencing URID = new URIDereferencing();
+			DereferencingModule URID = new DereferencingModule();
 			// run the dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
 			Model resultedModel = URID.process(model, predicates);
 			logger.info("Saving enriched model into file");

@@ -13,11 +13,11 @@ import java.util.TreeSet;
 
 import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.modules.GeoLiftModule;
-import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
+import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.aksw.geolift.modules.conformation.ConformationModule;
 import org.aksw.geolift.modules.filter.FilterModule;
-import org.aksw.geolift.modules.linking.Linking;
-import org.aksw.geolift.modules.nlp.NlpGeoEnricher;
+import org.aksw.geolift.modules.linking.LinkingModule;
+import org.aksw.geolift.modules.nlp.NlpModule;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Multimap;
@@ -61,17 +61,17 @@ public class WorkflowHandler{
 		Model enrichedModel = ModelFactory.createDefaultModel();
 
 		if(moduleName.toLowerCase().equals("nlp")){
-			NlpGeoEnricher geoEnricher= new NlpGeoEnricher();
+			NlpModule geoEnricher= new NlpModule();
 			enrichedModel = geoEnricher.process(inputModel, modueParameters);
 			return enrichedModel;
 		}
 		if(moduleName.toLowerCase().equals("linking")){
-			Linking geoEnricher= new Linking();
+			LinkingModule geoEnricher= new LinkingModule();
 			enrichedModel = geoEnricher.process(inputModel, modueParameters);
 			return enrichedModel;
 		}
 		if(moduleName.toLowerCase().equals("dereferencing")){
-			URIDereferencing geoEnricher= new URIDereferencing();
+			DereferencingModule geoEnricher= new DereferencingModule();
 			enrichedModel = geoEnricher.process(inputModel, modueParameters);
 			return enrichedModel;
 		}

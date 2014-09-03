@@ -44,8 +44,8 @@ import org.apache.log4j.Logger;
  *
  * @author sherif
  */
-public class NlpGeoEnricher implements GeoLiftModule{
-	private static final Logger logger = Logger.getLogger(NlpGeoEnricher.class.getName());
+public class NlpModule implements GeoLiftModule{
+	private static final Logger logger = Logger.getLogger(NlpModule.class.getName());
 	private static final String FOX_API_URL = "http://139.18.2.164:4444/api";
 	private Model model;
 
@@ -210,13 +210,13 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 * @param literalProperty
 	 *@author sherif
 	 */
-	public NlpGeoEnricher(Model model, Property literalProperty) {
+	public NlpModule(Model model, Property literalProperty) {
 		super();
 		this.model = model;
 		this.LiteralProperty = literalProperty;
 	}
 
-	public NlpGeoEnricher(String fileNameOrUri, String literalPropartyUri) {
+	public NlpModule(String fileNameOrUri, String literalPropartyUri) {
 		super();
 		this.model = loadModel(fileNameOrUri);
 		this.LiteralProperty = ResourceFactory.createProperty(literalPropartyUri);
@@ -226,7 +226,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	 * 
 	 *@author sherif
 	 */
-	public NlpGeoEnricher() {
+	public NlpModule() {
 		super();
 		this.model = null;
 		this.LiteralProperty = null;
@@ -577,6 +577,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
 
 		Model enrichedModel = nlpEnrichGeoTriples();
+		enrichedModel.add(inputModel);
 
 		if( parameters.containsKey("output")){
 			outputFile = parameters.get("output");
@@ -621,7 +622,7 @@ public class NlpGeoEnricher implements GeoLiftModule{
 	}
 
 	public static void main(String args[]) throws IOException {
-		NlpGeoEnricher geoEnricher= new NlpGeoEnricher();
+		NlpModule geoEnricher= new NlpModule();
 
 		Map<String, String> parameters = new HashMap<String, String>();
 

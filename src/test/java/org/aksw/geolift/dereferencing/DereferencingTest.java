@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
+import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -46,7 +46,7 @@ public class DereferencingTest
     		parameters.put(predicate, predicate);
 		}
     	
-    	URIDereferencing u = new URIDereferencing();
+    	DereferencingModule u = new DereferencingModule();
     	Model resultedModel = u.process(model, parameters);// run the dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
 		long stopTime = System.currentTimeMillis();
 		try { 

@@ -24,7 +24,7 @@ public class ModelOperatorFactory {
 	 * @return a specific module instance given its module's name
 	 * @author sherif
 	 */
-	public static ModelOperator getOperator(String name) {
+	public static GeoLiftOperator getOperator(String name) {
 		logger.info("Getting operator with name "+name);
 
 		if(name.equalsIgnoreCase(MERGE_MODEL))
@@ -54,8 +54,8 @@ public class ModelOperatorFactory {
 	 * @return list of instances of all implemented operators 
 	 * @author sherif
 	 */
-	List<ModelOperator> getImplementations(){
-		List<ModelOperator> result = new ArrayList<ModelOperator>();
+	List<GeoLiftOperator> getImplementations(){
+		List<GeoLiftOperator> result = new ArrayList<GeoLiftOperator>();
 		result.add(new MergeOperator());
 		result.add(new SplitOperator());
 		//TODO Add any new operator here 

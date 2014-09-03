@@ -15,13 +15,13 @@
 		:outputFile		"GeoLiftBerlin.ttl" ;
 		:outputFormat	"Turtle" .
 
-:deref		a				:Module, :DereferencengModule  ;
-		rdfs:label		"Dereferenceng module" ;
+:deref		a				:Module, :DereferencingModule  ;
+		rdfs:label		"Dereferencing module" ;
 		:hasInput		:d1 ;
 		:hasOutput		:d2 ;
 		:hasParameter	:derefParam1 .
 
-:derefParam1	a				:ModuleParameter, :DereferencengModuleParameter ;
+:derefParam1	a				:ModuleParameter, :DereferencingModuleParameter ;
 		:hasKey			"inputProperty1" ;
 		:hasValue		geo:lat .
 

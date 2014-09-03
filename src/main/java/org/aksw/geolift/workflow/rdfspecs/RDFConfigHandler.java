@@ -13,11 +13,11 @@ import java.util.TreeMap;
 
 import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.io.Writer;
-import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
+import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.aksw.geolift.modules.conformation.ConformationModule;
 import org.aksw.geolift.modules.filter.FilterModule;
-import org.aksw.geolift.modules.linking.Linking;
-import org.aksw.geolift.modules.nlp.NlpGeoEnricher;
+import org.aksw.geolift.modules.linking.LinkingModule;
+import org.aksw.geolift.modules.nlp.NlpModule;
 import org.aksw.geolift.operators.MergeOperator;
 import org.aksw.geolift.operators.SplitOperator;
 import org.apache.log4j.Logger;
@@ -82,17 +82,17 @@ public class RDFConfigHandler {
 				continue;
 			}
 			if(type.equals(SpecsOntology.NLPModule)){
-				NlpGeoEnricher geoEnricher = new NlpGeoEnricher();
+				NlpModule geoEnricher = new NlpModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
 			if(type.equals(SpecsOntology.LinkingModule)){
-				Linking geoEnricher = new Linking();
+				LinkingModule geoEnricher = new LinkingModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
-			if(type.equals(SpecsOntology.DereferencengModule)){
-				URIDereferencing geoEnricher = new URIDereferencing();
+			if(type.equals(SpecsOntology.DereferencingModule)){
+				DereferencingModule geoEnricher = new DereferencingModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}

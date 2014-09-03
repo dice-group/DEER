@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
-import org.aksw.geolift.modules.linking.Linking;
+import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
+import org.aksw.geolift.modules.linking.LinkingModule;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -37,7 +37,7 @@ public class LinkingTest {
 		parameters.put("linksPart",args[3]);//The position of the Original URI to be enriched in the links generated (right side or left side), so the otherside is the link partner to be added to it
 		
 		Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetFilePath"));
-		Linking l= new Linking();
+		LinkingModule l= new LinkingModule();
 		l.process(model, parameters);
 		try {
 			org.aksw.geolift.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetUpdated.nt");
@@ -46,7 +46,7 @@ public class LinkingTest {
 			e.printStackTrace();
 		}
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		URIDereferencing d= new URIDereferencing();
+		DereferencingModule d= new DereferencingModule();
 		Map<String, String> parameters2= new HashMap<String, String>();
 		parameters2.put("http://www.w3.org/2003/01/geo/wgs84_pos#lat", "http://www.w3.org/2003/01/geo/wgs84_pos#lat");
 		parameters2.put("http://www.w3.org/2003/01/geo/wgs84_pos#long", "http://www.w3.org/2003/01/geo/wgs84_pos#long");

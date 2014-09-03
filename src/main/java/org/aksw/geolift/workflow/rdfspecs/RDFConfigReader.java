@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aksw.geolift.io.Reader;
-import org.aksw.geolift.modules.linking.Linking;
+import org.aksw.geolift.modules.linking.LinkingModule;
 import org.aksw.geolift.workflow.TSVConfigReader;
 import org.apache.log4j.Logger;
 

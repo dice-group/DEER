@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.modules.GeoLiftModule;
-import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
+import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -25,9 +25,9 @@ import de.uni_leipzig.simba.controller.PPJoinController;
  * @author mofeed
  *
  */
-public class Linking implements GeoLiftModule
+public class LinkingModule implements GeoLiftModule
 {
-	private static final Logger logger = Logger.getLogger(Linking.class.getName());
+	private static final Logger logger = Logger.getLogger(LinkingModule.class.getName());
 	String specFilePath;
 	String linksFilePath;
 	String linksPart;
@@ -102,7 +102,7 @@ public class Linking implements GeoLiftModule
 	{
 		Model linksModel = getLinks(linksFilePath);
 		System.out.println(linksFilePath);
-		linksModel=setPrefixes(linksModel);
+		linksModel = setPrefixes(linksModel);
 		StmtIterator iter = linksModel.listStatements();
 
 		// print out the predicate, subject and object of each statement
@@ -201,7 +201,7 @@ public class Linking implements GeoLiftModule
 		}
 		try {
 			Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
-			Linking l= new Linking();
+			LinkingModule l= new LinkingModule();
 			model=l.process(model, parameters);
 			try{
 

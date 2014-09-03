@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.geolift.modules.Dereferencing.URIDereferencing;
+import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Sets;
@@ -18,8 +18,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * @author sherif
  *
  */
-public class SplitOperator implements ModelOperator {
-	private static final Logger logger = Logger.getLogger(URIDereferencing.class.getName());
+public class SplitOperator implements GeoLiftOperator {
+	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
 	public int splitsCount = 2;
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.operators.ModelOperator#run(java.util.List)
