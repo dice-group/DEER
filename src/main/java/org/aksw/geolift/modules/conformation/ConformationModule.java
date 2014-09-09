@@ -10,6 +10,9 @@ import java.util.Map;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.apache.log4j.Logger;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Multisets;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -49,11 +52,48 @@ public class ConformationModule implements GeoLiftModule{
 	}
 
 	/**
+	 * Self configuration
+	 *@author sherif
+	 */
+	public ConformationModule(Model source, Model target) {
+		sourceURI = getMostRedundantUri(source);
+		targetURI = getMostRedundantUri(target);
+		System.out.println("Source URI: " + sourceURI);
+		System.out.println("Target URI: " + targetURI);
+	}
+
+
+
+	/**
 	 * 
 	 *@author sherif
 	 */
 	public ConformationModule() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @param m
+	 * @return Most redundant source URI in the input model
+	 * @author sherif
+	 */
+	private String getMostRedundantUri(Model m) {
+		Multiset<Resource> subjectsMultiset = HashMultiset.create();
+		ResIterator listSubjects = m.listSubjects();
+		while(listSubjects.hasNext()){
+			Resource subject = listSubjects.next();
+			subjectsMultiset.add(subject);
+		}
+		Resource result = ResourceFactory.createResource();
+		Integer max = new Integer(0);
+		for(Resource r : subjectsMultiset){
+			Integer value = subjectsMultiset.count(r);
+			if( value > max ){
+				max = value;
+				result = r;
+			}
+		}
+		return result.toString();
 	}
 
 	/**

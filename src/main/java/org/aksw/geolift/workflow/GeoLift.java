@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.aksw.geolift.io.Reader;
-import org.aksw.geolift.workflow.rdfspecs.RDFConfigHandler;
+import org.aksw.geolift.workflow.rdfspecs.RDFConfigExecuter;
 import org.aksw.geolift.workflow.rdfspecs.RDFConfigReader;
 import org.apache.log4j.Logger;
 
@@ -90,6 +90,6 @@ public class GeoLift {
 	 */
 	public static void main(String args[]) throws IOException{
 //		runGeoLift(args);
-		RDFConfigHandler.main(args);
+		RDFConfigExecuter.main(args);
 	}
 }

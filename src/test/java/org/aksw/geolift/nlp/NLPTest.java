@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aksw.geolift.modules.nlp.LiteralPropertyRanker;
-import org.aksw.geolift.modules.nlp.NlpModule;
+import org.aksw.geolift.modules.nlp.NLPModule;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 public class NLPTest {
     
     public static void main(String args[]) throws IOException {
-		NlpModule geoEnricher= new NlpModule();
+		NLPModule geoEnricher= new NLPModule();
 
 		Map<String, String> parameters = new HashMap<String, String>();
 		

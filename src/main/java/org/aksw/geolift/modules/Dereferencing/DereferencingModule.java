@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.modules.GeoLiftModule;
-import org.aksw.geolift.modules.nlp.NlpModule;
+import org.aksw.geolift.modules.nlp.NLPModule;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.Query;

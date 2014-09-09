@@ -42,7 +42,7 @@ public class SpecsOntology {
 	public static final Property isFirstStep 	= property("isFirstStep");
 	public static final Property isLastStep 	= property("isLastStep");
 	
-	public static final Resource Step 						= resource( "Step" );
+//	public static final Resource Step 						= resource( "Step" );
 	public static final Resource Dataset 						= resource( "Dataset" );
 	public static final Resource Module 						= resource( "Module" );
 	public static final Resource DereferencingModule 			= resource( "DereferencingModule" );

@@ -44,8 +44,8 @@ import org.apache.log4j.Logger;
  *
  * @author sherif
  */
-public class NlpModule implements GeoLiftModule{
-	private static final Logger logger = Logger.getLogger(NlpModule.class.getName());
+public class NLPModule implements GeoLiftModule{
+	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
 	private static final String FOX_API_URL = "http://139.18.2.164:4444/api";
 	private Model model;
 
@@ -210,13 +210,13 @@ public class NlpModule implements GeoLiftModule{
 	 * @param literalProperty
 	 *@author sherif
 	 */
-	public NlpModule(Model model, Property literalProperty) {
+	public NLPModule(Model model, Property literalProperty) {
 		super();
 		this.model = model;
 		this.LiteralProperty = literalProperty;
 	}
 
-	public NlpModule(String fileNameOrUri, String literalPropartyUri) {
+	public NLPModule(String fileNameOrUri, String literalPropartyUri) {
 		super();
 		this.model = loadModel(fileNameOrUri);
 		this.LiteralProperty = ResourceFactory.createProperty(literalPropartyUri);
@@ -226,7 +226,7 @@ public class NlpModule implements GeoLiftModule{
 	 * 
 	 *@author sherif
 	 */
-	public NlpModule() {
+	public NLPModule() {
 		super();
 		this.model = null;
 		this.LiteralProperty = null;
@@ -622,7 +622,7 @@ public class NlpModule implements GeoLiftModule{
 	}
 
 	public static void main(String args[]) throws IOException {
-		NlpModule geoEnricher= new NlpModule();
+		NLPModule geoEnricher= new NLPModule();
 
 		Map<String, String> parameters = new HashMap<String, String>();
 

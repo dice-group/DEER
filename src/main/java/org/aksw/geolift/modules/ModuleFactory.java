@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.aksw.geolift.modules.linking.LinkingModule;
-import org.aksw.geolift.modules.nlp.NlpModule;
+import org.aksw.geolift.modules.nlp.NLPModule;
 import org.apache.log4j.Logger;
 
 
@@ -36,7 +36,7 @@ public class ModuleFactory {
 		if(name.equalsIgnoreCase(LINKING_MODULE ))
 			return new LinkingModule();
 		if (name.equalsIgnoreCase(NLP_MODULE))
-			return new NlpModule();
+			return new NLPModule();
 		//TODO Add any new modules here 
 		
 		logger.error("Sorry, The module " + name + " is not yet implemented. Exit with error ...");
@@ -65,7 +65,7 @@ public class ModuleFactory {
 		List<GeoLiftModule> result = new ArrayList<GeoLiftModule>();
 		result.add(new DereferencingModule());
 		result.add(new LinkingModule());
-		result.add(new NlpModule());
+		result.add(new NLPModule());
 		//TODO Add any new modules here 
 		return result;
 	}

@@ -17,7 +17,7 @@ import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.aksw.geolift.modules.conformation.ConformationModule;
 import org.aksw.geolift.modules.filter.FilterModule;
 import org.aksw.geolift.modules.linking.LinkingModule;
-import org.aksw.geolift.modules.nlp.NlpModule;
+import org.aksw.geolift.modules.nlp.NLPModule;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Multimap;
@@ -61,7 +61,7 @@ public class WorkflowHandler{
 		Model enrichedModel = ModelFactory.createDefaultModel();
 
 		if(moduleName.toLowerCase().equals("nlp")){
-			NlpModule geoEnricher= new NlpModule();
+			NLPModule geoEnricher= new NLPModule();
 			enrichedModel = geoEnricher.process(inputModel, modueParameters);
 			return enrichedModel;
 		}

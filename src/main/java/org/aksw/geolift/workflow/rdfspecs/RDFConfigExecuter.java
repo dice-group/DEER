@@ -17,7 +17,7 @@ import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.aksw.geolift.modules.conformation.ConformationModule;
 import org.aksw.geolift.modules.filter.FilterModule;
 import org.aksw.geolift.modules.linking.LinkingModule;
-import org.aksw.geolift.modules.nlp.NlpModule;
+import org.aksw.geolift.modules.nlp.NLPModule;
 import org.aksw.geolift.operators.MergeOperator;
 import org.aksw.geolift.operators.SplitOperator;
 import org.apache.log4j.Logger;
@@ -41,12 +41,12 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * @author sherif
  *
  */
-public class RDFConfigHandler {
-	private static final Logger logger = Logger.getLogger(RDFConfigHandler.class.getName());
+public class RDFConfigExecuter {
+	private static final Logger logger = Logger.getLogger(RDFConfigExecuter.class.getName());
 	public static 	Model configModel;
 
 	public static void main(String args[]) throws IOException{
-		RDFConfigHandler RDFConfigHandler = new RDFConfigHandler();
+		RDFConfigExecuter RDFConfigHandler = new RDFConfigExecuter();
 		RDFConfigHandler.run(args[0]);
 	}
 
@@ -82,7 +82,7 @@ public class RDFConfigHandler {
 				continue;
 			}
 			if(type.equals(SpecsOntology.NLPModule)){
-				NlpModule geoEnricher = new NlpModule();
+				NLPModule geoEnricher = new NLPModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
@@ -182,21 +182,21 @@ public class RDFConfigHandler {
 		// trivial case: read dataset from file/uri/endpoint
 		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SpecsOntology.FromEndPoint);
 		if(uriItr.hasNext()){
-			Model cdb = readCBD(dataset, uriItr.next().toString());
-			writeDataset(dataset,cdb);
-			return cdb;
+			Model cbd = readCBD(dataset, uriItr.next().toString());
+			writeDataset(dataset,cbd);
+			return cbd;
 		}
 		uriItr = configModel.listObjectsOfProperty(dataset, SpecsOntology.hasUri);
 		if(uriItr.hasNext()){
-			Model cdb = Reader.readModel(uriItr.next().toString());
-			writeDataset(dataset,cdb);
-			return cdb;
+			Model cbd = Reader.readModel(uriItr.next().toString());
+			writeDataset(dataset,cbd);
+			return cbd;
 		}
 		uriItr = configModel.listObjectsOfProperty(dataset, SpecsOntology.inputFile);
 		if(uriItr.hasNext()){
-			Model cdb = Reader.readModel(uriItr.next().toString());
-			writeDataset(dataset,cdb);
-			return cdb;
+			Model cbd = Reader.readModel(uriItr.next().toString());
+			writeDataset(dataset,cbd);
+			return cbd;
 		}
 		
 		// recursive case: read dataset from previous module/operator output
