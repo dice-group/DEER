@@ -9,13 +9,17 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.nlp.NLPModule;
 import org.apache.log4j.Logger;
 
+import com.google.common.collect.Sets;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -29,6 +33,8 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.vocabulary.OWL;
 
 /**
  * @author mofeed
@@ -47,7 +53,7 @@ public class DereferencingModule implements GeoLiftModule
 	public static boolean useBlankNodes = false;
 	public static List<Property> inputProperties = new ArrayList<Property>();
 	public static List<Property> outputProperties = new ArrayList<Property>();
-	public static Property addedProperty = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
+	public static Property defaultOutputProperty = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
 
 
 	/**
@@ -86,8 +92,68 @@ public class DereferencingModule implements GeoLiftModule
 		parameters.add("inputProperty<n>");
 		parameters.add("outputProperty<n>");
 		parameters.add("useBlankNodes");
-//		parameters.add("useCache");
+		//		parameters.add("useCache");
 		return parameters;
+	}
+
+	/**
+	 * Self configuration
+	 * Properties(target) - Properties(source)
+	 * Find properties in target which are not in source   
+	 * @param source
+	 * @param target
+	 * @return Map of (key, value) pairs of self configured parameters
+	 * @author sherif
+	 */
+	public Map<String, String> selfConfig(Model source, Model target) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		Set<Property> properties = getPropertyDifference(source, target);
+		int propertyNr = 1;
+		for(Property p : properties){
+			System.out.println("inputProperty" + propertyNr + " :" + p);
+			parameters.put("inputProperty" + propertyNr, p.toString());
+			parameters.put("outputProperty" + propertyNr, p.toString());
+			propertyNr++;
+		}
+		return parameters;
+	}
+
+	/**
+	 * Properties(target) - Properties(source) - Properties(ignoredProperties)
+	 * @param source
+	 * @param target
+	 * @return properties which are in target and not in source 
+	 * @author sherif
+	 */
+	private Set<Property> getPropertyDifference(Model source, Model target) {
+		Set<Property> sProperties = new HashSet<Property>(); 
+		StmtIterator sItr = source.listStatements();
+		while (sItr.hasNext()) {
+			sProperties.add(sItr.nextStatement().getPredicate());
+		}
+		Set<Property> tProperties = new HashSet<Property>(); 
+		StmtIterator tItr = target.listStatements();
+		while (tItr.hasNext()) {
+			tProperties.add(tItr.nextStatement().getPredicate());
+		}
+		Set<Property> diffProperties = new HashSet<Property>();
+		Sets.difference(tProperties, sProperties).copyInto(diffProperties);
+		diffProperties = removeUnwantedProperties(diffProperties);
+//		logger.info("Self configured Properties:" + diffProperties);
+		return diffProperties;
+	}
+
+	/**
+	 * @return
+	 * @author sherif
+	 */
+	private Set<Property> removeUnwantedProperties(Set<Property> diffProperties) {
+		Set<Property> ignoreProperties = new HashSet<Property>();
+		ignoreProperties.add(OWL.sameAs);
+		for(Property p : ignoreProperties){
+			diffProperties.remove(p);
+		}
+		return diffProperties;
 	}
 
 	/* (non-Javadoc)
@@ -121,12 +187,15 @@ public class DereferencingModule implements GeoLiftModule
 			if(useBlankNodes)
 				addAdditionalPropertiesUsingBlankNode(parameters); 
 			else
-				addAdditionalPropertiesNoBlankNode();
+				addAdditionalProperties();
 
 		}
-		
+
 		return localModel;
 	}
+	
+	
+	
 
 
 	/*private static Map<String, String> getURIInfo2(String uri,Map<String,String> predicates)
@@ -182,30 +251,30 @@ public class DereferencingModule implements GeoLiftModule
 		//to store each predicate and its value
 		HashMap<Property, List<RDFNode>> resourceFocusedInfo = new HashMap<Property, List<RDFNode>>();
 
-//		//Deserialize the results if exists (For Demo purpose)
-//		if(useCache){
-//			try {
-//				HashMap<String, List<String>> ser = new HashMap<String, List<String>>();
-//				File file = new File("resourceFocusedInfo.ser");
-//				if(file.exists()){
-//					ObjectInputStream in;
-//					in = new ObjectInputStream(new FileInputStream(file));
-//					ser = (HashMap<String, List<String>>) in.readObject();
-//					// convert every object back from string
-//					for(String prop : ser.keySet()){
-//						List<String> l = ser.get(prop);
-//						List<RDFNode> nodes = new ArrayList<RDFNode>();
-//						for(String n : l){
-//							nodes.add(ResourceFactory.createResource(n));
-//						}
-//						resourceFocusedInfo.put(ResourceFactory.createProperty(prop), nodes);
-//					}
-//					return resourceFocusedInfo;
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
+		//		//Deserialize the results if exists (For Demo purpose)
+		//		if(useCache){
+		//			try {
+		//				HashMap<String, List<String>> ser = new HashMap<String, List<String>>();
+		//				File file = new File("resourceFocusedInfo.ser");
+		//				if(file.exists()){
+		//					ObjectInputStream in;
+		//					in = new ObjectInputStream(new FileInputStream(file));
+		//					ser = (HashMap<String, List<String>>) in.readObject();
+		//					// convert every object back from string
+		//					for(String prop : ser.keySet()){
+		//						List<String> l = ser.get(prop);
+		//						List<RDFNode> nodes = new ArrayList<RDFNode>();
+		//						for(String n : l){
+		//							nodes.add(ResourceFactory.createResource(n));
+		//						}
+		//						resourceFocusedInfo.put(ResourceFactory.createProperty(prop), nodes);
+		//					}
+		//					return resourceFocusedInfo;
+		//				}
+		//			} catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
+		//		}
 
 		//define local model to have the data of the uri and extract focused info through built sparql query
 		List<RDFNode> values = new ArrayList<RDFNode>();
@@ -217,9 +286,9 @@ public class DereferencingModule implements GeoLiftModule
 			Model model = ModelFactory.createDefaultModel();
 			InputStream in = conn.getInputStream();
 			model.read(in, null);
-			for(Property outputProperty: outputProperties)
-			{
-				for(Statement st : model.listStatements(model.getResource(uri), outputProperty , (RDFNode) null).toList())
+			for(Property inputProperty: inputProperties)
+			{	
+				for(Statement st : model.listStatements(model.getResource(uri), inputProperty , (RDFNode) null).toList())
 				{
 					RDFNode value = st.getObject();
 					if(value.isLiteral()){
@@ -230,30 +299,30 @@ public class DereferencingModule implements GeoLiftModule
 					}
 
 				}
-				resourceFocusedInfo.put(outputProperty, values);
+				resourceFocusedInfo.put(inputProperty, values);
 				values = new ArrayList<RDFNode>();//create new list for new predicate
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-//		//serialize the output (for Demo purpose)
-//		try {
-//			HashMap<String, List<String>> ser = new HashMap<String, List<String>>();
-//			FileOutputStream fileOut = new FileOutputStream("resourceFocusedInfo.ser");
-//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//			//convert to Serializabe Strings
-//			for(Property prop : resourceFocusedInfo.keySet()){
-//				List<String> l = new ArrayList<String>();
-//				for(RDFNode n : resourceFocusedInfo.get(prop)){
-//					l.add(n.toString());
-//				}
-//				ser.put(prop.toString(), l);
-//			}
-//			out.writeObject(ser);
-//		} catch (Exception e2) {
-//			e2.printStackTrace();
-//		}
+		//		//serialize the output (for Demo purpose)
+		//		try {
+		//			HashMap<String, List<String>> ser = new HashMap<String, List<String>>();
+		//			FileOutputStream fileOut = new FileOutputStream("resourceFocusedInfo.ser");
+		//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+		//			//convert to Serializabe Strings
+		//			for(Property prop : resourceFocusedInfo.keySet()){
+		//				List<String> l = new ArrayList<String>();
+		//				for(RDFNode n : resourceFocusedInfo.get(prop)){
+		//					l.add(n.toString());
+		//				}
+		//				ser.put(prop.toString(), l);
+		//			}
+		//			out.writeObject(ser);
+		//		} catch (Exception e2) {
+		//			e2.printStackTrace();
+		//		}
 
 		return resourceFocusedInfo;
 	}
@@ -321,25 +390,25 @@ public class DereferencingModule implements GeoLiftModule
 	private static List<RDFNode> getURIObjects()
 	{	
 		List<RDFNode> objectsURIs = new ArrayList<RDFNode>();
-//		//Deserialize the results if exists (For Demo purpose)
-//		if(useCache){
-//			try {
-//				List<String> ser = new ArrayList<String>();
-//				File file = new File("URIObjects.ser");
-//				if(file.exists()){
-//					ObjectInputStream in;
-//					in = new ObjectInputStream(new FileInputStream(file));
-//					ser = (List<String>) in.readObject();
-//					// convert every object back from string
-//					for(String n : ser){
-//						objectsURIs.add(ResourceFactory.createResource(n));
-//					}
-//					return objectsURIs;
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
+		//		//Deserialize the results if exists (For Demo purpose)
+		//		if(useCache){
+		//			try {
+		//				List<String> ser = new ArrayList<String>();
+		//				File file = new File("URIObjects.ser");
+		//				if(file.exists()){
+		//					ObjectInputStream in;
+		//					in = new ObjectInputStream(new FileInputStream(file));
+		//					ser = (List<String>) in.readObject();
+		//					// convert every object back from string
+		//					for(String n : ser){
+		//						objectsURIs.add(ResourceFactory.createResource(n));
+		//					}
+		//					return objectsURIs;
+		//				}
+		//			} catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
+		//		}
 
 		//create a query to retrieve URIs objects
 		String queryString =  "SELECT DISTINCT ?o WHERE {  ?s ?p ?o . FILTER (isURI(?o)) . FILTER (STRSTARTS(STR(?o), \"http://dbpedia.org/resource\"))}";// 
@@ -353,19 +422,19 @@ public class DereferencingModule implements GeoLiftModule
 			objectsURIs.add(object);   	
 		}
 
-//		//serialize the output (for Demo purpose)
-//		try {
-//			FileOutputStream fileOut = new FileOutputStream("URIObjects.ser");
-//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//			//convert to Serializabe Strings
-//			List<String> l = new ArrayList<String>();
-//			for(RDFNode n : objectsURIs){
-//				l.add(n.toString());
-//			}
-//			out.writeObject(l);
-//		} catch (Exception e2) {
-//			e2.printStackTrace();
-//		}
+		//		//serialize the output (for Demo purpose)
+		//		try {
+		//			FileOutputStream fileOut = new FileOutputStream("URIObjects.ser");
+		//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+		//			//convert to Serializabe Strings
+		//			List<String> l = new ArrayList<String>();
+		//			for(RDFNode n : objectsURIs){
+		//				l.add(n.toString());
+		//			}
+		//			out.writeObject(l);
+		//		} catch (Exception e2) {
+		//			e2.printStackTrace();
+		//		}
 
 		return objectsURIs;
 	}
@@ -451,7 +520,7 @@ public class DereferencingModule implements GeoLiftModule
 						objectsDerefModelAdded.put(triple.getObject(), object);
 						//Attach the object's resource to this subject
 						Resource resource= localModel.getResource(triple.getSubject().getURI());
-						resource.addProperty(addedProperty, object);
+						resource.addProperty(defaultOutputProperty, object);
 						/*Statement s = ResourceFactory.createStatement(resource, addedProperty, object);
 							localModel.add(s);*/
 						resourceInterestingInfoExtension= null;
@@ -461,7 +530,7 @@ public class DereferencingModule implements GeoLiftModule
 		}
 	}
 
-	private static void addAdditionalPropertiesNoBlankNode()
+	private static void addAdditionalProperties()
 	{
 		//List to save all distinct URI objects in the data source
 		List<RDFNode> urisObjects = null;
@@ -472,14 +541,14 @@ public class DereferencingModule implements GeoLiftModule
 		//Get list of unique URI objects in the data source as http://dbpedia.org/resource/XXXX 
 		urisObjects= getURIObjects();
 		//Get information for each single distinct objectURI according to interesting predicates
-		logger.info("Number of unique URI object to find extension: "+urisObjects.size());
+		logger.info("Number of unique URI object to find extension: "+ urisObjects.size());
 		if(urisObjects.size()>0) 
 		{
 			int count=1; 
 			//For each unique URI object, its predicate-value pairs are retrieved then add them attached to their object in a map 
 			for (RDFNode uriObject : urisObjects)  
 			{
-				logger.info("Enriching " + uriObject + "(" + count++ + "/" + urisObjects.size()+")");
+//				logger.info("Enriching " + uriObject + "(" + count++ + "/" + urisObjects.size()+")");
 				//Retrieve all interesting <predicate,object> info. for current URI object
 				resourceInterestingInfoExtension = getURIInfo(uriObject);
 				//Add retrieved predicate-value pair attached to the object in the map 
@@ -493,7 +562,7 @@ public class DereferencingModule implements GeoLiftModule
 		//Get list of all statement containing URI-objects
 		triplesURIsObjects = getTriplesWithURIObjects();
 		logger.info("Starting model enriching");
-		if(triplesURIsObjects.size()>0)
+		if(triplesURIsObjects.size() > 0)
 		{
 			//iterate over each triple to add each URI object information to its resource subject
 			for (Statement triple : triplesURIsObjects) 
@@ -503,43 +572,25 @@ public class DereferencingModule implements GeoLiftModule
 				Resource enrichedResource = (Resource) triple.getObject();
 				//for the subject's related object in the enriched list get the related predicate-value pairs
 				Map<Property, List<RDFNode>> objectPredicateValuePairs = objectWithInfoAttached.get(triple.getObject());
+				int i = 0;
 				for (Property predicate : objectPredicateValuePairs.keySet()) {
 					for(RDFNode value : objectPredicateValuePairs.get(predicate)){
+						Property outputProperty = (i < outputProperties.size()) ? outputProperties.get(i) : defaultOutputProperty; 
 						if(value.isLiteral()){
 							//mainResource.addProperty(ResourceFactory.createProperty(predicate), objectPredicateValuePairs.get(predicate).asLiteral().toString());
-							localModel.add(enrichedResource, predicate, value.asLiteral().toString());
+							localModel.add(enrichedResource, outputProperty, value.asLiteral().toString());
+							logger.info("Triple found: <" + enrichedResource + "> <" + outputProperty + "> \"" + value.toString() + "\"");
 						}else{
 							//mainResource.addProperty(ResourceFactory.createProperty(predicate), objectPredicateValuePairs.get(predicate));
-							localModel.add(enrichedResource, predicate, value);
-
+							localModel.add(enrichedResource, outputProperty, value);
+							logger.info("Triple found: <" + enrichedResource + "> <" + outputProperty + "> <" + value + ">");
 						}
 					}
+					i++;
 				}
 
 			}
 		}
-	}
-
-	//This function displays all the triples in the model
-	private static List<String> displayModelTriples()
-	{
-		List<String> triples=new ArrayList<String>();
-
-		String queryString =  "SELECT ?s ?p ?o WHERE  { ?s ?p ?o}";
-		Query query = QueryFactory.create(queryString);
-		QueryExecution exec = QueryExecutionFactory.create(query, localModel);
-		ResultSet rs = exec.execSelect();
-		while(rs.hasNext()){
-			QuerySolution sol = rs.next();
-			System.out.print(("<"+sol.getResource("?s"))+"> ");
-			System.out.print(("<"+sol.getResource("?p"))+"> ");
-			if(sol.get("?o").isResource())
-				logger.info(("<"+sol.get("?o"))+"> ");
-			else
-				logger.info(("\""+sol.get("?o"))+"\"");
-
-		}
-		return triples;
 	}
 
 
@@ -552,29 +603,29 @@ public class DereferencingModule implements GeoLiftModule
 	{
 		List<Statement> triplesWithURIObjects = new ArrayList<Statement>(); 
 
-//		//Deserialize the results if exists (For Demo purpose)
-//		if(useCache){
-//			try {
-//				List<String> ser = new ArrayList<String>();
-//				File file = new File("triplesWithURIObjects.ser");
-//				if(file.exists()){
-//					ObjectInputStream in;
-//					in = new ObjectInputStream(new FileInputStream(file));
-//					ser = (List<String>) in.readObject();
-//					// convert every object back from string
-//					for(String st : ser){
-//						triplesWithURIObjects.add(ResourceFactory.createStatement(
-//								ResourceFactory.createResource(st.split(" ")[0]), 
-//								ResourceFactory.createProperty(st.split(" ")[1]), 
-//								ResourceFactory.createResource(st.split(" ")[2])));
-//					}
-//					return triplesWithURIObjects;
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
+		//		//Deserialize the results if exists (For Demo purpose)
+		//		if(useCache){
+		//			try {
+		//				List<String> ser = new ArrayList<String>();
+		//				File file = new File("triplesWithURIObjects.ser");
+		//				if(file.exists()){
+		//					ObjectInputStream in;
+		//					in = new ObjectInputStream(new FileInputStream(file));
+		//					ser = (List<String>) in.readObject();
+		//					// convert every object back from string
+		//					for(String st : ser){
+		//						triplesWithURIObjects.add(ResourceFactory.createStatement(
+		//								ResourceFactory.createResource(st.split(" ")[0]), 
+		//								ResourceFactory.createProperty(st.split(" ")[1]), 
+		//								ResourceFactory.createResource(st.split(" ")[2])));
+		//					}
+		//					return triplesWithURIObjects;
+		//				}
+		//			} catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
 
-//		}
+		//		}
 
 		//create a query to retrieve URIs objects
 		String queryString =  "SELECT * WHERE { ?s ?p ?o . FILTER (isURI(?o)) . FILTER (STRSTARTS(STR(?o), \"http://dbpedia.org/resource\"))}";
@@ -591,18 +642,18 @@ public class DereferencingModule implements GeoLiftModule
 			triplesWithURIObjects.add(triple);
 		}	
 
-//		//serialize the output (for Demo purpose)
-//		try {
-//			FileOutputStream fileOut = new FileOutputStream("triplesWithURIObjects.ser");
-//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//			List<String> l = new ArrayList<String>();
-//			for(Statement s : triplesWithURIObjects){
-//				l.add(s.getSubject() + " " + s.getPredicate() + " " + s.getObject());
-//			}
-//			out.writeObject(l);
-//		} catch (Exception e2) {
-//			e2.printStackTrace();
-//		}
+		//		//serialize the output (for Demo purpose)
+		//		try {
+		//			FileOutputStream fileOut = new FileOutputStream("triplesWithURIObjects.ser");
+		//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+		//			List<String> l = new ArrayList<String>();
+		//			for(Statement s : triplesWithURIObjects){
+		//				l.add(s.getSubject() + " " + s.getPredicate() + " " + s.getObject());
+		//			}
+		//			out.writeObject(l);
+		//		} catch (Exception e2) {
+		//			e2.printStackTrace();
+		//		}
 
 		return triplesWithURIObjects;
 	}

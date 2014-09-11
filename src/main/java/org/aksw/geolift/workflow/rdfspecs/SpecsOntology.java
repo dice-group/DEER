@@ -59,5 +59,8 @@ public class SpecsOntology {
 	public static final Resource Operator 					= resource( "Operator" );
 	public static final Resource SplitOperator 				= resource( "SplitOperator" );
 	public static final Resource MergeOperator 				= resource( "MergeOperator" );
+	public static final Resource OperatorParameter 			= resource( "OperatorParameter" );
+	public static final Resource SplitOperatorParameter 		= resource( "SplitOperatorParameter" );
+	public static final Resource MergeOperatorParameter 		= resource( "MergeOperatorParameter" );
 	
 }

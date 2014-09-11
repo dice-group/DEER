@@ -3,11 +3,19 @@
  */
 package org.aksw.geolift.workflow.specslearner;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.aksw.geolift.io.Reader;
+import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.aksw.geolift.modules.conformation.ConformationModule;
@@ -17,9 +25,13 @@ import org.aksw.geolift.modules.nlp.NLPModule;
 import org.aksw.geolift.operators.GeoLiftOperator;
 import org.aksw.geolift.operators.MergeOperator;
 import org.aksw.geolift.operators.SplitOperator;
+import org.aksw.geolift.workflow.rdfspecs.RDFConfigWriter;
+import org.aksw.geolift.workflow.rdfspecs.SpecsOntology;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 import de.uni_leipzig.simba.benchmarker.MergeModifier;
 
@@ -28,31 +40,32 @@ import de.uni_leipzig.simba.benchmarker.MergeModifier;
  *
  */
 public class SpecsLearn {
+
+	private final Set<GeoLiftModule> MODULES = new HashSet<GeoLiftModule>(
+			Arrays.asList(new ConformationModule(), new DereferencingModule()));
+
+	private int datasetCounter = 1;
 	public final double childFactor = 1; 
-	
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
-	
-	List<GeoLiftModule>	  modulesList;
-	List<GeoLiftOperator> operatorList;
-	TreeSet<ExecutionNode> executionNodes = new TreeSet<ExecutionNode>();
-	
+	private RDFConfigWriter configWriter = new RDFConfigWriter();
+	private Tree<ExecutionNode> executionTreeRoot = new Tree<ExecutionNode>();
+
 	SpecsLearn(Model source, Model target){
+		this();
 		sourceModel  = source;
 		targetModel = target;
-		modulesList  = new ArrayList<GeoLiftModule>();
-		
-		modulesList.add(new ConformationModule());
-//		modulesList.add(new NlpModule());
-//		modulesList.add(new DereferencingModule());
-//		modulesList.add(new LinkingModule());
-//		modulesList.add(new FilterModule());
-		
-		operatorList = new ArrayList<GeoLiftOperator>();
-//		operatorList.add(new SplitOperator());
-//		operatorList.add(new MergeOperator());
 	}
-	
+
+	/**
+	 * 
+	 *@author sherif
+	 */
+	public SpecsLearn() {
+		sourceModel = ModelFactory.createDefaultModel();
+		targetModel = ModelFactory.createDefaultModel();
+	}
+
 	/**
 	 * Compute the fitness of the generated model by current specs
 	 * Simple implementation is difference between current and target 
@@ -60,46 +73,45 @@ public class SpecsLearn {
 	 * @author sherif
 	 */
 	long computeFitness(Model currentModel, int childNr){
-		return targetModel.difference(currentModel).size();
+		System.out.println("targetModel.difference(currentModel).size()" + targetModel.difference(currentModel).size());
+		System.out.println("currentModel.difference(targetModel).size()" + currentModel.difference(targetModel).size());
+		return targetModel.difference(currentModel).size() + currentModel.difference(targetModel).size();
 	}
-	
-	public Model generateConfigFile(Model source, Model target){
-		Model result = ModelFactory.createDefaultModel();
-		for(GeoLiftModule m : modulesList){
-			if(m instanceof ConformationModule){
-				m = new ConformationModule(source, target);
+
+	public void initiateExecutionTree(Model source, Model target){
+		executionTreeRoot = new Tree<ExecutionNode>();
+		Map<String, String> parameters = new HashMap<String, String>();
+
+		for(GeoLiftModule m : MODULES){
+			parameters = m.selfConfig(source, target);
+			Model currentModel = m.process(source, parameters);
+			long fitness = computeFitness(currentModel, MODULES.size());
+			Resource inputDataset = ResourceFactory.createResource(SpecsOntology.uri+"Dataset_" + datasetCounter++);
+			Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri+"Dataset_" + datasetCounter++);
+			Model configModel = configWriter.addModule(m, parameters, inputDataset, outputDataset);
+
+			ExecutionNode node = new ExecutionNode( m, fitness, source, currentModel, configModel);
+			Tree<ExecutionNode> level1Node = new Tree<ExecutionNode>(node);
+			executionTreeRoot.addChild(level1Node);
+
+			for( GeoLiftModule module : MODULES){
+				node = new ExecutionNode(module, -1, level1Node.getValue().output, null, level1Node.getValue().config);
+				Tree<ExecutionNode> level2Node = new Tree<ExecutionNode>(node);
+				level1Node.addChild(level2Node);
 			}
-			Model currentModel = m.process(source, null);
-			long fitness = computeFitness(currentModel, modulesList.size());
-			executionNodes.add(new ExecutionNode(m, fitness, currentModel, modulesList.size()));
 		}
-		
-		
-		return result;
+		executionTreeRoot.print(executionTreeRoot);
 	}
-	
-	
+
+
+
 	public static void main(String args[]){
 		String sourceUri = args[0];
 		String targetUri = args[1];
-		sourceModel  = Reader.readModel(sourceUri);
-		targetModel = Reader.readModel(targetUri);
-		ConformationModule c = new ConformationModule(sourceModel, targetModel);
-		
-		
-//		Model diffModel = targetModel.difference(sourceModel);
-//		
-//		System.out.println("------------ initial Model ------------");
-////		initialModel.write(System.out, "TTL");
-//		System.out.println(sourceModel.size());
-//		
-//		System.out.println("------------ enriched Model ------------");
-////		enrichedModel.write(System.out, "TTL");
-//		System.out.println(targetModel.size());
-//		
-//		System.out.println("------------ Diff Model ------------");
-////		diffModel.write(System.out, "TTL");
-//		System.out.println(diffModel.size());
+		Model source  = Reader.readModel(sourceUri);
+		Model target = Reader.readModel(targetUri);
+		SpecsLearn learner = new SpecsLearn();
+		learner.initiateExecutionTree(source, target);
 	}
 
 }

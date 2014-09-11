@@ -50,8 +50,9 @@ public class NLPModule implements GeoLiftModule{
 	private Model model;
 
 	// parameters list
-	private Property 	LiteralProperty;
-	private String 	useFoxLight			= "OFF"; //"org.aksw.fox.nertools.NERStanford"; ;
+	private boolean 	extractAllNEs = false;
+	private Property 	literalProperty;
+	private String 		useFoxLight		= "OFF"; //"org.aksw.fox.nertools.NERStanford"; ;
 	private boolean 	askEndPoint 	= false;
 	private String 		foxType 		= "TEXT";
 	private String 		foxTask 		= "NER";
@@ -213,13 +214,13 @@ public class NLPModule implements GeoLiftModule{
 	public NLPModule(Model model, Property literalProperty) {
 		super();
 		this.model = model;
-		this.LiteralProperty = literalProperty;
+		this.literalProperty = literalProperty;
 	}
 
 	public NLPModule(String fileNameOrUri, String literalPropartyUri) {
 		super();
 		this.model = loadModel(fileNameOrUri);
-		this.LiteralProperty = ResourceFactory.createProperty(literalPropartyUri);
+		this.literalProperty = ResourceFactory.createProperty(literalPropartyUri);
 	}
 
 	/**
@@ -229,7 +230,7 @@ public class NLPModule implements GeoLiftModule{
 	public NLPModule() {
 		super();
 		this.model = null;
-		this.LiteralProperty = null;
+		this.literalProperty = null;
 	}
 
 	/**
@@ -244,7 +245,7 @@ public class NLPModule implements GeoLiftModule{
 	 * @return the literalProperty
 	 */
 	public Property getliteralProperty() {
-		return LiteralProperty;
+		return literalProperty;
 	}
 
 
@@ -257,10 +258,10 @@ public class NLPModule implements GeoLiftModule{
 
 
 	/**
-	 * @param LiteralProperty the literalProperty to set
+	 * @param literalProperty the literalProperty to set
 	 */
 	public void setliteralProperty(Property p) {
-		this.LiteralProperty = p;
+		this.literalProperty = p;
 	}
 
 
@@ -420,8 +421,7 @@ public class NLPModule implements GeoLiftModule{
 					}	
 				}
 			}
-		}
-		else{
+		}else{
 			while (objectsIter.hasNext()) {
 				RDFNode object = objectsIter.nextNode();
 				if(object.isResource()){
@@ -430,6 +430,30 @@ public class NLPModule implements GeoLiftModule{
 					//					TODO add more data ??
 					logger.info("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
 				}
+			}
+		}
+		return resultModel;
+	}
+
+
+	/**
+	 * As a generalization of GeoLift
+	 * @param namedEntityModel
+	 * @param subject
+	 * @param types
+	 * @return model of all NEs contained in the input model
+	 * @author sherif
+	 */
+	public Model getAllNEsModel(Model namedEntityModel, RDFNode subject){
+		Model resultModel = ModelFactory.createDefaultModel();
+		Property meansProperty = ResourceFactory.createProperty("http://ns.aksw.org/scms/means");
+		NodeIterator objectsIter = namedEntityModel.listObjectsOfProperty(meansProperty);
+		while (objectsIter.hasNext()) {
+			RDFNode object = objectsIter.nextNode();
+			if(object.isResource()){
+				resultModel.add( (Resource) subject , addedGeoProperty, object);
+				//					TODO add more data ??
+				logger.info("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
 			}
 		}
 		return resultModel;
@@ -515,7 +539,7 @@ public class NLPModule implements GeoLiftModule{
 	public Model nlpEnrichGeoTriples(){
 
 		Model resultModel = model;
-		StmtIterator stItr = model.listStatements(null, LiteralProperty, (RDFNode) null);
+		StmtIterator stItr = model.listStatements(null, literalProperty, (RDFNode) null);
 		logger.info("--------------- Added triples through  NLP ---------------");
 		while (stItr.hasNext()) {
 			Statement st = stItr.nextStatement();
@@ -524,9 +548,12 @@ public class NLPModule implements GeoLiftModule{
 			if(object.isLiteral()){
 				if(!object.asLiteral().toString().contains("^^")){ 
 					Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
-
 					if(!namedEntityModel.isEmpty()){
-						resultModel= resultModel.union(getPlaces(namedEntityModel, subject));
+						if(extractAllNEs){ // Extract all NE (Generalization of GeoLift)
+							resultModel = resultModel.union(getAllNEsModel(namedEntityModel, subject));
+						}else{
+							resultModel = resultModel.union(getPlaces(namedEntityModel, subject));
+						}
 					}				
 				}
 			}
@@ -551,11 +578,11 @@ public class NLPModule implements GeoLiftModule{
 			model = loadModel(inputFile);
 		}	
 		if( parameters.containsKey("literalProperty"))
-			LiteralProperty = ResourceFactory.createProperty(parameters.get("literalProperty"));
+			literalProperty = ResourceFactory.createProperty(parameters.get("literalProperty"));
 		else{
 			LiteralPropertyRanker lpr = new LiteralPropertyRanker(model)	;
-			LiteralProperty = lpr.getTopRankedLiteralProperty();
-			logger.info("Top ranked Literal Property: " + LiteralProperty); 
+			literalProperty = lpr.getTopRankedLiteralProperty();
+			logger.info("Top ranked Literal Property: " + literalProperty); 
 		}
 		if( parameters.containsKey("addedGeoProperty"))
 			addedGeoProperty = ResourceFactory.createProperty("addedGeoProperty");
@@ -575,6 +602,8 @@ public class NLPModule implements GeoLiftModule{
 			foxUseNif = parameters.get("foxUseNif").toLowerCase().equals("true")? true : false;
 		if( parameters.containsKey("foxReturnHtml"))
 			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
+		if( parameters.containsKey("extractAllNEs"))
+			foxReturnHtml = parameters.get("extractAllNEs").toLowerCase().equals("true")? true : false;
 
 		Model enrichedModel = nlpEnrichGeoTriples();
 		enrichedModel.add(inputModel);
@@ -597,8 +626,8 @@ public class NLPModule implements GeoLiftModule{
 	 */
 	public List<String> getParameters() {
 		List<String> parameters = new ArrayList<String>();
-//		parameters.add("input");
-//		parameters.add("output");
+		//		parameters.add("input");
+		//		parameters.add("output");
 		parameters.add("literalProperty");
 		parameters.add("useFoxLight");
 		parameters.add("askEndPoint");
@@ -611,13 +640,28 @@ public class NLPModule implements GeoLiftModule{
 		parameters.add("addedGeoProperty");
 		return parameters;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.modules.GeoLiftModule#getNecessaryParameters()
 	 */
 	@Override
 	public List<String> getNecessaryParameters() {
 		List<String> parameters = new ArrayList<String>();
+		return parameters;
+	}
+	
+	
+	/**
+	 * Self configuration
+	 * Set all parameters to default values, also extract all NEs
+	 * @param source
+	 * @param target
+	 * @return Map of (key, value) pairs of self configured parameters
+	 * @author sherif
+	 */
+	public Map<String, String> selfConfig(Model source, Model target) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("extractAllNEs", "true");
 		return parameters;
 	}
 
@@ -652,10 +696,10 @@ public class NLPModule implements GeoLiftModule{
 								"\t-o --output: output file/URI" + "\n" +
 								"\t-p --literalProperty: literal property used for NER" + "\n" +
 								"\t-l --useFoxLight: foxlight: an implemented INER class name (e.g.: `org.aksw.fox.nertools.NEROpenNLP`) or `OFF`." + "\n" +
-										  		"\t org.aksw.fox.nertools.NERIllinoisExtended"+ "\n" +
-										  		"\t org.aksw.fox.nertools.NEROpenNLP"+ "\n" +
-										  		"\t org.aksw.fox.nertools.NERBalie"+ "\n" +
-										  		"\t org.aksw.fox.nertools.NERStanford" + "\n" +
+								"\t org.aksw.fox.nertools.NERIllinoisExtended"+ "\n" +
+								"\t org.aksw.fox.nertools.NEROpenNLP"+ "\n" +
+								"\t org.aksw.fox.nertools.NERBalie"+ "\n" +
+								"\t org.aksw.fox.nertools.NERStanford" + "\n" +
 								"\t-e --askEndPoint: { true | false}"+ "\n" +
 								"Fox parameters (current version use always default values, which is the first one):\n"+
 								"\t--foxType: { text | url }" + "\n" +
@@ -663,7 +707,7 @@ public class NLPModule implements GeoLiftModule{
 								"\t--foxInput: text or an url" + "\n" +
 								"\t--foxOutput: { JSON-LD | N-Triples | RDF/{ JSON | XML } | Turtle | TriG | N-Quads}" + "\n" +
 								"\t--foxUseNif: { false | true }" + "\n" +
-								"\t--foxReturnHtml: { false | true }" );
+						"\t--foxReturnHtml: { false | true }" );
 				System.exit(0);
 			}
 		} 

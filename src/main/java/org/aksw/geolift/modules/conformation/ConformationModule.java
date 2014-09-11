@@ -4,6 +4,7 @@
 package org.aksw.geolift.modules.conformation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,13 +54,21 @@ public class ConformationModule implements GeoLiftModule{
 
 	/**
 	 * Self configuration
-	 *@author sherif
+	 * Find source/target URI as the most redundant URIs
+	 * @param source
+	 * @param target
+	 * @return Map of (key, value) pairs of self configured parameters
+	 * @author sherif
 	 */
-	public ConformationModule(Model source, Model target) {
+	public Map<String, String> selfConfig(Model source, Model target) {
+		Map<String, String> parameters = new HashMap<String, String>();
 		sourceURI = getMostRedundantUri(source);
 		targetURI = getMostRedundantUri(target);
 		System.out.println("Source URI: " + sourceURI);
 		System.out.println("Target URI: " + targetURI);
+		parameters.put("sourceURI", sourceURI);
+		parameters.put("targetURI", targetURI);
+		return parameters;
 	}
 
 

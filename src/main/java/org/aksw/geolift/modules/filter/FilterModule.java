@@ -102,4 +102,13 @@ public class FilterModule implements GeoLiftModule{
 		return parameters;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.aksw.geolift.modules.GeoLiftModule#selfConfig(com.hp.hpl.jena.rdf.model.Model, com.hp.hpl.jena.rdf.model.Model)
+	 */
+	@Override
+	public Map<String, String> selfConfig(Model source, Model target) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
