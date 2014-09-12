@@ -46,6 +46,21 @@ public class Tree<T> {
 		parent   = null;
 		value    = null;
 	}
+	
+	public Set<Tree<T>> getLeaves(){
+		Set<Tree<T>> leaves = new HashSet<Tree<T>>();
+		for(Tree<T> child : this.children){
+			if(child.children == null){
+				leaves.add(child) ;
+			}else{
+				Set<Tree<T>> childrenLeaves = child.getLeaves();
+				for(Tree<T> l : childrenLeaves){
+					leaves.add(l);
+				}
+			}
+		}
+		return leaves;
+	}
 
 	public void addChild(Tree<T> child){
 		if(children == null){
@@ -71,19 +86,21 @@ public class Tree<T> {
 		return value;
 	}
 	
-	private String levelPrefix = "";
-	
 	void print(Tree<T> root){
+		print(root, "");
+	}
+	
+	private void print(Tree<T> root, String prefix){
 		if(root == null){
 			return;
 		}
-		System.out.println(levelPrefix + "└── " + root.value);
+		System.out.println(prefix + "└── " + ((root.value == null) ? "ROOT(⟂)" : root.value));
 		if(root.children != null){
-			levelPrefix = "\t" + levelPrefix;
+			prefix = "\t" + prefix;
 			for(Tree<T> child: root.children){
-				print(child);
+				print(child, prefix);
 			}
-			levelPrefix = levelPrefix.substring(1);
+			prefix = prefix.substring(1);
 		}
 	}
 

@@ -31,7 +31,7 @@ public class RDFConfigWriter{
 	private static final Logger logger 	= Logger.getLogger(RDFConfigWriter.class.getName());
 	private static long moduleNr 			= 1;
 	private static long parameterNr 		= 1;
-	Model config = ModelFactory.createDefaultModel();
+	public static Model config = ModelFactory.createDefaultModel();
 	
 	Model getConfModel(){
 		return config;
@@ -53,7 +53,8 @@ public class RDFConfigWriter{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Model addModule(GeoLiftModule module, Map<String, String> parameters, Resource inputDataset, Resource outputDataset){
+	public static Model addModule(Model inputConfig, GeoLiftModule module, Map<String, String> parameters, Resource inputDataset, Resource outputDataset){
+		config = inputConfig;
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
 		if(module instanceof ConformationModule){
@@ -143,11 +144,11 @@ public class RDFConfigWriter{
 		return config;
 	}
 	
-	public void addDataset(Resource dataset){
+	public static void addDataset(Resource dataset){
 		config.add(dataset, RDF.type, SpecsOntology.Dataset);
 	}
 	
-	public void addDataset(Resource dataset, Resource uri, Resource endpoint){
+	public static void addDataset(Resource dataset, Resource uri, Resource endpoint){
 		addDataset(dataset);
 		
 	}

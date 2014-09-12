@@ -10,6 +10,9 @@ import org.aksw.geolift.workflow.rdfspecs.SpecsOntology;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceF;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 /**
  * @author sherif
@@ -19,9 +22,11 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 
 	public GeoLiftModule module;
 	public double fitness;
-	public Model input = ModelFactory.createDefaultModel();
-	public Model output = ModelFactory.createDefaultModel();
-	public Model config = ModelFactory.createDefaultModel();
+	public Model inputModel = ModelFactory.createDefaultModel();
+	public Model outputModel = ModelFactory.createDefaultModel();
+	public Model configModel = ModelFactory.createDefaultModel();
+	public Resource inputDataset = ResourceFactory.createResource();
+	public Resource outputDataset = ResourceFactory.createResource();
 //	public int childNr;
 
 	/**
@@ -31,7 +36,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	public ExecutionNode() {
 		super();
 		fitness = 0;
-		config.setNsPrefix("gl", SpecsOntology.uri);
+		configModel.setNsPrefix("gl", SpecsOntology.uri);
 	}
 
 	/**
@@ -42,13 +47,16 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * @param childNr
 	 *@author sherif
 	 */
-	public ExecutionNode(GeoLiftModule module, long fitness, Model inputModel, Model outputModel, Model configModel) {
+	public ExecutionNode(GeoLiftModule module, long fitness, Model inputModel, Model outputModel, 
+			Resource inputDataset, Resource outputDataset, Model configModel) {
 		super();
 		this.module = module;
 		this.fitness = fitness;
-		this.input = inputModel;
-		this.output = outputModel;
-		this.config = configModel;
+		this.inputModel = inputModel;
+		this.outputModel = outputModel;
+		this.configModel = configModel;
+		this.inputDataset = inputDataset;
+		this.outputDataset = outputDataset;
 		configModel.setNsPrefix("gl", SpecsOntology.uri);
 //		this.childNr = childNr;
 	}
@@ -58,7 +66,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 */
 	@Override
 	public String toString() {
-				return module.getClass().getSimpleName(); 
+				return module.getClass().getSimpleName() + "(" + fitness +")"; 
 //				"\n fitness=" + fitness +
 //				"\n outputModel(" + output.size() + ")=" + 
 //				outputModel.write(System.out,"TTL") + 
