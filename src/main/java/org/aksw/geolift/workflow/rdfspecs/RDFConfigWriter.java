@@ -3,9 +3,11 @@
  */
 package org.aksw.geolift.workflow.rdfspecs;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.aksw.geolift.modules.conformation.ConformationModule;
@@ -28,10 +30,10 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  */
 public class RDFConfigWriter{
-	private static final Logger logger 	= Logger.getLogger(RDFConfigWriter.class.getName());
+	private final Logger logger 	= Logger.getLogger(RDFConfigWriter.class.getName());
 	private static long moduleNr 			= 1;
 	private static long parameterNr 		= 1;
-	public static Model config = ModelFactory.createDefaultModel();
+	public Model config = ModelFactory.createDefaultModel();
 	
 	Model getConfModel(){
 		return config;
@@ -53,8 +55,8 @@ public class RDFConfigWriter{
 		// TODO Auto-generated constructor stub
 	}
 
-	public static Model addModule(Model inputConfig, GeoLiftModule module, Map<String, String> parameters, Resource inputDataset, Resource outputDataset){
-		config = inputConfig;
+	public  Model addModule(final Model inputConfig, GeoLiftModule module, Map<String, String> parameters, Resource inputDataset, Resource outputDataset){
+		config = ModelFactory.createDefaultModel(); 
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
 		if(module instanceof ConformationModule){
@@ -103,6 +105,8 @@ public class RDFConfigWriter{
 			config.add(param, SpecsOntology.hasKey, key);
 			config.add(param, SpecsOntology.hasValue, value);
 		}
+		config = config.union(inputConfig);
+		config.setNsPrefix("gl", SpecsOntology.uri);
 		return config;
 	}
 	
@@ -144,13 +148,14 @@ public class RDFConfigWriter{
 		return config;
 	}
 	
-	public static void addDataset(Resource dataset){
+	public void addDataset(Resource dataset){
 		config.add(dataset, RDF.type, SpecsOntology.Dataset);
 	}
 	
-	public static void addDataset(Resource dataset, Resource uri, Resource endpoint){
+	public void addDataset(Resource dataset, Resource uri, Resource endpoint){
 		addDataset(dataset);
-		
+		config.add(dataset, SpecsOntology.FromEndPoint, endpoint);
+		config.add(dataset, SpecsOntology.hasUri, uri);
 	}
 	/**
 	 * @param args

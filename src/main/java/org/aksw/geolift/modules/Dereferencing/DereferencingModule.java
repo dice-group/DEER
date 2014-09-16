@@ -115,6 +115,10 @@ public class DereferencingModule implements GeoLiftModule
 			parameters.put("outputProperty" + propertyNr, p.toString());
 			propertyNr++;
 		}
+		logger.info("Self configuration: " + parameters);
+		if(parameters.size() == 0){
+			return null;
+		}
 		return parameters;
 	}
 

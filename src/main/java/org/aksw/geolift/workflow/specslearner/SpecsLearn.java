@@ -49,17 +49,19 @@ public class SpecsLearn {
 					new ConformationModule(), 
 					new DereferencingModule()));
 
-	public Model source, target;
 	private int datasetCounter = 1;
 	public final double childFactor = 1; 
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
 	private Tree<ExecutionNode> executionTreeRoot = new Tree<ExecutionNode>();
+	RDFConfigWriter configWriter = new RDFConfigWriter(); 
+
+
 
 	SpecsLearn(Model source, Model target){
 		this();
-		sourceModel  = source;
-		targetModel = target;
+		this.sourceModel  = source;
+		this.targetModel  = target;
 	}
 
 	/**
@@ -77,9 +79,9 @@ public class SpecsLearn {
 	 * @return
 	 * @author sherif
 	 */
-	long computeFitness(Model currentModel, int childNr){
-		System.out.println("targetModel.difference(currentModel).size()" + targetModel.difference(currentModel).size());
-		System.out.println("currentModel.difference(targetModel).size()" + currentModel.difference(targetModel).size());
+	long computeFitness(Model currentModel, Model targetModel){
+		System.out.println("targetModel.difference(currentModel).size() = " + targetModel.difference(currentModel).size());
+		System.out.println("currentModel.difference(targetModel).size() = " + currentModel.difference(targetModel).size());
 		return targetModel.difference(currentModel).size() + currentModel.difference(targetModel).size();
 	}
 
@@ -87,18 +89,24 @@ public class SpecsLearn {
 		executionTreeRoot = new Tree<ExecutionNode>();
 		Map<String, String> parameters = new HashMap<String, String>();
 
-		for(GeoLiftModule m : MODULES){
-			parameters = m.selfConfig(source, target);
-			Model currentModel = m.process(source, parameters);
-			long fitness = computeFitness(currentModel, MODULES.size());
+		for(GeoLiftModule module : MODULES){
 			Resource inputDataset  = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
-			Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
-			Model configModel = RDFConfigWriter.addModule(ModelFactory.createDefaultModel(), m, parameters, inputDataset, outputDataset);
-
-			ExecutionNode node = new ExecutionNode( m, fitness, source, currentModel,inputDataset,outputDataset, configModel);
+			parameters = module.selfConfig(sourceModel, targetModel);
+			Model configModel = ModelFactory.createDefaultModel();
+			ExecutionNode node = new ExecutionNode();
+			if(parameters == null){
+				// mark as dead end, fitness = -2
+				configModel = ModelFactory.createDefaultModel();
+				node = new ExecutionNode(module, -2, sourceModel, sourceModel, inputDataset, inputDataset, configModel);
+			}else{
+				Model currentModel = module.process(sourceModel, parameters);
+				long fitness = computeFitness(currentModel, targetModel);
+				Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
+				configModel = configWriter.addModule(ModelFactory.createDefaultModel(), module, parameters, inputDataset, outputDataset);
+				node = new ExecutionNode(module, fitness, sourceModel, currentModel, inputDataset, outputDataset, configModel);
+			}
 			Tree<ExecutionNode> level1Node = new Tree<ExecutionNode>(node);
 			executionTreeRoot.addChild(level1Node);
-
 		}
 		executionTreeRoot = addExecutionTreeLevel(executionTreeRoot);
 		executionTreeRoot.print(executionTreeRoot);
@@ -106,27 +114,35 @@ public class SpecsLearn {
 	}
 
 	private Tree<ExecutionNode> addExecutionTreeLevel(Tree<ExecutionNode> root){
-		
-		int c = 0;
 		Set<Tree<ExecutionNode>> leaves = root.getLeaves();
 		for(Tree<ExecutionNode> leaf : leaves){
 			for( GeoLiftModule module : MODULES){
-				Map<String, String> parameters = module.selfConfig(leaf.getValue().outputModel, target);
-				Model currentModel = module.process(leaf.getValue().outputModel, parameters);
-				long fitness = computeFitness(currentModel, MODULES.size());
+				Map<String, String> parameters = module.selfConfig(leaf.getValue().outputModel, targetModel);
 				Resource inputDataset  = leaf.getValue().outputDataset;
-				Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
-				Model configModel = RDFConfigWriter.addModule(leaf.getValue().configModel, module, parameters, inputDataset, outputDataset);
-				ExecutionNode node = new ExecutionNode(module, fitness, leaf.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
-				
-				try {
-					Writer.writeModel(configModel, "TTL", "learnerReselt_" + c);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				Model configModel = ModelFactory.createDefaultModel();
+				ExecutionNode node = new ExecutionNode();
+				if(parameters == null){
+					// mark as dead end, fitness = -2
+					configModel = leaf.getValue().outputModel;
+					node = new ExecutionNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
+				}else{
+					Model currentModel = module.process(leaf.getValue().outputModel, parameters);
+					long fitness = computeFitness(currentModel, targetModel);
+					Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
+					configModel = configWriter.addModule(leaf.getValue().configModel, module, parameters, inputDataset, outputDataset);
+					node = new ExecutionNode(module, fitness, leaf.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
 				}
-				
 				leaf.addChild(new Tree<ExecutionNode>(node));
+				//				try {
+				//					Writer.writeModel(leaf.getValue().configModel, "TTL", "learnerReselt_" + 0);
+				//				} catch (IOException e) {
+				//					e.printStackTrace();
+				//				}
+				//				try {
+				//					Writer.writeModel(configModel, "TTL", "learnerReselt_" + 1);
+				//				} catch (IOException e) {
+				//					e.printStackTrace();
+				//				}
 			}
 		}
 		return root;
@@ -147,15 +163,16 @@ public class SpecsLearn {
 		if(root.getchildren() == null){
 			return root;
 		}
-
 		Tree<ExecutionNode> result = new Tree<ExecutionNode>();
 		double min = Double.MAX_VALUE; 
 		for(Tree<ExecutionNode> child : root.getchildren()){
-			Tree<ExecutionNode> minFitnessNode = getMinFitnessNode(child);
-			double f = minFitnessNode.getValue().fitness;
-			if(f < min){
-				min = f;
-				result = minFitnessNode;
+			if(child.getValue().fitness >= 0){
+				Tree<ExecutionNode> minFitnessNode = getMinFitnessNode(child);
+				double f = minFitnessNode.getValue().fitness;
+				if(f < min){
+					min = f;
+					result = minFitnessNode;
+				}
 			}
 		}
 		return result;
@@ -167,9 +184,9 @@ public class SpecsLearn {
 		String sourceUri = args[0];
 		String targetUri = args[1];
 		SpecsLearn learner = new SpecsLearn();
-		learner.source  = Reader.readModel(sourceUri);
-		learner.target = Reader.readModel(targetUri);
-		
+		learner.sourceModel  = Reader.readModel(sourceUri);
+		learner.targetModel = Reader.readModel(targetUri);
+
 		learner.initiateExecutionTree();
 	}
 

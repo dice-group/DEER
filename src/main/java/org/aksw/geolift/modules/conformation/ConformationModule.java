@@ -24,6 +24,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceF;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
@@ -64,10 +65,9 @@ public class ConformationModule implements GeoLiftModule{
 		Map<String, String> parameters = new HashMap<String, String>();
 		sourceURI = getMostRedundantUri(source);
 		targetURI = getMostRedundantUri(target);
-		System.out.println("Source URI: " + sourceURI);
-		System.out.println("Target URI: " + targetURI);
 		parameters.put("sourceURI", sourceURI);
 		parameters.put("targetURI", targetURI);
+		logger.info("Self configuration: " + parameters);
 		return parameters;
 	}
 
@@ -90,8 +90,13 @@ public class ConformationModule implements GeoLiftModule{
 		Multiset<Resource> subjectsMultiset = HashMultiset.create();
 		ResIterator listSubjects = m.listSubjects();
 		while(listSubjects.hasNext()){
-			Resource subject = listSubjects.next();
-			subjectsMultiset.add(subject);
+			String authority = listSubjects.next().toString();
+			if(authority.contains("#")){
+				authority = authority.substring(0, authority.lastIndexOf("#"));
+			}else{
+				authority = authority.substring(0, authority.lastIndexOf("/"));
+			}
+			subjectsMultiset.add(ResourceFactory.createResource(authority));
 		}
 		Resource result = ResourceFactory.createResource();
 		Integer max = new Integer(0);
