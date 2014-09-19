@@ -39,8 +39,8 @@ public class ConformationModule implements GeoLiftModule{
 	private Model model = null;
 
 	// parameters list
-	private String 	sourceURI = "";
-	private String 	targetURI = "";
+	private String 	sourceSubjectAuthority = "";
+	private String 	targetSubjectAuthority = "";
 
 	
 
@@ -63,10 +63,10 @@ public class ConformationModule implements GeoLiftModule{
 	 */
 	public Map<String, String> selfConfig(Model source, Model target) {
 		Map<String, String> parameters = new HashMap<String, String>();
-		sourceURI = getMostRedundantUri(source);
-		targetURI = getMostRedundantUri(target);
-		parameters.put("sourceURI", sourceURI);
-		parameters.put("targetURI", targetURI);
+		sourceSubjectAuthority = getMostRedundantUri(source);
+		targetSubjectAuthority = getMostRedundantUri(target);
+		parameters.put("sourceSubjectAuthority", sourceSubjectAuthority);
+		parameters.put("targetSubjectAuthority", targetSubjectAuthority);
 		logger.info("Self configuration: " + parameters);
 		return parameters;
 	}
@@ -126,11 +126,11 @@ public class ConformationModule implements GeoLiftModule{
 	public Model process(Model model, Map<String, String> parameters) {
 		this.model = model;
 		logger.info("--------------- Conformation Module ---------------");
-		if( parameters.containsKey("sourceURI")){
-			sourceURI = parameters.get("sourceURI");
+		if( parameters.containsKey("sourceSubjectAuthority")){
+			sourceSubjectAuthority = parameters.get("sourceSubjectAuthority");
 		}
-		if( parameters.containsKey("targetURI")){
-			targetURI = parameters.get("targetURI");
+		if( parameters.containsKey("targetSubjectAuthority")){
+			targetSubjectAuthority = parameters.get("targetSubjectAuthority");
 		}
 		Model resultModel = ModelFactory.createDefaultModel();
 		StmtIterator statmentsIter = model.listStatements();
@@ -139,8 +139,8 @@ public class ConformationModule implements GeoLiftModule{
 			Resource s = statment.getSubject();
 			Property p = statment.getPredicate();
 			RDFNode  o = statment.getObject();
-			if(s.isResource() && s.toString().startsWith(sourceURI)){
-				Resource newSubject = ResourceFactory.createResource(s.toString().replaceFirst(sourceURI, targetURI));
+			if(s.isResource() && s.toString().startsWith(sourceSubjectAuthority)){
+				Resource newSubject = ResourceFactory.createResource(s.toString().replaceFirst(sourceSubjectAuthority, targetSubjectAuthority));
 				resultModel.add( newSubject , p, o);
 			}else{
 				resultModel.add( s , p, o);
@@ -156,8 +156,8 @@ public class ConformationModule implements GeoLiftModule{
 	@Override
 	public List<String> getParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("sourceURI");
-		parameters.add("targetURI");
+		parameters.add("sourceSubjectAuthority");
+		parameters.add("targetSubjectAuthority");
 		return parameters;
 	}
 
@@ -167,8 +167,8 @@ public class ConformationModule implements GeoLiftModule{
 	@Override
 	public List<String> getNecessaryParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("sourceURI");
-		parameters.add("targetURI");
+		parameters.add("sourceSubjectAuthority");
+		parameters.add("targetSubjectAuthority");
 		return parameters;
 	}
 

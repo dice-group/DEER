@@ -5,6 +5,8 @@ package org.aksw.geolift.workflow.specslearner;
 
 import java.util.Comparator;
 
+import javax.swing.text.AsyncBoxView.ChildLocator;
+
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.workflow.rdfspecs.SpecsOntology;
 
@@ -18,10 +20,10 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
  * @author sherif
  *
  */
-public class ExecutionNode implements Comparable<ExecutionNode> {
+public class RefinementNode implements Comparable<RefinementNode> {
 
 	public GeoLiftModule module;
-	public double fitness;
+	public double fitness = Double.MAX_VALUE;
 	public Model inputModel = ModelFactory.createDefaultModel();
 	public Model outputModel = ModelFactory.createDefaultModel();
 	public Model configModel = ModelFactory.createDefaultModel();
@@ -33,9 +35,8 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * 
 	 *@author sherif
 	 */
-	public ExecutionNode() {
+	public RefinementNode() {
 		super();
-		fitness = 0;
 		configModel.setNsPrefix("gl", SpecsOntology.uri);
 	}
 
@@ -47,7 +48,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * @param childNr
 	 *@author sherif
 	 */
-	public ExecutionNode(GeoLiftModule module, long fitness, Model inputModel, Model outputModel, 
+	public RefinementNode(GeoLiftModule module, double fitness, Model inputModel, Model outputModel, 
 			Resource inputDataset, Resource outputDataset, Model configModel) {
 		super();
 		this.module = module;
@@ -57,8 +58,10 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 		this.configModel = configModel;
 		this.inputDataset = inputDataset;
 		this.outputDataset = outputDataset;
-		configModel.setNsPrefix("gl", SpecsOntology.uri);
-//		this.childNr = childNr;
+		if(configModel != null){
+			configModel.setNsPrefix("gl", SpecsOntology.uri);
+		}
+		
 	}
 	
 	/* (non-Javadoc)
@@ -89,7 +92,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(ExecutionNode o) {
+	public int compareTo(RefinementNode o) {
 		return (int) (fitness - o.fitness);
 //		if(fitness > o.fitness){
 //			return 1;

@@ -48,13 +48,13 @@ public class DereferencingModule implements GeoLiftModule
 	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
 	//list of parameters passed to the module
 	List<String> parametersList= new ArrayList<String>();
-	static Map<RDFNode,Resource> objectsDerefModelAdded= new HashMap<RDFNode, Resource>();
+	static Map<RDFNode,Resource> objectsDerefModelAdded = new HashMap<RDFNode, Resource>();
 	public static boolean useCache = false;
 	public static boolean useBlankNodes = false;
 	public static List<Property> inputProperties = new ArrayList<Property>();
 	public static List<Property> outputProperties = new ArrayList<Property>();
 	public static Property defaultOutputProperty = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
-
+	private static Model localModel = ModelFactory.createDefaultModel();
 
 	/**
 	 * @param parameters
@@ -143,7 +143,7 @@ public class DereferencingModule implements GeoLiftModule
 		Set<Property> diffProperties = new HashSet<Property>();
 		Sets.difference(tProperties, sProperties).copyInto(diffProperties);
 		diffProperties = removeUnwantedProperties(diffProperties);
-//		logger.info("Self configured Properties:" + diffProperties);
+		//		logger.info("Self configured Properties:" + diffProperties);
 		return diffProperties;
 	}
 
@@ -186,20 +186,19 @@ public class DereferencingModule implements GeoLiftModule
 		if(model!= null)
 		{
 			readParameters(parameters);
-			localModel = model;
+			localModel = localModel.union(model);
 			setPrefixes();
-			if(useBlankNodes)
-				addAdditionalPropertiesUsingBlankNode(parameters); 
-			else
+			if(useBlankNodes){
+				addAdditionalPropertiesUsingBlankNode(parameters);
+			}else{
 				addAdditionalProperties();
-
+			}
 		}
-
 		return localModel;
 	}
-	
-	
-	
+
+
+
 
 
 	/*private static Map<String, String> getURIInfo2(String uri,Map<String,String> predicates)
@@ -552,7 +551,7 @@ public class DereferencingModule implements GeoLiftModule
 			//For each unique URI object, its predicate-value pairs are retrieved then add them attached to their object in a map 
 			for (RDFNode uriObject : urisObjects)  
 			{
-//				logger.info("Enriching " + uriObject + "(" + count++ + "/" + urisObjects.size()+")");
+				//				logger.info("Enriching " + uriObject + "(" + count++ + "/" + urisObjects.size()+")");
 				//Retrieve all interesting <predicate,object> info. for current URI object
 				resourceInterestingInfoExtension = getURIInfo(uriObject);
 				//Add retrieved predicate-value pair attached to the object in the map 
@@ -757,7 +756,6 @@ public class DereferencingModule implements GeoLiftModule
 		}
 		logger.info("Finished");
 	}
-	//data members
-	private static Model localModel=null;
+
 
 }

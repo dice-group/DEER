@@ -27,6 +27,7 @@ import org.aksw.geolift.operators.MergeOperator;
 import org.aksw.geolift.operators.SplitOperator;
 import org.aksw.geolift.workflow.rdfspecs.RDFConfigWriter;
 import org.aksw.geolift.workflow.rdfspecs.SpecsOntology;
+import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -40,21 +41,29 @@ import de.uni_leipzig.simba.benchmarker.MergeModifier;
  *
  */
 public class SpecsLearn {
+	private static final Logger logger = Logger.getLogger(SpecsLearn.class.getName());
 
 	private final Set<GeoLiftModule> MODULES = new HashSet<GeoLiftModule>(
 			Arrays.asList(
 					//					new LinkingModule(),
 					//					new NLPModule(),
-					//					new FilterModule(),
+					//										new FilterModule()));
 					new ConformationModule(), 
 					new DereferencingModule()));
 
 	private int datasetCounter = 1;
-	public final double childFactor = 1; 
+
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
-	private Tree<ExecutionNode> executionTreeRoot = new Tree<ExecutionNode>();
-	RDFConfigWriter configWriter = new RDFConfigWriter(); 
+	private Tree<RefinementNode> executionTreeRoot = new Tree<RefinementNode>(new RefinementNode());
+	RDFConfigWriter configWriter = new RDFConfigWriter();
+
+	private final double MIN_FITNESS_THRESHOLD = 0; 
+	private final float LEAVES_EXPANSION_FACTOR = 0.1f;
+	private final long MAX_TREE_SIZE = 100;
+	public final double CHILDREN_MULTIPLIER = 5; 
+
+
 
 
 
@@ -73,66 +82,120 @@ public class SpecsLearn {
 		targetModel = ModelFactory.createDefaultModel();
 	}
 
+	public void run(){
+		initiateExecutionTree();
+		executionTreeRoot.print(executionTreeRoot);
+		Tree<RefinementNode> minFitnessNode = getMinFitnessNode(executionTreeRoot);
+		
+		while(minFitnessNode.getValue().fitness > MIN_FITNESS_THRESHOLD 
+				&& executionTreeRoot.size() < MAX_TREE_SIZE){
+			minFitnessNode = expandNode(minFitnessNode);
+			updateParentsFitness(minFitnessNode);
+			minFitnessNode = getMinFitnessNode(executionTreeRoot);
+			executionTreeRoot.print(executionTreeRoot);
+		}
+		executionTreeRoot.print(executionTreeRoot);
+		logger.info("Min fitness Node: " + getMinFitnessNode(executionTreeRoot).getValue());
+		minFitnessNode.getValue().configModel.write(System.out,"TTL");
+	}
+
+
+	private void updateParentsFitness(	Tree<RefinementNode> root) {
+		while(root != null){
+			long rootChildrenCount = root.size() - 1;
+			root.getValue().fitness += CHILDREN_MULTIPLIER * rootChildrenCount;
+			root = root.getParent();
+		}
+	}
+
+	/**
+	 * @param minFitnessNode
+	 * @author sherif
+	 */
+	private Tree<RefinementNode> expandNode(Tree<RefinementNode> root) {
+		for( GeoLiftModule module : MODULES){
+			Map<String, String> parameters = module.selfConfig(root.getValue().outputModel, targetModel);
+			Resource inputDataset  = root.getValue().outputDataset;
+			Model configModel = ModelFactory.createDefaultModel();
+			RefinementNode node = new RefinementNode();
+			if(parameters == null){
+				// mark as dead end, fitness = -2
+				configModel = root.getValue().outputModel;
+				node = new RefinementNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
+			}else{
+				Model currentModel = module.process(root.getValue().outputModel, parameters);
+				double fitness = computeFitness(currentModel, targetModel);
+				Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
+				configModel = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
+				node = new RefinementNode(module, fitness, root.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
+			}
+			root.addChild(new Tree<RefinementNode>(node));
+		}
+		return root;
+	}
+
 	/**
 	 * Compute the fitness of the generated model by current specs
 	 * Simple implementation is difference between current and target 
 	 * @return
 	 * @author sherif
 	 */
-	long computeFitness(Model currentModel, Model targetModel){
+	double computeFitness(Model currentModel, Model targetModel){
 		System.out.println("targetModel.difference(currentModel).size() = " + targetModel.difference(currentModel).size());
 		System.out.println("currentModel.difference(targetModel).size() = " + currentModel.difference(targetModel).size());
 		return targetModel.difference(currentModel).size() + currentModel.difference(targetModel).size();
 	}
 
-	public void initiateExecutionTree(){
-		executionTreeRoot = new Tree<ExecutionNode>();
+	private Tree<RefinementNode> initiateExecutionTree(){
 		Map<String, String> parameters = new HashMap<String, String>();
 
 		for(GeoLiftModule module : MODULES){
 			Resource inputDataset  = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
 			parameters = module.selfConfig(sourceModel, targetModel);
 			Model configModel = ModelFactory.createDefaultModel();
-			ExecutionNode node = new ExecutionNode();
+			RefinementNode node = new RefinementNode();
 			if(parameters == null){
 				// mark as dead end, fitness = -2
 				configModel = ModelFactory.createDefaultModel();
-				node = new ExecutionNode(module, -2, sourceModel, sourceModel, inputDataset, inputDataset, configModel);
+				node = new RefinementNode(module, -2, sourceModel, sourceModel, inputDataset, inputDataset, configModel);
 			}else{
 				Model currentModel = module.process(sourceModel, parameters);
-				long fitness = computeFitness(currentModel, targetModel);
+				double fitness = computeFitness(currentModel, targetModel);
 				Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
 				configModel = configWriter.addModule(ModelFactory.createDefaultModel(), module, parameters, inputDataset, outputDataset);
-				node = new ExecutionNode(module, fitness, sourceModel, currentModel, inputDataset, outputDataset, configModel);
+				node = new RefinementNode(module, fitness, sourceModel, currentModel, inputDataset, outputDataset, configModel);
 			}
-			Tree<ExecutionNode> level1Node = new Tree<ExecutionNode>(node);
+			Tree<RefinementNode> level1Node = new Tree<RefinementNode>(node);
 			executionTreeRoot.addChild(level1Node);
 		}
-		executionTreeRoot = addExecutionTreeLevel(executionTreeRoot);
-		executionTreeRoot.print(executionTreeRoot);
-		System.out.println("Min fitness Node: " + getMinFitnessNode(executionTreeRoot).getValue());
+		return executionTreeRoot;
+		//		executionTreeRoot = addExecutionTreeLevel(executionTreeRoot);
+		//		executionTreeRoot.print(executionTreeRoot);
+		//		System.out.println("Min fitness Node: " + getMinFitnessNode(executionTreeRoot).getValue());
 	}
 
-	private Tree<ExecutionNode> addExecutionTreeLevel(Tree<ExecutionNode> root){
-		Set<Tree<ExecutionNode>> leaves = root.getLeaves();
-		for(Tree<ExecutionNode> leaf : leaves){
+	private Tree<RefinementNode> expandLeaves(Tree<RefinementNode> root){
+		Set<Tree<RefinementNode>> leaves = root.getLeaves();
+		for(Tree<RefinementNode> leaf : leaves){
 			for( GeoLiftModule module : MODULES){
 				Map<String, String> parameters = module.selfConfig(leaf.getValue().outputModel, targetModel);
 				Resource inputDataset  = leaf.getValue().outputDataset;
 				Model configModel = ModelFactory.createDefaultModel();
-				ExecutionNode node = new ExecutionNode();
+				RefinementNode node = new RefinementNode();
 				if(parameters == null){
 					// mark as dead end, fitness = -2
 					configModel = leaf.getValue().outputModel;
-					node = new ExecutionNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
+					node = new RefinementNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
 				}else{
 					Model currentModel = module.process(leaf.getValue().outputModel, parameters);
-					long fitness = computeFitness(currentModel, targetModel);
+					double fitness = computeFitness(currentModel, targetModel);
 					Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
 					configModel = configWriter.addModule(leaf.getValue().configModel, module, parameters, inputDataset, outputDataset);
-					node = new ExecutionNode(module, fitness, leaf.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
+					node = new RefinementNode(module, fitness, leaf.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
 				}
-				leaf.addChild(new Tree<ExecutionNode>(node));
+				Tree<RefinementNode> child = new Tree<RefinementNode>(node);
+				child.setStatus(Status.DEAD);
+				leaf.addChild(child);
 				//				try {
 				//					Writer.writeModel(leaf.getValue().configModel, "TTL", "learnerReselt_" + 0);
 				//				} catch (IOException e) {
@@ -148,34 +211,35 @@ public class SpecsLearn {
 		return root;
 	}
 
-	//	private Tree<ExecutionNode> addExecutionTreeLevel(Tree<ExecutionNode> root){
-	//		Set<Tree<ExecutionNode>> leaves = root.getLeaves();
-	//		for(Tree<ExecutionNode> leave : leaves){
-	//			for( GeoLiftModule module : MODULES){
-	//				ExecutionNode node = new ExecutionNode(module, -1, leave.getValue().output, null, leave.getValue().config);
-	//				leave.addChild(new Tree<ExecutionNode>(node));
-	//			}
-	//		}
-	//		return root;
-	//	}
 
-	Tree<ExecutionNode> getMinFitnessNode(Tree<ExecutionNode> root){
+	private Tree<RefinementNode> getMinFitnessNode(Tree<RefinementNode> root){
+		// trivial case
 		if(root.getchildren() == null){
 			return root;
 		}
-		Tree<ExecutionNode> result = new Tree<ExecutionNode>();
-		double min = Double.MAX_VALUE; 
-		for(Tree<ExecutionNode> child : root.getchildren()){
+		// get minChild of children
+		Tree<RefinementNode> minChild = new Tree<RefinementNode>(new RefinementNode());
+		for(Tree<RefinementNode> child : root.getchildren()){
 			if(child.getValue().fitness >= 0){
-				Tree<ExecutionNode> minFitnessNode = getMinFitnessNode(child);
-				double f = minFitnessNode.getValue().fitness;
-				if(f < min){
-					min = f;
-					result = minFitnessNode;
+				Tree<RefinementNode> minFintnessChild = getMinFitnessNode(child);
+				if( minFintnessChild.getValue().fitness < minChild.getValue().fitness  ){
+					minChild = minFintnessChild;
 				}
 			}
 		}
-		return result;
+		// return the min{root, minChild}
+		if(root.getValue().fitness < minChild.getValue().fitness){
+			return root;
+		}else{
+			return minChild;
+		}
+	}
+
+	private void updateFitness(Tree<RefinementNode> root, double fitness){
+		if(root.getParent() == null){
+			return;
+		}
+		root.getValue().fitness += fitness;
 	}
 
 
@@ -187,7 +251,7 @@ public class SpecsLearn {
 		learner.sourceModel  = Reader.readModel(sourceUri);
 		learner.targetModel = Reader.readModel(targetUri);
 
-		learner.initiateExecutionTree();
+		learner.run();
 	}
 
 }

@@ -4,6 +4,7 @@
 package org.aksw.geolift.modules.filter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 /**
  * @author sherif
@@ -23,10 +26,10 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 public class FilterModule implements GeoLiftModule{
 
 	private static final Logger logger = Logger.getLogger(FilterModule.class.getName());
-	private Model model = null;
+	private Model model = ModelFactory.createDefaultModel();
 
 	// parameters list
-	private String 	triplesPattern = "?s ?p ?o";
+	private String 	triplesPattern = "?s ?p ?o .";
 
 	
 
@@ -62,7 +65,7 @@ public class FilterModule implements GeoLiftModule{
 	@Override
 	public Model process(Model model, Map<String, String> parameters) {
 		logger.info("--------------- Filter Module ---------------");
-		this.model = model;
+		this.model = this.model.union(model);
 		if( parameters.containsKey("triplesPattern")){
 			triplesPattern = parameters.get("triplesPattern");
 		}
@@ -107,8 +110,38 @@ public class FilterModule implements GeoLiftModule{
 	 */
 	@Override
 	public Map<String, String> selfConfig(Model source, Model target) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, String> parameters = new HashMap<String, String>();
+		Model unwanted = source.difference(target);
+		if(unwanted.size() == 0){
+			logger.info("Self configuration: No configurations found");
+			return null;
+		}
+		Model newSource = source.difference(unwanted);
+		if(newSource.size() == 0){
+			logger.info("Self configuration: No configurations found");
+			return null;
+		}
+		triplesPattern = triplesPattern + " FILTER NOT EXISTS { " ;
+		StmtIterator listStatements = unwanted.listStatements();
+		while(listStatements.hasNext()){
+			Statement s = listStatements.next();
+			if(s.getObject().isLiteral()){
+//				triplesPattern = triplesPattern + 
+//						"FILTER (regex(?s, <" + s.getSubject() + ">   ) .  " + 
+//						        "regex(?p, <" + s.getPredicate() + "> ) .  " +
+//						        "regex(STR(?o), \"" + s.getObject() + "\", i  )) .";
+			}else{
+//				triplesPattern = triplesPattern + "<" + s.getSubject() + "> " + "<" + s.getPredicate() + "> " + "<" + s.getObject() + "> . ";
+				triplesPattern = triplesPattern + 
+						"FILTER (regex(?s, <" + s.getSubject() + ">   )) .  " + 
+						"FILTER (regex(?p, <" + s.getPredicate() + "> )) .  " +
+						"FILTER (regex(?o, <" + s.getObject() + ">    )) .";
+			}
+		}
+		triplesPattern = triplesPattern + "} " ;
+		parameters.put("triplesPattern", triplesPattern);
+		logger.info("Self configuration: " + parameters);
+		return parameters;
 	}
 
 }

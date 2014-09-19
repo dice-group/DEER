@@ -3,8 +3,10 @@ package org.aksw.geolift.modules.nlp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -50,7 +52,7 @@ public class NLPModule implements GeoLiftModule{
 	private Model model;
 
 	// parameters list
-	private boolean 	extractAllNEs = false;
+	private boolean 	extractAllNE = false;
 	private Property 	literalProperty;
 	private String 		useFoxLight		= "OFF"; //"org.aksw.fox.nertools.NERStanford"; ;
 	private boolean 	askEndPoint 	= false;
@@ -549,7 +551,7 @@ public class NLPModule implements GeoLiftModule{
 				if(!object.asLiteral().toString().contains("^^")){ 
 					Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
 					if(!namedEntityModel.isEmpty()){
-						if(extractAllNEs){ // Extract all NE (Generalization of GeoLift)
+						if(extractAllNE){ // Extract all NE (Generalization of GeoLift)
 							resultModel = resultModel.union(getAllNEsModel(namedEntityModel, subject));
 						}else{
 							resultModel = resultModel.union(getPlaces(namedEntityModel, subject));
@@ -602,8 +604,8 @@ public class NLPModule implements GeoLiftModule{
 			foxUseNif = parameters.get("foxUseNif").toLowerCase().equals("true")? true : false;
 		if( parameters.containsKey("foxReturnHtml"))
 			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
-		if( parameters.containsKey("extractAllNEs"))
-			foxReturnHtml = parameters.get("extractAllNEs").toLowerCase().equals("true")? true : false;
+		if( parameters.containsKey("extractAllNE"))
+			foxReturnHtml = parameters.get("extractAllNE").toLowerCase().equals("true")? true : false;
 
 		Model enrichedModel = nlpEnrichGeoTriples();
 		enrichedModel.add(inputModel);
@@ -660,9 +662,34 @@ public class NLPModule implements GeoLiftModule{
 	 * @author sherif
 	 */
 	public Map<String, String> selfConfig(Model source, Model target) {
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("extractAllNEs", "true");
-		return parameters;
+		
+//		Set<Resource> uriObjects = getDiffUriObjects(source, target);
+		
+		Map<String, String> p = new HashMap<String, String>();
+		p.put("extractAllNE", "true");
+//		Model nlpTriples = source.remove(process(source, p));
+		
+		return p;
+	}
+
+
+	/**
+	 * @param source
+	 * @param target
+	 * @return
+	 * @author sherif
+	 */
+	private Set<Resource> getDiffUriObjects(Model source, Model target) {
+		Set<Resource> uriObjects = new HashSet<Resource>();
+		Model diff = target.remove(source);
+		NodeIterator objects = diff.listObjects();
+		while(objects.hasNext()){
+			RDFNode o = objects.next();
+			if(o.isURIResource()){
+				uriObjects.add(o.asResource());
+			}
+		}
+		return uriObjects;
 	}
 
 	public static void main(String args[]) throws IOException {
