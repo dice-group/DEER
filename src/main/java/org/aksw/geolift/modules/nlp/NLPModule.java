@@ -65,6 +65,7 @@ public class NLPModule implements GeoLiftModule{
 	private String 		inputFile		= "";
 	private String 		outputFile		= "";
 	private Property 	addedGeoProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
+	private String type = "<http://ns.aksw.org/scms/annotations/LOCATION>";
 
 
 	/**
@@ -399,12 +400,11 @@ public class NLPModule implements GeoLiftModule{
 	 * @return model of places contained in the input model 
 	 * @author sherif
 	 */
-	public Model getPlaces(Model namedEntityModel, RDFNode subject){
+	public Model getType(Model namedEntityModel, RDFNode subject, String type){
 
 		Model resultModel = ModelFactory.createDefaultModel();
-
 		String sparqlQueryString= 	"CONSTRUCT {?s ?p ?o} " +
-				" WHERE {?s a <http://ns.aksw.org/scms/annotations/LOCATION>. ?s ?p ?o} " ;
+				" WHERE {?s a "	+ type + ". ?s ?p ?o} " ;
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, namedEntityModel);
 		Model locationsModel =qexec.execConstruct();
@@ -554,7 +554,7 @@ public class NLPModule implements GeoLiftModule{
 						if(extractAllNE){ // Extract all NE (Generalization of GeoLift)
 							resultModel = resultModel.union(getAllNEsModel(namedEntityModel, subject));
 						}else{
-							resultModel = resultModel.union(getPlaces(namedEntityModel, subject));
+							resultModel = resultModel.union(getType(namedEntityModel, subject, type));
 						}
 					}				
 				}

@@ -47,9 +47,9 @@ public class SpecsLearn {
 			Arrays.asList(
 					//					new LinkingModule(),
 					//					new NLPModule(),
-					//										new FilterModule()));
-					new ConformationModule(), 
-					new DereferencingModule()));
+															new FilterModule()));
+//					new ConformationModule(), 
+//					new DereferencingModule()));
 
 	private int datasetCounter = 1;
 
@@ -90,13 +90,16 @@ public class SpecsLearn {
 		while(minFitnessNode.getValue().fitness > MIN_FITNESS_THRESHOLD 
 				&& executionTreeRoot.size() < MAX_TREE_SIZE){
 			minFitnessNode = expandNode(minFitnessNode);
-			updateParentsFitness(minFitnessNode);
+//			updateParentsFitness(minFitnessNode);
 			minFitnessNode = getMinFitnessNode(executionTreeRoot);
 			executionTreeRoot.print(executionTreeRoot);
 		}
 		executionTreeRoot.print(executionTreeRoot);
 		logger.info("Min fitness Node: " + getMinFitnessNode(executionTreeRoot).getValue());
+		System.out.println("===== Output Config =====");
 		minFitnessNode.getValue().configModel.write(System.out,"TTL");
+		System.out.println("===== Output Dataset =====");
+		minFitnessNode.getValue().outputModel.write(System.out,"TTL");
 	}
 
 
@@ -222,13 +225,14 @@ public class SpecsLearn {
 		for(Tree<RefinementNode> child : root.getchildren()){
 			if(child.getValue().fitness >= 0){
 				Tree<RefinementNode> minFintnessChild = getMinFitnessNode(child);
-				if( minFintnessChild.getValue().fitness < minChild.getValue().fitness  ){
+				double newFitness = minFintnessChild.getValue().fitness + CHILDREN_MULTIPLIER * (minFintnessChild.size() - 1);
+				if( newFitness < minChild.getValue().fitness  ){
 					minChild = minFintnessChild;
 				}
 			}
 		}
 		// return the min{root, minChild}
-		if(root.getValue().fitness < minChild.getValue().fitness){
+		if(root.getValue().fitness <= minChild.getValue().fitness){
 			return root;
 		}else{
 			return minChild;
