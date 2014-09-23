@@ -755,16 +755,15 @@ public class NLPModule implements GeoLiftModule{
     @Override
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
-        parameters.add(new ParameterType(ParameterType.STRING, "litralProperty", "litral property used for NER", false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "useFoxLight", "use fox light or not", false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "askEndPoint", "ask for end point or not", false));
-        parameters.add(new ParameterType(ParameterType.STRING, "foxType", "the fox type (text or URL)", false));
-        parameters.add(new ParameterType(ParameterType.STRING, "foxTask", "NER", "the fox task", false));
-        parameters.add(new ParameterType(ParameterType.STRING, "foxInput", "the fox input (text or URL)", false)); 
-        parameters.add(new ParameterType(ParameterType.STRING, "foxOutput", "TURTLE,JSONLD,N3,N-TRIPLE,RDF/JSON,RDF/XML,RDF/XML-ABBREV", "the fox output format", false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxUseNif", "use nif or not", false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxReturnHtml", "return fox as HTML", false));
-        parameters.add(new ParameterType(ParameterType.STRING, "addedGeoProperty", "the added geo property", false));
+        parameters.add(new ParameterType(ParameterType.STRING, "literalProperty", "Literal property used by FOX for NER. If not set, the top ranked literal property will be pecked", false));
+        parameters.add(new ParameterType(ParameterType.STRING, "addedGeoProperty", "Property added to the input model with additional Geospatial knowledge through NLP. By default, this parameter is set to 'gn:relatedTo'", false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "useFoxLight", "An implemented NER class name. By default this parameter is set to 'OFF' in which all NER classes run in parallel and a combined result will be returned. If this parameter is given with a wrong value, 'NERStanford' will be used", false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "askEndPoint", "Ask the DBpedia endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results). By default this parameter is set to 'false'", false));
+        parameters.add(new ParameterType(ParameterType.STRING, "foxType", "Text or an URL (e.g.: 'G. W. Leibniz was born in Leipzig', 'http://en.wikipedia.org/wiki/Leipzig_University'). By default, this parameter is set to TEXT", false));
+        parameters.add(new ParameterType(ParameterType.STRING, "foxTask", "NER", "FOX task :{NER} for Named Entity Recognition. By default this parameter is set to NER", false));
+        parameters.add(new ParameterType(ParameterType.STRING, "foxOutput", "TURTLE,JSONLD,N-TRIPLE,RDF/JSON,RDF/XML", "FOX output format. By default this parameter is set to TURTLE", false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxUseNif", "FOX generates NIF: { true | false }. By default, this parameter is set to false", false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxReturnHtml", "FOX returns HTML: { true | false }. By default this parameter is set to false", false));
         
         return parameters;
     }

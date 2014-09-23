@@ -760,12 +760,15 @@ public class DereferencingModule implements GeoLiftModule
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
         
-        String description =    "List of interesting predicates to enrich the model, and their Objects' values. " +
-                                "The predicates are given in form of map structure where the key is a user-defined" +
-                                "name for the predicate and the map value is the predicate itself. e.g. " + 
-                                "predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat";
+        String predicateDescription = "interesting predicate to enrich the model, e.g. 'predicate1'";
+        String objectDescription = "The predicate object value, e.g. 'http://www.w3.org/2003/01/geo/wgs84_pos#lat\'";
+        String outputPropertyDescription = "The enriched output property. By default this parameter is set to 'http://geoknow.org/ontology/relatedTo'";
+        String useBlankNodeDescription = "Use blank node in output dataset. By default, this parameter is set to false";
         
-        parameters.add(new ParameterType(ParameterType.STRING, "input", description, true));
+        parameters.add(new ParameterType(ParameterType.STRING, "predicate", predicateDescription, true));
+        parameters.add(new ParameterType(ParameterType.STRING, "predicate value", objectDescription, true));
+        parameters.add(new ParameterType(ParameterType.STRING, "outputProperty", outputPropertyDescription, false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "useBlankNodes", useBlankNodeDescription, false));
         return parameters;
     }
 

@@ -170,8 +170,8 @@ public class ConformationModule implements GeoLiftModule{
         @Override
         public List<ParameterType> getParameterWithTypes() {
             List<ParameterType> parameters = new ArrayList<ParameterType>();
-            parameters.add(new ParameterType(ParameterType.STRING, "sourceSubjectAuthority", "The source subject authority", true));
-            parameters.add(new ParameterType(ParameterType.STRING, "targetSubjectAuthority", "The target subject authority", true));
+            parameters.add(new ParameterType(ParameterType.STRING, "sourceURI", "Source URI to be replaced.", true));
+            parameters.add(new ParameterType(ParameterType.STRING, "targetURI", "Target URI to replace the sourceURI.", true));
 
             return parameters;
         }

@@ -148,7 +148,7 @@ public class FilterModule implements GeoLiftModule{
     @Override
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
-        parameters.add(new ParameterType(ParameterType.STRING, "triplesPattern", "The tripple pattern", true));
+        parameters.add(new ParameterType(ParameterType.STRING, "triplesPattern", "Set of triple pattern to run against the input model of the filter module. By default, this parameter is set to ?s ?p ?o. which generates the whole input model as output, changing the values of ?s, ?p and/or ?o will restrict the output model", true));
 
         return parameters;
     }

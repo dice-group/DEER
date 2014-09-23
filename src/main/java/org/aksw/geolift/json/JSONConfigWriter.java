@@ -3,6 +3,7 @@
  */
 package org.aksw.geolift.json;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.aksw.geolift.modules.*;
 import org.aksw.geolift.operators.*;
@@ -41,7 +42,17 @@ public class JSONConfigWriter {
             moduleJSONConfig.append("\"type\":\"object\",");
             moduleJSONConfig.append("\"properties\":{");
             
-            int i = 0;
+            //create a list of required parameters
+            List<ParameterType> requiredParameters = new ArrayList<ParameterType>();
+            for(ParameterType parameter: parameters) {
+                if(parameter.getRequired()) {
+                    requiredParameters.add(parameter);
+                }
+            }
+            
+            //create string of all parameters
+            int parameterCounter = 0;
+            int requiredParameterCounter = 0;
             for(ParameterType parameter: parameters) {
                 String[] values = parameter.getValues();
                 
@@ -56,18 +67,18 @@ public class JSONConfigWriter {
                 
                 moduleJSONConfig.append("}");
                 
-                if(parameter.getRequired()) {
+                if(requiredParameters.contains(parameter)) {
                     moduleJSONConfigRequiredParams.append("\"").append(parameter.getName()).append("\"");
-                    
-                    if(i < parameters.size() - 1) {
+                    if(requiredParameterCounter < requiredParameters.size() - 1) {
                         moduleJSONConfigRequiredParams.append(",");
                     }
+                    requiredParameterCounter++;
                 }
                 
-                if(i < parameters.size() - 1) {
+                if(parameterCounter < parameters.size() - 1) {
                     moduleJSONConfig.append(",");
                 }
-                i++;
+                parameterCounter++;
             }
             
             moduleJSONConfig.append("}");
