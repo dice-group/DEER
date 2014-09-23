@@ -20,7 +20,6 @@ public class Tree<T> {
 	private Set<Tree<T>> children = null;//new ArrayList<Tree<T>>();
 	private Tree<T> parent;
 	private T value;
-	private Status status;
 
 
 	Tree(Tree<T> parent, T value, Set<Tree<T>> childrenlist) {
@@ -37,7 +36,6 @@ public class Tree<T> {
 		this.parent = null;
 		this.value = value;
 		children = null;
-		status = Status.LEAF;
 	}
 	/**
 	 * 
@@ -47,7 +45,6 @@ public class Tree<T> {
 		children = null;
 		parent   = null;
 		value    = null;
-		status = Status.LEAF;
 	}
 	
 	public Set<Tree<T>> getLeaves(){
@@ -71,7 +68,6 @@ public class Tree<T> {
 		}
 		children.add(child);
 		child.parent = this;
-		child.status = Status.LEAF;
 	}
 
 	public void removeChild(Tree<T> child){
@@ -90,14 +86,6 @@ public class Tree<T> {
 		return value;
 	}
 	
-	public Status getStatus(){
-		return status;
-	}
-	
-	public void setStatus(Status status){
-		this.status = status;
-	}
-	
 	public void print(Tree<T> root){
 		print(root, "");
 	}
@@ -107,7 +95,7 @@ public class Tree<T> {
 			return;
 		}
 		System.out.println(prefix + "└── " + ((root.parent == null) ? "ROOT(⟂)" : root.value));
-		System.out.print((root.status == Status.DEAD)? "DEAD" : "");
+//		System.out.print((root.status == NodeStatus.DEAD)? "DEAD" : "");
 		if(root.children != null){
 			prefix = "\t" + prefix;
 			for(Tree<T> child: root.children){

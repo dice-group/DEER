@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.aksw.geolift.workflow.rdfspecs;
+package org.aksw.geolift.helper.vacabularies;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * @author sherif
  *
  */
-public class SpecsOntology {
+public class SPECS {
 	public static final String uri = "http://geoknow.org/specsontology/";
 
 	private static Property property(String name) {

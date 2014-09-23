@@ -38,6 +38,9 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import org.aksw.geolift.helper.vacabularies.DBpedia;
+import org.aksw.geolift.helper.vacabularies.SCMSANN;
+import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.modules.GeoLiftModule;
 //import org.junit.Test;
 import org.apache.log4j.Logger;
@@ -64,149 +67,23 @@ public class NLPModule implements GeoLiftModule{
 	private boolean 	foxReturnHtml 	= false;
 	private String 		inputFile		= "";
 	private String 		outputFile		= "";
-	private Property 	addedGeoProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
-	private String type = "<http://ns.aksw.org/scms/annotations/LOCATION>";
+	private Property 	addedProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
+	
+	private static String NEType = "location";
 
 
 	/**
 	 * @return the relatedToProperty
 	 */
 	public Property getRelatedToProperty() {
-		return addedGeoProperty;
+		return addedProperty;
 	}
 
 	/**
 	 * @param relatedToProperty the relatedToProperty to set
 	 */
 	public void setRelatedToProperty(Property relatedToProperty) {
-		this.addedGeoProperty = relatedToProperty;
-	}
-
-	/**
-	 * @return the outputFile
-	 */
-	public String getOutputFile() {
-		return outputFile;
-	}
-
-	/**
-	 * @param outputFile the outputFile to set
-	 */
-	public void setOutputFile(String outputFile) {
-		this.outputFile = outputFile;
-	}
-
-	/**
-	 * @return the foxType
-	 */
-	public String getFoxType() {
-		return foxType;
-	}
-
-	/**
-	 * @return the foxTask
-	 */
-	public String getFoxTask() {
-		return foxTask;
-	}
-
-	/**
-	 * @return the foxInput
-	 */
-	public String getFoxInput() {
-		return foxInput;
-	}
-
-	/**
-	 * @return the foxOutput
-	 */
-	public String getFoxOutput() {
-		return foxOutput;
-	}
-
-	/**
-	 * @return the foxUseNif
-	 */
-	public boolean isFoxUseNif() {
-		return foxUseNif;
-	}
-
-	/**
-	 * @return the foxReturnHtml
-	 */
-	public boolean isFoxReturnHtml() {
-		return foxReturnHtml;
-	}
-
-	/**
-	 * @param foxType the foxType to set
-	 */
-	public void setFoxType(String foxType) {
-		this.foxType = foxType;
-	}
-
-	/**
-	 * @param foxTask the foxTask to set
-	 */
-	public void setFoxTask(String foxTask) {
-		this.foxTask = foxTask;
-	}
-
-	/**
-	 * @param foxInput the foxInput to set
-	 */
-	public void setFoxInput(String foxInput) {
-		this.foxInput = foxInput;
-	}
-
-	/**
-	 * @param foxOutput the foxOutput to set
-	 */
-	public void setFoxOutput(String foxOutput) {
-		this.foxOutput = foxOutput;
-	}
-
-	/**
-	 * @param foxUseNif the foxUseNif to set
-	 */
-	public void setFoxUseNif(boolean foxUseNif) {
-		this.foxUseNif = foxUseNif;
-	}
-
-	/**
-	 * @param foxReturnHtml the foxReturnHtml to set
-	 */
-	public void setFoxReturnHtml(boolean foxReturnHtml) {
-		this.foxReturnHtml = foxReturnHtml;
-	}
-
-
-	/**
-	 * @return the askEndPoint
-	 */
-	public boolean isAskEndPoint() {
-		return askEndPoint;
-	}
-
-	/**
-	 * @param askEndPoint the askEndPoint to set
-	 */
-	public void setAskEndPoint(boolean askEndPoint) {
-		this.askEndPoint = askEndPoint;
-	}
-
-	/**
-	 * @return the useFoxLight
-	 */
-	public String getUseFoxLight() {
-		return useFoxLight;
-	}
-
-	/**
-	 * @param useFoxLight the useFoxLight to set
-	 */
-	public void setUseFoxLight(String useFL) {
-		useFoxLight = useFL;
+		this.addedProperty = relatedToProperty;
 	}
 
 	/**
@@ -222,7 +99,7 @@ public class NLPModule implements GeoLiftModule{
 
 	public NLPModule(String fileNameOrUri, String literalPropartyUri) {
 		super();
-		this.model = loadModel(fileNameOrUri);
+		this.model = Reader.readModel(fileNameOrUri);
 		this.literalProperty = ResourceFactory.createProperty(literalPropartyUri);
 	}
 
@@ -251,7 +128,6 @@ public class NLPModule implements GeoLiftModule{
 		return literalProperty;
 	}
 
-
 	/**
 	 * @param model the model to setModel
 	 */
@@ -270,14 +146,12 @@ public class NLPModule implements GeoLiftModule{
 
 	public Model getNamedEntityModel( String inputText){
 		String buffer = getNamedEntity(foxType, foxTask, foxOutput, inputText, useFoxLight, foxUseNif, foxReturnHtml);
-
 		ByteArrayInputStream stream=null;
 		try {
 			stream = new ByteArrayInputStream(buffer.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-
 		Model NamedEntitymodel = ModelFactory.createDefaultModel();
 		if(buffer.contains("<!--")){
 			return NamedEntitymodel;
@@ -285,9 +159,6 @@ public class NLPModule implements GeoLiftModule{
 		NamedEntitymodel.read(stream, "", "TTL");
 		return NamedEntitymodel;
 	}
-
-
-
 
 	public String refineString(String inputString){
 		String outputString=inputString;
@@ -330,8 +201,6 @@ public class NLPModule implements GeoLiftModule{
 		}
 		return buffer;
 	}
-
-
 
 	/**
 	 * @param type: text or an url (e.g.: `G. W. Leibniz was born in Leipzig`, `http://en.wikipedia.org/wiki/Leipzig_University`)
@@ -400,37 +269,36 @@ public class NLPModule implements GeoLiftModule{
 	 * @return model of places contained in the input model 
 	 * @author sherif
 	 */
-	public Model getType(Model namedEntityModel, RDFNode subject, String type){
+	public Model getNE(Model namedEntityModel, RDFNode subject, Resource type){
 
 		Model resultModel = ModelFactory.createDefaultModel();
 		String sparqlQueryString= 	"CONSTRUCT {?s ?p ?o} " +
-				" WHERE {?s a "	+ type + ". ?s ?p ?o} " ;
+				" WHERE {?s a "	+ type.toString() + ". ?s ?p ?o} " ;
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, namedEntityModel);
 		Model locationsModel =qexec.execConstruct();
-
 		Property meansProperty = ResourceFactory.createProperty("http://ns.aksw.org/scms/means");
 		NodeIterator objectsIter = locationsModel.listObjectsOfProperty(meansProperty);
-
 		if(askEndPoint){
 			while (objectsIter.hasNext()) {
 				RDFNode object = objectsIter.nextNode();
 				if(object.isResource()){
 					if(isPlace(object)){
-						resultModel.add( (Resource) subject , addedGeoProperty, object);
+						resultModel.add( (Resource) subject , addedProperty, object);
 						//					TODO add more data ??
-						logger.info("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
+						logger.info("<" + subject.toString() + "> <" + addedProperty + "> <" + object + ">");
 					}	
 				}
 			}
-		}else{
+		}else
+		{
 			while (objectsIter.hasNext()) {
 				RDFNode object = objectsIter.nextNode();
 				if(object.isResource()){
 
-					resultModel.add( (Resource) subject , addedGeoProperty, object);
+					resultModel.add( (Resource) subject , addedProperty, object);
 					//					TODO add more data ??
-					logger.info("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
+					logger.info("<" + subject.toString() + "> <" + addedProperty + "> <" + object + ">");
 				}
 			}
 		}
@@ -446,51 +314,20 @@ public class NLPModule implements GeoLiftModule{
 	 * @return model of all NEs contained in the input model
 	 * @author sherif
 	 */
-	public Model getAllNEsModel(Model namedEntityModel, RDFNode subject){
+	public Model getNE(Model namedEntityModel, RDFNode subject){
 		Model resultModel = ModelFactory.createDefaultModel();
 		Property meansProperty = ResourceFactory.createProperty("http://ns.aksw.org/scms/means");
 		NodeIterator objectsIter = namedEntityModel.listObjectsOfProperty(meansProperty);
 		while (objectsIter.hasNext()) {
 			RDFNode object = objectsIter.nextNode();
 			if(object.isResource()){
-				resultModel.add( (Resource) subject , addedGeoProperty, object);
+				resultModel.add( (Resource) subject , addedProperty, object);
 				//					TODO add more data ??
-				logger.info("<" + subject.toString() + "> <" + addedGeoProperty + "> <" + object + ">");
+				logger.info("<" + subject.toString() + "> <" + addedProperty + "> <" + object + ">");
 			}
 		}
 		return resultModel;
 	}
-
-	/**
-	 * @param fileNameOrUri
-	 * @return loaded model from input file/URI
-	 * @author sherif
-	 */
-	public Model loadModel(String fileNameOrUri){
-		model=ModelFactory.createDefaultModel();
-		java.io.InputStream in = FileManager.get().open( fileNameOrUri );
-		if (in == null) {
-			throw new IllegalArgumentException(
-					"File: " + fileNameOrUri + " not found");
-		}
-		if(fileNameOrUri.contains(".ttl")){
-			logger.info("Opening Turtle file ...");
-			model.read(in, null, "TTL");
-		}else if(fileNameOrUri.contains(".rdf")){
-			logger.info("Opening RDF/XML file ...");
-			model.read(in, null);
-		}else if(fileNameOrUri.contains(".nt")){
-			logger.info("Opening N-Triples file ...");
-			model.read(in, null, "N-TRIPLE");
-		}else{
-			logger.info("Content negotiation to get RDF/XML from " + fileNameOrUri + " ...");
-			model.read(fileNameOrUri);
-		}
-		logger.info("Loading "+ fileNameOrUri + " is done!!");
-		return model;
-	}
-
-
 
 	/**
 	 * @param uri
@@ -538,9 +375,9 @@ public class NLPModule implements GeoLiftModule{
 	 * @return Geo-spatial enriched model
 	 * @author sherif
 	 */
-	public Model nlpEnrichGeoTriples(){
+	public Model getEnrichrdTriples(){
 
-		Model resultModel = model;
+		Model resultModel = ModelFactory.createDefaultModel();
 		StmtIterator stItr = model.listStatements(null, literalProperty, (RDFNode) null);
 		logger.info("--------------- Added triples through  NLP ---------------");
 		while (stItr.hasNext()) {
@@ -551,21 +388,26 @@ public class NLPModule implements GeoLiftModule{
 				if(!object.asLiteral().toString().contains("^^")){ 
 					Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
 					if(!namedEntityModel.isEmpty()){
-						if(extractAllNE){ // Extract all NE (Generalization of GeoLift)
-							resultModel = resultModel.union(getAllNEsModel(namedEntityModel, subject));
-						}else{
-							resultModel = resultModel.union(getType(namedEntityModel, subject, type));
+						if(NEType.toLowerCase().equals("all")){ // Extract all NE (Generalization of GeoLift)
+							resultModel.add(getNE(namedEntityModel, subject));
+						}else if(NEType.toLowerCase().equals("location")){
+							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.LOCATION));
+						}else if(NEType.toLowerCase().equals("person")){
+							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.PERSON));
+						}else if(NEType.toLowerCase().equals("organization")){
+							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.ORGANIZATION));
 						}
 					}				
 				}
 			}
 		}
+		resultModel.add(model);
 		return resultModel;
 	}
 
 
 	public Model enrichModel(){
-		return model.union(nlpEnrichGeoTriples());
+		return model.union(getEnrichrdTriples());
 	}
 
 
@@ -577,7 +419,7 @@ public class NLPModule implements GeoLiftModule{
 		model = inputModel;
 		if( parameters.containsKey("input")){
 			inputFile = parameters.get("input");
-			model = loadModel(inputFile);
+			model = Reader.readModel(inputFile);
 		}	
 		if( parameters.containsKey("literalProperty"))
 			literalProperty = ResourceFactory.createProperty(parameters.get("literalProperty"));
@@ -587,27 +429,29 @@ public class NLPModule implements GeoLiftModule{
 			logger.info("Top ranked Literal Property: " + literalProperty); 
 		}
 		if( parameters.containsKey("addedGeoProperty"))
-			addedGeoProperty = ResourceFactory.createProperty("addedGeoProperty");
+			addedProperty = ResourceFactory.createProperty("addedGeoProperty");
 		if( parameters.containsKey("useFoxLight"))
 			useFoxLight = parameters.get("useFoxLight").toLowerCase();
 		if( parameters.containsKey("askEndPoint"))
 			askEndPoint = parameters.get("askEndPoint").toLowerCase().equals("true")? true : false;
-		if( parameters.containsKey("foxType"))
-			foxType = parameters.get("foxType").toUpperCase();
-		if( parameters.containsKey("foxTask"))
-			foxTask = parameters.get("foxTask").toUpperCase();
-		if( parameters.containsKey("foxInput"))
-			foxInput = parameters.get("foxInput");
-		if( parameters.containsKey("foxOutput"))
-			foxOutput = parameters.get("foxOutput");
-		if( parameters.containsKey("foxUseNif"))
-			foxUseNif = parameters.get("foxUseNif").toLowerCase().equals("true")? true : false;
-		if( parameters.containsKey("foxReturnHtml"))
-			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
-		if( parameters.containsKey("extractAllNE"))
-			foxReturnHtml = parameters.get("extractAllNE").toLowerCase().equals("true")? true : false;
+//		if( parameters.containsKey("foxType"))
+//			foxType = parameters.get("foxType").toUpperCase();
+//		if( parameters.containsKey("foxTask"))
+//			foxTask = parameters.get("foxTask").toUpperCase();
+//		if( parameters.containsKey("foxInput"))
+//			foxInput = parameters.get("foxInput");
+//		if( parameters.containsKey("foxOutput"))
+//			foxOutput = parameters.get("foxOutput");
+//		if( parameters.containsKey("foxUseNif"))
+//			foxUseNif = parameters.get("foxUseNif").toLowerCase().equals("true")? true : false;
+//		if( parameters.containsKey("foxReturnHtml"))
+//			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
+//		if( parameters.containsKey("extractAllNE"))
+//			foxReturnHtml = parameters.get("extractAllNE").toLowerCase().equals("true")? true : false;
+		if( parameters.containsKey("NEType"))
+			NEType = parameters.get("NEType").toLowerCase();
 
-		Model enrichedModel = nlpEnrichGeoTriples();
+		Model enrichedModel = getEnrichrdTriples();
 		enrichedModel.add(inputModel);
 
 		if( parameters.containsKey("output")){
@@ -633,13 +477,14 @@ public class NLPModule implements GeoLiftModule{
 		parameters.add("literalProperty");
 		parameters.add("useFoxLight");
 		parameters.add("askEndPoint");
-		parameters.add("foxType");
-		parameters.add("foxTask");
-		parameters.add("foxInput");
-		parameters.add("foxOutput");
-		parameters.add("foxUseNif");
-		parameters.add("foxReturnHtml");
+//		parameters.add("foxType");
+//		parameters.add("foxTask");
+//		parameters.add("foxInput");
+//		parameters.add("foxOutput");
+//		parameters.add("foxUseNif");
+//		parameters.add("foxReturnHtml");
 		parameters.add("addedGeoProperty");
+		parameters.add("NEType");
 		return parameters;
 	}
 
@@ -666,9 +511,7 @@ public class NLPModule implements GeoLiftModule{
 //		Set<Resource> uriObjects = getDiffUriObjects(source, target);
 		
 		Map<String, String> p = new HashMap<String, String>();
-		p.put("extractAllNE", "true");
-//		Model nlpTriples = source.remove(process(source, p));
-		
+		p.put("NEType", "ALL");
 		return p;
 	}
 

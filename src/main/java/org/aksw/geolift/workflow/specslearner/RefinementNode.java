@@ -7,8 +7,8 @@ import java.util.Comparator;
 
 import javax.swing.text.AsyncBoxView.ChildLocator;
 
+import org.aksw.geolift.helper.vacabularies.SPECS;
 import org.aksw.geolift.modules.GeoLiftModule;
-import org.aksw.geolift.workflow.rdfspecs.SpecsOntology;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -29,15 +29,15 @@ public class RefinementNode implements Comparable<RefinementNode> {
 	public Model configModel = ModelFactory.createDefaultModel();
 	public Resource inputDataset = ResourceFactory.createResource();
 	public Resource outputDataset = ResourceFactory.createResource();
-//	public int childNr;
-
+	public NodeStatus status; 
+	
 	/**
 	 * 
 	 *@author sherif
 	 */
 	public RefinementNode() {
 		super();
-		configModel.setNsPrefix("gl", SpecsOntology.uri);
+		configModel.setNsPrefix("gl", SPECS.uri);
 	}
 
 	/**
@@ -53,13 +53,16 @@ public class RefinementNode implements Comparable<RefinementNode> {
 		super();
 		this.module = module;
 		this.fitness = fitness;
+		if(fitness == -2){
+			status = NodeStatus.DEAD;
+		}
 		this.inputModel = inputModel;
 		this.outputModel = outputModel;
 		this.configModel = configModel;
 		this.inputDataset = inputDataset;
 		this.outputDataset = outputDataset;
 		if(configModel != null){
-			configModel.setNsPrefix("gl", SpecsOntology.uri);
+			configModel.setNsPrefix("gl", SPECS.uri);
 		}
 		
 	}

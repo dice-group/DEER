@@ -122,9 +122,7 @@ public class FilterModule implements GeoLiftModule{
 		while(listStatements.hasNext()){
 			Statement s = listStatements.next();
 			ps.add(s.getPredicate());
-			 
 		}
-		
 		long i = 0;
 		for(Property p : ps){
 			triplesPattern += "{?s <" + p.toString() + ">  ?o" + i + " . }";

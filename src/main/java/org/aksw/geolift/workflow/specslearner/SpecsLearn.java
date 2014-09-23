@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.aksw.geolift.helper.vacabularies.SPECS;
 import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.GeoLiftModule;
@@ -26,7 +27,6 @@ import org.aksw.geolift.operators.GeoLiftOperator;
 import org.aksw.geolift.operators.MergeOperator;
 import org.aksw.geolift.operators.SplitOperator;
 import org.aksw.geolift.workflow.rdfspecs.RDFConfigWriter;
-import org.aksw.geolift.workflow.rdfspecs.SpecsOntology;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -45,21 +45,19 @@ public class SpecsLearn {
 
 	private final Set<GeoLiftModule> MODULES = new HashSet<GeoLiftModule>(
 			Arrays.asList(
-					//					new LinkingModule(),
-					//					new NLPModule(),
-															new FilterModule()));
-//					new ConformationModule(), 
-//					new DereferencingModule()));
+					// new LinkingModule(),
+					new NLPModule(),
+					new FilterModule(),
+					new ConformationModule(), 
+					new DereferencingModule()));
 
 	private int datasetCounter = 1;
-
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
 	private Tree<RefinementNode> executionTreeRoot = new Tree<RefinementNode>(new RefinementNode());
 	RDFConfigWriter configWriter = new RDFConfigWriter();
 
 	private final double MIN_FITNESS_THRESHOLD = 0; 
-	private final float LEAVES_EXPANSION_FACTOR = 0.1f;
 	private final long MAX_TREE_SIZE = 100;
 	public final double CHILDREN_MULTIPLIER = 5; 
 
@@ -84,15 +82,17 @@ public class SpecsLearn {
 
 	public void run(){
 		initiateExecutionTree();
-		executionTreeRoot.print(executionTreeRoot);
 		Tree<RefinementNode> minFitnessNode = getMinFitnessNode(executionTreeRoot);
-		
+		executionTreeRoot.print(executionTreeRoot);
+		logger.info("Min fitness Node: " + getMinFitnessNode(executionTreeRoot).getValue());
+
 		while(minFitnessNode.getValue().fitness > MIN_FITNESS_THRESHOLD 
 				&& executionTreeRoot.size() < MAX_TREE_SIZE){
 			minFitnessNode = expandNode(minFitnessNode);
-//			updateParentsFitness(minFitnessNode);
+			//			updateParentsFitness(minFitnessNode);
 			minFitnessNode = getMinFitnessNode(executionTreeRoot);
 			executionTreeRoot.print(executionTreeRoot);
+			logger.info("Min fitness Node: " + getMinFitnessNode(executionTreeRoot).getValue());
 		}
 		executionTreeRoot.print(executionTreeRoot);
 		logger.info("Min fitness Node: " + getMinFitnessNode(executionTreeRoot).getValue());
@@ -127,8 +127,13 @@ public class SpecsLearn {
 				node = new RefinementNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
 			}else{
 				Model currentModel = module.process(root.getValue().outputModel, parameters);
-				double fitness = computeFitness(currentModel, targetModel);
-				Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
+				double fitness;
+				if(currentModel == null || currentModel.size() == 0){
+					fitness = -2;
+				}else{
+					fitness = computeFitness(currentModel, targetModel);
+				}
+				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 				configModel = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
 				node = new RefinementNode(module, fitness, root.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
 			}
@@ -153,7 +158,7 @@ public class SpecsLearn {
 		Map<String, String> parameters = new HashMap<String, String>();
 
 		for(GeoLiftModule module : MODULES){
-			Resource inputDataset  = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
+			Resource inputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 			parameters = module.selfConfig(sourceModel, targetModel);
 			Model configModel = ModelFactory.createDefaultModel();
 			RefinementNode node = new RefinementNode();
@@ -163,8 +168,13 @@ public class SpecsLearn {
 				node = new RefinementNode(module, -2, sourceModel, sourceModel, inputDataset, inputDataset, configModel);
 			}else{
 				Model currentModel = module.process(sourceModel, parameters);
-				double fitness = computeFitness(currentModel, targetModel);
-				Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
+				double fitness;
+				if(currentModel == null || currentModel.size() == 0){
+					fitness = -2;
+				}else{
+					fitness = computeFitness(currentModel, targetModel);
+				}
+				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 				configModel = configWriter.addModule(ModelFactory.createDefaultModel(), module, parameters, inputDataset, outputDataset);
 				node = new RefinementNode(module, fitness, sourceModel, currentModel, inputDataset, outputDataset, configModel);
 			}
@@ -191,13 +201,17 @@ public class SpecsLearn {
 					node = new RefinementNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
 				}else{
 					Model currentModel = module.process(leaf.getValue().outputModel, parameters);
-					double fitness = computeFitness(currentModel, targetModel);
-					Resource outputDataset = ResourceFactory.createResource(SpecsOntology.uri + "Dataset_" + datasetCounter++);
+					double fitness;
+					if(currentModel == null || currentModel.size() == 0){
+						fitness = -2;
+					}else{
+						fitness = computeFitness(currentModel, targetModel);
+					}
+					Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 					configModel = configWriter.addModule(leaf.getValue().configModel, module, parameters, inputDataset, outputDataset);
 					node = new RefinementNode(module, fitness, leaf.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
 				}
 				Tree<RefinementNode> child = new Tree<RefinementNode>(node);
-				child.setStatus(Status.DEAD);
 				leaf.addChild(child);
 				//				try {
 				//					Writer.writeModel(leaf.getValue().configModel, "TTL", "learnerReselt_" + 0);

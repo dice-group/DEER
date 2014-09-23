@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.aksw.geolift.helper.vacabularies.SPECS;
 import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
@@ -24,6 +25,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
  * @author sherif
@@ -60,53 +62,54 @@ public class RDFConfigWriter{
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
 		if(module instanceof ConformationModule){
-			s = ResourceFactory.createResource(SpecsOntology.uri + "conformation_module_" + moduleNr++);
-			config.add(s, RDF.type, SpecsOntology.Module);
-			config.add(s, RDF.type, SpecsOntology.ConformationModule);
-			parameterType = SpecsOntology.ConformationModuleParameter;
+			s = ResourceFactory.createResource(SPECS.uri + "conformation_module_" + moduleNr++);
+			config.add(s, RDF.type, SPECS.Module);
+			config.add(s, RDF.type, SPECS.ConformationModule);
+			parameterType = SPECS.ConformationModuleParameter;
 		}
 		else if(module instanceof DereferencingModule){
-			s = ResourceFactory.createResource(SpecsOntology.uri + "dereferencing_module_" + moduleNr++);
-			config.add(s, RDF.type, SpecsOntology.Module);
-			config.add(s, RDF.type, SpecsOntology.DereferencingModule);
-			parameterType = SpecsOntology.DereferencingModuleParameter;
+			s = ResourceFactory.createResource(SPECS.uri + "dereferencing_module_" + moduleNr++);
+			config.add(s, RDF.type, SPECS.Module);
+			config.add(s, RDF.type, SPECS.DereferencingModule);
+			parameterType = SPECS.DereferencingModuleParameter;
 		}
 		else if(module instanceof FilterModule){
-			s = ResourceFactory.createResource(SpecsOntology.uri + "filter_module_" + moduleNr++);
-			config.add(s, RDF.type, SpecsOntology.Module);
-			config.add(s, RDF.type, SpecsOntology.FilterModule);
-			parameterType = SpecsOntology.FilterModuleParameter;
+			s = ResourceFactory.createResource(SPECS.uri + "filter_module_" + moduleNr++);
+			config.add(s, RDF.type, SPECS.Module);
+			config.add(s, RDF.type, SPECS.FilterModule);
+			parameterType = SPECS.FilterModuleParameter;
 		}
 		else if(module instanceof LinkingModule){
-			s = ResourceFactory.createResource(SpecsOntology.uri + "linking_module_" + moduleNr++);
-			config.add(s, RDF.type, SpecsOntology.Module);
-			config.add(s, RDF.type, SpecsOntology.LinkingModule);
-			parameterType = SpecsOntology.LinkingModuleParameter;
+			s = ResourceFactory.createResource(SPECS.uri + "linking_module_" + moduleNr++);
+			config.add(s, RDF.type, SPECS.Module);
+			config.add(s, RDF.type, SPECS.LinkingModule);
+			parameterType = SPECS.LinkingModuleParameter;
 		}
 		else if(module instanceof NLPModule){
-			s = ResourceFactory.createResource(SpecsOntology.uri + "nlp_module_" + moduleNr++);
-			config.add(s, RDF.type, SpecsOntology.Module);
-			config.add(s, RDF.type, SpecsOntology.NLPModule);
-			parameterType = SpecsOntology.NLPModuleParameter;
+			s = ResourceFactory.createResource(SPECS.uri + "nlp_module_" + moduleNr++);
+			config.add(s, RDF.type, SPECS.Module);
+			config.add(s, RDF.type, SPECS.NLPModule);
+			parameterType = SPECS.NLPModuleParameter;
 		}else{
 			logger.error("Module " + module.getClass().getName() + " NOT implemented yet!, Exit with error.");
 			System.exit(1);
 		}
 		addDataset(inputDataset);
 		addDataset(outputDataset);
-		config.add(s, SpecsOntology.hasInput, inputDataset);
-		config.add(s, SpecsOntology.hasOutput, outputDataset);
+		config.add(s, SPECS.hasInput, inputDataset);
+		config.add(s, SPECS.hasOutput, outputDataset);
 		for(String key : parameters.keySet()){
 			String value = parameters.get(key);
-			Resource param = ResourceFactory.createResource(SpecsOntology.uri + "parameter_" + parameterNr++);
-			config.add(s, SpecsOntology.hasParameter, param);
-			config.add(param, RDF.type, SpecsOntology.ModuleParameter);
+			Resource param = ResourceFactory.createResource(SPECS.uri + "parameter_" + parameterNr++);
+			config.add(s, SPECS.hasParameter, param);
+			config.add(param, RDF.type, SPECS.ModuleParameter);
 			config.add(param, RDF.type, parameterType);
-			config.add(param, SpecsOntology.hasKey, key);
-			config.add(param, SpecsOntology.hasValue, value);
+			config.add(param, SPECS.hasKey, key);
+			config.add(param, SPECS.hasValue, value);
 		}
 		config = config.union(inputConfig);
-		config.setNsPrefix("gl", SpecsOntology.uri);
+		config.setNsPrefix("gl", SPECS.getURI());
+		config.setNsPrefix("RDFS", RDFS.getURI());
 		return config;
 	}
 	
@@ -114,48 +117,48 @@ public class RDFConfigWriter{
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
 		if(operator instanceof SplitOperator){
-			s = ResourceFactory.createResource(SpecsOntology.uri + "split_operator_" + System.currentTimeMillis());
-			config.add(s, RDF.type, SpecsOntology.Operator);
-			config.add(s, RDF.type, SpecsOntology.SplitOperator);
-			parameterType = SpecsOntology.SplitOperatorParameter;
+			s = ResourceFactory.createResource(SPECS.uri + "split_operator_" + System.currentTimeMillis());
+			config.add(s, RDF.type, SPECS.Operator);
+			config.add(s, RDF.type, SPECS.SplitOperator);
+			parameterType = SPECS.SplitOperatorParameter;
 		}
 		else if(operator instanceof MergeOperator){
-			s = ResourceFactory.createResource(SpecsOntology.uri +"merge_operator_" + System.currentTimeMillis());
-			config.add(s, RDF.type, SpecsOntology.Module);
-			config.add(s, RDF.type, SpecsOntology.MergeOperator);
-			parameterType = SpecsOntology.MergeOperatorParameter;
+			s = ResourceFactory.createResource(SPECS.uri +"merge_operator_" + System.currentTimeMillis());
+			config.add(s, RDF.type, SPECS.Module);
+			config.add(s, RDF.type, SPECS.MergeOperator);
+			parameterType = SPECS.MergeOperatorParameter;
 		}else{
 			logger.error("Operator " + operator.getClass().getName() + " NOT implemented yet!, Exit with error.");
 			System.exit(1);
 		}
 		for(Resource inputDataset : inputDatasets){
 			addDataset(inputDataset);
-			config.add(s, SpecsOntology.hasInput, inputDataset);
+			config.add(s, SPECS.hasInput, inputDataset);
 		}
 		for(Resource outputDataset : outputDatasets){
 			addDataset(outputDataset);
-			config.add(s, SpecsOntology.hasOutput, outputDataset);
+			config.add(s, SPECS.hasOutput, outputDataset);
 		}
 		for(String key : parameters.keySet()){
 			String value = parameters.get(key);
-			Resource param = ResourceFactory.createResource(SpecsOntology.uri + "Parameter_" + parameterNr++);
-			config.add(s, SpecsOntology.hasParameter, param);
-			config.add(param, RDF.type, SpecsOntology.OperatorParameter);
+			Resource param = ResourceFactory.createResource(SPECS.uri + "Parameter_" + parameterNr++);
+			config.add(s, SPECS.hasParameter, param);
+			config.add(param, RDF.type, SPECS.OperatorParameter);
 			config.add(param, RDF.type, parameterType);
-			config.add(param, SpecsOntology.hasKey, key);
-			config.add(param, SpecsOntology.hasValue, value);
+			config.add(param, SPECS.hasKey, key);
+			config.add(param, SPECS.hasValue, value);
 		}
 		return config;
 	}
 	
 	public void addDataset(Resource dataset){
-		config.add(dataset, RDF.type, SpecsOntology.Dataset);
+		config.add(dataset, RDF.type, SPECS.Dataset);
 	}
 	
 	public void addDataset(Resource dataset, Resource uri, Resource endpoint){
 		addDataset(dataset);
-		config.add(dataset, SpecsOntology.FromEndPoint, endpoint);
-		config.add(dataset, SpecsOntology.hasUri, uri);
+		config.add(dataset, SPECS.FromEndPoint, endpoint);
+		config.add(dataset, SPECS.hasUri, uri);
 	}
 	/**
 	 * @param args

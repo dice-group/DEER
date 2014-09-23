@@ -107,23 +107,6 @@ public class RefinementTree extends Tree<RefinementNode> {
 		return super.getValue();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.aksw.geolift.workflow.specslearner.Tree#getStatus()
-	 */
-	@Override
-	public Status getStatus() {
-		// TODO Auto-generated method stub
-		return super.getStatus();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.aksw.geolift.workflow.specslearner.Tree#setStatus(org.aksw.geolift.workflow.specslearner.Status)
-	 */
-	@Override
-	public void setStatus(Status status) {
-		// TODO Auto-generated method stub
-		super.setStatus(status);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.workflow.specslearner.Tree#print(org.aksw.geolift.workflow.specslearner.Tree)

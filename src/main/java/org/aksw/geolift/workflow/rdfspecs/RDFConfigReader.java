@@ -6,6 +6,7 @@ package org.aksw.geolift.workflow.rdfspecs;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.aksw.geolift.helper.vacabularies.SPECS;
 import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.modules.linking.LinkingModule;
 import org.aksw.geolift.workflow.TSVConfigReader;
@@ -102,14 +103,14 @@ public class RDFConfigReader {
 		RDFNode key = null;
 		RDFNode value = null;
 		Map<RDFNode, RDFNode> moduleParameters = new HashMap<RDFNode, RDFNode>();
-		StmtIterator stItr = configModel.listStatements((Resource) module, SpecsOntology.hasParameter, (RDFNode) null);
+		StmtIterator stItr = configModel.listStatements((Resource) module, SPECS.hasParameter, (RDFNode) null);
 		while(stItr.hasNext()){
 			parameter =  stItr.next().getObject(); 
-			StmtIterator keyItr = configModel.listStatements((Resource) parameter, SpecsOntology.hasKey, (RDFNode) null);
+			StmtIterator keyItr = configModel.listStatements((Resource) parameter, SPECS.hasKey, (RDFNode) null);
 			if(keyItr.hasNext()){
 				key =  keyItr.next().getObject(); 
 			}
-			StmtIterator valueItr = configModel.listStatements((Resource) parameter, SpecsOntology.hasValue, (RDFNode) null);
+			StmtIterator valueItr = configModel.listStatements((Resource) parameter, SPECS.hasValue, (RDFNode) null);
 			if(valueItr.hasNext()){
 				value =  valueItr.next().getObject(); 
 			}
@@ -119,7 +120,7 @@ public class RDFConfigReader {
 	}
 
 	private static RDFNode getModule(RDFNode step){
-		StmtIterator stItr = configModel.listStatements((Resource) step, SpecsOntology.hasModule, (RDFNode) null);
+		StmtIterator stItr = configModel.listStatements((Resource) step, SPECS.hasModule, (RDFNode) null);
 		if(stItr.hasNext()){
 			return stItr.next().getObject(); 
 		}
@@ -132,7 +133,7 @@ public class RDFConfigReader {
 	 * @author sherif
 	 */
 	private static RDFNode getNextStep(RDFNode step){
-		StmtIterator stItr = configModel.listStatements((Resource) step, SpecsOntology.nextStep, (RDFNode) null);
+		StmtIterator stItr = configModel.listStatements((Resource) step, SPECS.nextStep, (RDFNode) null);
 		if(stItr.hasNext()){
 			return (Resource) stItr.next().getObject(); 
 		}
@@ -144,7 +145,7 @@ public class RDFConfigReader {
 	 * @author sherif
 	 */
 	private static boolean isLastStep(RDFNode step) {
-		StmtIterator s = configModel.listStatements((Resource) step, SpecsOntology.isLastStep, (RDFNode) null);
+		StmtIterator s = configModel.listStatements((Resource) step, SPECS.isLastStep, (RDFNode) null);
 		if(s.hasNext()){
 			Statement stat = s.next();
 			RDFNode object = stat.getObject(); 
@@ -161,7 +162,7 @@ public class RDFConfigReader {
 	 */
 	private static RDFNode getFirstStep(){
 		RDFNode firstStep = null;
-		StmtIterator s = configModel.listStatements(null, SpecsOntology.isFirstStep, (RDFNode) null);
+		StmtIterator s = configModel.listStatements(null, SPECS.isFirstStep, (RDFNode) null);
 		Statement stat = s.next();
 		RDFNode subject = stat.getSubject();
 		RDFNode object = stat.getObject(); 
