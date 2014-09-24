@@ -115,6 +115,16 @@ public class Tree<T> {
 		}
 		return 1 + size;
 	}
+	
+	public long level(){
+		long level = 0;
+		Tree<T> t = this;
+		while(t.parent != null){
+			level++;
+			t = t.parent;
+		}
+		return level;
+	}
 
 
 

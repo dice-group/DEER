@@ -110,7 +110,6 @@ public class DereferencingModule implements GeoLiftModule
 		Set<Property> properties = getPropertyDifference(source, target);
 		int propertyNr = 1;
 		for(Property p : properties){
-			System.out.println("inputProperty" + propertyNr + " :" + p);
 			parameters.put("inputProperty" + propertyNr, p.toString());
 			parameters.put("outputProperty" + propertyNr, p.toString());
 			propertyNr++;

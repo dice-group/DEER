@@ -5,15 +5,19 @@ package org.aksw.geolift.modules.conformation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.apache.log4j.Logger;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
+import com.google.common.collect.Sets;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -63,11 +67,69 @@ public class ConformationModule implements GeoLiftModule{
 	 */
 	public Map<String, String> selfConfig(Model source, Model target) {
 		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.putAll(selfConfigAuthority(source, target));
+		parameters.putAll(selfCongfigPridicates(source, target));
+		logger.info("Self configuration: " + parameters);
+		return parameters;
+	}
+
+	private Map<String, String> selfConfigAuthority(Model source, Model target) {
+		Map<String, String> parameters = new HashMap<String, String>();
 		sourceSubjectAuthority = getMostRedundantUri(source);
 		targetSubjectAuthority = getMostRedundantUri(target);
-		parameters.put("sourceSubjectAuthority", sourceSubjectAuthority);
-		parameters.put("targetSubjectAuthority", targetSubjectAuthority);
-		logger.info("Self configuration: " + parameters);
+		if(sourceSubjectAuthority != targetSubjectAuthority){
+			parameters.put("sourceSubjectAuthority", sourceSubjectAuthority);
+			parameters.put("targetSubjectAuthority", targetSubjectAuthority);
+		}
+		return parameters;
+	}
+	
+	private Map<String, String> selfCongfigPridicates(Model source, Model target){
+		Map<String, String> parameters = new HashMap<String, String>();
+		long i = 1;
+		// commonSubjects = common subjects of source and target
+		Set<Resource> sSubjects = new HashSet<Resource>();
+		ResIterator subjects = source.listSubjects();
+		while(subjects.hasNext()){
+			sSubjects.add(subjects.next());
+		}
+		Set<Resource> tSubjects = new HashSet<Resource>();
+		subjects = source.listSubjects();
+		while(subjects.hasNext()){
+			tSubjects.add(subjects.next());
+		}
+		Set<Resource> commonSubjects = Sets.intersection(sSubjects, tSubjects);
+		// commonObjects = for each Subject in commonSubjects find common objects of source and target
+		for(Resource s : commonSubjects){
+			StmtIterator statements = source.listStatements(s, null , (RDFNode) null);
+			Set<RDFNode> sObjects = new HashSet<RDFNode>();
+			while(statements.hasNext()){
+				sObjects.add(statements.next().getObject()); 
+			}
+			statements = target.listStatements(s, null , (RDFNode) null);
+			Set<RDFNode> tObjects = new HashSet<RDFNode>();
+			while(statements.hasNext()){
+				tObjects.add(statements.next().getObject()); 
+			}
+			Set<RDFNode> commonObjects = Sets.intersection(sObjects, tObjects);
+			// find different predicate to be conformed
+			for(RDFNode o : commonObjects){
+				Property sProperty = null, tProperty = null;
+				statements = source.listStatements(s, null, o);
+				while(statements.hasNext()){
+					sProperty = statements.next().getPredicate();
+				}
+				statements = target.listStatements(s, null, o);
+				while(statements.hasNext()){
+					tProperty = statements.next().getPredicate();
+				}
+				if(sProperty != null && tProperty != null && !sProperty.equals(tProperty)){
+					parameters.put("sourceProperty" + i, sProperty.toString());
+					parameters.put("targetProperty" + i, tProperty.toString());
+					i++;
+				}
+			}
+		}
 		return parameters;
 	}
 
