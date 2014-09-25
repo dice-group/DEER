@@ -4,6 +4,10 @@
 	<groupId>org.aksw.geolift.nlp</groupId>
 	<artifactId>GeoLift</artifactId>
 	<version>1.0-SNAPSHOT</version>
+	<properties>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
 
 	<repositories>
 		<repository>
@@ -60,6 +64,7 @@
 						<source>1.6</source>
 						<target>1.6</target>
 						<compilerArgument></compilerArgument>
+        				<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 				<plugin>
