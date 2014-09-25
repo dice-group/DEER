@@ -55,7 +55,7 @@ public class SpecsLearn {
 	private int datasetCounter = 1;
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
-	private Tree<RefinementNode> executionTreeRoot = new Tree<RefinementNode>(new RefinementNode());
+	private Tree<RefinementNode> refinementTreeRoot = new Tree<RefinementNode>(new RefinementNode());
 	RDFConfigWriter configWriter = new RDFConfigWriter();
 
 	private final double 	MIN_FITNESS_THRESHOLD = 0; 
@@ -83,18 +83,25 @@ public class SpecsLearn {
 	}
 
 	public void run(){
-		initiateExecutionTree();
-		Tree<RefinementNode> minFitnessNode = getMostPromesyNode(executionTreeRoot);
-		executionTreeRoot.print(executionTreeRoot);
-		logger.info("Min fitness Node: " + getMostPromesyNode(executionTreeRoot).getValue());
+//		initiateExecutionTree();
+		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+		Model config = ModelFactory.createDefaultModel();
+		double f = Double.MAX_VALUE;
+		RefinementNode initialNode = new RefinementNode(null,f,sourceModel,sourceModel,outputDataset,outputDataset,config);
+		refinementTreeRoot = new Tree<RefinementNode>(null,initialNode, null);
+		refinementTreeRoot = expandNode(refinementTreeRoot);
+
+		Tree<RefinementNode> minFitnessNode = getMostPromesyNode(refinementTreeRoot);
+		refinementTreeRoot.print(refinementTreeRoot);
+		logger.info("Min fitness Node: " + getMostPromesyNode(refinementTreeRoot).getValue());
 
 		while(minFitnessNode.getValue().fitness > MIN_FITNESS_THRESHOLD 
-				&& executionTreeRoot.size() < MAX_TREE_SIZE){
+				&& refinementTreeRoot.size() < MAX_TREE_SIZE){
 			minFitnessNode = expandNode(minFitnessNode);
 			//			updateParentsFitness(minFitnessNode);
-			minFitnessNode = getMostPromesyNode(executionTreeRoot);
-			executionTreeRoot.print(executionTreeRoot);
-			logger.info("Min fitness Node: " + getMostPromesyNode(executionTreeRoot).getValue());
+			minFitnessNode = getMostPromesyNode(refinementTreeRoot);
+			refinementTreeRoot.print(refinementTreeRoot);
+			logger.info("Min fitness Node: " + getMostPromesyNode(refinementTreeRoot).getValue());
 		}
 		System.out.println("===== Output Config =====");
 		minFitnessNode.getValue().configModel.write(System.out,"TTL");
@@ -135,32 +142,33 @@ public class SpecsLearn {
 				node = new RefinementNode(module, fitness, sourceModel, currentModel, inputDataset, outputDataset, configModel);
 			}
 			Tree<RefinementNode> level1Node = new Tree<RefinementNode>(node);
-			executionTreeRoot.addChild(level1Node);
+			refinementTreeRoot.addChild(level1Node);
 		}
-		return executionTreeRoot;
+		return refinementTreeRoot;
 	}
 	
 	private Tree<RefinementNode> expandNode(Tree<RefinementNode> root) {
 		for( GeoLiftModule module : MODULES){
-			Map<String, String> parameters = module.selfConfig(root.getValue().outputModel, targetModel);
+			Model inputModel = root.getValue().outputModel;
+			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
 			Resource inputDataset  = root.getValue().outputDataset;
-			Model configModel = ModelFactory.createDefaultModel();
+			Model configMdl = ModelFactory.createDefaultModel();
 			RefinementNode node = new RefinementNode();
 			if(parameters == null || parameters.size() == 0){
 				// mark as dead end, fitness = -2
-				configModel = root.getValue().outputModel;
-				node = new RefinementNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
+				configMdl = root.getValue().configModel;
+				node = new RefinementNode( module, -2, sourceModel, sourceModel, inputDataset, inputDataset, configMdl);
 			}else{
-				Model currentModel = module.process(root.getValue().outputModel, parameters);
+				Model currentMdl = module.process(inputModel, parameters);
 				double fitness;
-				if(currentModel == null || currentModel.size() == 0){
+				if(currentMdl == null || currentMdl.size() == 0 || currentMdl.remove(inputModel).size() == 0){
 					fitness = -2;
 				}else{
-					fitness = computeFitness(currentModel, targetModel);
+					fitness = computeFitness(currentMdl, targetModel);
 				}
 				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-				configModel = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
-				node = new RefinementNode(module, fitness, root.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
+				configMdl = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
+				node = new RefinementNode(module, fitness, root.getValue().outputModel, currentMdl, inputDataset, outputDataset, configMdl);
 			}
 			root.addChild(new Tree<RefinementNode>(node));
 		}

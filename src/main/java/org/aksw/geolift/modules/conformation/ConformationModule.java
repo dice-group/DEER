@@ -45,8 +45,14 @@ public class ConformationModule implements GeoLiftModule{
 	// parameters list
 	private String 	sourceSubjectAuthority = "";
 	private String 	targetSubjectAuthority = "";
+	private Map<Property, Property> propertyMap = new HashMap<Property, Property>();
 
-	
+	// parameters keys
+	private static final String SOURCE_SUBJET_AUTHORITY = "sourceSubjectAuthority";
+	private static final String TARGET_SUBJET_AUTHORITY = "targetSubjectAuthority";
+	private static final String SOURCE_PROPERTY = "sourceProperty";
+	private static final String TARGET_PROPERTY = "targetProperty";
+
 
 	/**
 	 * 
@@ -68,23 +74,25 @@ public class ConformationModule implements GeoLiftModule{
 	public Map<String, String> selfConfig(Model source, Model target) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.putAll(selfConfigAuthority(source, target));
-		parameters.putAll(selfCongfigPridicates(source, target));
+		parameters.putAll(selfCongfigProperties(source, target));
 		logger.info("Self configuration: " + parameters);
 		return parameters;
 	}
 
 	private Map<String, String> selfConfigAuthority(Model source, Model target) {
 		Map<String, String> parameters = new HashMap<String, String>();
-		sourceSubjectAuthority = getMostRedundantUri(source);
-		targetSubjectAuthority = getMostRedundantUri(target);
-		if(sourceSubjectAuthority != targetSubjectAuthority){
-			parameters.put("sourceSubjectAuthority", sourceSubjectAuthority);
-			parameters.put("targetSubjectAuthority", targetSubjectAuthority);
+		String s = getMostRedundantUri(source);
+		String t = getMostRedundantUri(target);
+		if(s != t){
+			sourceSubjectAuthority = s;
+			targetSubjectAuthority = t;
+			parameters.put(SOURCE_SUBJET_AUTHORITY, sourceSubjectAuthority);
+			parameters.put(TARGET_SUBJET_AUTHORITY, targetSubjectAuthority);
 		}
 		return parameters;
 	}
-	
-	private Map<String, String> selfCongfigPridicates(Model source, Model target){
+
+	private Map<String, String> selfCongfigProperties(Model source, Model target){
 		Map<String, String> parameters = new HashMap<String, String>();
 		long i = 1;
 		// commonSubjects = common subjects of source and target
@@ -124,8 +132,8 @@ public class ConformationModule implements GeoLiftModule{
 					tProperty = statements.next().getPredicate();
 				}
 				if(sProperty != null && tProperty != null && !sProperty.equals(tProperty)){
-					parameters.put("sourceProperty" + i, sProperty.toString());
-					parameters.put("targetProperty" + i, tProperty.toString());
+					parameters.put(SOURCE_PROPERTY + i, sProperty.toString());
+					parameters.put(TARGET_PROPERTY + i, tProperty.toString());
 					i++;
 				}
 			}
@@ -185,31 +193,54 @@ public class ConformationModule implements GeoLiftModule{
 	 * @see org.aksw.geolift.modules.GeoLiftModule#process(com.hp.hpl.jena.rdf.model.Model, java.util.Map)
 	 */
 	@Override
-	public Model process(Model model, Map<String, String> parameters) {
-		this.model = model;
+	public Model process(Model inputModel, Map<String, String> parameters) {
+		this.model = inputModel;
 		logger.info("--------------- Conformation Module ---------------");
-		if( parameters.containsKey("sourceSubjectAuthority")){
-			sourceSubjectAuthority = parameters.get("sourceSubjectAuthority");
+
+		//Read parameters
+		boolean parameterFound = false;
+		if( parameters.containsKey(SOURCE_SUBJET_AUTHORITY) && parameters.containsKey(TARGET_SUBJET_AUTHORITY)){
+			String s = parameters.get(SOURCE_SUBJET_AUTHORITY);
+			String t = parameters.get(TARGET_SUBJET_AUTHORITY);
+			if(!s.equals(t)){
+				sourceSubjectAuthority = s;
+				targetSubjectAuthority = t;
+				parameterFound = true;
+			}
 		}
-		if( parameters.containsKey("targetSubjectAuthority")){
-			targetSubjectAuthority = parameters.get("targetSubjectAuthority");
+		for(long i = 1 ; parameters.containsKey(SOURCE_PROPERTY + i) && parameters.containsKey(TARGET_PROPERTY + i) ; i++){
+			Property inputProperty = ResourceFactory.createProperty(parameters.get(SOURCE_PROPERTY + i));
+			Property conformProperty = ResourceFactory.createProperty(parameters.get(TARGET_PROPERTY + i));
+			propertyMap.put(inputProperty, conformProperty);
+			parameterFound = true;
 		}
-		Model resultModel = ModelFactory.createDefaultModel();
+		if(!parameterFound){
+			return model;
+		}
+
+		//Conform Model
+		Model conformModel = ModelFactory.createDefaultModel();
 		StmtIterator statmentsIter = model.listStatements();
 		while (statmentsIter.hasNext()) {
 			Statement statment = statmentsIter.nextStatement();
 			Resource s = statment.getSubject();
 			Property p = statment.getPredicate();
 			RDFNode  o = statment.getObject();
-			if(s.isResource() && s.toString().startsWith(sourceSubjectAuthority)){
-				Resource newSubject = ResourceFactory.createResource(s.toString().replaceFirst(sourceSubjectAuthority, targetSubjectAuthority));
-				resultModel.add( newSubject , p, o);
-			}else{
-				resultModel.add( s , p, o);
+			// conform subject authority
+			if(sourceSubjectAuthority != "" && s.toString().startsWith(sourceSubjectAuthority)){
+				s = ResourceFactory.createResource(s.toString().replaceFirst(sourceSubjectAuthority, targetSubjectAuthority));
 			}
+			// conform properties
+			if(propertyMap.containsKey(p)){
+				p = propertyMap.get(p);
+			}
+			conformModel.add(s , p, o);
 		}
-		return resultModel;
+		model = conformModel;
+		return model;
 	}
+
+
 
 
 	/* (non-Javadoc)
@@ -218,8 +249,10 @@ public class ConformationModule implements GeoLiftModule{
 	@Override
 	public List<String> getParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("sourceSubjectAuthority");
-		parameters.add("targetSubjectAuthority");
+		parameters.add(SOURCE_SUBJET_AUTHORITY);
+		parameters.add(TARGET_SUBJET_AUTHORITY);
+		parameters.add(SOURCE_PROPERTY + "<i>");
+		parameters.add(TARGET_PROPERTY + "<i>");
 		return parameters;
 	}
 
@@ -229,8 +262,10 @@ public class ConformationModule implements GeoLiftModule{
 	@Override
 	public List<String> getNecessaryParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("sourceSubjectAuthority");
-		parameters.add("targetSubjectAuthority");
+		parameters.add(SOURCE_SUBJET_AUTHORITY);
+		parameters.add(TARGET_SUBJET_AUTHORITY);
+		parameters.add(SOURCE_PROPERTY + "<i>");
+		parameters.add(TARGET_PROPERTY + "<i>");
 		return parameters;
 	}
 

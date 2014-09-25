@@ -13,10 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.aksw.geolift.modules.GeoLiftModule;
-import org.aksw.geolift.modules.nlp.NLPModule;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Sets;
@@ -43,9 +41,12 @@ import com.hp.hpl.jena.vocabulary.OWL;
  * targeted predicates to be added. This is done by following each URI-typed 
  * objects in the model and query for such information in the dereferenced target
  */
-public class DereferencingModule implements GeoLiftModule
-{
+public class DereferencingModule implements GeoLiftModule{
 	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
+	
+	private static final String INPUT_PROPERTY = "inputproperty";
+	private static final String OUTPUT_PROPERTY = "outputproperty";
+	
 	//list of parameters passed to the module
 	List<String> parametersList= new ArrayList<String>();
 	static Map<RDFNode,Resource> objectsDerefModelAdded = new HashMap<RDFNode, Resource>();
@@ -66,9 +67,9 @@ public class DereferencingModule implements GeoLiftModule
 				useBlankNodes = Boolean.parseBoolean(parameters.get(key));
 			}if(key.toLowerCase().equals("usecache")){
 				useCache = Boolean.parseBoolean(parameters.get(key));
-			}else if(key.toLowerCase().startsWith("inputproperty")){
+			}else if(key.toLowerCase().startsWith(INPUT_PROPERTY)){
 				inputProperties.add(ResourceFactory.createProperty(parameters.get(key)));
-			}else if(key.toLowerCase().startsWith("outputproperty")){
+			}else if(key.toLowerCase().startsWith(OUTPUT_PROPERTY)){
 				outputProperties.add(ResourceFactory.createProperty(parameters.get(key)));
 			}else{
 				logger.error("Invalid parameter key: " + key + ", allowed parameters for the dereferencing module are: " + getParameters());
@@ -89,8 +90,8 @@ public class DereferencingModule implements GeoLiftModule
 	public List<String> getParameters() 
 	{
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("inputProperty<n>");
-		parameters.add("outputProperty<n>");
+		parameters.add(INPUT_PROPERTY  + "<i>");
+		parameters.add(OUTPUT_PROPERTY + "<i>");
 		parameters.add("useBlankNodes");
 		//		parameters.add("useCache");
 		return parameters;
@@ -110,8 +111,8 @@ public class DereferencingModule implements GeoLiftModule
 		Set<Property> properties = getPropertyDifference(source, target);
 		int propertyNr = 1;
 		for(Property p : properties){
-			parameters.put("inputProperty" + propertyNr, p.toString());
-			parameters.put("outputProperty" + propertyNr, p.toString());
+			parameters.put(INPUT_PROPERTY + propertyNr, p.toString());
+			parameters.put(OUTPUT_PROPERTY + propertyNr, p.toString());
 			propertyNr++;
 		}
 		logger.info("Self configuration: " + parameters);
@@ -165,7 +166,7 @@ public class DereferencingModule implements GeoLiftModule
 	@Override
 	public List<String> getNecessaryParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("inputProperty<n>");
+		parameters.add(INPUT_PROPERTY + "<i>");
 		return parameters;
 	}
 
