@@ -39,6 +39,11 @@ public class RefinementNode implements Comparable<RefinementNode> {
 		super();
 		configModel.setNsPrefix("gl", SPECS.uri);
 	}
+	
+	public RefinementNode(double fitness) {
+		this();
+		this.fitness = fitness;
+	}
 
 	/**
 	 * @param module

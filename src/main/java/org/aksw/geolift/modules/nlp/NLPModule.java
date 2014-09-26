@@ -51,6 +51,12 @@ import org.apache.log4j.Logger;
  */
 public class NLPModule implements GeoLiftModule{
 	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
+	
+	private static final String ASK_END_POINT = "askEndPoint";
+	private static final String ADDED_PROPERTY = "addedProperty";
+	private static final String NE_TYPE = "NEType";
+	private static final String USE_FOX_LIGHT = "useFoxLight";
+	private static final String LITERAL_PROPERTY = "literalProperty";
 	private static final String FOX_API_URL = "http://139.18.2.164:4444/api";
 	private Model model;
 
@@ -421,19 +427,19 @@ public class NLPModule implements GeoLiftModule{
 			inputFile = parameters.get("input");
 			model = Reader.readModel(inputFile);
 		}	
-		if( parameters.containsKey("literalProperty"))
-			literalProperty = ResourceFactory.createProperty(parameters.get("literalProperty"));
+		if( parameters.containsKey(LITERAL_PROPERTY))
+			literalProperty = ResourceFactory.createProperty(parameters.get(LITERAL_PROPERTY));
 		else{
 			LiteralPropertyRanker lpr = new LiteralPropertyRanker(model)	;
 			literalProperty = lpr.getTopRankedLiteralProperty();
 			logger.info("Top ranked Literal Property: " + literalProperty); 
 		}
-		if( parameters.containsKey("addedGeoProperty"))
-			addedProperty = ResourceFactory.createProperty("addedGeoProperty");
-		if( parameters.containsKey("useFoxLight"))
-			useFoxLight = parameters.get("useFoxLight").toLowerCase();
-		if( parameters.containsKey("askEndPoint"))
-			askEndPoint = parameters.get("askEndPoint").toLowerCase().equals("true")? true : false;
+		if( parameters.containsKey(ADDED_PROPERTY))
+			addedProperty = ResourceFactory.createProperty(ADDED_PROPERTY);
+		if( parameters.containsKey(USE_FOX_LIGHT))
+			useFoxLight = parameters.get(USE_FOX_LIGHT).toLowerCase();
+		if( parameters.containsKey(ASK_END_POINT))
+			askEndPoint = parameters.get(ASK_END_POINT).toLowerCase().equals("true")? true : false;
 //		if( parameters.containsKey("foxType"))
 //			foxType = parameters.get("foxType").toUpperCase();
 //		if( parameters.containsKey("foxTask"))
@@ -448,8 +454,8 @@ public class NLPModule implements GeoLiftModule{
 //			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
 //		if( parameters.containsKey("extractAllNE"))
 //			foxReturnHtml = parameters.get("extractAllNE").toLowerCase().equals("true")? true : false;
-		if( parameters.containsKey("NEType"))
-			NEType = parameters.get("NEType").toLowerCase();
+		if( parameters.containsKey(NE_TYPE))
+			NEType = parameters.get(NE_TYPE).toLowerCase();
 
 		Model enrichedModel = getEnrichrdTriples();
 		enrichedModel.add(inputModel);
@@ -474,17 +480,17 @@ public class NLPModule implements GeoLiftModule{
 		List<String> parameters = new ArrayList<String>();
 		//		parameters.add("input");
 		//		parameters.add("output");
-		parameters.add("literalProperty");
-		parameters.add("useFoxLight");
-		parameters.add("askEndPoint");
+		parameters.add(LITERAL_PROPERTY);
+		parameters.add(USE_FOX_LIGHT);
+		parameters.add(ASK_END_POINT);
 //		parameters.add("foxType");
 //		parameters.add("foxTask");
 //		parameters.add("foxInput");
 //		parameters.add("foxOutput");
 //		parameters.add("foxUseNif");
 //		parameters.add("foxReturnHtml");
-		parameters.add("addedGeoProperty");
-		parameters.add("NEType");
+		parameters.add(ADDED_PROPERTY);
+		parameters.add(NE_TYPE);
 		return parameters;
 	}
 
@@ -511,7 +517,7 @@ public class NLPModule implements GeoLiftModule{
 //		Set<Resource> uriObjects = getDiffUriObjects(source, target);
 		
 		Map<String, String> p = new HashMap<String, String>();
-		p.put("NEType", "ALL");
+		p.put(NE_TYPE, "ALL");
 		return p;
 	}
 
@@ -549,13 +555,13 @@ public class NLPModule implements GeoLiftModule{
 				parameters.put("output",   args[i+1]);
 			}
 			if(args[i].equals("-p") || args[i].toLowerCase().equals("--literalProperty")){
-				parameters.put("literalProperty",   args[i+1]);
+				parameters.put(LITERAL_PROPERTY,   args[i+1]);
 			}
 			if(args[i].equals("-l") || args[i].toLowerCase().equals("--useFoxLight")){
-				parameters.put("useFoxLight",   args[i+1]);
+				parameters.put(USE_FOX_LIGHT,   args[i+1]);
 			}
 			if(args[i].equals("-e") || args[i].toLowerCase().equals("--askEndPoint")){
-				parameters.put("askEndPoint",   args[i+1]);
+				parameters.put(ASK_END_POINT,   args[i+1]);
 			}
 			if(args[i].equals("-p") || args[i].toLowerCase().equals("--literalProperty")){
 				parameters.put("LiteralProperty",   args[i+1]);}

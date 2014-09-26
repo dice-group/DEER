@@ -43,8 +43,8 @@ import de.uni_leipzig.simba.benchmarker.MergeModifier;
 public class SpecsLearn {
 	private static final Logger logger = Logger.getLogger(SpecsLearn.class.getName());
 
-	private final Set<GeoLiftModule> MODULES = new HashSet<GeoLiftModule>(
-			Arrays.asList(
+	private final Set<GeoLiftModule> MODULES = 
+			new HashSet<GeoLiftModule>(Arrays.asList(
 					new LinkingModule(),
 					new NLPModule(),
 					new FilterModule(),
@@ -59,7 +59,7 @@ public class SpecsLearn {
 	RDFConfigWriter configWriter = new RDFConfigWriter();
 
 	private final double 	MIN_FITNESS_THRESHOLD = 0; 
-	private final long 	MAX_TREE_SIZE = 100;
+	private final long 	MAX_TREE_SIZE = 50;
 	public final double 	CHILDREN_PENALTY_WEIGHT   = 1; 
 	public final double 	COMPLEXITY_PENALTY_WEIGHT = 1;
 
@@ -83,7 +83,7 @@ public class SpecsLearn {
 	}
 
 	public void run(){
-//		initiateExecutionTree();
+		//		initiateExecutionTree();
 		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 		Model config = ModelFactory.createDefaultModel();
 		double f = Double.MAX_VALUE;
@@ -91,17 +91,30 @@ public class SpecsLearn {
 		refinementTreeRoot = new Tree<RefinementNode>(null,initialNode, null);
 		refinementTreeRoot = expandNode(refinementTreeRoot);
 
-		Tree<RefinementNode> minFitnessNode = getMostPromesyNode(refinementTreeRoot);
-		refinementTreeRoot.print(refinementTreeRoot);
-		logger.info("Min fitness Node: " + getMostPromesyNode(refinementTreeRoot).getValue());
+		Tree<RefinementNode> minFitnessNode = getMostPromesyNode(refinementTreeRoot, true);
+//		refinementTreeRoot.print(refinementTreeRoot);
+//		System.out.println("+++++++++++++++++++++++");
+		refinementTreeRoot.print();
+		logger.info("Min fitness Node: " + minFitnessNode.getValue());
 
-		while(minFitnessNode.getValue().fitness > MIN_FITNESS_THRESHOLD 
-				&& refinementTreeRoot.size() < MAX_TREE_SIZE){
+		while(minFitnessNode.getValue().fitness > MIN_FITNESS_THRESHOLD	){
+			if(refinementTreeRoot.size() >= MAX_TREE_SIZE){
+				logger.info("----------------------------------------------");
+				RefinementNode bestSolution = getMostPromesyNode(refinementTreeRoot, false).getValue();
+				logger.info("Best Solution: " + bestSolution.toString());
+				System.out.println("===== Output Config =====");
+				bestSolution.configModel.write(System.out,"TTL");
+				System.out.println("===== Output Dataset =====");
+				bestSolution.outputModel.write(System.out,"TTL");
+				return;
+			}
 			minFitnessNode = expandNode(minFitnessNode);
 			//			updateParentsFitness(minFitnessNode);
-			minFitnessNode = getMostPromesyNode(refinementTreeRoot);
-			refinementTreeRoot.print(refinementTreeRoot);
-			logger.info("Min fitness Node: " + getMostPromesyNode(refinementTreeRoot).getValue());
+			minFitnessNode = getMostPromesyNode(refinementTreeRoot, true);
+//			refinementTreeRoot.print(refinementTreeRoot);
+			refinementTreeRoot.print();
+			logger.info("Min fitness Node: " + minFitnessNode.getValue());
+
 		}
 		System.out.println("===== Output Config =====");
 		minFitnessNode.getValue().configModel.write(System.out,"TTL");
@@ -117,7 +130,7 @@ public class SpecsLearn {
 			root = root.getParent();
 		}
 	}
-	
+
 	private Tree<RefinementNode> initiateExecutionTree(){
 		Map<String, String> parameters = new HashMap<String, String>();
 		for(GeoLiftModule module : MODULES){
@@ -146,7 +159,7 @@ public class SpecsLearn {
 		}
 		return refinementTreeRoot;
 	}
-	
+
 	private Tree<RefinementNode> expandNode(Tree<RefinementNode> root) {
 		for( GeoLiftModule module : MODULES){
 			Model inputModel = root.getValue().outputModel;
@@ -187,7 +200,7 @@ public class SpecsLearn {
 		return targetModel.difference(currentModel).size() + currentModel.difference(targetModel).size();
 	}
 
-	
+
 
 	private Tree<RefinementNode> expandLeaves(Tree<RefinementNode> root){
 		Set<Tree<RefinementNode>> leaves = root.getLeaves();
@@ -231,36 +244,40 @@ public class SpecsLearn {
 	}
 
 
-	private Tree<RefinementNode> getMostPromesyNode(Tree<RefinementNode> root){
+	private Tree<RefinementNode> getMostPromesyNode(Tree<RefinementNode> root, boolean usePenalty){
 		// trivial case
 		if(root.getchildren() == null || root.getchildren().size() == 0){
 			return root;
 		}
-		// get minChild of children
+		// get mostPromesyChild of children
 		Tree<RefinementNode> mostPromesyChild = new Tree<RefinementNode>(new RefinementNode());
 		for(Tree<RefinementNode> child : root.getchildren()){
 			if(child.getValue().fitness >= 0){
-				Tree<RefinementNode> promesyChild = getMostPromesyNode(child);
-				long childrenCount = promesyChild.size() - 1;
-				double childrenPenalty = CHILDREN_PENALTY_WEIGHT * childrenCount;
-				long complexty = promesyChild.level();
-				double complextyPenalty = COMPLEXITY_PENALTY_WEIGHT * complexty;
-				double newFitness = promesyChild.getValue().fitness + childrenPenalty + complextyPenalty;
+				Tree<RefinementNode> promesyChild = getMostPromesyNode(child, usePenalty);
+				double newFitness;
+				if(usePenalty){
+					long childrenCount = promesyChild.size() - 1;
+					double childrenPenalty = CHILDREN_PENALTY_WEIGHT * childrenCount;
+					long complexty = promesyChild.level();
+					double complextyPenalty = COMPLEXITY_PENALTY_WEIGHT * complexty;
+					newFitness = promesyChild.getValue().fitness + childrenPenalty + complextyPenalty;
+				}else{
+					newFitness = promesyChild.getValue().fitness;
+				}
 				if( newFitness < mostPromesyChild.getValue().fitness  ){
 					mostPromesyChild = promesyChild;
 				}
 			}
 		}
-		// return the min{root, minChild}
-//		if(root.getValue().fitness <= minChild.getValue().fitness){
-//			return root;
-//		}else{
-//			return minChild;
-//		}
-		return mostPromesyChild;
+		// return the min{root, mostPromesyChild}
+		if(usePenalty){
+			return mostPromesyChild;
+		}else if(root.getValue().fitness <= mostPromesyChild.getValue().fitness){
+			return root;
+		}else{
+			return mostPromesyChild;
+		}
 	}
-
-
 
 
 	public static void main(String args[]){

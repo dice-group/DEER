@@ -3,6 +3,7 @@
  */
 package org.aksw.geolift.workflow.specslearner;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,7 +49,7 @@ public class RefinementTree extends Tree<RefinementNode> {
 	 *@author sherif
 	 */
 	public RefinementTree(Tree<RefinementNode> parent, RefinementNode value,
-			Set<Tree<RefinementNode>> childrenlist) {
+			List<Tree<RefinementNode>> childrenlist) {
 		super(parent, value, childrenlist);
 		// TODO Auto-generated constructor stub
 	}
@@ -93,7 +94,7 @@ public class RefinementTree extends Tree<RefinementNode> {
 	 * @see org.aksw.geolift.workflow.specslearner.Tree#getchildren()
 	 */
 	@Override
-	public Set<Tree<RefinementNode>> getchildren() {
+	public List<Tree<RefinementNode>> getchildren() {
 		// TODO Auto-generated method stub
 		return super.getchildren();
 	}

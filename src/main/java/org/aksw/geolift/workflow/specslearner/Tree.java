@@ -17,12 +17,12 @@ import java.util.TreeSet;
  * @param <T>
  */
 public class Tree<T> {
-	private Set<Tree<T>> children = null;//new ArrayList<Tree<T>>();
+	private List<Tree<T>> children = null;//new ArrayList<Tree<T>>();
 	private Tree<T> parent;
 	private T value;
 
 
-	Tree(Tree<T> parent, T value, Set<Tree<T>> childrenlist) {
+	Tree(Tree<T> parent, T value, List<Tree<T>> childrenlist) {
 		this.parent = parent;
 		this.value = value;
 		if (childrenlist != null) {
@@ -64,7 +64,7 @@ public class Tree<T> {
 
 	public void addChild(Tree<T> child){
 		if(children == null){
-			children = new HashSet<Tree<T>>();
+			children = new ArrayList<Tree<T>>();
 		}
 		children.add(child);
 		child.parent = this;
@@ -78,7 +78,7 @@ public class Tree<T> {
 		return parent;
 	}
 
-	public Set<Tree<T>> getchildren() {
+	public List<Tree<T>> getchildren() {
 		return children;
 	}
 
@@ -86,24 +86,40 @@ public class Tree<T> {
 		return value;
 	}
 	
-	public void print(Tree<T> root){
-		print(root, "");
-	}
+//	public void print(Tree<T> root){
+//		print(root, "");
+//	}
+//	
+//	private void print(Tree<T> root, String prefix){
+//		if(root == null){
+//			return;
+//		}//├── "└── "
+//		System.out.println(prefix + "├── " + ((root.parent == null) ? "ROOT(⟂)" : root.value));
+////		System.out.print((root.status == NodeStatus.DEAD)? "DEAD" : "");
+//		if(root.children != null){
+//			prefix = "│\t" + prefix;
+//			for(Tree<T> child: root.children){
+//				print(child, prefix);
+//			}
+//			prefix = prefix.substring(1);
+//		}
+//	}
 	
-	private void print(Tree<T> root, String prefix){
-		if(root == null){
-			return;
-		}
-		System.out.println(prefix + "└── " + ((root.parent == null) ? "ROOT(⟂)" : root.value));
-//		System.out.print((root.status == NodeStatus.DEAD)? "DEAD" : "");
-		if(root.children != null){
-			prefix = "\t" + prefix;
-			for(Tree<T> child: root.children){
-				print(child, prefix);
-			}
-			prefix = prefix.substring(1);
-		}
-	}
+	public void print() {
+        print("", true);
+    }
+
+    private void print(String prefix, boolean isTail) {
+        System.out.println(prefix + (isTail ? "└── " : "├── ") + ((this.parent == null) ? "ROOT(⟂)" : this.value));
+        if(children != null){
+        	 for (int i = 0; i < children.size() - 1; i++) {
+                 children.get(i).print(prefix + (isTail ? "    " : "│   "), false);
+             }
+             if (children.size() > 0) {
+                 children.get(children.size() - 1).print(prefix + (isTail ?"    " : "│   "), true);
+             }
+        }
+    }
 	
 	public long size(){
 		long size = 0;

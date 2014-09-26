@@ -131,7 +131,10 @@ public class ConformationModule implements GeoLiftModule{
 				while(statements.hasNext()){
 					tProperty = statements.next().getPredicate();
 				}
-				if(sProperty != null && tProperty != null && !sProperty.equals(tProperty)){
+				if(sProperty != null && tProperty != null && 
+						!sProperty.equals(tProperty) &&
+						!parameters.containsKey(sProperty.toString()) &&
+						!parameters.containsValue(tProperty.toString()) ){
 					parameters.put(SOURCE_PROPERTY + i, sProperty.toString());
 					parameters.put(TARGET_PROPERTY + i, tProperty.toString());
 					i++;
