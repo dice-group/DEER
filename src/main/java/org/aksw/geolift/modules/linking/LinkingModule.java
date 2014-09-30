@@ -27,6 +27,12 @@ import de.uni_leipzig.simba.controller.PPJoinController;
  */
 public class LinkingModule implements GeoLiftModule
 {
+	/**
+	 * 
+	 */
+	private static final String LINKS_PART = "linkspart";
+	private static final String LINKS_FILE = "linksfile";
+	private static final String SPEC_FILE = "specfile";
 	private static final Logger logger = Logger.getLogger(LinkingModule.class.getName());
 	String specFilePath;
 	String linksFilePath;
@@ -45,12 +51,12 @@ public class LinkingModule implements GeoLiftModule
 //		String datasetSource = parameters.get("datasetSource"); 
 		
 		for(String key : parameters.keySet()){
-			if(key.equals("specFilePath")){
-				specFilePath = parameters.get("specFilePath");
-			}if(key.equals("linksfFilePath")){
-				linksFilePath = parameters.get("linksFilePath");
-			}else if(key.startsWith("linksPart")){
-				linksPart = parameters.get("linksPart");
+			if(key.toLowerCase().equals(SPEC_FILE)){
+				specFilePath = parameters.get(SPEC_FILE);
+			}if(key.toLowerCase().equals(LINKS_FILE)){
+				linksFilePath = parameters.get(LINKS_FILE);
+			}else if(key.toLowerCase().startsWith(LINKS_PART)){
+				linksPart = parameters.get(LINKS_PART);
 			}else{
 				logger.error("Invalid parameter key: " + key + ", allowed parameters for the linking module are: " + getParameters());
 				logger.error("Exit GeoLift");
@@ -68,9 +74,9 @@ public class LinkingModule implements GeoLiftModule
 	{
 		List<String> parameters = new ArrayList<String>();
 //		parameters.add("datasetSource");
-		parameters.add("specFilePath");
-		parameters.add("linksFilePath");
-		parameters.add("linksPart");
+		parameters.add(SPEC_FILE);
+		parameters.add(LINKS_FILE);
+		parameters.add(LINKS_PART);
 		return parameters;
 	}
 	
@@ -190,12 +196,12 @@ public class LinkingModule implements GeoLiftModule
 					parameters.put("datasetSource",args[i+1]);
 				if(args[i].equals("-s"))
 				{
-					parameters.put("specFilePath",args[i+1]);
+					parameters.put(SPEC_FILE,args[i+1]);
 					linksPath = args[i+1].substring(0,args[i+1].lastIndexOf("/"))+"/accept.nt";
-					parameters.put("linksFilePath",linksPath);
+					parameters.put(LINKS_FILE,linksPath);
 				}
 				if(args[i].equals("-p"))
-					parameters.put("linksPart",args[i+1]);
+					parameters.put(LINKS_PART,args[i+1]);
 
 			}
 		}

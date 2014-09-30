@@ -52,12 +52,12 @@ import org.apache.log4j.Logger;
 public class NLPModule implements GeoLiftModule{
 	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
 	
-	private static final String ASK_END_POINT = "askEndPoint";
-	private static final String ADDED_PROPERTY = "addedProperty";
-	private static final String NE_TYPE = "NEType";
-	private static final String USE_FOX_LIGHT = "useFoxLight";
-	private static final String LITERAL_PROPERTY = "literalProperty";
-	private static final String FOX_API_URL = "http://139.18.2.164:4444/api";
+	private static final String ASK_END_POINT 	= "askEndPoint";
+	private static final String ADDED_PROPERTY 	= "addedProperty";
+	private static final String NER_TYPE 			= "NERType";
+	private static final String USE_FOX_LIGHT 	= "useFoxLight";
+	private static final String LITERAL_PROPERTY 	= "literalProperty";
+	private static final String FOX_API_URL 		= "http://139.18.2.164:4444/api";
 	private Model model;
 
 	// parameters list
@@ -279,7 +279,7 @@ public class NLPModule implements GeoLiftModule{
 
 		Model resultModel = ModelFactory.createDefaultModel();
 		String sparqlQueryString= 	"CONSTRUCT {?s ?p ?o} " +
-				" WHERE {?s a "	+ type.toString() + ". ?s ?p ?o} " ;
+				" WHERE {?s a <"	+ type.toString() + ">. ?s ?p ?o} " ;
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, namedEntityModel);
 		Model locationsModel =qexec.execConstruct();
@@ -394,13 +394,13 @@ public class NLPModule implements GeoLiftModule{
 				if(!object.asLiteral().toString().contains("^^")){ 
 					Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
 					if(!namedEntityModel.isEmpty()){
-						if(NEType.toLowerCase().equals("all")){ // Extract all NE (Generalization of GeoLift)
+						if(NEType.equalsIgnoreCase("all")){ // Extract all NE (Generalization of GeoLift)
 							resultModel.add(getNE(namedEntityModel, subject));
-						}else if(NEType.toLowerCase().equals("location")){
+						}else if(NEType.equalsIgnoreCase("location")){
 							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.LOCATION));
-						}else if(NEType.toLowerCase().equals("person")){
+						}else if(NEType.equalsIgnoreCase("person")){
 							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.PERSON));
-						}else if(NEType.toLowerCase().equals("organization")){
+						}else if(NEType.equalsIgnoreCase("organization")){
 							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.ORGANIZATION));
 						}
 					}				
@@ -454,8 +454,8 @@ public class NLPModule implements GeoLiftModule{
 //			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
 //		if( parameters.containsKey("extractAllNE"))
 //			foxReturnHtml = parameters.get("extractAllNE").toLowerCase().equals("true")? true : false;
-		if( parameters.containsKey(NE_TYPE))
-			NEType = parameters.get(NE_TYPE).toLowerCase();
+		if( parameters.containsKey(NER_TYPE))
+			NEType = parameters.get(NER_TYPE).toLowerCase();
 
 		Model enrichedModel = getEnrichrdTriples();
 		enrichedModel.add(inputModel);
@@ -490,7 +490,7 @@ public class NLPModule implements GeoLiftModule{
 //		parameters.add("foxUseNif");
 //		parameters.add("foxReturnHtml");
 		parameters.add(ADDED_PROPERTY);
-		parameters.add(NE_TYPE);
+		parameters.add(NER_TYPE);
 		return parameters;
 	}
 
@@ -517,7 +517,7 @@ public class NLPModule implements GeoLiftModule{
 //		Set<Resource> uriObjects = getDiffUriObjects(source, target);
 		
 		Map<String, String> p = new HashMap<String, String>();
-		p.put(NE_TYPE, "ALL");
+		p.put(NER_TYPE, "all");
 		return p;
 	}
 

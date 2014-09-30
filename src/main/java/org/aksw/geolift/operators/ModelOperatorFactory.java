@@ -24,7 +24,7 @@ public class ModelOperatorFactory {
 	 * @return a specific module instance given its module's name
 	 * @author sherif
 	 */
-	public static GeoLiftOperator getOperator(String name) {
+	public static GeoLiftOperator createOperator(String name) {
 		logger.info("Getting operator with name "+name);
 
 		if(name.equalsIgnoreCase(MERGE_MODEL))

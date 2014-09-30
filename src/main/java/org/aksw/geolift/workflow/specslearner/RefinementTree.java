@@ -109,14 +109,14 @@ public class RefinementTree extends Tree<RefinementNode> {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.aksw.geolift.workflow.specslearner.Tree#print(org.aksw.geolift.workflow.specslearner.Tree)
-	 */
-	@Override
-	public void print(Tree<RefinementNode> root) {
-		// TODO Auto-generated method stub
-		super.print(root);
-	}
+//	/* (non-Javadoc)
+//	 * @see org.aksw.geolift.workflow.specslearner.Tree#print(org.aksw.geolift.workflow.specslearner.Tree)
+//	 */
+//	@Override
+//	public void print(Tree<RefinementNode> root) {
+//		// TODO Auto-generated method stub
+//		super.print(root);
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.workflow.specslearner.Tree#size()

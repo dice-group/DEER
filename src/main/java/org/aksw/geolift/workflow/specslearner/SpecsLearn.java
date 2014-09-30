@@ -109,9 +109,7 @@ public class SpecsLearn {
 				return;
 			}
 			minFitnessNode = expandNode(minFitnessNode);
-			//			updateParentsFitness(minFitnessNode);
 			minFitnessNode = getMostPromesyNode(refinementTreeRoot, true);
-//			refinementTreeRoot.print(refinementTreeRoot);
 			refinementTreeRoot.print();
 			logger.info("Min fitness Node: " + minFitnessNode.getValue());
 

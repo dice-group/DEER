@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
+import org.aksw.geolift.modules.conformation.ConformationModule;
+import org.aksw.geolift.modules.filter.FilterModule;
 import org.aksw.geolift.modules.linking.LinkingModule;
 import org.aksw.geolift.modules.nlp.NLPModule;
 import org.apache.log4j.Logger;
@@ -22,13 +24,15 @@ public class ModuleFactory {
 	public static final String DEREFERENCING_MODULE 	= "dereferencing";
 	public static final String LINKING_MODULE 		= "linking";
 	public static final String NLP_MODULE 			= "nlp";
+	public static final String CONFORMATION_MODULE 	= "conformation";
+	public static final String FILTER_MODULE 			= "filter";
 
 	/**
 	 * @param name
 	 * @return a specific module instance given its module's name
 	 * @author sherif
 	 */
-	public static GeoLiftModule getModule(String name) {
+	public static GeoLiftModule createModule(String name) {
 		logger.info("Getting Module with name "+name);
 
 		if(name.equalsIgnoreCase(DEREFERENCING_MODULE))
@@ -37,6 +41,10 @@ public class ModuleFactory {
 			return new LinkingModule();
 		if (name.equalsIgnoreCase(NLP_MODULE))
 			return new NLPModule();
+		if (name.equalsIgnoreCase(CONFORMATION_MODULE))
+			return new ConformationModule();
+		if (name.equalsIgnoreCase(FILTER_MODULE))
+			return new FilterModule();
 		//TODO Add any new modules here 
 		
 		logger.error("Sorry, The module " + name + " is not yet implemented. Exit with error ...");
@@ -66,6 +74,8 @@ public class ModuleFactory {
 		result.add(new DereferencingModule());
 		result.add(new LinkingModule());
 		result.add(new NLPModule());
+		result.add(new ConformationModule());
+		result.add(new FilterModule());
 		//TODO Add any new modules here 
 		return result;
 	}

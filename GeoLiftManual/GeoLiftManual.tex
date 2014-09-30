@@ -176,7 +176,7 @@ The enrichment procedure will be monitored by implementing a controller, which w
 
 In the following, we present the implementation of the three intuitions presented above in \geolift.
 \subsection{Using Dereferencing}
-For datasets which contain \texttt{owl:sameAs} links, we deference all links from the dataset to other datasets by using a content negotiation on HTTP as shown in Figure~\ref{fig:contentNegotiation}.
+For datasets which contain \texttt{owl:sameAs} links, we dereference all links from the dataset to other datasets by using a content negotiation on HTTP as shown in Figure~\ref{fig:contentNegotiation}.
 This returns a set of triples that needs to be filtered for relevant geographical information.
 Here, we use a predefined list of attributes that links to geographical information.
 Amongst others, we look for \texttt{geo:lat}, \texttt{geo:long}, \texttt{geo:lat\_long}, \texttt{geo:line} and \texttt{geo:polygon}.
@@ -196,11 +196,11 @@ Here, we rely on the metrics implemented in the \limes framework\footnote{\url{h
 The architecture of \limes is shown in Figure~\ref{fig:limesArchitecture}
 
 \begin{figure}[ht!]
-			\centering
-			\includegraphics[width = 0.6\textwidth]{images/limesArchitecture.png}
-			\caption{Architecture of \limes}
-			\label{fig:limesArchitecture}
-		\end{figure}
+  \centering
+  \includegraphics[width = 0.6\textwidth]{images/limesArchitecture.png}
+  \caption{Architecture of \limes}
+  \label{fig:limesArchitecture}
+\end{figure}
 		
 
 
@@ -277,366 +277,413 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
 
 
 \section{Developers' Manual}
-\geolift contains three basic \emph{Java} packages: 
-\begin{itemize}
- \item \texttt{IO package} which deals with input/output operations using the \emph{Reader} and \emph{Writer} classes.
- \item\texttt{Operators package} contains implementation of different operators like \emph{merge, split} 
- \item\texttt{Modules package} contains the \texttt{GeoLiftModule} interface which is implemented by the basic classes: 
-  \texttt{URIDereferencing} class which handles dereferencing  geographical information extending process. 
- \texttt{Linking} class which handles linking geographical information extending processes. 
- and \texttt{nlpEnrichGeoTriples} class which handles named entity extraction process.
-\end{itemize}
 
- All modules implement the \texttt{GeoLiftModule} interface's two methods \texttt{getParameters()} and \texttt{process()},
- where the \texttt{getParameters()} method returns a list of its module input parameters,
- and the \texttt{process()} method takes as input a \emph{Jena} model and a Map of different parameters in form of \texttt{("parameterName", "parameterValue")},
- and as output it generates a Jena model also, this organization ease the usage of the modules in different workflows.
+\subsection{\geolift packages}
+\geolift contains five basic \emph{Java} packages: 
+\begin{enumerate}
+ \item \texttt{IO package} which deals with input/output operations using:
+   \begin{itemize}
+    \item \texttt{Reader} class which handles all RDF reading process from file/URL/EndPoint. 
+    \item \texttt{Writer} class which handles all the RDF writing process. 
+  \end{itemize}
 
- Moreover, a \emph{Java} jar file is generated for each module, which can be executed directly from command line along with each module parameters.
+  \item\texttt{Modules package} contains the \texttt{GeoLiftModule} interface which is implemented by all modules' classes.
+      All modules can be created using the \texttt{ModuleFactory} class calling its \texttt{createModule()} method with the desired module's name as parameter.
+      Also, the \texttt{getImplementations()} method returns all implemented modules.
+      Currently, five modules are implemented:
+      \begin{itemize}
+	\item \texttt{DereferencingModule} class which handles dereferencing  geographical information extending process. 
+	\item \texttt{LinkingModule} class which handles linking geographical information extending processes. 
+	\item \texttt{NLPModule} class which handles named entity extraction process.
+	\item \texttt{ConformationModule} class which handles the conformation process.
+	\item \texttt{FilterModule} class which handles filter process.
+      \end{itemize}
+  
+   \item \texttt{Operators package} contains the \texttt{GeoLiftOperator} interface which is implemented by all operators' classes.
+    All operators can be created using the \texttt{OperatorFactory} class calling its \texttt{createOperator()} method with the desired operator's name as parameter.
+      \begin{itemize}
+	\item \texttt{SplitOperator} class to generate from 1 input dataset a set of $n \geq 2$ clone output datasets.
+	\item \texttt{MergeOperator} class to generate one merged output dataset out of $n \geq 2$ input datasets.
+      \end{itemize}
  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Dereferencing Module%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Dereferencing Module}
- The purpose of the dereferencing module is to extend the model's Geo-spatial information by set of information through specified predicates.
-
-\subsubsection{Input}
-\begin{itemize}
- \item \texttt{Data model} contains the triples of the dataset to be enriched 
- (This data model can be an output from previous stage or can be loaded from file/URI directly before using the module). 
- \item \texttt{Predicates list} list of interested predicates to be added as enrichment to the data model.
- Table \ref{tbl:derefPram} provides details about each of the \texttt{URIDereferencing} module's parameters.
-\end{itemize}
-
-
-\begin{table}
-\caption{Dereferencing module parameters} \label{tbl:derefPram}
-\small
-\begin{tabularx}{\textwidth}{@{}lX@{}}
-% \begin{tabular}{@{}  l  l  l @{}}
-\toprule
-\textbf{Parameter Key} 		& \textbf{Parameter value}\\
-\toprule
-\texttt{inputProperty<n>} 	& List of interesting predicates to enrich the model, and their Objects' values. e.g.$\langle$``inputProperty1'',``\url{http://www.w3.org/2003/01/geo/wgs84_pos#lat}''$\rangle$. \textbf{Mandatory parameter}\\
-\midrule
-\texttt{outputProperty<n>} 	& The enriched output property. By default this parameter is set to \url{http://geoknow.org/ontology/relatedTo}\\
-\midrule
-\texttt{useBlankNodes}		& Use blank node in output dataset. By default, this parameter is set to \texttt{false}.\\
-\bottomrule
-% \end{tabular}
-\end{tabularx}
-\end{table}
-
-
-\subsubsection{Output}
-\begin{itemize}
- \item \texttt{Data model} enriched data model with additional Geo-spatial information added by the given input predicates with its extracted object values.
-\end{itemize}
-
-\subsubsection{Process}
- In this module, a \emph{Java Jena} model and a list of interested predicates are given as inputs.
- This is done by iterating over the model's resources (dubbed as original resources) 
- and for each of the original resource an extraction of the predicates' values (objects) that are in the form of URI is performed. 
- These URIs (dubbed as dereferenced resources) are more filtered to be the resources used in \emph{DBpedia}.
- The dereferenced resources are handled by a dereference operation in order to find the interested predicates list for them.
- Such predicates and their objects' values are fetched and added to the the original resource to extend its information.
-\subsubsection{Code Sample}
-Listing \ref{lst:URIDereference} provides a sample code showing how to use the \texttt{URIDereference} module:
-
-\begin{lstlisting}[label=lst:URIDereference, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{URIDereferencing} class.]
-// Define URIDereferencing object
-URIDereferencing u = new URIDereferencing();
-// Define parameters Map
-Map<String, String> parameters = new HashMap<String, String>();
-// Set parameters
-parameters.put("predicate1", predicate1Value);
-parameters.put("predicate2", predicate2Value);
-// read input Model
-Model model=org.aksw.geolift.io.Reader.readModel(datasetSource);
-// Enrich the Model
-Model resultedModel = u.process(model, parameters);
-// Use the enriched model
-resultedModel.write(System.out,"TTL");
-\end{lstlisting}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Linking Module%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Linking Module}
-
-\subsubsection{Input}
-\begin{itemize}
- \item \texttt{Data model} contains the triples of the dataset to be enriched 
- (This data model can be an output from previous stage or can be loaded from file/URI directly before using the module). 
- \item \texttt{Parameters list} that will be used during the process. These parameters include:
- \subitem \texttt{Specification file path}, the path to the \texttt{spec.xml} file contains the linking specifications
- \subitem \texttt{URI position}, represents the original model's URI position as source or target in the linking specifications.
-\end{itemize}
-The parameters, other than the data model parameter, are  collected in Map structure form,
-where each entry's value in the Map represents the parameter itself.
-Table \ref{tbl:linkingPram} provides details about the \texttt{Linking} module's parameters .
-
-
-\begin{table}
-\caption{Linking module parameters} \label{tbl:linkingPram}
-\small
-\begin{tabularx}{\textwidth}{@{}lX@{}}
-% \begin{tabular}{@{}  l  l  l @{}}
-\toprule
-\textbf{Parameter key} 	& The path to specification file used for linking process, the original dataset to be enriched must be on the source dataset , e.g. \url {linkingModuleData/linking/spec.xml}. \\
-\toprule
-\texttt{specFilePath}	& Source URI to be replaced.\\
-\midrule
-\texttt{linksFilePath}	& The path to links file resulted from the linking process. This file's path is the same as the one specified in LIME's specifications file as output file, e.g. \url {linkingModuleData/linking/links.nt}.\\
-\midrule
-\texttt{linksPart} 	& Represents the original model's URI position as source/left or target/right in the linking specifications. Its value is either 'source' or 'target'.\\ 
-\bottomrule
-% \end{tabular}
-\end{tabularx}
-\end{table}
-
-
-\subsubsection{Process}
-In this module an input model is given and list of parameters for used files during the process. The process starts by generating links between the dataset model and another dataset as second partner. 
-This is done using LIMES link discovery framework by specifying the linking specification file given as parameter.
-The links are generated in \texttt{accept.nt} file that is used after to combine such links with their original resources in the source dataset model as \texttt{owl:samAs} predicates objects. The result is a dataset model enriched with geographical information links. 
-Another forward step is to feed the Dereference module with the resulted enriched model from Linking module as input. 
-The previously generated links in the model in addition to other objects in the URIs form will be dereferenced adding more and detailed geographical information.
-\subsubsection{Code Sample}
-Listing \ref{lst:Linking} provides a sample code showing how to use the Linking module.
-\begingroup
-    \fontsize{8pt}{10pt}\selectfont
-\begin{lstlisting}[label=lst:Linking, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{Linking} class.]
-// Define Linking object
-Linking l = new Linking();
-// Define parameters Map
-Map<String, String> parameters = new HashMap<String, String>();
-// Set parameters
-parameters.put("datasetSource",datasetSourceValue);
-parameters.put("specFilePath",specFilePathValue);
-parameters.put("linksFilePath",linksPathValue);
-parameters.put("linksPart",linksPartValue);
-// read input Model
-Model model = org.aksw.geolift.io.Reader.readModel(parameters.get("datasetSource"));
-// Enrich the Model
-model = l.process(model, parameters);
-// Use the enriched model
-model.write(System.out,"TTL");
-\end{lstlisting}
-\endgroup
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NLP Module%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{NLP Module}
-\subsubsection{Input}
-\begin{itemize}
- \item \texttt{Data model} contains the dataset to be enriched 
- (This data model can be an output from previous module or can be loaded from file/URI directly before using the module). 
- \item \texttt{Parameters list} that will be used during the process. The \texttt{getParameters()} method of the \texttt{NlpGeoEnricher} class returns a list of parameters,
- which can be set by the user to provide custom control of the \emph{Named entity extraction} provided by the implemented \emph{FOX framework}.
-\end{itemize}
-
-\subsubsection{Output}
-\begin{itemize}
- \item \texttt{Data model} enriched with additional Geo-spatial information URIs represented by the \texttt{addedGeoProperty} predicates, 
- witch by default is \texttt{gn:relatedTo\footnote{Prefix \texttt{gn} stands for \texttt{http://geoknow.org/ontology/}}} predicates.
-\end{itemize}
-
-\subsubsection{Process}
-The \texttt{process()} method of the \texttt{NlpGeoEnricher} class takes as input a \emph{Jena} model and a \texttt{Map} of different parameters, 
-and as output it generates a \emph{Jena} model also.
-Table \ref{tbl:nlpPram} provides details about the \texttt{NlpGeoEnricher} module's parameters.
-
-\subsubsection{Code Sample}
-A sample code showing how to call the \texttt{NlpGeoEnricher} class and giving it its parameters is introduced in Listing \ref{lst:NlpGeoEnricher}.
-
-\begin{table}
-\caption{NLP module parameters} \label{tbl:nlpPram}
-\small
-\begin{tabularx}{\textwidth}{@{}lX@{}}
-% \begin{tabular}{@{}  l  l  l @{}}
-\toprule
-\textbf{Parameter key} 	& \textbf{Parameter value} \\
-\toprule
-% \texttt{input} 		& The input file/URI to be enriched\\
-% \midrule
-% \texttt{output} 		& The output file to write the enriched model to it\\
-% \midrule
-\texttt{literalProperty}	& Literal property used by FOX for NER. If not set, the top ranked literal property will be pecked automatically by \texttt{LiteralPropertyRanker} sub-module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
-\midrule
-\texttt{addedGeoProperty}& property added to the input model with additional Geo-spatial knowledge through NLP. By default, this parameter is set to \emph{gn:relatedTo\footnotemark[11]}\\
-\midrule
-\texttt{useFoxLight} 	& An implemented NER class name, either: 
-			  \begin{itemize}
-			      \itemsep-0.5em
-			      \item \url{org.aksw.fox.nertools.NEROpenNLP}
-			      \item \url{org.aksw.fox.nertools.NERIllinoisExtended}
-			      \item \url{org.aksw.fox.nertools.NERIllinoisExtended}
-			      \item \url{org.aksw.fox.nertools.NERBalie}
-			      \item \url{org.aksw.fox.nertools.NERStanford}
-			  \end{itemize}
-			  By default this parameter is set to \url{OFF} in which all NER classes runs in parallel and a combined result will be returned, if this parameter is given with a wrong value, \url{org.aksw.fox.nertools.NERStanford} will be used. \\
-\midrule
-\texttt{askEndPoint} 	& Ask the \emph{DBpedia} endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results). By default this parameter is set to \emph{false}\\
-\midrule
-\texttt{foxType} 	&  text or an URL (e.g.: `G. W. Leibniz was born in Leipzig`, '\url{http://en.wikipedia.org/wiki/Leipzig_University}`). By default, this parameter is set to \emph{TEXT} \\
-\midrule
-\texttt{foxTask} 	& FOX task \texttt{:\{NER\}} for Named Entity RecognitionBy. By default, this parameter is set to \emph{NER}\\
-\midrule
-% \texttt{foxInput} 	& FOX actual input as text or an URL default, this parameter is set to \emph{""}\\
-% \midrule
-\texttt{foxOutput} 	& FOX output format: \{\texttt{ JSON-LD | N-Triples | RDF/\{ JSON | XML \}}\}. By default, this parameter is set to \emph{Turtle}\\
-\midrule
-\texttt{foxUseNif} 	& FOX generates NIF: \{ true $\rvert$ false \}. By default, this parameter is set to \emph{false}\\
-\midrule
-\texttt{foxReturnHtml} 	& FOX returns HTML: \texttt{\{ true $\rvert$ false \}}. By default, this parameter is set to \emph{false}\\ 
-\bottomrule
-% \end{tabular}
-\end{tabularx}
-\end{table}
-
-\begin{lstlisting}[label=lst:NlpGeoEnricher, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{NlpGeoEnricher} class.]
-// Define NlpGeoEnricher object
-NlpGeoEnricher geoEnricher= new NlpGeoEnricher();
-// Define parameters Map
-Map<String, String> parameters = new HashMap<String, String>();
-// Set parameters
-parameters.put("useFoxLight", "OFF");
-parameters.put("askEndPoint", "false");
-// read input Model
-Model inputModel = org.aksw.geolift.io.Reader.readModel(inputFileValue);
-// Enrich the Model
-Model enrichedModel = geoEnricher.process(inputModel, parameters);
-// Use the enriched model
-enrichedModel.write(System.out,"TTL");
-
-\end{lstlisting}
- 
-% \newpage 
-% \clearpage
-
-\subsection{Conformation Module}
-Change a specified source URI to a specified target URI, 
-for example using source URI of \url{http://dbpedia.org} and target URI of \url{http://geolift.org} changes a resource like \url{http://dbpedia.org/Berlin} to \url{http://geolift.org/Berlin}.
-Table \ref{tbl:conformPram} provides a full list of conformation module parameters.
-
-
-\begin{table}
-\caption{Conformation module parameters} \label{tbl:conformPram}
-\small
-\begin{tabularx}{\textwidth}{@{}lX@{}}
-% \begin{tabular}{@{}  l  l  l @{}}
-\toprule
-\textbf{Parameter key} 	& \textbf{Parameter value} \\
-\toprule
-\texttt{sourceURI}	& Source URI to be replaced.\\
-\midrule
-\texttt{targetURI}	& Target URI to replace the sourceURI.\\
-\bottomrule
-% \end{tabular}
-\end{tabularx}
-\end{table}
-
-\subsection{Filter Module}
-Runs a set of triples patterns' against an input model to filter some triples out of it and export them to an output model. 
-For example running triple pattern \texttt{"?s \url{<http://dbpedia.org/ontology/abstract>} ?o"} against an input model containing "\url{http://dbpedia.org/resource/Berlin}" will generate output model containing only Berlin's abstracts of \emph{DBpedia}.
-table \ref{tbl:filterPram} provides a full list of the filter module parameters.
-
-\begin{table}
-\caption{Filter module parameters} \label{tbl:filterPram}
-\small
-\begin{tabularx}{\textwidth}{@{}lX@{}}
-% \begin{tabular}{@{}  l  l  l @{}}
-\toprule
-\textbf{Parameter key} 	& \textbf{Parameter value} \\
-\toprule
-\texttt{triplesPattern}	& Set of triple pattern to run against the input model of the filter module. By default, this parameter is set to \texttt{?s ?p ?o.} which generate the whole input model as output, changing the values of \texttt{?s}, \texttt{?p} and/or \texttt{?o} will restrict the output model.\\
-\bottomrule
-% \end{tabular}
-\end{tabularx}
-\end{table}
-
-\section{Running \geolift From Command-Line }
-
-The \geolift can be directly executed from command-line using the provided \texttt{geolift.jar}\footnote{the \texttt{geolift.jar} file is in the \texttt{jars} folder of the project} file.
-% Table \ref{tbl:geoLiftPram} explains the various parameters that can be used with the \geolift through command-line. 
-Simpley, provide the RDf configuration file as the only one parameter for the \geolift jar file.
-\begin{equation*}
-  Example: \texttt{ geolift.jar src/main/resources/workflow/config.ttl }
-\end{equation*}
+  \item \texttt{Helper package} containing helper classes used by \geolift such as vocabularies classes.
+  
+  \item \texttt{Workflow package} containing classes responsible for \geolift overall execution process.
+\end{enumerate}
 
 
 
-Listing~\ref{lst:rdfconf} introduces an example of RDF configuration file, to make it easier to be understood we represent the configuration file in form of graph in figure~\ref{fig:rdfconf}.
+\subsection{\geolift Modules}
+    By \emph{Modules} we mean these artifacts in charge of generating geographical data based on RDF data. 
+    % To this aim, they implement the three intuitions presented above.
+    The input for such a module is an RDF dataset.
+    The output is also an RDF dataset enriched with geographical information.
+    Formally, a module can thus be regarded as a function $\mu: \mathcal{R} \rightarrow \mathcal{R}$, where $\mathcal{R}$ is the set of all RDF datasets.
+    Currently, \geolift implements five modules: dereferencing, linking, NLP, conformation and filter.
 
-\subsection{How \geolift execute the RDF configuration file?}
-First of all \geolift RDF configuration reader determines the set of output datasets $D$, 
-i.e. datasets which are included as output of some modules/operators but not as input to any other modules/operators.
-In our example it will be only $d_8$.
-
-For each dataset in $D$ \geolift tries to find it either trivially from file, URI or endpoint if provided by the dataset node in the RDF configuration file, 
-or recursively buy solving for modules/operators that generate it as output.
-
-Going beck to our example, \geolift first tries to read $d_8$ trivially but it fail as there are no direct way to get it. 
-Then, \geolift recursively go for solving the \texttt{Conformation} module as it generate $d_8$ as output. 
-This recursive procedure continues until it reads the dataset $d_1$ from the endpoint, then going back in the recursion stack.
-
-\subsection{RDF Configuration main resources types}
-\geolift RDF configuration contains four main resource types (dataset, module, operator and parameter).
-
-\subsubsection{Dataset Resource}
-    As it name implies, a Dataset resource represent a dataset. 
-    For an example see figure~\ref{lst:rdfconf}(lines 4:6), in which it represent a dataset with URI \texttt{\url{http://dbpedia.org/resource/Berlin}} and endpoint \texttt{\url{http://dbpedia.org/sparql}}.
-    \geolift will generate the Concise Bounded Description (CBD)\footnote{For more details about CBD see \url{http://www.w3.org/Submission/CBD/}} of the \emph{Berlin} resource from \emph{DBpedia} endpoint. 
-
-    Beside defining a resource as a dataset (e.g. figure~\ref{lst:rdfconf}~(lines 4)),
-    a dataset resource may also contains the following predicates:
+    All modules implement the \texttt{GeoLiftModule} interface methods 
     \begin{itemize}
-	\item \texttt{rdfs:label} setting label for the dataset.
-	\item \texttt{:hasUri} setting URI of the dataset resource, to read resource through content negotiation \emph{(e.g. figure~\ref{lst:rdfconf}~(line 5))}.
-	\item \texttt{:FromEndPoint} end point to read the CBD from. 
-	\emph{Note: must be used in conjunction with \texttt{:hasUri} predicate, otherwise an error will be generated by \geolift.} \emph{(e.g. figure~\ref{lst:rdfconf}~(line 6))}.
-	\item \texttt{:inputFile} input file to load the dataset from.
-	\item \texttt{:outputFile} output file to save the dataset to \emph{(e.g. figure~\ref{lst:rdfconf}~(lines 14))}.
-	\item \texttt{:outputFormat} output format to save the dataset in it \emph{(e.g. figure~\ref{lst:rdfconf}~(lines 14))}, Turtle format will be used as default format if this property is not set.
+      \item Model process() method takes as input a \emph{Jena} model and a Map of different parameters in form of \texttt{("parameterName", "parameterValue")},
+    and as output all \geolift module generates a Jena model also, this organization ease the usage of the modules in different workflows.
+      \item getParameters(), returns list of all available module parameters.
+      \item getNecessaryParameters(), returns list of all necessary module parameters that have no default values.
+      \item selfConfig(Model source, Model target), returns a map of parameters learned from the inputs (currently in progress).
     \end{itemize}
 
-\subsubsection{Module Resource}
-    Beside defining a resource as a module \emph{(e.g. figure~\ref{lst:rdfconf}~(line 16))},
-    a Module resource may also contains the following predicates:
-    \begin{itemize}
-	\item \texttt{rdfs:label} setting label for the module \emph{(e.g. figure~\ref{lst:rdfconf}~(line 17))}.
-	\item \texttt{:hasInput} setting input datasets for the module \emph{(e.g. figure~\ref{lst:rdfconf}~(line 18))}.
-	\item \texttt{:hasOutput} setting output datasets for the module \emph{(e.g. figure~\ref{lst:rdfconf}~(line 19))}.
-	\item \texttt{:hasParameter} setting parameters for the module \emph{(e.g. figure~\ref{lst:rdfconf}~(line 20))}.
-    \end{itemize}
+    Adding new modules to \geolift is possible by implementing the \texttt{GeoLiftModule}.
+    \subsubsection{Dereferencing Module}
 
-\subsubsection{Operator Resource}
-    Beside defining a resource as an operator \emph{(e.g. figure~\ref{lst:rdfconf}~(line 24))},
-    a Module resource may also contains the following predicates:
-    \begin{itemize}
-	\item \texttt{rdfs:label} setting a label for the operator \emph{(e.g. figure~\ref{lst:rdfconf}~(line 25))}.
-	\item \texttt{:hasInput} setting input datasets for the operator \emph{(e.g. figure~\ref{lst:rdfconf}~(line 26))}.
-	\item \texttt{:hasOutput} setting output datasets for the operator \emph{(e.g. figure~\ref{lst:rdfconf}~(line 27))}.
-	\item \texttt{:hasParameter} setting parameters for the operator.
-    \end{itemize}
+    For datasets which contain similarity proprieties links (e.g. \texttt{owl:sameAs}), we deference all links from the dataset to other datasets by using a content negotiation on HTTP as shown in Figure~\ref{fig:contentNegotiation}.
+    This returns a set of triples that needs to be filtered for relevant geographical information.
+    Here, we use a predefined list of attributes that links to geographical information.
+    Amongst others, we look for \texttt{geo:lat}, \texttt{geo:long}, \texttt{geo:lat\_long}, \texttt{geo:line} and \texttt{geo:polygon}.
+    The list of retrieved property values can be configured.
 
-\subsubsection{Parameter Resource}
-    Beside defining a resource as a parameter \emph{(e.g. figure~\ref{lst:rdfconf}~(line 21))},
-    a Module resource may also contains the following predicates:
-    \begin{itemize}
-	\item \texttt{rdfs:label} setting label for the parameter.
-	\item \texttt{:hasKey} setting the parameter key \emph{(e.g. figure~\ref{lst:rdfconf}~(line 22))}.
-	\item \texttt{:HasValue} setting the parameter value \emph{(e.g. figure~\ref{lst:rdfconf}~(lines 23))}.
-    \end{itemize}
-    The values of (key, values) pairs are modules/operators dependent.
-    see	modules/operators sections for more details.
+%     \subsubsection{Input}
+%     \begin{itemize}
+%     \item \texttt{Data model} contains the triples of the dataset to be enriched 
+%     (This data model can be an output from previous stage or can be loaded from file/URI directly before using the module). 
+%     \item \texttt{Predicates list} list of interested predicates to be added as enrichment to the data model.
+%     Table \ref{tbl:derefPram} provides details about each of the \texttt{DereferencingModule} module's parameters.
+%     \end{itemize}
+
+    \begin{table}
+    \caption{Dereferencing module parameters} \label{tbl:derefPram}
+    \small
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+    % \begin{tabular}{@{}  l  l  l @{}}
+    \toprule
+    \textbf{Parameter Key} 		& \textbf{Parameter value}\\
+    \toprule
+    \texttt{inputProperty<n>} 	& List of interesting predicates to enrich the model, and their Objects' values. e.g.$\langle$``inputProperty1'',``\url{http://www.w3.org/2003/01/geo/wgs84_pos#lat}''$\rangle$. \textbf{Mandatory parameter}\\
+    \midrule
+    \texttt{outputProperty<n>} 	& The enriched output property. By default this parameter is set to \url{http://geoknow.org/ontology/relatedTo}\\
+    \midrule
+    \texttt{useBlankNodes}		& Use blank node in output dataset. By default, this parameter is set to \texttt{false}.\\
+    \bottomrule
+    % \end{tabular}
+    \end{tabularx}
+    \end{table}
+    
+%     \subsubsection{Output}
+%     \begin{itemize}
+%     \item \texttt{Data model} enriched data model with additional Geo-spatial information added by the given input predicates with its extracted object values.
+%     \end{itemize}
+
+%     \subsubsection{Process}
+    In this module, a \emph{Java Jena} model and a list of interested predicates are given as inputs.
+    This is done by iterating over the model's resources (dubbed as original resources) 
+    and for each of the original resource an extraction of the predicates' values (objects) that are in the form of URI is performed. 
+    These URIs (dubbed as dereferenced resources) are more filtered to be the resources used in \emph{DBpedia}.
+    The dereferenced resources are handled by a dereference operation in order to find the interested predicates list for them.
+    Such predicates and their objects' values are fetched and added to the the original resource to extend its information.
+%     \subsubsection{Code Sample}
+    Listing \ref{lst:DereferencingModule} provides a sample code showing how to use the \texttt{DereferencingModule} module:
+
+    \begin{lstlisting}[label=lst:DereferencingModule, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{DereferencingModule} class.]
+    // Define DereferencingModule object
+    DereferencingModule u = ModuleFactory.createModule("dereferencing");
+    // Define parameters Map
+    Map<String, String> parameters = new HashMap<String, String>();
+    // Set parameters
+    parameters.put("predicate1", predicate1Value);
+    parameters.put("predicate2", predicate2Value);
+    // read input Model
+    Model model = Reader.readModel(datasetSource);
+    // Enrich the Model
+    Model resultedModel = u.process(model, parameters);
+    // Use the enriched model
+    Writer.writeModel(enrichedModel, "TTL", System.out);
+    \end{lstlisting}
+
+    \subsubsection{Linking Module}
+    Links to geographical resources do not occur in several knowledge bases.
+    Here, we rely on the metrics implemented in the \limes framework\footnote{\url{http://limes.sf.net}}~\cite{NGAU11,NGON12c,NGO+13c} to link the resources in the input dataset with geographical datasets.
+  
+    \texttt{LinkingModule} have two inputs: an input model and list of parameters (see table~\ref{tbl:linkingPram} for parameters details).
+    The linking process starts by generating links between the input dataset model and another dataset as second partner. 
+    As said before, the linking process is done using \limes.
+    \limes linking specification file is given as parameter.
+%     By default, the links are stored in the \texttt{accept.nt} file.
+    The output model of the \texttt{LinkingModule} is generated as the input model plus the generated links added with their original resources in the input model using    some linking property such as \texttt{owl:samAs}.
+%     Another forward step is to feed the Dereference module with the resulted enriched model from Linking module as input. 
+%     The previously generated links in the model in addition to other objects in the URIs form will be dereferenced adding more and detailed geographical information.
+    Listing \ref{lst:Linking} provides a sample code showing how to use the Linking module.
+
+    \begin{table}
+    \caption{Linking module parameters} \label{tbl:linkingPram}
+    \small
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+    % \begin{tabular}{@{}  l  l  l @{}}
+    \toprule
+    \textbf{Parameter key} 	&  \textbf{Parameter value}\\
+    \toprule
+    \texttt{specFile}	& The path to specification file used for linking process, the original dataset to be enriched must be on the source dataset , e.g. \url {linkingModuleData/linking/spec.xml}.\\
+    \midrule
+    \texttt{linksFile}	& The path to links file resulted from the linking process. This file's path is the same as the one specified in LIME's specifications file as output file, e.g. \url {linkingModuleData/linking/links.nt}.\\
+    \midrule
+    \texttt{linksPart} 	& Represents the original model's URI position as source/left or target/right in the linking specifications. Its value is either 'source' or 'target'.\\ 
+    \bottomrule
+    % \end{tabular}
+    \end{tabularx}
+    \end{table}
 
     
-\begin{lstlisting}[label=lst:rdfconf, numbers=left, numberstyle=\tiny, caption = Example of RDF configuration file.]
+    
+    \begingroup
+	\fontsize{8pt}{10pt}\selectfont
+    \begin{lstlisting}[label=lst:Linking, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{Linking} class.]
+    // Define Linking object
+    Linking l = ModuleFactory.createModule("linking");
+    // Define parameters Map
+    Map<String, String> parameters = new HashMap<String, String>();
+    // Set parameters
+    parameters.put("datasetSource",datasetSourceValue);
+    parameters.put("specFilePath",specFilePathValue);
+    parameters.put("linksFilePath",linksPathValue);
+    parameters.put("linksPart",linksPartValue);
+    // read input Model
+    Model model = Reader.readModel(parameters.get("datasetSource"));
+    // Enrich the Model
+    model = l.process(model, parameters);
+    // Use the enriched model
+    Writer.writeModel(enrichedModel, "TTL", System.out);
+    \end{lstlisting}
+    \endgroup
+
+    \subsubsection{NLP Module}
+	The geographical information hidden in datatype properties is retrieved by using Named Entity Recognition (NER).
+	\geolift - as an expandable modeller framework - can inject any NER framework to implement the \emph{NLP module}.
+	In the current version of \geolift, we rely on the FOX framework. 
+
+%     \subsubsection{Input}
+%     \begin{itemize}
+%     \item \texttt{Data model} contains the dataset to be enriched 
+%     (This data model can be an output from previous module or can be loaded from file/URI directly before using the module). 
+%     \item \texttt{Parameters list} that will be used during the process. The \texttt{getParameters()} method of the \texttt{NLPModule} class returns a list of parameters,
+%     which can be set by the user to provide custom control of the \emph{Named entity extraction} provided by the implemented \emph{FOX framework}.
+%     \end{itemize}
+% 
+%     \subsubsection{Output}
+%     \begin{itemize}
+%     \item \texttt{Data model} enriched with additional Geo-spatial information URIs represented by the \texttt{addedGeoProperty} predicates, 
+%     witch by default is \texttt{gn:relatedTo\footnote{Prefix \texttt{gn} stands for \texttt{http://geoknow.org/ontology/}}} predicates.
+%     \end{itemize}
+% 
+%     \subsubsection{Process}
+%     The \texttt{process()} method of the \texttt{NLPModule} class takes as input a \emph{Jena} model and a \texttt{Map} of different parameters, 
+%     and as output it generates a \emph{Jena} model also.
+    Table \ref{tbl:nlpPram} provides details about the \texttt{NLPModule}'s parameters.
+% 
+%     \subsubsection{Code Sample}
+    A sample code demonstrating the \texttt{NLPModule} class is provided introduced in Listing~\ref{lst:NLPModule}.
+
+    \begin{table}
+    \caption{NLP module parameters} \label{tbl:nlpPram}
+    \small
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+    % \begin{tabular}{@{}  l  l  l @{}}
+    \toprule
+    \textbf{Parameter key} 	& \textbf{Parameter value} \\
+    \toprule
+    % \texttt{input} 		& The input file/URI to be enriched\\
+    % \midrule
+    % \texttt{output} 		& The output file to write the enriched model to it\\
+    % \midrule
+    \texttt{literalProperty}	& Literal property used by FOX for NER. If not set, the top ranked literal property will be pecked automatically by \texttt{LiteralPropertyRanker} sub-module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
+    \midrule
+    \texttt{addedGeoProperty}& property added to the input model with additional Geo-spatial knowledge through NLP. By default, this parameter is set to \emph{gn:relatedTo\footnotemark[11]}\\
+    \midrule
+    \texttt{useFoxLight} 	& An implemented NER class name, either: 
+			      \begin{itemize}
+				  \itemsep-0.5em
+				  \item \url{org.aksw.fox.nertools.NEROpenNLP}
+				  \item \url{org.aksw.fox.nertools.NERIllinoisExtended}
+				  \item \url{org.aksw.fox.nertools.NERIllinoisExtended}
+				  \item \url{org.aksw.fox.nertools.NERBalie}
+				  \item \url{org.aksw.fox.nertools.NERStanford}
+			      \end{itemize}
+			      By default this parameter is set to \url{OFF} in which all NER classes runs in parallel and a combined result will be returned, if this parameter is given with a wrong value, \url{org.aksw.fox.nertools.NERStanford} will be used. \\
+    \midrule
+    \texttt{NERType} 	& Force FOX to look for a specific NE's types only. Available types are: \texttt{location} (default value), \texttt{person},\texttt{organization}, and \texttt{all} to retrieve the all the previous three types.\\ 
+    \midrule
+    \texttt{askEndPoint} 	& Ask the \emph{DBpedia} endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results). By default this parameter is set to \emph{false}\\
+    \midrule
+%     \texttt{foxType} 	&  text or an URL (e.g.: `G. W. Leibniz was born in Leipzig`, '\url{http://en.wikipedia.org/wiki/Leipzig_University}`). By default, this parameter is set to \emph{TEXT} \\
+%     \midrule
+%     \texttt{foxTask} 	& FOX task \texttt{:\{NER\}} for Named Entity RecognitionBy. By default, this parameter is set to \emph{NER}\\
+%     \midrule
+    % \texttt{foxInput} 	& FOX actual input as text or an URL default, this parameter is set to \emph{""}\\
+    % \midrule
+%     \texttt{foxOutput} 	& FOX output format: \{\texttt{ JSON-LD | N-Triples | RDF/\{ JSON | XML \}}\}. By default, this parameter is set to \emph{Turtle}\\
+%     \midrule
+%     \texttt{foxUseNif} 	& FOX generates NIF: \{ true $\rvert$ false \}. By default, this parameter is set to \emph{false}\\
+%     \midrule
+%     \texttt{foxReturnHtml} 	& FOX returns HTML: \texttt{\{ true $\rvert$ false \}}. By default, this parameter is set to \emph{false}\\ 
+%     \bottomrule
+    % \end{tabular}
+    \end{tabularx}
+    \end{table}
+
+    \begin{lstlisting}[label=lst:NLPModule, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{NLPModule} class.]
+    // Define NLPModule object
+    NLPModule geoEnricher= ModuleFactory.createModule("nlp");
+    // Define parameters Map
+    Map<String, String> parameters = new HashMap<String, String>();
+    // Set parameters
+    parameters.put("useFoxLight", "OFF");
+    parameters.put("askEndPoint", "false");
+    // read input Model
+    Model inputModel = Reader.readModel(inputFileValue);
+    // Enrich the Model
+    Model enrichedModel = geoEnricher.process(inputModel, parameters);
+    // Use the enriched model
+    Writer.writeModel(enrichedModel, "TTL", System.out);
+    \end{lstlisting}
+    
+
+\subsubsection{Conformation Module}
+    Change a specified source URI authority to a specified target URI authority, 
+    for example using source URI authority of \url{http://dbpedia.org} and target URI authority of \url{http://geolift.org} changes a resource like \url{http://dbpedia.org/Berlin} to \url{http://geolift.org/Berlin}.
+    Moreover, the \texttt{ConformationModule} can be used to change a specific source properties to specific target properties.
+    As an example, listing~\ref{lst:conformModule} introduce a code segment to manipulate the \texttt{ConformationModule} to change the source authority from \url{http://dbpedia.org} to the target property \url{http://geolift.org/Berlin}, and also change all occurrences of \texttt{RDF:label} to \texttt{SKOS:prefLabel}.
+    Table~\ref{tbl:conformPram} provides a full list of conformation module parameters.
+    
+
+    \begin{table}
+    \caption{Conformation module parameters} \label{tbl:conformPram}
+    \small
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+    % \begin{tabular}{@{}  l  l  l @{}}
+    \toprule
+    \textbf{Parameter key} 	& \textbf{Parameter value} \\
+    \toprule
+    \texttt{sourceSubjectAuthority}	& Source URI to be replaced.\\
+    \midrule
+    \texttt{targetSubjectAuthority}	& Target URI to replace the sourceURI.\\
+    \midrule
+    \texttt{sourceProperty<i>}	& $i^{th}$ source property to be replaced by the $i^{th}$ target property.\\
+    \midrule
+    \texttt{targetProperty<i>}	& $i^{th}$ target property to replace the $i^{th}$ source property.\\
+    \bottomrule
+    % \end{tabular}
+    \end{tabularx}
+    \end{table}.
+    
+    \begin{lstlisting}[label=lst:conformModule, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{ConformationModule} class.]
+    // Define NLPModule object
+    ConformationModule geoEnricher= ModuleFactory.createModule("conformation");
+    // Define parameters Map
+    Map<String, String> parameters = new HashMap<String, String>();
+    // Set parameters
+    parameters.put("sourceSubjectAuthority", "http://dbpedia.org");
+    parameters.put("targetSubjectAuthority", "http://geolift.org");
+    parameters.put("sourceProperty1", "http://www.w3.org/1999/02/22-rdf-syntax-ns#label");
+    parameters.put("targetProperty1", "http://www.w3.org/2004/02/skos/core#prefLabel");
+    // read input Model
+    Model inputModel = Reader.readModel(inputFileValue);
+    // Enrich the Model
+    Model enrichedModel = geoEnricher.process(inputModel, parameters);
+    // Use the enriched model
+    Writer.writeModel(enrichedModel, "TTL", System.out);
+    \end{lstlisting}
+
+\subsubsection{Filter Module}
+    Runs a set of triples patterns' against an input model to filter some triples out of it and export them to an output model. 
+    For example running triple pattern \texttt{"?s \url{<http://dbpedia.org/ontology/abstract>} ?o"} against an input model containing "\url{http://dbpedia.org/resource/Berlin}" will generate output model containing only Berlin's abstracts of \emph{DBpedia}.
+    Listing~\ref{lst:filterModule} demonstrate the filter module usage.
+    table \ref{tbl:filterPram} provides a full list of the filter module parameters.
+
+    \begin{table}
+    \caption{Filter module parameters} \label{tbl:filterPram}
+    \small
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+    % \begin{tabular}{@{}  l  l  l @{}}
+    \toprule
+    \textbf{Parameter key} 	& \textbf{Parameter value} \\
+    \toprule
+    \texttt{triplesPattern}	& Set of triple pattern to run against the input model of the filter module. By default, this parameter is set to \texttt{?s ?p ?o.} which generate the whole input model as output, changing the values of \texttt{?s}, \texttt{?p} and/or \texttt{?o} will restrict the output model.\\
+    \bottomrule
+    % \end{tabular}
+    \end{tabularx}
+    \end{table}
+    
+    \begin{lstlisting}[label=lst:filterModule, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{FilterModule} class.]
+    // Define NLPModule object
+    FilterModule geoEnricher= ModuleFactory.createModule("filter");
+    // Define parameters Map
+    Map<String, String> parameters = new HashMap<String, String>();
+    // Set parameters
+    parameters.put("triplesPattern ", "?s <http://dbpedia.org/ontology/abstract> ?o");
+    parameters.put("askEndPoint", "false");
+    // read input Model
+    Model inputModel = Reader.readModel(inputFileValue);
+    // Enrich the Model
+    Model enrichedModel = geoEnricher.process(inputModel, parameters);
+    // Use the enriched model
+    Writer.writeModel(enrichedModel, "TTL", System.out);
+    \end{lstlisting}
+    
+\subsection{\geolift Operators}
+The idea behind operators is to enable users to define a workflow for processing their input dataset. 
+\geolift operators combine the enrichment modules and allow defining a workflow for processing information.
+Note that the format of the input and output of operator is identical. 
+Thus, the user is empowered to create workflows of arbitrary complexity by simply connecting modules and/or operators.
+Formally, an operator can be regarded as a function $\varphi: \mathcal{R}^* \rightarrow \mathcal{R}^*$.
+
+  All operators classes implement the \texttt{GeoLiftOperator} interface's two methods \texttt{getParameters()} and \texttt{process()},
+ where the \texttt{getParameters()} method returns a list of its module input parameters,
+ and the \texttt{process()} method takes as input a list of \emph{Jena} models and a \emph{Map} of different parameters in form of \texttt{("parameterName", "parameterValue")}.
+ Each of the \geolift operators outputs a list of Jena models.
+ This organization ease the usage of the operators in different workflows.
+ Adding new operators to \geolift is possible by implementing the \texttt{GeoLiftOperator}.
+
+\subsubsection{Split Operator}
+The idea behind the split operator is to enable parallel execution of different modules in the same dataset. 
+The split operator takes one dataset as input and produces $n \geq 2$ output datasets, which are all identical to the input dataset.
+Each of the output datasets of the split operator has its own workflow (as to be input to any other module or operator).
+Thus, \geolift is able to execute all workflows of output datasets in parallel. 
+
+\subsubsection{Merge Operator}
+The idea behind the merge operator is to enable combining datasets.
+The merge operator takes a set of $n \geq 2$ input datasets and merges them into one output dataset containing all the input datasets' triples.
+As in case of split operator, the merged output dataset has its own workflow (as to be input to any other module or operator).
+
+\section{\geolift RDF Specification Paradigm}
+In the current version of \geolift we introduce our new RDF based specification paradigm.
+The main idea behind this new paradigm is to enable the processing execution of specifications in an efficient way.
+To this end, we first decided to use RDF as language for the specification. This has the main advantage of allowing for creating specification repositories which can be queried easily with the aim of retrieving accurate specifications for the use cases at hand. Moreover, extensions of the specification language do not require a change of the specification language due to the intrinsic extensibility of ontologies. The third reason for choosing RDF as language for specifications is that we can easily check the specification for correctness by using a reasoner, as the specification ontology allows for specifying the restrictions that specifications must abide by.
+
+% listing~\ref{lst:rdfconf} 
+introduces an example of RDF specification file presented in turtle serialization, which will be used as a guiding example through the next subsections.
+For the sake of  clarity, we represent the configuration file in form of graph in figure~\ref{fig:rdfconf}.
+
+
+\subsection{\geolift Execution Workflow}
+First of all, \geolift determines the set of output datasets $D = \{d_1, \dots , d_n\}$, 
+i.e. datasets which are included as output of some modules/operators but not as input to any other modules/operators.
+In our example it is only $d_8$.
+Then, for each dataset $d_i$ in $D$, \geolift tries to find $d_i$ either trivially from file/URI/endpoint or recursively by solving for modules/operators that generate $d_i$ as output.
+
+Going back to our example, \geolift first tries to read $d_8$ trivially but it fail as there is no direct way to read it. 
+Then, \geolift recursively goes for solving the \texttt{Conformation module} as it generates $d_8$ as output. 
+This recursive procedure continues until \geolift reads the dataset $d_1$ from the endpoint.
+Afterwards, going back in the recursion stack \geolift produces the triples of $d_8$.
+
+\subsubsection{RDF Specification Resources} 
+
+\geolift RDF specification file may contain four main resource types (dataset, module, operator and parameter). 
+in the following we will describe each of them along with our example shown in listing~\ref{lst:rdfconf}. 
+
+% \todo[inline]{There is a problem inserting a lstlisting in this file (I an tired of trying to fix), @Axel Can u please try to fix this?}
+
+\begin{lstlisting}[label=lst:rdfconf, float=tp, basicstyle=\scriptsize, numbers=left, numberstyle=\tiny, caption = Example of RDF configuration file.]
 @prefix : <http://geoknow.org/specsontology/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 :d1		a		:Dataset ;
 		:hasUri		<http://dbpedia.org/resource/Berlin> ;
-		:FromEndPoint	<http://dbpedia.org/sparql> .
+		:fromEndPoint	<http://dbpedia.org/sparql> .
 :d2		a		:Dataset .
 :d3		a		:Dataset .
 :d4		a		:Dataset .
@@ -695,7 +742,56 @@ This recursive procedure continues until it reads the dataset $d_1$ from the end
 \end{lstlisting}
 
 
-\begin{figure}[!h]
+\begin{itemize}
+ \item \textbf{Dataset Resource}
+    As its name implies, a Dataset resource represents a dataset. 
+    For an example see~listing~\ref{lst:rdfconf}~(lines 4:6), in which the RDF specification represents a dataset with URI \texttt{\url{http://dbpedia.org/resource/Berlin}} and endpoint \texttt{\url{http://dbpedia.org/sparql}}.
+    \geolift extracts the CBD of the \emph{Berlin} resource from \emph{DBpedia} endpoint. 
+
+    Beside defining a resource as a dataset (e.g.~listing~listing~\ref{lst:rdfconf}~(lines 4)),
+    a dataset resource may also contain the following predicates:
+    \begin{itemize}
+	\item \texttt{rdfs:label} setting label for the dataset.
+	\item \texttt{:hasUri} setting URI of the dataset resource, to read resource through content negotiation \emph{(e.g.~listing~listing~\ref{lst:rdfconf}~(line 5))}.
+	\item \texttt{:fromEndPoint} end point to read the CBD from. 
+	\emph{Note: must be used in conjunction with \texttt{:hasUri} predicate, otherwise an error will be generated by \geolift.} \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 6))}.
+	\item \texttt{:inputFile} input file to load the dataset from.
+	\item \texttt{:outputFile} output file to save the dataset to \emph{(e.g.~listing~\ref{lst:rdfconf}~(lines 14))}.
+	\item \texttt{:outputFormat} output format to save the dataset in it \emph{(e.g.~listing~\ref{lst:rdfconf}~(lines 14))}, Turtle format will be used as default format if this property is not set.
+    \end{itemize}
+
+  \item \textbf{Module Resource}
+    Beside defining a resource as a module \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 16))},
+    a Module resource may also contain the following predicates:
+    \begin{itemize}
+	\item \texttt{rdfs:label} setting label for the module \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 17))}.
+	\item \texttt{:hasInput} setting input datasets for the module \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 18))}.
+	\item \texttt{:hasOutput} setting output datasets for the module \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 19))}.
+	\item \texttt{:hasParameter} setting parameters for the module \emph{(e.g. ~listing~\ref{lst:rdfconf}~(line 20))}.
+    \end{itemize}
+
+  \item \textbf{Operator Resource}
+    Beside defining a resource as an operator \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 24))},
+    a Module resource may also contain the following predicates:
+    \begin{itemize}
+	\item \texttt{rdfs:label} setting a label for the operator \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 25))}.
+	\item \texttt{:hasInput} setting input datasets for the operator \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 26))}.
+	\item \texttt{:hasOutput} setting output datasets for the operator \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 27))}.
+	\item \texttt{:hasParameter} setting parameters for the operator.
+    \end{itemize}
+
+  \item \textbf{Parameter Resource}
+    Beside defining a resource as a parameter \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 21))},
+    a Module resource may also contain the following predicates:
+    \begin{itemize}
+	\item \texttt{rdfs:label} setting label for the parameter.
+	\item \texttt{:hasKey} setting the parameter key \emph{(e.g.~listing~\ref{lst:rdfconf}~(line 22))}.
+	\item \texttt{:HasValue} setting the parameter value \emph{(e.g.~listing~\ref{lst:rdfconf}~(lines 23))}.
+    \end{itemize}
+    The values of (key, values) pairs are modules/operators dependent    \footnote{For more details about (key, values) pairs of each  module/operator, see \geolift user manual at  \url{https://github.com/GeoKnow/GeoLift/blob/master/GeoLiftManual/GeoLiftManual.pdf}}.
+    
+\end{itemize}
+\begin{figure}
 \centering
   \begin{tikzpicture}[scale = 0.8, every node/.style={scale=0.9}, >=stealth, node distance=3cm, 
       database/.style={cylinder, cylinder uses custom fill, cylinder body fill=yellow!50, cylinder end fill=yellow!50, shape border rotate=90, aspect=0.25, inner sep=10pt, draw},
@@ -733,9 +829,182 @@ This recursive procedure continues until it reads the dataset $d_1$ from the end
       \node[database] (d8) at (15,-11.5) {\textbf{$d_8$}};
       \draw[thick,->] (conform) -- (d8);
   \end{tikzpicture}
-  \caption{Graph representation of configuration file presented by listing \ref{lst:rdfconf}}
+  \caption{Graph representation of configuration file presented by listing~\ref{lst:rdfconf}}
   \label{fig:rdfconf}
 \end{figure}
+
+% Listing~listing~\ref{lst:rdfconf} introduces an example of RDF configuration file, to make it easier to be understood we represent the configuration file in form of graph in figure~\ref{fig:rdfconf}.
+% 
+% \subsection{How \geolift execute the RDF configuration file?}
+% First of all \geolift RDF configuration reader determines the set of output datasets $D$, 
+% i.e. datasets which are included as output of some modules/operators but not as input to any other modules/operators.
+% In our example it will be only $d_8$.
+% 
+% For each dataset in $D$ \geolift tries to find it either trivially from file, URI or endpoint if provided by the dataset node in the RDF configuration file, 
+% or recursively buy solving for modules/operators that generate it as output.
+% 
+% Going beck to our example, \geolift first tries to read $d_8$ trivially but it fail as there are no direct way to get it. 
+% Then, \geolift recursively go for solving the \texttt{Conformation} module as it generate $d_8$ as output. 
+% This recursive procedure continues until it reads the dataset $d_1$ from the endpoint, then going back in the recursion stack.
+% 
+% \subsection{RDF Configuration main resources types}
+% \geolift RDF configuration contains four main resource types (dataset, module, operator and parameter).
+% 
+% \subsubsection{Dataset Resource}
+%     As it name implies, a Dataset resource represent a dataset. 
+%     For an example see figure~listing~\ref{lst:rdfconf}(lines 4:6), in which it represent a dataset with URI \texttt{\url{http://dbpedia.org/resource/Berlin}} and endpoint \texttt{\url{http://dbpedia.org/sparql}}.
+%     \geolift will generate the Concise Bounded Description (CBD)\footnote{For more details about CBD see \url{http://www.w3.org/Submission/CBD/}} of the \emph{Berlin} resource from \emph{DBpedia} endpoint. 
+% 
+%     Beside defining a resource as a dataset (e.g. figure~listing~\ref{lst:rdfconf}~(lines 4)),
+%     a dataset resource may also contains the following predicates:
+%     \begin{itemize}
+% 	\item \texttt{rdfs:label} setting label for the dataset.
+% 	\item \texttt{:hasUri} setting URI of the dataset resource, to read resource through content negotiation \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 5))}.
+% 	\item \texttt{:FromEndPoint} end point to read the CBD from. 
+% 	\emph{Note: must be used in conjunction with \texttt{:hasUri} predicate, otherwise an error will be generated by \geolift.} \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 6))}.
+% 	\item \texttt{:inputFile} input file to load the dataset from.
+% 	\item \texttt{:outputFile} output file to save the dataset to \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(lines 14))}.
+% 	\item \texttt{:outputFormat} output format to save the dataset in it \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(lines 14))}, Turtle format will be used as default format if this property is not set.
+%     \end{itemize}
+% 
+% \subsubsection{Module Resource}
+%     Beside defining a resource as a module \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 16))},
+%     a Module resource may also contains the following predicates:
+%     \begin{itemize}
+% 	\item \texttt{rdfs:label} setting label for the module \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 17))}.
+% 	\item \texttt{:hasInput} setting input datasets for the module \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 18))}.
+% 	\item \texttt{:hasOutput} setting output datasets for the module \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 19))}.
+% 	\item \texttt{:hasParameter} setting parameters for the module \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 20))}.
+%     \end{itemize}
+% 
+% \subsubsection{Operator Resource}
+%     Beside defining a resource as an operator \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 24))},
+%     a Module resource may also contains the following predicates:
+%     \begin{itemize}
+% 	\item \texttt{rdfs:label} setting a label for the operator \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 25))}.
+% 	\item \texttt{:hasInput} setting input datasets for the operator \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 26))}.
+% 	\item \texttt{:hasOutput} setting output datasets for the operator \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 27))}.
+% 	\item \texttt{:hasParameter} setting parameters for the operator.
+%     \end{itemize}
+% 
+% \subsubsection{Parameter Resource}
+%     Beside defining a resource as a parameter \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 21))},
+%     a Module resource may also contains the following predicates:
+%     \begin{itemize}
+% 	\item \texttt{rdfs:label} setting label for the parameter.
+% 	\item \texttt{:hasKey} setting the parameter key \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(line 22))}.
+% 	\item \texttt{:HasValue} setting the parameter value \emph{(e.g. figure~listing~\ref{lst:rdfconf}~(lines 23))}.
+%     \end{itemize}
+%     The values of (key, values) pairs are modules/operators dependent.
+%     see	modules/operators sections for more details.
+% 
+%     
+% \begin{lstlisting}[label=lst:rdfconf, numbers=left, numberstyle=\tiny, caption = Example of RDF configuration file.]
+% @prefix : <http://geoknow.org/specsontology/> .
+% @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+% @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+% :d1		a		:Dataset ;
+% 		:hasUri		<http://dbpedia.org/resource/Berlin> ;
+% 		:FromEndPoint	<http://dbpedia.org/sparql> .
+% :d2		a		:Dataset .
+% :d3		a		:Dataset .
+% :d4		a		:Dataset .
+% :d5		a		:Dataset .
+% :d6		a		:Dataset .
+% :d7		a		:Dataset .
+% :d8		a		:Dataset ;
+% 		:outputFile	"GeoLiftBerlin.ttl" ;
+% 		:outputFormat	"Turtle" .
+% :deref		a		:Module, :DereferencingModule  ;
+% 		rdfs:label	"Dereferencing module" ;
+% 		:hasInput	:d1 ;
+% 		:hasOutput	:d2 ;
+% 		:hasParameter	:derefParam1 .
+% :derefParam1	a   :ModuleParameter, :DereferencingModuleParameter ;
+% 		:hasKey		"inputProperty1" ;
+% 		:hasValue	geo:lat .
+% :split		a		:Operator, :SplitOperator  ;
+% 		rdfs:label	"Split operator" ;
+% 		:hasInput	:d2 ;
+% 		:hasOutput	:d3, :d4 .
+% :nlp		a		:Module, :NLPModule  ;
+% 		rdfs:label	"NLP module" ;
+% 		:hasInput	:d3 ;
+% 		:hasOutput	:d5 ;
+% 		:hasParameter	:nlpPram1, :nlpPram2 .
+% :nlpPram1	a		:ModuleParameter, :NLPModuleParameter ;
+% 		:hasKey		"useFoxLight" ;
+% 		:hasValue	"OFF" .
+% :nlpPram2 	a		:ModuleParameter, :NLPModuleParameter ;
+% 		:hasKey		"askEndPoint" ;
+% 		:hasValue	false .
+% :filter		a		:Module, :FilterModule  ;
+% 		rdfs:label	"Filter module" ;
+% 		:hasInput	:d4 ;
+% 		:hasOutput	:d6 ;
+% 		:hasParameter	:FilterPram1 .
+% :filterPram1	a      :ModuleParameter, :NLPModuleParameter ;
+% 	    :hasKey    "triplesPattern" ;
+% 	    :hasValue "?s <http://dbpedia.org/ontology/abstract> ?o".
+% :merge		a		:Operator, :MergeOperator  ;
+% 		rdfs:label	"Merge operator" ;
+% 		:hasInput	:d6, :d5 ;
+% 		:hasOutput	:d7 .
+% :conform	a			:Module, :ConformationModule  ;
+% 		rdfs:label	"Conformation module" ;
+% 		:hasInput	:d7 ;
+% 		:hasOutput	:d8 ;
+% 		:hasParameter	:conformPram1, :conformPram2 .
+% :conformPram1	a		:ModuleParameter, :NLPModuleParameter ;
+% 		:hasKey		"sourceURI" ;
+% 		:hasValue	"http://dbpedia.org" .
+% :conformPram2	a		:ModuleParameter, :NLPModuleParameter ;
+% 		:hasKey		"targetURI" ;
+% 		:hasValue	"http://geolift.org" .
+% \end{lstlisting}
+% 
+% 
+% \begin{figure}[!h]
+% \centering
+%   \begin{tikzpicture}[scale = 0.8, every node/.style={scale=0.9}, >=stealth, node distance=3cm, 
+%       database/.style={cylinder, cylinder uses custom fill, cylinder body fill=yellow!50, cylinder end fill=yellow!50, shape border rotate=90, aspect=0.25, inner sep=10pt, draw},
+%       operator/.style={draw=black,fill=blue!20,thick,inner sep=5pt, diamond, aspect=2, draw},
+%       module/.style={draw=black,fill=green!20,thick,rounded corners,inner sep=10pt, draw},
+%       parameter/.style={draw=gray,fill=gray!20,thick,rounded corners,inner sep=10pt, draw}]
+%       \node[database] (d1) at (15,5) {\textbf{$d_1$}};
+%       \node (deref)  at (15,3) [module] {\texttt{Dereferencing}};
+%       \draw[thick,->] (d1) -- (deref);
+% %       \node (derefParam1)  at (23,3)  {\texttt{geo:lat}};
+% %       \draw[->,thin] (deref) to node[ rectangle, draw, fill=white,draw=white]{$inputProperty1$} (derefParam1);
+%       \node[database] (d2) at (15,1) {\textbf{$d_2$}};
+%       \node (split)  at (15,-1) [operator] {\texttt{Split}};
+%       \draw[thick,->] (deref) -- (d2);
+%       \draw[thick,->] (d2) -- (split);
+%       \node[database] (d3) at (10,-1) {\textbf{$d_3$}};
+%       \draw[thick,->] (split) -- (d3);
+%       \node (nlpleft)  at (10,-3) [module] {\texttt{NLP}};
+%       \draw[thick,->] (d3) -- (nlpleft);
+%       \node[database] (d4) at (20,-1) {\textbf{$d_4$}};
+%       \draw[thick,->] (split) -- (d4);
+%       \node (filter)  at (20,-3) [module] {\texttt{Filter}};
+%       \draw[thick,->] (d4) -- (filter);
+%       \node[database] (d5) at (10,-5) {\textbf{$d_5$}};
+%       \draw[thick,->] (nlpleft) -- (d5);
+%       \node[database] (d6) at (20,-5) {\textbf{$d_6$}};
+%       \draw[thick,->] (filter) -- (d6);
+%       \node (merge)  at (15,-5) [operator] {\texttt{Merge}};
+%       \draw[thick,->] (d5) -- (merge);
+%       \draw[thick,->] (d6) -- (merge);
+%       \node[database] (d7) at (15,-7.5) {\textbf{$d_7$}};
+%       \draw[thick,->] (merge) -- (d7);
+%       \node (conform)  at (15,-9.5) [module] {\texttt{Conformation}};
+%       \draw[thick,->] (d7) -- (conform);
+%       \node[database] (d8) at (15,-11.5) {\textbf{$d_8$}};
+%       \draw[thick,->] (conform) -- (d8);
+%   \end{tikzpicture}
+%   \caption{Graph representation of configuration file presented by listing~\ref{lst:rdfconf}}
+%   \label{fig:rdfconf}
+% \end{figure}
 
 % \textbf{Details of RDF configuration file will be here soon}
 % Command-line execution of \geolift enable user-defined workflow of different modules using configuration file.
@@ -777,7 +1046,14 @@ This recursive procedure continues until it reads the dataset $d_1$ from the end
 % \end{tabular}
 % \end{table*}
 
+\section{Running \geolift From Command-Line }
 
+The \geolift can be directly executed from command-line using the provided \texttt{geolift.jar}\footnote{the \texttt{geolift.jar} file is in the \texttt{jars} folder of the project} file.
+% Table \ref{tbl:geoLiftPram} explains the various parameters that can be used with the \geolift through command-line. 
+Simpley, provide the RDf configuration file as the only one parameter for the \geolift jar file.
+\begin{equation*}
+  Example: \texttt{ geolift.jar src/main/resources/workflow/config.ttl }
+\end{equation*}
 
 \section{Conclusions}
 In this manual, we presented the \geolift component for enriching RDF datasets with geo-spatial data.
