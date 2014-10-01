@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.aksw.geolift.helper.vacabularies.SPECS;
 import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
@@ -78,30 +79,30 @@ public class RDFConfigExecuter {
 		NodeIterator typeItr = configModel.listObjectsOfProperty(module, RDF.type);
 		while(typeItr.hasNext()){
 			RDFNode type = typeItr.next();
-			if(type.equals(SpecsOntology.Module)){
+			if(type.equals(SPECS.Module)){
 				continue;
 			}
-			if(type.equals(SpecsOntology.NLPModule)){
+			if(type.equals(SPECS.NLPModule)){
 				NLPModule geoEnricher = new NLPModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
-			if(type.equals(SpecsOntology.LinkingModule)){
+			if(type.equals(SPECS.LinkingModule)){
 				LinkingModule geoEnricher = new LinkingModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
-			if(type.equals(SpecsOntology.DereferencingModule)){
+			if(type.equals(SPECS.DereferencingModule)){
 				DereferencingModule geoEnricher = new DereferencingModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
-			if(type.equals(SpecsOntology.ConformationModule)){
+			if(type.equals(SPECS.ConformationModule)){
 				ConformationModule geoEnricher = new ConformationModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
-			if(type.equals(SpecsOntology.FilterModule)){
+			if(type.equals(SPECS.FilterModule)){
 				FilterModule geoEnricher = new FilterModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
@@ -126,15 +127,15 @@ public class RDFConfigExecuter {
 		NodeIterator typeItr = configModel.listObjectsOfProperty(operator, RDF.type);
 		while(typeItr.hasNext()){
 			RDFNode type = typeItr.next();
-			if(type.equals(SpecsOntology.Operator)){
+			if(type.equals(SPECS.Operator)){
 				continue;
 			}
-			if(type.equals(SpecsOntology.MergeOperator)){
+			if(type.equals(SPECS.MergeOperator)){
 				MergeOperator mergeOperator = new MergeOperator();
 				List<Model> resultModels = mergeOperator.process(inputDatasets, moduleParameters);
 				return resultModels.get(0);
 			}
-			if(type.equals(SpecsOntology.SplitOperator)){
+			if(type.equals(SPECS.SplitOperator)){
 				SplitOperator splitOperator = new SplitOperator();
 				List<Model> resultModels = splitOperator.process(inputDatasets, moduleParameters);
 				return resultModels.get(0);
@@ -156,14 +157,14 @@ public class RDFConfigExecuter {
 		String key = null;
 		String value = null;
 		Map<String, String> moduleParameters = new HashMap<String, String>();
-		StmtIterator stItr = configModel.listStatements((Resource) moduleOrOperator, SpecsOntology.hasParameter, (RDFNode) null);
+		StmtIterator stItr = configModel.listStatements((Resource) moduleOrOperator, SPECS.hasParameter, (RDFNode) null);
 		while(stItr.hasNext()){
 			RDFNode parameter =  stItr.next().getObject(); 
-			StmtIterator keyItr = configModel.listStatements((Resource) parameter, SpecsOntology.hasKey, (RDFNode) null);
+			StmtIterator keyItr = configModel.listStatements((Resource) parameter, SPECS.hasKey, (RDFNode) null);
 			if(keyItr.hasNext()){
 				key =  keyItr.next().getObject().toString(); 
 			}
-			StmtIterator valueItr = configModel.listStatements((Resource) parameter, SpecsOntology.hasValue, (RDFNode) null);
+			StmtIterator valueItr = configModel.listStatements((Resource) parameter, SPECS.hasValue, (RDFNode) null);
 			if(valueItr.hasNext()){
 				value =  valueItr.next().getObject().toString(); 
 			}
@@ -180,19 +181,19 @@ public class RDFConfigExecuter {
 	 */
 	private Model readDataset(Resource dataset) throws IOException{
 		// trivial case: read dataset from file/uri/endpoint
-		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SpecsOntology.FromEndPoint);
+		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.FromEndPoint);
 		if(uriItr.hasNext()){
 			Model cbd = readCBD(dataset, uriItr.next().toString());
 			writeDataset(dataset,cbd);
 			return cbd;
 		}
-		uriItr = configModel.listObjectsOfProperty(dataset, SpecsOntology.hasUri);
+		uriItr = configModel.listObjectsOfProperty(dataset, SPECS.hasUri);
 		if(uriItr.hasNext()){
 			Model cbd = Reader.readModel(uriItr.next().toString());
 			writeDataset(dataset,cbd);
 			return cbd;
 		}
-		uriItr = configModel.listObjectsOfProperty(dataset, SpecsOntology.inputFile);
+		uriItr = configModel.listObjectsOfProperty(dataset, SPECS.inputFile);
 		if(uriItr.hasNext()){
 			Model cbd = Reader.readModel(uriItr.next().toString());
 			writeDataset(dataset,cbd);
@@ -213,11 +214,11 @@ public class RDFConfigExecuter {
 	 * @author sherif
 	 */
 	private void writeDataset(Resource datasetUri, Model dataSetModel) throws IOException{
-		NodeIterator uriItr = configModel.listObjectsOfProperty(datasetUri, SpecsOntology.outputFile);
+		NodeIterator uriItr = configModel.listObjectsOfProperty(datasetUri, SPECS.outputFile);
 		if(uriItr.hasNext()){
 			String outputFile = uriItr.next().toString();
 			String outputFormat = "TTL"; // turtle is default format
-			uriItr = configModel.listObjectsOfProperty(datasetUri, SpecsOntology.outputFormat);
+			uriItr = configModel.listObjectsOfProperty(datasetUri, SPECS.outputFormat);
 			if(uriItr.hasNext()){
 				outputFormat = uriItr.next().toString();
 			}
@@ -235,7 +236,7 @@ public class RDFConfigExecuter {
 	private Model readCBD(Resource dataset, String endpointUri) {
 		long startTime = System.currentTimeMillis();
 		Model result = ModelFactory.createDefaultModel();
-		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SpecsOntology.hasUri);
+		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.hasUri);
 		if(uriItr.hasNext()){
 			String uri = uriItr.next().toString();
 			logger.info("Generating CBD for " + uri + " from " + endpointUri+ "...");
@@ -247,7 +248,7 @@ public class RDFConfigExecuter {
 			logger.info("Generating CBD is done in " + (System.currentTimeMillis() - startTime) + "ms, " + 
 					result.size() + " triples found.");
 		}else{
-			logger.error("No " + SpecsOntology.hasUri + " defined to generate CBD from " + endpointUri 
+			logger.error("No " + SPECS.hasUri + " defined to generate CBD from " + endpointUri 
 					+ ", exit with error." );
 			System.exit(1);
 		}
@@ -268,10 +269,10 @@ public class RDFConfigExecuter {
 		NodeIterator typeItr = configModel.listObjectsOfProperty(moduleOrOperator, RDF.type);
 		while(typeItr.hasNext()){
 			RDFNode type = typeItr.next();
-			if(type.equals(SpecsOntology.Module)){
+			if(type.equals(SPECS.Module)){
 				return executeModule(moduleOrOperator, inputDatasetsModels);
 			}
-			else if(type.equals(SpecsOntology.Operator)){
+			else if(type.equals(SPECS.Operator)){
 				return executeOperator(moduleOrOperator, inputDatasetsModels);
 			}
 		}
@@ -286,8 +287,8 @@ public class RDFConfigExecuter {
 	private List<Resource> getFinalDatasets(){
 		List<Resource> result = new ArrayList<Resource>();
 		String sparqlQueryString = 
-				"SELECT DISTINCT ?d {?s1 <" + SpecsOntology.hasOutput + "> ?d. " +
-						"FILTER (NOT EXISTS {?s2 <" + SpecsOntology.hasInput + "> ?d . } )}";
+				"SELECT DISTINCT ?d {?s1 <" + SPECS.hasOutput + "> ?d. " +
+						"FILTER (NOT EXISTS {?s2 <" + SPECS.hasInput + "> ?d . } )}";
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 		ResultSet queryResults = qexec.execSelect();
@@ -308,7 +309,7 @@ public class RDFConfigExecuter {
 		List<Resource> result = new ArrayList<Resource>();
 		String s = "<" + moduleOrOperator + ">";
 		String sparqlQueryString = 
-				"SELECT DISTINCT ?d {"+ s + " <" + SpecsOntology.hasInput + "> ?d. }";
+				"SELECT DISTINCT ?d {"+ s + " <" + SPECS.hasInput + "> ?d. }";
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 		ResultSet queryResults = qexec.execSelect();
@@ -329,7 +330,7 @@ public class RDFConfigExecuter {
 		List<Resource> result = new ArrayList<Resource>();
 		String s = "<" + moduleOrOperator + ">";
 		String sparqlQueryString = 
-				"SELECT DISTINCT ?d {" + s + " <" + SpecsOntology.hasOutput + "> ?d. }";
+				"SELECT DISTINCT ?d {" + s + " <" + SPECS.hasOutput + "> ?d. }";
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 		ResultSet queryResults = qexec.execSelect();
@@ -351,7 +352,7 @@ public class RDFConfigExecuter {
 		if(inputDataset == null){
 			String q = "<" + outputDataset + ">";
 			String sparqlQueryString = 
-					"SELECT DISTINCT ?s { ?s <" + SpecsOntology.hasOutput + "> " + q + ". }";
+					"SELECT DISTINCT ?s { ?s <" + SPECS.hasOutput + "> " + q + ". }";
 			QueryFactory.create(sparqlQueryString);
 			QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 			ResultSet queryResults = qexec.execSelect();
@@ -364,7 +365,7 @@ public class RDFConfigExecuter {
 		else if(outputDataset == null){
 			String q = "<" + inputDataset + ">";
 			String sparqlQueryString = 
-					"SELECT DISTINCT ?s { ?s <" + SpecsOntology.hasInput + "> " + q + ". }";
+					"SELECT DISTINCT ?s { ?s <" + SPECS.hasInput + "> " + q + ". }";
 			QueryFactory.create(sparqlQueryString);
 			QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 			ResultSet queryResults = qexec.execSelect();
@@ -377,8 +378,8 @@ public class RDFConfigExecuter {
 			String in = "<" + inputDataset + ">";
 			String out = "<" + outputDataset + ">";
 			String sparqlQueryString = 
-					"SELECT DISTINCT ?s { ?s <" + SpecsOntology.hasInput + "> " + in + ". " +
-							"?s <" + SpecsOntology.hasOutput + "> " + out + ".}";
+					"SELECT DISTINCT ?s { ?s <" + SPECS.hasInput + "> " + in + ". " +
+							"?s <" + SPECS.hasOutput + "> " + out + ".}";
 			QueryFactory.create(sparqlQueryString);
 			QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 			ResultSet queryResults = qexec.execSelect();

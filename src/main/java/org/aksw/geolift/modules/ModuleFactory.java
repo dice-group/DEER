@@ -24,8 +24,8 @@ public class ModuleFactory {
 	public static final String DEREFERENCING_MODULE 	= "dereferencing";
 	public static final String LINKING_MODULE 		= "linking";
 	public static final String NLP_MODULE 			= "nlp";
-        public static final String CONFORMATION_MODULE  	= "conformation";
-        public static final String FILTER_MODULE                = "filter";
+	public static final String CONFORMATION_MODULE 	= "conformation";
+	public static final String FILTER_MODULE 			= "filter";
 
         
         public static final String DEREFERENCING_MODULE_DESCRIPTION =   "The purpose of the dereferencing module is to extend the model's Geo-spatial" +
@@ -50,7 +50,7 @@ public class ModuleFactory {
 	 * @return a specific module instance given its module's name
 	 * @author sherif
 	 */
-	public static GeoLiftModule getModule(String name) {
+	public static GeoLiftModule createModule(String name) {
 		logger.info("Getting Module with name "+name);
 
 		if(name.equalsIgnoreCase(DEREFERENCING_MODULE))

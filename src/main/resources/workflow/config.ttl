@@ -66,9 +66,9 @@
 		:hasParameter	:conformPram1, :conformPram2 .
 
 :conformPram1	a				:ModuleParameter, :NLPModuleParameter ;
-		:hasKey			"sourceURI" ;
+		:hasKey			"sourceSubjectAuthority" ;
 		:hasValue		"http://dbpedia.org" .
 
 :conformPram2	a				:ModuleParameter, :NLPModuleParameter ;
-		:hasKey			"targetURI" ;
+		:hasKey			"targetSubjectAuthority" ;
 		:hasValue		"http://geolift.org" .

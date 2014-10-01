@@ -5,8 +5,10 @@ package org.aksw.geolift.modules.filter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.apache.log4j.Logger;
@@ -16,6 +18,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import org.aksw.geolift.json.ParameterType;
@@ -31,6 +34,7 @@ public class FilterModule implements GeoLiftModule{
 
 	// parameters list
 	private String 	triplesPattern = "?s ?p ?o .";
+	
 
 	
 
@@ -112,36 +116,21 @@ public class FilterModule implements GeoLiftModule{
 	@Override
 	public Map<String, String> selfConfig(Model source, Model target) {
 		Map<String, String> parameters = new HashMap<String, String>();
-		Model unwanted = source.difference(target);
-		if(unwanted.size() == 0){
-			logger.info("Self configuration: No configurations found");
-			return null;
-		}
-		Model newSource = source.difference(unwanted);
-		if(newSource.size() == 0){
-			logger.info("Self configuration: No configurations found");
-			return null;
-		}
-		triplesPattern = triplesPattern + " FILTER NOT EXISTS { " ;
-		StmtIterator listStatements = unwanted.listStatements();
+		triplesPattern += "{";
+		Set<Property> ps = new HashSet<Property>();
+		StmtIterator listStatements = target.listStatements();
 		while(listStatements.hasNext()){
 			Statement s = listStatements.next();
-			if(s.getObject().isLiteral()){
-//				triplesPattern = triplesPattern + 
-//						"FILTER (regex(?s, <" + s.getSubject() + ">   ) .  " + 
-//						        "regex(?p, <" + s.getPredicate() + "> ) .  " +
-//						        "regex(STR(?o), \"" + s.getObject() + "\", i  )) .";
-			}else{
-//				triplesPattern = triplesPattern + "<" + s.getSubject() + "> " + "<" + s.getPredicate() + "> " + "<" + s.getObject() + "> . ";
-				triplesPattern = triplesPattern + 
-						"FILTER (regex(?s, <" + s.getSubject() + ">   )) .  " + 
-						"FILTER (regex(?p, <" + s.getPredicate() + "> )) .  " +
-						"FILTER (regex(?o, <" + s.getObject() + ">    )) .";
-			}
+			ps.add(s.getPredicate());
 		}
-		triplesPattern = triplesPattern + "} " ;
+		long i = 0;
+		for(Property p : ps){
+			triplesPattern += "{?s <" + p.toString() + ">  ?o" + i + " . }";
+			i++;
+			triplesPattern += (i < ps.size())? "UNION" : "";
+		}
+		triplesPattern += "}";
 		parameters.put("triplesPattern", triplesPattern);
-		logger.info("Self configuration: " + parameters);
 		return parameters;
 	}
     

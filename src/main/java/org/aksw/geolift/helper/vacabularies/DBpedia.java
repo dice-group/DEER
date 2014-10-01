@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.aksw.geolift.modules.nlp;
+package org.aksw.geolift.helper.vacabularies;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;

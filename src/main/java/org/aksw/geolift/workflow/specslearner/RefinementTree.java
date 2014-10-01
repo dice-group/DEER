@@ -3,6 +3,7 @@
  */
 package org.aksw.geolift.workflow.specslearner;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,7 +49,7 @@ public class RefinementTree extends Tree<RefinementNode> {
 	 *@author sherif
 	 */
 	public RefinementTree(Tree<RefinementNode> parent, RefinementNode value,
-			Set<Tree<RefinementNode>> childrenlist) {
+			List<Tree<RefinementNode>> childrenlist) {
 		super(parent, value, childrenlist);
 		// TODO Auto-generated constructor stub
 	}
@@ -93,7 +94,7 @@ public class RefinementTree extends Tree<RefinementNode> {
 	 * @see org.aksw.geolift.workflow.specslearner.Tree#getchildren()
 	 */
 	@Override
-	public Set<Tree<RefinementNode>> getchildren() {
+	public List<Tree<RefinementNode>> getchildren() {
 		// TODO Auto-generated method stub
 		return super.getchildren();
 	}
@@ -107,32 +108,15 @@ public class RefinementTree extends Tree<RefinementNode> {
 		return super.getValue();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.aksw.geolift.workflow.specslearner.Tree#getStatus()
-	 */
-	@Override
-	public Status getStatus() {
-		// TODO Auto-generated method stub
-		return super.getStatus();
-	}
 
-	/* (non-Javadoc)
-	 * @see org.aksw.geolift.workflow.specslearner.Tree#setStatus(org.aksw.geolift.workflow.specslearner.Status)
-	 */
-	@Override
-	public void setStatus(Status status) {
-		// TODO Auto-generated method stub
-		super.setStatus(status);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.aksw.geolift.workflow.specslearner.Tree#print(org.aksw.geolift.workflow.specslearner.Tree)
-	 */
-	@Override
-	public void print(Tree<RefinementNode> root) {
-		// TODO Auto-generated method stub
-		super.print(root);
-	}
+//	/* (non-Javadoc)
+//	 * @see org.aksw.geolift.workflow.specslearner.Tree#print(org.aksw.geolift.workflow.specslearner.Tree)
+//	 */
+//	@Override
+//	public void print(Tree<RefinementNode> root) {
+//		// TODO Auto-generated method stub
+//		super.print(root);
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.workflow.specslearner.Tree#size()

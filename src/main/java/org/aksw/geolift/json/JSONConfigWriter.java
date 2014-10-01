@@ -125,7 +125,7 @@ public class JSONConfigWriter {
         if(moduleNames.size() > 0) {
             int i = 0;
             for (String moduleName: moduleNames) {
-                GeoLiftModule module = ModuleFactory.getModule(moduleName);
+                GeoLiftModule module = ModuleFactory.createModule(moduleName);
                 jsonConfig.append(buildModuleJSONString(moduleName, module));
 
                 if (i < moduleNames.size() - 1) {
@@ -141,7 +141,7 @@ public class JSONConfigWriter {
 
             int i = 0;
             for (String operatorName: operatorNames) {
-                GeoLiftOperator operator = ModelOperatorFactory.getOperator(operatorName);
+                GeoLiftOperator operator = ModelOperatorFactory.createOperator(operatorName);
                 jsonConfig.append(buildOperatorJSONString(operatorName));
 
                 if (i < operatorNames.size() -1) {
