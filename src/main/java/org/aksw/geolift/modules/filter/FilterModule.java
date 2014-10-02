@@ -29,11 +29,17 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  */
 public class FilterModule implements GeoLiftModule{
 
+	/**
+	 * 
+	 */
+	private static final String TRIPLES_PATTERN = "triplesPattern";
 	private static final Logger logger = Logger.getLogger(FilterModule.class.getName());
+	private static final int MAX_TRIPLE_PATTERN_SIZE = 50;
 	private Model model = ModelFactory.createDefaultModel();
 
 	// parameters list
 	private String 	triplesPattern = "?s ?p ?o .";
+	private Set<String> blackList = null;
 	
 
 	
@@ -71,8 +77,8 @@ public class FilterModule implements GeoLiftModule{
 	public Model process(Model model, Map<String, String> parameters) {
 		logger.info("--------------- Filter Module ---------------");
 		this.model = this.model.union(model);
-		if( parameters.containsKey("triplesPattern")){
-			triplesPattern = parameters.get("triplesPattern");
+		if( parameters.containsKey(TRIPLES_PATTERN)){
+			triplesPattern = parameters.get(TRIPLES_PATTERN);
 		}
 		Model filteredModel = filterModel();
 		return filteredModel;
@@ -96,7 +102,7 @@ public class FilterModule implements GeoLiftModule{
 	@Override
 	public List<String> getParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("triplesPattern");
+		parameters.add(TRIPLES_PATTERN);
 		return parameters;
 	}
 
@@ -106,7 +112,7 @@ public class FilterModule implements GeoLiftModule{
 	@Override
 	public List<String> getNecessaryParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("triplesPattern");
+		parameters.add(TRIPLES_PATTERN);
 		return parameters;
 	}
 
@@ -124,13 +130,16 @@ public class FilterModule implements GeoLiftModule{
 			ps.add(s.getPredicate());
 		}
 		long i = 0;
+		if(ps.size()> MAX_TRIPLE_PATTERN_SIZE){
+			return null;
+		}
 		for(Property p : ps){
 			triplesPattern += "{?s <" + p.toString() + ">  ?o" + i + " . }";
 			i++;
 			triplesPattern += (i < ps.size())? "UNION" : "";
 		}
 		triplesPattern += "}";
-		parameters.put("triplesPattern", triplesPattern);
+		parameters.put(TRIPLES_PATTERN, triplesPattern);
 		return parameters;
 	}
 
