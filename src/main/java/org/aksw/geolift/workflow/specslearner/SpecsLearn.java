@@ -3,29 +3,17 @@
  */
 package org.aksw.geolift.workflow.specslearner;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.aksw.geolift.helper.vacabularies.SPECS;
 import org.aksw.geolift.io.Reader;
-import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.aksw.geolift.modules.conformation.ConformationModule;
-import org.aksw.geolift.modules.filter.FilterModule;
-import org.aksw.geolift.modules.linking.LinkingModule;
-import org.aksw.geolift.modules.nlp.NLPModule;
-import org.aksw.geolift.operators.GeoLiftOperator;
-import org.aksw.geolift.operators.MergeOperator;
-import org.aksw.geolift.operators.SplitOperator;
 import org.aksw.geolift.workflow.rdfspecs.RDFConfigWriter;
 import org.apache.log4j.Logger;
 
@@ -33,8 +21,10 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import org.aksw.geolift.modules.filter.FilterModule;
+import org.aksw.geolift.modules.linking.LinkingModule;
+import org.aksw.geolift.modules.nlp.NLPModule;
 
-import de.uni_leipzig.simba.benchmarker.MergeModifier;
 
 /**
  * @author sherif

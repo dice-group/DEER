@@ -5,6 +5,7 @@ package org.aksw.geolift.modules;
 
 import java.util.List;
 import java.util.Map;
+import org.aksw.geolift.json.ParameterType;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -17,4 +18,5 @@ public interface GeoLiftModule {
 	public List<String> getParameters();
 	public List<String> getNecessaryParameters();
 	public Map<String, String> selfConfig(Model source, Model target);
+    public List<ParameterType> getParameterWithTypes();
 }

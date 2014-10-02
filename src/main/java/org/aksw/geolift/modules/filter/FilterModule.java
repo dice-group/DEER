@@ -19,9 +19,9 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import org.aksw.geolift.json.ParameterType;
 
 /**
  * @author sherif
@@ -142,5 +142,13 @@ public class FilterModule implements GeoLiftModule{
 		parameters.put(TRIPLES_PATTERN, triplesPattern);
 		return parameters;
 	}
+    
+    @Override
+    public List<ParameterType> getParameterWithTypes() {
+        List<ParameterType> parameters = new ArrayList<ParameterType>();
+        parameters.add(new ParameterType(ParameterType.STRING, "triplesPattern", "Set of triple pattern to run against the input model of the filter module. By default, this parameter is set to ?s ?p ?o. which generates the whole input model as output, changing the values of ?s, ?p and/or ?o will restrict the output model", true));
+
+        return parameters;
+    }
 
 }

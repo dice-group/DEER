@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.modules.GeoLiftModule;
-import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -15,11 +14,11 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import de.uni_leipzig.simba.controller.PPJoinController;
+import org.aksw.geolift.json.ParameterType;
 
 /**
  * @author mofeed
@@ -239,4 +238,14 @@ public class LinkingModule implements GeoLiftModule
 	}
 
 
+
+    @Override
+    public List<ParameterType> getParameterWithTypes() {
+        List<ParameterType> parameters = new ArrayList<ParameterType>();
+        parameters.add(new ParameterType(ParameterType.STRING, "specFilePath", "The path to specification file used for linking process", true));
+        parameters.add(new ParameterType(ParameterType.STRING, "linksFilePath", "The path to links file resulted from the linking process", true));
+        parameters.add(new ParameterType(ParameterType.STRING, "linksPart", "Represents the position of the URI to be enriched in the links file", true));
+
+        return parameters;
+    }
 }
