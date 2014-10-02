@@ -42,10 +42,22 @@ import org.aksw.geolift.json.ParameterType;
  * objects in the model and query for such information in the dereferenced target
  */
 public class DereferencingModule implements GeoLiftModule{
+	/**
+	 * 
+	 */
+	
+
 	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
 	
-	private static final String INPUT_PROPERTY = "inputproperty";
+	public	 static final Property defaultOutputProperty = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
+	
+	private static final String INPUT_PROPERTY  = "inputproperty";
 	private static final String OUTPUT_PROPERTY = "outputproperty";
+	private static final String USE_BLANK_NODES = "useBlankNodes";
+
+	private static final String INPUT_PROPERTY_DESC = "Interesting predicate to enrich the model, e.g. 'predicate1'";
+	private static final String OUTPUT_PROPERTY_DESC = "The output property. By default this parameter is set to " + defaultOutputProperty;
+	private static final String USE_BLANK_NODES_DESC = "Use blank node in output dataset. By default, this parameter is set to false";
 	
 	//list of parameters passed to the module
 	List<String> parametersList= new ArrayList<String>();
@@ -54,7 +66,6 @@ public class DereferencingModule implements GeoLiftModule{
 	public static boolean useBlankNodes = false;
 	public static List<Property> inputProperties = new ArrayList<Property>();
 	public static List<Property> outputProperties = new ArrayList<Property>();
-	public static Property defaultOutputProperty = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
 	private static Model localModel = ModelFactory.createDefaultModel();
 
 	/**
@@ -78,8 +89,8 @@ public class DereferencingModule implements GeoLiftModule{
 			}
 		}
 		if(inputProperties.size() == 0){
-			logger.error("The inputProperty is a mandatory parameter(s) for the dereferencing module");
-			logger.error("No inputProperty provided, Exit GeoLift");
+			logger.error("The " + INPUT_PROPERTY + " is a mandatory parameter(s) for the dereferencing module");
+			logger.error("No " + INPUT_PROPERTY + " provided, Exit GeoLift");
 			System.exit(1);
 		}
 	}
@@ -92,7 +103,7 @@ public class DereferencingModule implements GeoLiftModule{
 		List<String> parameters = new ArrayList<String>();
 		parameters.add(INPUT_PROPERTY  + "<i>");
 		parameters.add(OUTPUT_PROPERTY + "<i>");
-		parameters.add("useBlankNodes");
+		parameters.add(USE_BLANK_NODES);
 		//		parameters.add("useCache");
 		return parameters;
 	}
@@ -761,16 +772,9 @@ public class DereferencingModule implements GeoLiftModule{
     @Override
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
-        
-        String predicateDescription = "interesting predicate to enrich the model, e.g. 'predicate1'";
-        String objectDescription = "The predicate object value, e.g. 'http://www.w3.org/2003/01/geo/wgs84_pos#lat\'";
-        String outputPropertyDescription = "The enriched output property. By default this parameter is set to 'http://geoknow.org/ontology/relatedTo'";
-        String useBlankNodeDescription = "Use blank node in output dataset. By default, this parameter is set to false";
-        
-        parameters.add(new ParameterType(ParameterType.STRING, "predicate", predicateDescription, true));
-        parameters.add(new ParameterType(ParameterType.STRING, "predicate value", objectDescription, true));
-        parameters.add(new ParameterType(ParameterType.STRING, "outputProperty", outputPropertyDescription, false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "useBlankNodes", useBlankNodeDescription, false));
+        parameters.add(new ParameterType(ParameterType.STRING, INPUT_PROPERTY, INPUT_PROPERTY_DESC, true));
+        parameters.add(new ParameterType(ParameterType.STRING, OUTPUT_PROPERTY, OUTPUT_PROPERTY_DESC, false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, USE_BLANK_NODES, USE_BLANK_NODES_DESC, false));
         return parameters;
     }
 

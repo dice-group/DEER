@@ -51,6 +51,39 @@ import org.apache.log4j.Logger;
 public class NLPModule implements GeoLiftModule{
 	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
 	
+	private static final String ORGANIZATION 	= "organization";
+	private static final String LOCATION 		= "location";
+	private static final String PERSON 		= "person";
+	
+	private static final String LITERAL_PROPERTY_DESC = 
+			"Literal property used by FOX for NER. " +
+			"If not set, the top ranked literal property will be pecked";
+	private static final String ADDED_PROPERTY_DESC = 
+			"Property added to the input model with additional Geospatial " +
+			"knowledge through NLP. By default, " +
+			"this parameter is set to 'gn:relatedTo'";
+	private static final String USE_FOX_LIGHT_DESC =
+			"An implemented NER class name. " +
+			"By default this parameter is set to 'OFF' " +
+			"in which all NER classes run in parallel " +
+			"and a combined result will be returned. " +
+			"If this parameter is given with a wrong value, " +
+			"'NERStanford' will be used";
+	private static final String USE_FOX_LIGHT_VALUES =
+			"OFF, org.aksw.fox.nertools.NEROpenNLP," +
+			"org.aksw.fox.nertools.NERIllinoisExtended," +
+			"org.aksw.fox.nertools.NERIllinoisExtended," +
+			"org.aksw.fox.nertools.NERBalie," +
+			"org.aksw.fox.nertools.NERStanford";
+	private static final String ASK_END_POINT_DESC = 
+			"Ask the DBpedia endpoint for each location returned by FOX " +
+			"(setting it generates slower execution time but more accurate results). " +
+			"By default this parameter is set to 'false'";
+	private static final String NER_TYPE_DESC = 
+			"Force FOX to look for a specific NE’s types only. ";
+	private static final String NER_TYPE_VALUES =
+			LOCATION + "," + ORGANIZATION + "," + PERSON;
+	
 	private static final String ASK_END_POINT 	= "askEndPoint";
 	private static final String ADDED_PROPERTY 	= "addedProperty";
 	private static final String NER_TYPE 			= "NERType";
@@ -74,7 +107,7 @@ public class NLPModule implements GeoLiftModule{
 	private String 		outputFile		= "";
 	private Property 	addedProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
 	
-	private static String NEType = "location";
+	private static String NEType = LOCATION;
 
 
 	/**
@@ -395,11 +428,11 @@ public class NLPModule implements GeoLiftModule{
 					if(!namedEntityModel.isEmpty()){
 						if(NEType.equalsIgnoreCase("all")){ // Extract all NE (Generalization of GeoLift)
 							resultModel.add(getNE(namedEntityModel, subject));
-						}else if(NEType.equalsIgnoreCase("location")){
+						}else if(NEType.equalsIgnoreCase(LOCATION)){
 							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.LOCATION));
-						}else if(NEType.equalsIgnoreCase("person")){
+						}else if(NEType.equalsIgnoreCase(PERSON)){
 							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.PERSON));
-						}else if(NEType.equalsIgnoreCase("organization")){
+						}else if(NEType.equalsIgnoreCase(ORGANIZATION)){
 							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.ORGANIZATION));
 						}
 					}				
@@ -603,16 +636,11 @@ public class NLPModule implements GeoLiftModule{
     @Override
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
-        parameters.add(new ParameterType(ParameterType.STRING, "literalProperty", "Literal property used by FOX for NER. If not set, the top ranked literal property will be pecked", false));
-        parameters.add(new ParameterType(ParameterType.STRING, "addedGeoProperty", "Property added to the input model with additional Geospatial knowledge through NLP. By default, this parameter is set to 'gn:relatedTo'", false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "useFoxLight", "OFF, org.aksw.fox.nertools.NEROpenNLP,org.aksw.fox.nertools.NERIllinoisExtended,org.aksw.fox.nertools.NERIllinoisExtended,org.aksw.fox.nertools.NERBalie,org.aksw.fox.nertools.NERStanford", "An implemented NER class name. By default this parameter is set to 'OFF' in which all NER classes run in parallel and a combined result will be returned. If this parameter is given with a wrong value, 'NERStanford' will be used", false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "askEndPoint", "Ask the DBpedia endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results). By default this parameter is set to 'false'", false));
-        parameters.add(new ParameterType(ParameterType.STRING, "foxType", "Text or an URL (e.g.: 'G. W. Leibniz was born in Leipzig', 'http://en.wikipedia.org/wiki/Leipzig_University'). By default, this parameter is set to TEXT", false));
-        parameters.add(new ParameterType(ParameterType.STRING, "foxTask", "NER", "FOX task :{NER} for Named Entity Recognition. By default this parameter is set to NER", false));
-        parameters.add(new ParameterType(ParameterType.STRING, "foxOutput", "TURTLE,JSONLD,N-TRIPLE,RDF/JSON,RDF/XML", "FOX output format. By default this parameter is set to TURTLE", false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxUseNif", "FOX generates NIF: { true | false }. By default, this parameter is set to false", false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, "foxReturnHtml", "FOX returns HTML: { true | false }. By default this parameter is set to false", false));
-        
+        parameters.add(new ParameterType(ParameterType.STRING, LITERAL_PROPERTY, LITERAL_PROPERTY_DESC, false));
+        parameters.add(new ParameterType(ParameterType.STRING, ADDED_PROPERTY, USE_FOX_LIGHT_VALUES, ADDED_PROPERTY_DESC, false));
+        parameters.add(new ParameterType(ParameterType.STRING, USE_FOX_LIGHT, USE_FOX_LIGHT_DESC, false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, ASK_END_POINT, ASK_END_POINT_DESC, false));
+        parameters.add(new ParameterType(ParameterType.STRING, NER_TYPE, NER_TYPE_VALUES, NER_TYPE_DESC, false));
         return parameters;
     }
 }

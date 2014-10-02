@@ -28,12 +28,14 @@ import org.aksw.geolift.json.ParameterType;
  *
  */
 public class FilterModule implements GeoLiftModule{
-
-	/**
-	 * 
-	 */
-	private static final String TRIPLES_PATTERN = "triplesPattern";
 	private static final Logger logger = Logger.getLogger(FilterModule.class.getName());
+
+	private static final String TRIPLES_PATTERN = "triplesPattern";
+	private static final String TRIPLES_PATTERN_DESC = 
+			"Set of triple pattern to run against the input model of the filter module. " +
+			"By default, this parameter is set to ?s ?p ?o. which generates the whole " +
+			"input model as output, changing the values of " +
+			"?s, ?p and/or ?o will restrict the output model";
 	private static final int MAX_TRIPLE_PATTERN_SIZE = 50;
 	private Model model = ModelFactory.createDefaultModel();
 
@@ -146,7 +148,7 @@ public class FilterModule implements GeoLiftModule{
     @Override
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
-        parameters.add(new ParameterType(ParameterType.STRING, "triplesPattern", "Set of triple pattern to run against the input model of the filter module. By default, this parameter is set to ?s ?p ?o. which generates the whole input model as output, changing the values of ?s, ?p and/or ?o will restrict the output model", true));
+        parameters.add(new ParameterType(ParameterType.STRING, TRIPLES_PATTERN, TRIPLES_PATTERN_DESC, true));
 
         return parameters;
     }

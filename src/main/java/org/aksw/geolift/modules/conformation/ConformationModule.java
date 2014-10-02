@@ -42,11 +42,14 @@ public class ConformationModule implements GeoLiftModule{
 	private Map<Property, Property> propertyMap = new HashMap<Property, Property>();
 
 	// parameters keys
-	private static final String SOURCE_SUBJET_AUTHORITY = "sourceSubjectAuthority";
-	private static final String TARGET_SUBJET_AUTHORITY = "targetSubjectAuthority";
-	private static final String SOURCE_PROPERTY = "sourceProperty";
-	private static final String TARGET_PROPERTY = "targetProperty";
-
+	private static final String SOURCE_SUBJET_AUTHORITY 		= "sourceSubjectAuthority";
+	private static final String SOURCE_SUBJECT_AUTHORITY_DESC	= "Source subject authority to be replaced by Target subject authority.";
+	private static final String TARGET_SUBJET_AUTHORITY 		= "targetSubjectAuthority";
+	private static final String TARGET_SUBJECT_AUTHORITY_DESC	= "Target subject authority to replace the source subject authority.";
+	private static final String SOURCE_PROPERTY 				= "sourceProperty";
+	private static final String SOURCE_PROPERTY_DESC			= "Source property to be replaced by target property";
+	private static final String TARGET_PROPERTY 				= "targetProperty";
+	private static final String TARGET_PROPERTY_DESC			= "targetProperty to replace source property";
 
 	/**
 	 * 
@@ -269,9 +272,10 @@ public class ConformationModule implements GeoLiftModule{
         @Override
         public List<ParameterType> getParameterWithTypes() {
             List<ParameterType> parameters = new ArrayList<ParameterType>();
-            parameters.add(new ParameterType(ParameterType.STRING, "sourceURI", "Source URI to be replaced.", true));
-            parameters.add(new ParameterType(ParameterType.STRING, "targetURI", "Target URI to replace the sourceURI.", true));
-
+            parameters.add(new ParameterType(ParameterType.STRING, SOURCE_SUBJET_AUTHORITY, SOURCE_SUBJECT_AUTHORITY_DESC, true));
+            parameters.add(new ParameterType(ParameterType.STRING, TARGET_SUBJET_AUTHORITY, TARGET_SUBJECT_AUTHORITY_DESC, true));
+            parameters.add(new ParameterType(ParameterType.STRING, SOURCE_PROPERTY , SOURCE_PROPERTY_DESC, true));
+            parameters.add(new ParameterType(ParameterType.STRING, TARGET_PROPERTY , TARGET_PROPERTY_DESC, true));
             return parameters;
         }
 }

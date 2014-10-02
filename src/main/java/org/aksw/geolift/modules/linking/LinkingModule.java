@@ -24,18 +24,22 @@ import org.aksw.geolift.json.ParameterType;
  * @author mofeed
  *
  */
-public class LinkingModule implements GeoLiftModule
-{
-	/**
-	 * 
-	 */
+public class LinkingModule implements GeoLiftModule{
+	private static final Logger logger = Logger.getLogger(LinkingModule.class.getName());
+	
 	private static final String LINKS_PART = "linkspart";
 	private static final String LINKS_FILE = "linksfile";
 	private static final String SPEC_FILE = "specfile";
-	private static final Logger logger = Logger.getLogger(LinkingModule.class.getName());
-	String specFilePath;
-	String linksFilePath;
-	String linksPart;
+	
+	private static final String LINKS_PART_DESC = "Represents the position of the URI to be enriched in the links file";
+	private static final String LINKS_FILE_DESC = "file to save links resulted from the linking process";
+	private static final String SPEC_FILE_DESC = "The specification file used for linking process";
+
+	
+	private String specFilePath;
+	private String linksFilePath;
+	private String linksPart;
+	
 	/**
 	 * @param model: the model of the dataset to be enriched
 	 * @param parameters: list of parameters needed for the processing include:
@@ -242,9 +246,9 @@ public class LinkingModule implements GeoLiftModule
     @Override
     public List<ParameterType> getParameterWithTypes() {
         List<ParameterType> parameters = new ArrayList<ParameterType>();
-        parameters.add(new ParameterType(ParameterType.STRING, "specFilePath", "The path to specification file used for linking process", true));
-        parameters.add(new ParameterType(ParameterType.STRING, "linksFilePath", "The path to links file resulted from the linking process", true));
-        parameters.add(new ParameterType(ParameterType.STRING, "linksPart", "Represents the position of the URI to be enriched in the links file", true));
+        parameters.add(new ParameterType(ParameterType.STRING, SPEC_FILE, SPEC_FILE_DESC, true));
+        parameters.add(new ParameterType(ParameterType.STRING, LINKS_FILE, LINKS_FILE_DESC, true));
+        parameters.add(new ParameterType(ParameterType.STRING, LINKS_PART, LINKS_PART_DESC, true));
 
         return parameters;
     }

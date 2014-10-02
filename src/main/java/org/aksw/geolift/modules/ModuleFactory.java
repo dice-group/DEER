@@ -51,7 +51,7 @@ public class ModuleFactory {
 	 * @author sherif
 	 */
 	public static GeoLiftModule createModule(String name) {
-		logger.info("Getting Module with name "+name);
+		logger.info("Creating Module with name " + name);
 
 		if(name.equalsIgnoreCase(DEREFERENCING_MODULE))
 			return new DereferencingModule();
