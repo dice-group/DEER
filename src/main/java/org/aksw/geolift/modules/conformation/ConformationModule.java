@@ -13,25 +13,19 @@ import java.util.Set;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.apache.log4j.Logger;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
-import com.google.common.collect.Multisets;
 import com.google.common.collect.Sets;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceF;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import org.aksw.geolift.json.ParameterType;
 
 /**
  * @author sherif
@@ -272,4 +266,12 @@ public class ConformationModule implements GeoLiftModule{
 		return parameters;
 	}
 
+        @Override
+        public List<ParameterType> getParameterWithTypes() {
+            List<ParameterType> parameters = new ArrayList<ParameterType>();
+            parameters.add(new ParameterType(ParameterType.STRING, "sourceURI", "Source URI to be replaced.", true));
+            parameters.add(new ParameterType(ParameterType.STRING, "targetURI", "Target URI to replace the sourceURI.", true));
+
+            return parameters;
+        }
 }

@@ -33,7 +33,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.OWL;
-
+import org.aksw.geolift.json.ParameterType;
 /**
  * @author mofeed
  * This class includes methods in order to load dataset in Model from file.
@@ -196,6 +196,7 @@ public class DereferencingModule implements GeoLiftModule{
 		}
 		return localModel;
 	}
+
 
 
 
@@ -757,5 +758,20 @@ public class DereferencingModule implements GeoLiftModule{
 		logger.info("Finished");
 	}
 
+    @Override
+    public List<ParameterType> getParameterWithTypes() {
+        List<ParameterType> parameters = new ArrayList<ParameterType>();
+        
+        String predicateDescription = "interesting predicate to enrich the model, e.g. 'predicate1'";
+        String objectDescription = "The predicate object value, e.g. 'http://www.w3.org/2003/01/geo/wgs84_pos#lat\'";
+        String outputPropertyDescription = "The enriched output property. By default this parameter is set to 'http://geoknow.org/ontology/relatedTo'";
+        String useBlankNodeDescription = "Use blank node in output dataset. By default, this parameter is set to false";
+        
+        parameters.add(new ParameterType(ParameterType.STRING, "predicate", predicateDescription, true));
+        parameters.add(new ParameterType(ParameterType.STRING, "predicate value", objectDescription, true));
+        parameters.add(new ParameterType(ParameterType.STRING, "outputProperty", outputPropertyDescription, false));
+        parameters.add(new ParameterType(ParameterType.BOOLEAN, "useBlankNodes", useBlankNodeDescription, false));
+        return parameters;
+    }
 
 }
