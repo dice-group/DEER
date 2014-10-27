@@ -81,7 +81,7 @@ public class SpecsLearn {
 		refinementTreeRoot = new Tree<RefinementNode>(null,initialNode, null);
 		refinementTreeRoot = expandNode(refinementTreeRoot);
 
-		Tree<RefinementNode> minFitnessNode = getMostPromesyNode(refinementTreeRoot, true);
+		Tree<RefinementNode> minFitnessNode = getMostPromisingNode(refinementTreeRoot, true);
 //		refinementTreeRoot.print(refinementTreeRoot);
 //		System.out.println("+++++++++++++++++++++++");
 		refinementTreeRoot.print();
@@ -90,7 +90,7 @@ public class SpecsLearn {
 		while(minFitnessNode.getValue().fitness > MIN_FITNESS_THRESHOLD	){
 			if(refinementTreeRoot.size() >= MAX_TREE_SIZE){
 				logger.info("----------------------------------------------");
-				RefinementNode bestSolution = getMostPromesyNode(refinementTreeRoot, false).getValue();
+				RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, false).getValue();
 				logger.info("Best Solution: " + bestSolution.toString());
 				System.out.println("===== Output Config =====");
 				bestSolution.configModel.write(System.out,"TTL");
@@ -99,7 +99,7 @@ public class SpecsLearn {
 				return;
 			}
 			minFitnessNode = expandNode(minFitnessNode);
-			minFitnessNode = getMostPromesyNode(refinementTreeRoot, true);
+			minFitnessNode = getMostPromisingNode(refinementTreeRoot, true);
 			refinementTreeRoot.print();
 			logger.info("Min fitness Node: " + minFitnessNode.getValue());
 
@@ -183,9 +183,11 @@ public class SpecsLearn {
 	 * @author sherif
 	 */
 	double computeFitness(Model currentModel, Model targetModel){
-		System.out.println("targetModel.difference(currentModel).size() = " + targetModel.difference(currentModel).size());
-		System.out.println("currentModel.difference(targetModel).size() = " + currentModel.difference(targetModel).size());
-		return targetModel.difference(currentModel).size() + currentModel.difference(targetModel).size();
+		long t_c = targetModel.difference(currentModel).size();
+		long c_t = currentModel.difference(targetModel).size();
+		System.out.println("targetModel.difference(currentModel).size() = " + t_c);
+		System.out.println("currentModel.difference(targetModel).size() = " + c_t);
+		return 1- ((t_c + c_t) / (currentModel.size() + targetModel.size()));
 	}
 
 
@@ -232,7 +234,7 @@ public class SpecsLearn {
 	}
 
 
-	private Tree<RefinementNode> getMostPromesyNode(Tree<RefinementNode> root, boolean usePenalty){
+	private Tree<RefinementNode> getMostPromisingNode(Tree<RefinementNode> root, boolean usePenalty){
 		// trivial case
 		if(root.getchildren() == null || root.getchildren().size() == 0){
 			return root;
@@ -241,7 +243,7 @@ public class SpecsLearn {
 		Tree<RefinementNode> mostPromesyChild = new Tree<RefinementNode>(new RefinementNode());
 		for(Tree<RefinementNode> child : root.getchildren()){
 			if(child.getValue().fitness >= 0){
-				Tree<RefinementNode> promesyChild = getMostPromesyNode(child, usePenalty);
+				Tree<RefinementNode> promesyChild = getMostPromisingNode(child, usePenalty);
 				double newFitness;
 				if(usePenalty){
 					long childrenCount = promesyChild.size() - 1;
