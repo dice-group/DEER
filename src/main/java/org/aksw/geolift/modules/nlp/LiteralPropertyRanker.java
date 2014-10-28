@@ -182,7 +182,11 @@ public class LiteralPropertyRanker {
 	 */
 
 	public Property getTopRankedLiteralProperty(){
-		return getTopNRankedLiteralProperty(1).firstEntry().getValue();
+		TreeMap<Float, Property> topNRankedLiteralProperty = getTopNRankedLiteralProperty(1);
+		if(topNRankedLiteralProperty == null){
+			return null;
+		}
+		return topNRankedLiteralProperty.firstEntry().getValue();
 	}
 
 

@@ -23,7 +23,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 public class RefinementNode implements Comparable<RefinementNode> {
 
 	public GeoLiftModule module;
-	public double fitness = Double.MAX_VALUE;
+	public double fitness = -Double.MAX_VALUE;
 	public Model inputModel = ModelFactory.createDefaultModel();
 	public Model outputModel = ModelFactory.createDefaultModel();
 	public Model configModel = ModelFactory.createDefaultModel();

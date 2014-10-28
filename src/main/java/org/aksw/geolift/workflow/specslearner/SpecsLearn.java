@@ -3,6 +3,7 @@
  */
 package org.aksw.geolift.workflow.specslearner;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import org.aksw.geolift.helper.vacabularies.SPECS;
 import org.aksw.geolift.io.Reader;
+import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
 import org.aksw.geolift.modules.conformation.ConformationModule;
@@ -47,8 +49,9 @@ public class SpecsLearn {
 	public static Model targetModel = ModelFactory.createDefaultModel();
 	private Tree<RefinementNode> refinementTreeRoot = new Tree<RefinementNode>(new RefinementNode());
 	RDFConfigWriter configWriter = new RDFConfigWriter();
+	private int iterationNr = 0;
 
-	private final double 	MIN_FITNESS_THRESHOLD = 0; 
+	private final double 	MAX_FITNESS_THRESHOLD = 1; 
 	private final long 	MAX_TREE_SIZE = 50;
 	public final double 	CHILDREN_PENALTY_WEIGHT   = 1; 
 	public final double 	COMPLEXITY_PENALTY_WEIGHT = 1;
@@ -72,7 +75,7 @@ public class SpecsLearn {
 		targetModel = ModelFactory.createDefaultModel();
 	}
 
-	public void run(){
+	public RefinementNode run(){
 		//		initiateExecutionTree();
 		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 		Model config = ModelFactory.createDefaultModel();
@@ -81,33 +84,32 @@ public class SpecsLearn {
 		refinementTreeRoot = new Tree<RefinementNode>(null,initialNode, null);
 		refinementTreeRoot = expandNode(refinementTreeRoot);
 
-		Tree<RefinementNode> minFitnessNode = getMostPromisingNode(refinementTreeRoot, true);
+		Tree<RefinementNode> mostPromisingNode = getMostPromisingNode(refinementTreeRoot, true);
 //		refinementTreeRoot.print(refinementTreeRoot);
 //		System.out.println("+++++++++++++++++++++++");
 		refinementTreeRoot.print();
-		logger.info("Min fitness Node: " + minFitnessNode.getValue());
-
-		while(minFitnessNode.getValue().fitness > MIN_FITNESS_THRESHOLD	){
-			if(refinementTreeRoot.size() >= MAX_TREE_SIZE){
-				logger.info("----------------------------------------------");
-				RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, false).getValue();
-				logger.info("Best Solution: " + bestSolution.toString());
-				System.out.println("===== Output Config =====");
-				bestSolution.configModel.write(System.out,"TTL");
-				System.out.println("===== Output Dataset =====");
-				bestSolution.outputModel.write(System.out,"TTL");
-				return;
-			}
-			minFitnessNode = expandNode(minFitnessNode);
-			minFitnessNode = getMostPromisingNode(refinementTreeRoot, true);
+		logger.info("Max fitness Node: " + mostPromisingNode.getValue());
+		iterationNr ++;
+		while(mostPromisingNode.getValue().fitness < MAX_FITNESS_THRESHOLD	 && refinementTreeRoot.size() <= MAX_TREE_SIZE){
+			iterationNr++;
+			mostPromisingNode = expandNode(mostPromisingNode);
+			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, true);
 			refinementTreeRoot.print();
-			logger.info("Min fitness Node: " + minFitnessNode.getValue());
+			logger.info("Most promising node: " + mostPromisingNode.getValue());
 
 		}
+		logger.info("----------------------------------------------");
+		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, false).getValue();
+		logger.info("Best Solution: " + bestSolution.toString());
 		System.out.println("===== Output Config =====");
-		minFitnessNode.getValue().configModel.write(System.out,"TTL");
-		System.out.println("===== Output Dataset =====");
-		minFitnessNode.getValue().outputModel.write(System.out,"TTL");
+		bestSolution.configModel.write(System.out,"TTL");
+//		System.out.println("===== Output Dataset =====");
+//		bestSolution.outputModel.write(System.out,"TTL");
+		return bestSolution;
+//		System.out.println("===== Output Config =====");
+//		mostPromisingNode.getValue().configModel.write(System.out,"TTL");
+//		System.out.println("===== Output Dataset =====");
+//		mostPromisingNode.getValue().outputModel.write(System.out,"TTL");
 	}
 
 
@@ -250,19 +252,20 @@ public class SpecsLearn {
 					double childrenPenalty = CHILDREN_PENALTY_WEIGHT * childrenCount;
 					long complexty = promesyChild.level();
 					double complextyPenalty = COMPLEXITY_PENALTY_WEIGHT * complexty;
-					newFitness = promesyChild.getValue().fitness + childrenPenalty + complextyPenalty;
+					newFitness = promesyChild.getValue().fitness - childrenPenalty - complextyPenalty;
 				}else{
 					newFitness = promesyChild.getValue().fitness;
 				}
-				if( newFitness < mostPromesyChild.getValue().fitness  ){
+				double f = mostPromesyChild.getValue().fitness;
+				if( newFitness > f  ){
 					mostPromesyChild = promesyChild;
 				}
 			}
 		}
-		// return the min{root, mostPromesyChild}
+		// return the argmax{root, mostPromesyChild}
 		if(usePenalty){
 			return mostPromesyChild;
-		}else if(root.getValue().fitness <= mostPromesyChild.getValue().fitness){
+		}else if(root.getValue().fitness >= mostPromesyChild.getValue().fitness){
 			return root;
 		}else{
 			return mostPromesyChild;
@@ -270,14 +273,42 @@ public class SpecsLearn {
 	}
 
 
-	public static void main(String args[]){
+	public static void main(String args[]) throws IOException{
+//		trivialRun(args);
+		evaluation(args);
+	}
+	
+	public static void trivialRun(String args[]){
 		String sourceUri = args[0];
 		String targetUri = args[1];
 		SpecsLearn learner = new SpecsLearn();
 		learner.sourceModel  = Reader.readModel(sourceUri);
 		learner.targetModel = Reader.readModel(targetUri);
-
+		long start = System.currentTimeMillis();
 		learner.run();
+		long end = System.currentTimeMillis();
+		logger.info("Done in " + (end - start) + "ms");
+	}
+	
+	public static void evaluation(String args[]) throws IOException{
+		String folder = args[0];
+		String results = "ModuleCount\tTime\tTreeSize\tIterationNr\tBestFitness\n";
+		for(int i = 1 ; i <= 5; i++){
+			SpecsLearn learner = new SpecsLearn();
+			learner.sourceModel  = Reader.readModel(folder + i + "/input.ttl");
+			learner.targetModel = Reader.readModel(folder + i + "/output.ttl");
+			long start = System.currentTimeMillis();
+			RefinementNode bestSolution = learner.run();
+			long end = System.currentTimeMillis();
+			long time = end - start;
+			results += i + "\t" + time + "\t" + 
+					learner.refinementTreeRoot.size() + "\t" + 
+					learner.iterationNr + "\t" + bestSolution.fitness + "\n";
+//			Writer.writeModel(bestSolution.configModel, "TTL", folder + i + "/self_config.ttl");
+			bestSolution.outputModel.write(System.out,"TTL");
+			break;
+		}
+		System.out.println(results);
 	}
 
 }

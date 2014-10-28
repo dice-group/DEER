@@ -464,6 +464,10 @@ public class NLPModule implements GeoLiftModule{
 		else{
 			LiteralPropertyRanker lpr = new LiteralPropertyRanker(model)	;
 			literalProperty = lpr.getTopRankedLiteralProperty();
+			if(literalProperty == null){
+				logger.info("No Literal Properties!, return input model.");
+				return inputModel;
+			}
 			logger.info("Top ranked Literal Property: " + literalProperty); 
 		}
 		if( parameters.containsKey(ADDED_PROPERTY))
