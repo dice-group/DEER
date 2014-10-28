@@ -1,0 +1,24 @@
+\select@language {english}
+\contentsline {section}{\numberline {1}Introduction}{4}
+\contentsline {section}{\numberline {2}Assumptions}{4}
+\contentsline {section}{\numberline {3}Technical Approach}{5}
+\contentsline {subsection}{\numberline {3.1}Architecture}{5}
+\contentsline {subsection}{\numberline {3.2}Using Dereferencing}{6}
+\contentsline {subsection}{\numberline {3.3}Using Linking}{7}
+\contentsline {subsection}{\numberline {3.4}Using Named Entity Recognition}{9}
+\contentsline {section}{\numberline {4}Developers' Manual}{10}
+\contentsline {subsection}{\numberline {4.1}\textsc {GeoLift}\xspace packages}{10}
+\contentsline {subsection}{\numberline {4.2}\textsc {GeoLift}\xspace Modules}{12}
+\contentsline {subsubsection}{\numberline {4.2.1}Dereferencing Module}{12}
+\contentsline {subsubsection}{\numberline {4.2.2}Linking Module}{13}
+\contentsline {subsubsection}{\numberline {4.2.3}NLP Module}{15}
+\contentsline {subsubsection}{\numberline {4.2.4}Conformation Module}{15}
+\contentsline {subsubsection}{\numberline {4.2.5}Filter Module}{18}
+\contentsline {subsection}{\numberline {4.3}\textsc {GeoLift}\xspace Operators}{18}
+\contentsline {subsubsection}{\numberline {4.3.1}Split Operator}{19}
+\contentsline {subsubsection}{\numberline {4.3.2}Merge Operator}{19}
+\contentsline {section}{\numberline {5}\textsc {GeoLift}\xspace RDF Specification Paradigm}{19}
+\contentsline {subsection}{\numberline {5.1}\textsc {GeoLift}\xspace Execution Workflow}{20}
+\contentsline {subsubsection}{\numberline {5.1.1}RDF Specification Resources}{20}
+\contentsline {section}{\numberline {6}Running \textsc {GeoLift}\xspace From Command-Line }{23}
+\contentsline {section}{\numberline {7}Conclusions}{23}

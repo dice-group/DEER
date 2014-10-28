@@ -187,7 +187,7 @@ public class SpecsLearn {
 		long c_t = currentModel.difference(targetModel).size();
 		System.out.println("targetModel.difference(currentModel).size() = " + t_c);
 		System.out.println("currentModel.difference(targetModel).size() = " + c_t);
-		return 1- ((t_c + c_t) / (currentModel.size() + targetModel.size()));
+		return 1- ((double)(t_c + c_t) / (double)(currentModel.size() + targetModel.size()));
 	}
 
 
