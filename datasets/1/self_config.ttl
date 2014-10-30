@@ -1,0 +1,20 @@
+@prefix RDFS:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix gl:    <http://geoknow.org/specsontology/> .
+
+gl:parameter_3  a    gl:ModuleParameter , gl:ConformationModuleParameter ;
+        gl:hasKey    "sourceSubjectAuthority" ;
+        gl:hasValue  "http://dbpedia.org/resource" .
+
+gl:Dataset_1  a  gl:Dataset .
+
+gl:conformation_module_2
+        a                gl:Module , gl:ConformationModule ;
+        gl:hasInput      gl:Dataset_1 ;
+        gl:hasOutput     gl:Dataset_3 ;
+        gl:hasParameter  gl:parameter_2 , gl:parameter_3 .
+
+gl:parameter_2  a    gl:ModuleParameter , gl:ConformationModuleParameter ;
+        gl:hasKey    "targetSubjectAuthority" ;
+        gl:hasValue  "http://geolift.org/resource" .
+
+gl:Dataset_3  a  gl:Dataset .

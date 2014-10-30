@@ -1,0 +1,320 @@
+<http://example.org/resource/Social_Democratic_Party_of_Germany>
+        <http://dbpedia.org/ontology/ideology>
+                <http://dbpedia.org/resource/Social_democracy> , <http://dbpedia.org/resource/Third_Way> , <http://dbpedia.org/resource/Pro-Europeanism> .
+
+<http://example.org/resource/Berlin>
+        a       <http://dbpedia.org/class/yago/EuropeanCapitalsOfCulture> , <http://schema.org/Place> , <http://umbel.org/umbel/rc/Location_Underspecified> , <http://dbpedia.org/class/yago/PhysicalEntity100001930> , <http://umbel.org/umbel/rc/City> , <http://dbpedia.org/class/yago/UrbanArea108675967> , <http://dbpedia.org/class/yago/Tract108673395> , <http://www.w3.org/2002/07/owl#Thing> , <http://dbpedia.org/class/yago/Region108630985> , <http://dbpedia.org/class/yago/StatesAndTerritoriesEstablishedIn1237> , <http://umbel.org/umbel/rc/PopulatedPlace> , <http://dbpedia.org/class/yago/Center108523483> , <http://dbpedia.org/ontology/Place> , <http://dbpedia.org/class/yago/AdministrativeDistrict108491826> , <http://dbpedia.org/class/yago/GeographicalArea108574314> , <http://dbpedia.org/class/yago/Area108497294> , <http://dbpedia.org/class/yago/Capital108518505> , <http://dbpedia.org/class/yago/YagoLegalActorGeo> , <http://schema.org/AdministrativeArea> , <http://dbpedia.org/class/yago/Location100027167> , <http://www.opengis.net/gml/_Feature> , <http://dbpedia.org/class/yago/Country108544813> , <http://www.ontologydesignpatterns.org/ont/d0.owl#Location> , <http://dbpedia.org/class/yago/GermanStateCapitals> , <http://umbel.org/umbel/rc/Village> , <http://dbpedia.org/class/yago/YagoGeoEntity> , <http://dbpedia.org/class/yago/City108524735> , <http://dbpedia.org/class/yago/Object100002684> , <http://dbpedia.org/class/yago/YagoPermanentlyLocatedEntity> , <http://dbpedia.org/class/yago/StateCapital108695539> , <http://dbpedia.org/ontology/PopulatedPlace> , <http://dbpedia.org/class/yago/District108552138> , <http://dbpedia.org/class/yago/HostCitiesOfTheSummerOlympicGames> , <http://dbpedia.org/ontology/Wikidata:Q532> , <http://dbpedia.org/class/yago/Municipality108626283> , <http://dbpedia.org/class/yago/StatesOfGermany> , <http://dbpedia.org/ontology/Region> , <http://dbpedia.org/class/yago/CapitalsInEurope> , <http://dbpedia.org/class/yago/Site108651247> , <http://dbpedia.org/class/yago/PopulatedPlacesEstablishedInThe13thCentury> , <http://dbpedia.org/ontology/AdministrativeRegion> , <http://dbpedia.org/class/yago/Seat108647945> ;
+        <http://www.w3.org/2000/01/rdf-schema#comment>
+                "برلين (بالألمانية: Berlin برلين) هي عاصمة جمهورية ألمانيا الاتحادية، وإحدى ولايات ألمانيا الست عشرة، كما أنها أكبر مدن ألمانيا من حيث عدد السكان. وتعتبر برلين إحدى \"الولايات المدن\" الثلاث بجمهورية ألمانيا الاتحادية (إلى جانب بريمن وهامبورغ)، وتأتي هذه التسمية من كون حدود المدينة هي نفسها حدود الولاية. وبرلين هي أيضاً ثاني أكبر مدن الاتحاد الأوروبي بعد العاصمة البريطانية لندن.وخلال فترةالحرب الباردة وتحديداً في عام 1961، قامت حكومة ألمانيا الشرقية بتشييد ما كان يعرف بـجدار برلين."@ar , "Berlino (in tedesco Berlin [bɛɐˈliːn], ) è la maggiore città e nel contempo un Land della Germania, quindi una città-stato. Capitale federale della Repubblica Federale di Germania e sede del suo governo, è uno dei più importanti centri politici, culturali, scientifici, fieristici e mediatici d'Europa e, dopo Londra, il secondo comune più popoloso dell'Unione europea."@it , "Berlin (/bərˈlɪn/; German pronunciation: [bɛɐ̯ˈliːn] ) is the capital city of Germany and one of the 16 states of Germany. With a population of 3.4 million people, Berlin is Germany's largest city, the second most populous city proper, and the seventh most populous urban area in the European Union. Located in northeastern Germany on the River Spree, it is the center of the Berlin-Brandenburg Metropolitan Region, which has about 4.5 million residents from over 180 nations."@en , "Berlin (prononcé [bɛʁ.lɛ̃] ; en allemand Berlin [bɛɐ̯.ˈliːn] ) est la capitale et la plus grande ville d'Allemagne, ainsi que la deuxième ville de l'Union européenne par sa population. Située dans le nord-est du pays, elle forme un land (État fédéré) à part entière et compte environ 3,4 millions d'habitants. Ses habitants s'appellent les Berlinois."@fr , "ベルリン（独: Berlin ドイツ語発音: [bɛɐ̯ˈliːn] ( 聞く)）は、ドイツの都市で同国の首都である。16ある連邦州のうちの一つで、市域人口は340万人とドイツでは最大の都市で欧州連合の市域人口ではロンドンに次いで2番目に多く、都市的地域の人口は7番目に多い。ベルリンはドイツ北東部、ベルリン/ブランデンブルク大都市圏地域の中心に位置する。この地域の人口は590万人に達し、190カ国を超える海外出身者も暮らす。ベルリンはヨーロッパ平原に位置し温帯の季節的な気候の影響を受ける。市域の3分の1は森林、公園、庭園、河川や湖で構成されている。ベルリンが最初に文書に言及されたのは13世紀のことで、それ以後プロイセン王国（1701-1918）やドイツ帝国（1871-1918）、ヴァイマル共和政（1919-1933）、ナチス・ドイツ（1933-1945）の首都であった。1920年代には世界で3番目に大きな都市であった。第二次世界大戦後、ベルリンは東ドイツの首都である東ベルリンと、西ドイツの飛び地で周辺をベルリンの壁（1961-1989）で囲まれた西ベルリンに分断された。1989年のドイツ再統一によりベルリンは再び首都としての地位を得て、147の大使館が置かれる。ベルリンは文化や政治、メディア、科学の世界都市である。経済的にはサービス産業を基盤とし創造産業やメディア産業、コンベンション会場などが包括されている。ベルリンはまた、欧州大陸の航空や鉄道交通の中枢でもあり 、代表的な観光地である。重要な産業にはIT、製薬、生物医学技術、生物工学、電子工学、交通工学、再生可能エネルギーが含まれる。ベルリンは有名な大学や調査機関、管弦楽団、博物館、著名人が本拠としており多くのスポーツイベントも催されている他 、都市の光景や歴史的な遺産は国際的な映画製作には人気な場所となっている。 ベルリンでは多く祭典や多様な建築、ナイトライフ、現代芸術、公共交通機関の路線網、世界で最も居住に適した都市など様々な分野でも良く知られた都市である。ドイツ最大の都市であり立法・行政の中心地ではあるが、地方分権の歴史が長いドイツでは、司法の中心地はカールスルーエ、金融と交通の中心地はフランクフルト、産業の中心地はルール地方、ミュンヘン、シュトゥットガルト、ケルンとされ、東京（日本）やソウル（韓国）、パリ（フランス）のように一極集中という状態はない。戦間期には科学技術や文学、哲学、芸術などが発展しヴァイマル文化によりドイツはもっとも進んだ国となった。1988年の欧州文化首都に選ばれている。現代の都市ベルリンは発展の一方で、特に東側の人口停滞などから都市構造の変革が進められている。"@ja , "Berlijn (Duits: Berlin) is de hoofdstad van Duitsland en als stadstaat een deelstaat van dat land. Met 3.375.222 inwoners is Berlijn tevens de grootste stad van het land en de op één na grootste stad in de Europese Unie."@nl , "柏林（德语：Berlin，德语发音: [bɛɐ̯ˈliːn] ( listen)）是德国首都，也是德国最大的城市，现有居民约340万人。柏林位于德国东北部，四面被勃兰登堡州环绕，施普雷河和哈维尔河流经该市。柏林也是德国十六个联邦州之一，和汉堡、不来梅同为德国僅有的三個的城市州。柏林是欧盟區內人口第2多的城市以及城市面积第8大的城市。它是柏林－勃兰登堡都会区的中心，有来自超过190个国家的5百万人口。地理上位于欧洲平原，受温带季节性气候影响。城市周围三分之一的土地由森林、公园、花园、河流和湖泊组成。该市第一次有文字记载是在13世纪，柏林连续的成为以下这些国家的首都：普鲁士王国（1701年－1870年）、德意志帝国（1871年－1918年）、魏玛共和国（1919年－1933年）、納粹德國（1933年－1945年）。在1920年代，柏林是世界第3大自治市。第二次世界大战后，城市被分割；东柏林成为了东德的首都，而西柏林事实上成为了西德在东德的一块飛地，被柏林墙围住。直到1990年两德统一，该市重新获得了全德国首都的地位，驻有147个外国大使馆。柏林无论是从文化、政治、传媒还是科学上讲都称的上是世界级城市。该市经济主要基于服务业，包括多种多样的创造性产业、传媒集团、议会举办地点。柏林扮演了一个欧洲大陆上航空与铁路运输交通枢纽的角色，同时它也是欧盟内游客数量最多的城市之一。主要的产业包括信息技术、制药、生物工程、生物科技、光学电子、交通工程和可再生能源。柏林都会区有知名大学、研究院、体育赛事、管弦乐队、博物馆和知名人士。城市的历史遗存使该市成为国际电影产品的交流中心。该市在节日活动、建筑的多样化、夜生活、当代艺术、公共交通网络以及高质量生活方面得到了广泛认可。柏林已经发展成一个全球焦点城市，以崇尚自由生活方式和现代精神的年轻人和艺术家而闻名。。"@zh , "Berlim (em alemão Berlin) é a capital e um dos dezesseis estados da Alemanha. Com uma população de 3,5 milhões dentro de limites da cidade, é a maior cidade do país, além de ser a segunda mais populosa cidade e a sétima área urbana mais populosa da União Europeia. Situada no nordeste da Alemanha, é o centro da área metropolitana de Berlim-Brandemburgo, que inclui 5 milhões de pessoas de mais de 190 nações."@pt , "Berlin – stolica, siedziba rządu Republiki Federalnej Niemiec. Największe miasto Niemiec, na prawach kraju związkowego. Zajmuje powierzchnię ok. 892 km², zamieszkuje je 3,4 mln osób. Jest trzecim największym (po Londynie i Paryżu) miastem w Unii Europejskiej.Berlin jest podzielony na dwanaście okręgów administracyjnych (Bezirk). Przez przestrzeń miejską przepływają m.in."@pl , "Берли́н (нем. Berlin [bɛɐ̯ˈliːn]) — столица Германии, самый крупный и самый населённый город Германии. Берлин — второй по населению (после Лондона) и пятый по площади город Евросоюза.Берлин — одна из 16 земель в составе ФРГ."@ru , "Berlín (Berlin en alemán (Acerca de este sonido [bɛɐ̯ˈliːn] )) es la capital de Alemania y uno de los dieciséis estados federados alemanes. Se localiza al noreste de Alemania, a escasos 70 km de la frontera con Polonia. Por la ciudad fluyen los ríos Spree, Havel, Panke, Dahme y Wuhle."@es , "Berlin ( [bɛɐ̯ˈliːn]?/i) ist die Hauptstadt und zugleich ein Land der Bundesrepublik Deutschland. Der Stadtstaat Berlin ist mit etwa 3,4 Millionen Einwohnern, davon 15 Prozent Ausländern, die bevölkerungsreichste und mit 892 Quadratkilometern die flächengrößte Kommune Deutschlands sowie nach Einwohnern die zweitgrößte der Europäischen Union. Zudem ist Berlin mit rund 3800 Einwohnern je Quadratkilometer die am drittdichtesten bevölkerte Gemeinde Deutschlands."@de ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "برلين"@ar , "Berlin"@de , "Berlin"@en , "Berlin"@pl , "Berlin"@fr , "Berlín"@es , "Berlim"@pt , "柏林"@zh , "ベルリン"@ja , "Berlijn"@nl , "Berlino"@it , "Берлин"@ru ;
+        <http://dbpedia.org/ontology/PopulatedPlace/areaTotal>
+                "891.85"^^<http://dbpedia.org/datatype/squareKilometre> ;
+        <http://dbpedia.org/ontology/abstract>
+                "Berlijn (Duits: Berlin) is de hoofdstad van Duitsland en als stadstaat een deelstaat van dat land. Met 3.375.222 inwoners is Berlijn tevens de grootste stad van het land en de op één na grootste stad in de Europese Unie. De stad ligt in het noordoosten van Duitsland, aan de rivier de Spree en wordt omsloten door de deelstaat Brandenburg, waarvan ze sinds 1920 geen deel meer uitmaakt.In zijn geschiedenis, die teruggaat tot de dertiende eeuw, was Berlijn de hoofdstad van Pruisen (1701–1918), het Duitse Keizerrijk (1871–1918), de Weimarrepubliek (1919–1933) en nazi-Duitsland (1933–1945). Na de Tweede Wereldoorlog was Berlijn gedurende meer dan veertig jaar een verdeelde stad, waarbij het oostelijke deel als hoofdstad fungeerde van de Duitse Democratische Republiek en West-Berlijn een de facto exclave van West-Duitsland was. Na de Duitse hereniging in 1990 werd Berlijn de hoofdstad van de Bondsrepubliek Duitsland en de zetel van het parlement, de deelstaatvertegenwoordiging en het staatshoofd.Berlijn is een metropool en geldt in Europa als één van de grootste culturele, politieke en wetenschappelijke centra. De stad is ook bekend vanwege het hoog-ontwikkelde culturele leven (festivals, nachtleven, musea, kunsttentoonstellingen enz.) en de liberale levensstijl, moderne Zeitgeist en de lage kosten. Bovendien is Berlijn één van de groenste steden van Europa: 22% van Berlijn bestaat uit natuur en parken en 6% uit meren, rivieren en kanalen."@nl , "Berlino (in tedesco Berlin [bɛɐˈliːn], ) è la maggiore città e nel contempo un Land della Germania, quindi una città-stato. Capitale federale della Repubblica Federale di Germania e sede del suo governo, è uno dei più importanti centri politici, culturali, scientifici, fieristici e mediatici d'Europa e, dopo Londra, il secondo comune più popoloso dell'Unione europea."@it , "Berlín (Berlin en alemán (Acerca de este sonido [bɛɐ̯ˈliːn] )) es la capital de Alemania y uno de los dieciséis estados federados alemanes. Se localiza al noreste de Alemania, a escasos 70 km de la frontera con Polonia. Por la ciudad fluyen los ríos Spree, Havel, Panke, Dahme y Wuhle. Con una población de 3,4 millones de habitantes, Berlín es la ciudad más poblada del país, así como la segunda ciudad en tamaño y la quinta aglomeración urbana entre los países de la Unión Europea.Fundada en 1237 como Cölln, Berlín fue sucesivamente capital del Reino de Prusia (1701-1918), de la República de Weimar (1919–1933) y del Tercer Reich (1933–1945). Después de la Segunda Guerra Mundial, la ciudad fue dividida; la parte este de la ciudad se convirtió en la capital de la República Democrática Alemana, mientras que la región oeste de la ciudad se convirtió en un enclave de la República Federal de Alemania en el interior de la Alemania Oriental.Berlín es una ciudad mundial y un centro cultural y artístico de primer nivel. Es una de las ciudades más influyentes en el ámbito político de la Unión Europea y en 2006 fue elegida Ciudad Creativa por la Unesco. En 2009 la ciudad recibió el Premio Príncipe de Asturias de la Concordia."@es , "Berlin ( [bɛɐ̯ˈliːn]?/i) ist die Hauptstadt und zugleich ein Land der Bundesrepublik Deutschland. Der Stadtstaat Berlin ist mit etwa 3,4 Millionen Einwohnern, davon 15 Prozent Ausländern, die bevölkerungsreichste und mit 892 Quadratkilometern die flächengrößte Kommune Deutschlands sowie nach Einwohnern die zweitgrößte der Europäischen Union. Zudem ist Berlin mit rund 3800 Einwohnern je Quadratkilometer die am drittdichtesten bevölkerte Gemeinde Deutschlands. Berlin ist eine Enklave im Land Brandenburg und bildet das Zentrum der Metropolregion Berlin/Brandenburg (6 Millionen Einwohner) sowie der Agglomeration Berlin (4,4 Millionen Einwohner). Der Stadtstaat unterteilt sich in zwölf Bezirke. Neben den Flüssen Spree und Havel befinden sich im Stadtgebiet kleinere Fließgewässer sowie zahlreiche Seen und Wälder.Erstmals 1237 urkundlich erwähnt, war Berlin im Verlauf der Geschichte und in verschiedenen Staatsformen Residenz- und Hauptstadt Brandenburgs, Preußens und des Deutschen Reichs. Ab 1949 war der Ostteil der Stadt faktisch Hauptstadt der Deutschen Demokratischen Republik. Mit der deutschen Wiedervereinigung im Jahr 1990 war Berlin wieder gesamtdeutsche Hauptstadt und wurde in der Folge Sitz der Bundesregierung, des Bundespräsidenten, des Deutschen Bundestags, des Bundesrats sowie zahlreicher Bundesministerien und Botschaften.Berlin gilt als Weltstadt der Kultur, Politik, Medien und Wissenschaften. Die Stadt ist ein bedeutender europäischer Verkehrsknotenpunkt und eines der meistbesuchten Zentren des Kontinents. Die Sportereignisse, Universitäten, Forschungseinrichtungen und Museen Berlins genießen internationalen Ruf. In der Stadt leben Firmengründer, Künstler und Einwanderer aus aller Welt. Berlins Architektur, Festivals, Nachtleben und vielfältige Lebensbedingungen sind weltweit bekannt."@de , "ベルリン（独: Berlin ドイツ語発音: [bɛɐ̯ˈliːn] ( 聞く)）は、ドイツの都市で同国の首都である。16ある連邦州のうちの一つで、市域人口は340万人とドイツでは最大の都市で欧州連合の市域人口ではロンドンに次いで2番目に多く、都市的地域の人口は7番目に多い。ベルリンはドイツ北東部、ベルリン/ブランデンブルク大都市圏地域の中心に位置する。この地域の人口は590万人に達し、190カ国を超える海外出身者も暮らす。ベルリンはヨーロッパ平原に位置し温帯の季節的な気候の影響を受ける。市域の3分の1は森林、公園、庭園、河川や湖で構成されている。ベルリンが最初に文書に言及されたのは13世紀のことで、それ以後プロイセン王国（1701-1918）やドイツ帝国（1871-1918）、ヴァイマル共和政（1919-1933）、ナチス・ドイツ（1933-1945）の首都であった。1920年代には世界で3番目に大きな都市であった。第二次世界大戦後、ベルリンは東ドイツの首都である東ベルリンと、西ドイツの飛び地で周辺をベルリンの壁（1961-1989）で囲まれた西ベルリンに分断された。1989年のドイツ再統一によりベルリンは再び首都としての地位を得て、147の大使館が置かれる。ベルリンは文化や政治、メディア、科学の世界都市である。経済的にはサービス産業を基盤とし創造産業やメディア産業、コンベンション会場などが包括されている。ベルリンはまた、欧州大陸の航空や鉄道交通の中枢でもあり 、代表的な観光地である。重要な産業にはIT、製薬、生物医学技術、生物工学、電子工学、交通工学、再生可能エネルギーが含まれる。ベルリンは有名な大学や調査機関、管弦楽団、博物館、著名人が本拠としており多くのスポーツイベントも催されている他 、都市の光景や歴史的な遺産は国際的な映画製作には人気な場所となっている。 ベルリンでは多く祭典や多様な建築、ナイトライフ、現代芸術、公共交通機関の路線網、世界で最も居住に適した都市など様々な分野でも良く知られた都市である。ドイツ最大の都市であり立法・行政の中心地ではあるが、地方分権の歴史が長いドイツでは、司法の中心地はカールスルーエ、金融と交通の中心地はフランクフルト、産業の中心地はルール地方、ミュンヘン、シュトゥットガルト、ケルンとされ、東京（日本）やソウル（韓国）、パリ（フランス）のように一極集中という状態はない。戦間期には科学技術や文学、哲学、芸術などが発展しヴァイマル文化によりドイツはもっとも進んだ国となった。1988年の欧州文化首都に選ばれている。現代の都市ベルリンは発展の一方で、特に東側の人口停滞などから都市構造の変革が進められている。"@ja , "Berlim (em alemão Berlin) é a capital e um dos dezesseis estados da Alemanha. Com uma população de 3,5 milhões dentro de limites da cidade, é a maior cidade do país, além de ser a segunda mais populosa cidade e a sétima área urbana mais populosa da União Europeia. Situada no nordeste da Alemanha, é o centro da área metropolitana de Berlim-Brandemburgo, que inclui 5 milhões de pessoas de mais de 190 nações. Localizada na grande planície europeia, Berlim é influenciada por um clima temperado sazonal. Cerca de um terço da área da cidade é composta por florestas, parques, jardins, rios e lagos.Documentada pela primeira vez no século XIII, Berlim foi sucessivamente a capital do Reino da Prússia (1701-1918), do Império Alemão (1871-1918), da República de Weimar (1919-1933) e do Terceiro Reich (1933-1945). Após a Segunda Guerra Mundial, a cidade foi dividida; Berlim Oriental se tornou a capital da Alemanha Oriental, enquanto Berlim Ocidental se tornou um exclave da Alemanha Ocidental, cercada pelo muro de Berlim, entre os anos de 1961-1989, enquanto a cidade de Bona tornou-se a capital da Alemanha Ocidental. Após a reunificação alemã em 1990, a cidade recuperou o seu estatuto, como a capital da República Federal da Alemanha, sediando 147 embaixadas estrangeiras.Berlim é uma cidade global e um dos mais influentes centros mundiais de cultura, política, mídia e ciência. Sua economia é baseada principalmente no setor de serviços, abrangendo uma variada gama de indústrias criativas, as corporações de mídia e locais de convenções. Berlim também serve como um hub continental para o transporte aéreo e ferroviário, e é um destino turístico popular. As indústrias significativas incluem TI, farmacêuticas, engenharia biomédica, biotecnologia, eletrônica, engenharia de tráfego e energia renovável.A cidade serve como um importante centro do transporte continental e é a sede de algumas das mais importantes universidades, eventos esportivos, orquestras e museus. O rápido desenvolvimento da metrópole atraiu uma reputação internacional aos seus festivais, arquitectura contemporânea e vida nocturna, sendo um grande centro turístico e moradia para pessoas de 180 nações diferentes."@pt , "برلين (بالألمانية: Berlin برلين) هي عاصمة جمهورية ألمانيا الاتحادية، وإحدى ولايات ألمانيا الست عشرة، كما أنها أكبر مدن ألمانيا من حيث عدد السكان. وتعتبر برلين إحدى \"الولايات المدن\" الثلاث بجمهورية ألمانيا الاتحادية (إلى جانب بريمن وهامبورغ)، وتأتي هذه التسمية من كون حدود المدينة هي نفسها حدود الولاية. وبرلين هي أيضاً ثاني أكبر مدن الاتحاد الأوروبي بعد العاصمة البريطانية لندن.وخلال فترةالحرب الباردة وتحديداً في عام 1961، قامت حكومة ألمانيا الشرقية بتشييد ما كان يعرف بـجدار برلين. هكذا أصبحت برلين مدينة مُقسمة إلى جزئين: جزء غربي يتبع ألمانيا الغربية والآخر شرقي يتبع ألمانيا الشرقية. وبقي الحال في برلين على هذا النحو إلى حين سقوط الجدار في عام 1989 وتوحيد الألمانيتين في عام 1990، واختيرت برلين بعدها عاصمة جمهورية ألمانيا الاتحادية ومركز حكومتها والبرلمان، وإحدى أهم المدن الأوروبية."@ar , "Berlin (prononcé [bɛʁ.lɛ̃] ; en allemand Berlin [bɛɐ̯.ˈliːn] ) est la capitale et la plus grande ville d'Allemagne, ainsi que la deuxième ville de l'Union européenne par sa population. Située dans le nord-est du pays, elle forme un land (État fédéré) à part entière et compte environ 3,4 millions d'habitants. Ses habitants s'appellent les Berlinois. Son agglomération s'étend sur 2 284 km2 et compte un peu plus de 4 millions d'habitants, sa zone urbaine élargie 5 025 272 habitants (soit la deuxième du pays après celle de la région de la Ruhr) et son aire urbaine de la région métropolitaine de Berlin-Brandebourg dépasse, quant à elle, les frontières du land et regroupe au total près de 6 millions d'habitants, ce qui en fait une des dix métropoles les plus peuplées d'Europe. Fondée au XIIIe siècle, Berlin a été successivement capitale du royaume de Prusse (1701-1871), de l'Empire allemand (1871-1918), de la République de Weimar (1919-1933) et du Troisième Reich (1933-1945). Après 1945 et jusqu'à la chute du Mur de Berlin en 1989, la ville est partagée en quatre secteurs d'occupation. Pendant la Guerre froide, le secteur soviétique de la ville, nommé Berlin-Est, est devenu la capitale de la République démocratique allemande, tandis que Berlin-Ouest était politiquement rattachée à la République fédérale d'Allemagne, devenant ainsi un bastion avancé du « Monde libre » à l'intérieur du Bloc communiste. Après la chute du mur, Berlin redevint, en 1990, la capitale de l'Allemagne alors réunifiée, et les principales institutions fédérales y emménagèrent en 1999.Berlin est une ville mondiale culturelle et artistique de premier plan. La ville abrite 166 musées, 142 bibliothèques et 60 théâtres. En 2012, Berlin a accueilli plus de 10,8 millions de visiteurs."@fr , "Berlin (/bərˈlɪn/; German pronunciation: [bɛɐ̯ˈliːn] ) is the capital city of Germany and one of the 16 states of Germany. With a population of 3.4 million people, Berlin is Germany's largest city, the second most populous city proper, and the seventh most populous urban area in the European Union. Located in northeastern Germany on the River Spree, it is the center of the Berlin-Brandenburg Metropolitan Region, which has about 4.5 million residents from over 180 nations. Due to its location in the European Plain, Berlin is influenced by a temperate seasonal climate. Around one third of the city's area is composed of forests, parks, gardens, rivers and lakes.First documented in the 13th century, Berlin became the capital of the Kingdom of Prussia (1701–1918), the German Empire (1871–1918), the Weimar Republic (1919–33) and the Third Reich (1933–45). Berlin in the 1920s was the third largest municipality in the world. After World War II, the city, along with the German state, was divided - into East Berlin — capital of the German Democratic Republic, colloquially identified in English as East Germany — and West Berlin, a political exclave (surrounded by the Berlin Wall from 1961 to 1989) and a de facto state of the Federal Republic of Germany, known colloquially in English as West Germany from 1949 to 1990. Following German reunification in 1990, the city was once more designated as the capital of all Germany.Berlin is a world city of culture, politics, media, and science, hosting 147 foreign embassies. Its economy is primarily based on high-tech industries and the service sector, encompassing a diverse range of creative industries, research facilities, media corporations, and convention venues. Berlin also serves as a continental hub for air and rail transport and is a popular tourist destination. Significant industries include IT, pharmaceuticals, biomedical engineering, biotechnology, electronics, traffic engineering, and renewable energy.Berlin is home to renowned universities, research institutes, orchestras, museums, and celebrities and is host to many sporting events. Its urban setting and historical legacy have made it a popular location for international film productions. The city is well known for its festivals, diverse architecture, nightlife, contemporary arts, public transportation networks, and an extremely high quality of living."@en , "Berlin – stolica, siedziba rządu Republiki Federalnej Niemiec. Największe miasto Niemiec, na prawach kraju związkowego. Zajmuje powierzchnię ok. 892 km², zamieszkuje je 3,4 mln osób. Jest trzecim największym (po Londynie i Paryżu) miastem w Unii Europejskiej.Berlin jest podzielony na dwanaście okręgów administracyjnych (Bezirk). Przez przestrzeń miejską przepływają m.in. rzeki Sprewa i Hawela, a ponadto znajduje się wiele jezior i zatok, w tym największe Müggelsee.Pierwsza wzmianka o mieście pochodzi z 1237. Berlin pełnił rolę historycznej stolicy Brandenburgii, Prus, Cesarstwa Niemieckiego, Republiki Weimarskiej i III Rzeszy. Po 1945 roku wschodnia część miasta była stolicą Niemieckiej Republiki Demokratycznej, natomiast pozostała tworzyła Berlin Zachodni – otoczona murem (od 1961 r.) enklawa na terenie NRD. Po zjednoczeniu Niemiec w 1990 roku Berlin został ponownie stolicą Niemiec, siedzibą prezydenta (od 1994 roku), niemieckiego Bundestagu (od 1999 roku) i Bundesratu (od 2000 roku).Berlin jest jedną z ważniejszych w Europie metropolii globalnych, ponadto ważnym węzłem komunikacyjnym Niemiec i Europy, zarówno kolejowym, lotniczym i drogowym. Ważny ośrodek naukowy, kulturalny i artystyczny (m.in. Kulturforum i Museumsinsel)."@pl , "柏林（德语：Berlin，德语发音: [bɛɐ̯ˈliːn] ( listen)）是德国首都，也是德国最大的城市，现有居民约340万人。柏林位于德国东北部，四面被勃兰登堡州环绕，施普雷河和哈维尔河流经该市。柏林也是德国十六个联邦州之一，和汉堡、不来梅同为德国僅有的三個的城市州。柏林是欧盟區內人口第2多的城市以及城市面积第8大的城市。它是柏林－勃兰登堡都会区的中心，有来自超过190个国家的5百万人口。地理上位于欧洲平原，受温带季节性气候影响。城市周围三分之一的土地由森林、公园、花园、河流和湖泊组成。该市第一次有文字记载是在13世纪，柏林连续的成为以下这些国家的首都：普鲁士王国（1701年－1870年）、德意志帝国（1871年－1918年）、魏玛共和国（1919年－1933年）、納粹德國（1933年－1945年）。在1920年代，柏林是世界第3大自治市。第二次世界大战后，城市被分割；东柏林成为了东德的首都，而西柏林事实上成为了西德在东德的一块飛地，被柏林墙围住。直到1990年两德统一，该市重新获得了全德国首都的地位，驻有147个外国大使馆。柏林无论是从文化、政治、传媒还是科学上讲都称的上是世界级城市。该市经济主要基于服务业，包括多种多样的创造性产业、传媒集团、议会举办地点。柏林扮演了一个欧洲大陆上航空与铁路运输交通枢纽的角色，同时它也是欧盟内游客数量最多的城市之一。主要的产业包括信息技术、制药、生物工程、生物科技、光学电子、交通工程和可再生能源。柏林都会区有知名大学、研究院、体育赛事、管弦乐队、博物馆和知名人士。城市的历史遗存使该市成为国际电影产品的交流中心。该市在节日活动、建筑的多样化、夜生活、当代艺术、公共交通网络以及高质量生活方面得到了广泛认可。柏林已经发展成一个全球焦点城市，以崇尚自由生活方式和现代精神的年轻人和艺术家而闻名。。"@zh , "Берли́н (нем. Berlin [bɛɐ̯ˈliːn]) — столица Германии, самый крупный и самый населённый город Германии. Берлин — второй по населению (после Лондона) и пятый по площади город Евросоюза.Берлин — одна из 16 земель в составе ФРГ. Город расположен на берегах рек Шпрее (с этим связано «прозвище» Берлина «Spree-Athen» — «Афины на Шпрее») и Хафель в центре федеральной земли Бранденбург, частью которой он не является (с 1920 года).Около 1200 года на месте современного Берлина располагались два торговых поселения — Кёльн и Берлин. Точная дата получения ими городских прав неизвестна. Городские права Кёльна впервые упоминаются в 1237 году, городские права Берлина — в 1244 году. В 1307 году города объединились и образовали общую городскую управу. В 1400 году население объединённого Берлина составляло 8000 человек. Историческое название «Кёльн» нашло своё отражение в названии берлинского района Нойкёльн.Берлин был столицей маркграфства/курфюршества Бранденбургского (с 1417 года), Пруссии (после объединения курфюршества Бранденбург с герцогством Пруссия) и после создания Германской империи стал её столицей.После Второй мировой войны в соответствии с решениями Ялтинской конференции Берлин, хоть и находился на территории советской зоны оккупации Германии, был разделён четырьмя державами-победительницами на оккупационные секторы. Позднее три сектора оккупации союзников были преобразованы в Западный Берлин, получивший статус особого государственного образования, но безусловно тесно связанного с ФРГ. Передвижение между секторами Берлина длительное время оставалось относительно свободным, и в целях предотвращения утечки населения в западные секторы правительством ГДР было принято решение о возведении Берлинской стены, окружившей с 13 августа 1961 года Западный Берлин. Берлинская стена, ставшая одним из главных символов холодной войны, просуществовала до 1989 года. После объединения Германии в 1990 году её столицей стал воссоединённый Берлин. В 1994 году туда переехала из Бонна администрация президента и в 1999 году — Германский бундестаг и администрация федерального канцлера вместе с федеральными министерствами.Сегодня Берлин является мировым культурным центром. Это — крупный европейский транспортный узел и один из самых посещаемых городов на континенте. Университеты, исследовательские институты и музеи Берлина известны во всем мире. В городе живут и работают художники, дипломаты и иммигранты со всех уголков планеты."@ru ;
+        <http://dbpedia.org/ontology/areaCode>
+                "030" ;
+        <http://dbpedia.org/ontology/areaTotal>
+                8.9185e+08 ;
+        <http://dbpedia.org/ontology/country>
+                <http://dbpedia.org/resource/Germany> ;
+        <http://dbpedia.org/ontology/elevation>
+                34.0 ;
+        <http://dbpedia.org/ontology/leader>
+                <http://dbpedia.org/resource/Klaus_Wowereit> ;
+        <http://dbpedia.org/ontology/leaderParty>
+                <http://dbpedia.org/resource/Social_Democratic_Party_of_Germany> , <http://dbpedia.org/resource/Christian_Democratic_Union_(Germany)> ;
+        <http://dbpedia.org/ontology/leaderTitle>
+                "Governing Mayor"@en ;
+        <http://dbpedia.org/ontology/populationAsOf>
+                "2013-10-31+02:00"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        <http://dbpedia.org/ontology/populationTotal>
+                3415091 ;
+        <http://dbpedia.org/ontology/postalCode>
+                "10115–14199" ;
+        <http://dbpedia.org/ontology/thumbnail>
+                <http://commons.wikimedia.org/wiki/Special:FilePath/Berlin_Montage_4.jpg?width=300> ;
+        <http://dbpedia.org/ontology/wikiPageExternalLink>
+                <http://www.exberliner.com/> , <http://www.berlin.de/international/index.en.php> , <http://berlin.unlike.net/> , <http://www.berlin.de/en/> ;
+        <http://dbpedia.org/ontology/wikiPageID>
+                3354 ;
+        <http://dbpedia.org/ontology/wikiPageRevisionID>
+                606295350 ;
+        <http://dbpedia.org/property/align>
+                "right"@en ;
+        <http://dbpedia.org/property/aprHighC>
+                13.2 ;
+        <http://dbpedia.org/property/aprLowC>
+                4.2 ;
+        <http://dbpedia.org/property/aprMeanC>
+                8.7 ;
+        <http://dbpedia.org/property/aprRainDays>
+                7.8 ;
+        <http://dbpedia.org/property/aprRainMm>
+                37.1 ;
+        <http://dbpedia.org/property/aprSun>
+                159 ;
+        <http://dbpedia.org/property/area>
+                891.85 ;
+        <http://dbpedia.org/property/augHighC>
+                23.6 ;
+        <http://dbpedia.org/property/augLowC>
+                14.1 ;
+        <http://dbpedia.org/property/augMeanC>
+                18.9 ;
+        <http://dbpedia.org/property/augRainDays>
+                7 ;
+        <http://dbpedia.org/property/augRainMm>
+                58.2 ;
+        <http://dbpedia.org/property/augSun>
+                210.8 ;
+        <http://dbpedia.org/property/blankInfoSec>
+                <http://dbpedia.org/resource/.berlin> ;
+        <http://dbpedia.org/property/blankNameSec>
+                <http://dbpedia.org/resource/GeoTLD> ;
+        <http://dbpedia.org/property/caption>
+                "Berlin Mitte skyline in the 21st century. Landmarks from left to right: Reichstag, Fernsehturm Berlin, Berliner Dom, City hall, Brandenburg Gate"@en , "Brandenburg Gate at blue hour"@en , "Looking through Karl-Liebknecht-Straße and Berlin Cathedral"@en ;
+        <http://dbpedia.org/property/coaSize>
+                70 ;
+        <http://dbpedia.org/property/coordinatesDisplay>
+                "display=inline, title"@en ;
+        <http://dbpedia.org/property/date>
+                "April 2013"@en , "September 2010"@en ;
+        <http://dbpedia.org/property/decHighC>
+                4.4 ;
+        <http://dbpedia.org/property/decLowC>
+                "−0.4"@en ;
+        <http://dbpedia.org/property/decMeanC>
+                2 ;
+        <http://dbpedia.org/property/decRainDays>
+                11.4 ;
+        <http://dbpedia.org/property/decRainMm>
+                55.3 ;
+        <http://dbpedia.org/property/decSun>
+                37.2 ;
+        <http://dbpedia.org/property/demonym>
+                "Berliner"@en ;
+        <http://dbpedia.org/property/divisions>
+                12 ;
+        <http://dbpedia.org/property/elevation>
+                34 ;
+        <http://dbpedia.org/property/febHighC>
+                4.2 ;
+        <http://dbpedia.org/property/febLowC>
+                "−1.6"@en ;
+        <http://dbpedia.org/property/febMeanC>
+                1.3 ;
+        <http://dbpedia.org/property/febRainDays>
+                8 ;
+        <http://dbpedia.org/property/febRainMm>
+                33.3 ;
+        <http://dbpedia.org/property/febSun>
+                73.5 ;
+        <http://dbpedia.org/property/flag>
+                "Flag_of_Berlin.svg"@en ;
+        <http://dbpedia.org/property/float>
+                "left"@en ;
+        <http://dbpedia.org/property/gdp>
+                101.4 ;
+        <http://dbpedia.org/property/gdpYear>
+                2011 ;
+        <http://dbpedia.org/property/hasPhotoCollection>
+                <http://wifo5-03.informatik.uni-mannheim.de/flickrwrappr/photos/Berlin> ;
+        <http://dbpedia.org/property/image>
+                "Berlin Brandenburger Tor Abend.jpg"@en , "Cityscape Berlin.jpg"@en , "Berlin view from Park Inn 03.jpg"@en ;
+        <http://dbpedia.org/property/imageCaption>
+                "Clockwise: Charlottenburg Palace, Fernsehturm Berlin, Reichstag building, Berlin Cathedral, Alte Nationalgalerie, Potsdamer Platz and Brandenburg Gate."@en ;
+        <http://dbpedia.org/property/isoRegion>
+                "DE-BE"@en ;
+        <http://dbpedia.org/property/janHighC>
+                2.9 ;
+        <http://dbpedia.org/property/janLowC>
+                "−1.5"@en ;
+        <http://dbpedia.org/property/janMeanC>
+                0.5 ;
+        <http://dbpedia.org/property/janRainDays>
+                10 ;
+        <http://dbpedia.org/property/janRainMm>
+                42.3 ;
+        <http://dbpedia.org/property/janSun>
+                46.5 ;
+        <http://dbpedia.org/property/julHighC>
+                24 ;
+        <http://dbpedia.org/property/julLowC>
+                14.7 ;
+        <http://dbpedia.org/property/julMeanC>
+                19 ;
+        <http://dbpedia.org/property/julRainDays>
+                7 ;
+        <http://dbpedia.org/property/julRainMm>
+                55.5 ;
+        <http://dbpedia.org/property/julSun>
+                217 ;
+        <http://dbpedia.org/property/junHighC>
+                21.8 ;
+        <http://dbpedia.org/property/junLowC>
+                12.3 ;
+        <http://dbpedia.org/property/junMeanC>
+                17 ;
+        <http://dbpedia.org/property/junRainDays>
+                7 ;
+        <http://dbpedia.org/property/junRainMm>
+                68.7 ;
+        <http://dbpedia.org/property/junSun>
+                222 ;
+        <http://dbpedia.org/property/kfz>
+                "B( )"@en ;
+        <http://dbpedia.org/property/latd>
+                52 ;
+        <http://dbpedia.org/property/latm>
+                31 ;
+        <http://dbpedia.org/property/leader>
+                "Klaus Wowereit"@en ;
+        <http://dbpedia.org/property/leaderParty>
+                "SPD"@en ;
+        <http://dbpedia.org/property/leaderTitle>
+                <http://dbpedia.org/resource/Governing_Mayor_of_Berlin> ;
+        <http://dbpedia.org/property/left>
+                "religion"@en ;
+        <http://dbpedia.org/property/location>
+                "Berlin"@en ;
+        <http://dbpedia.org/property/longd>
+                13 ;
+        <http://dbpedia.org/property/longm>
+                23 ;
+        <http://dbpedia.org/property/map>
+                "Berlin in Germany and EU.png"@en ;
+        <http://dbpedia.org/property/mapSize>
+                270 ;
+        <http://dbpedia.org/property/mapText>
+                "Location within European Union and Germany"@en ;
+        <http://dbpedia.org/property/marHighC>
+                8.5 ;
+        <http://dbpedia.org/property/marLowC>
+                1.3 ;
+        <http://dbpedia.org/property/marMeanC>
+                4.9 ;
+        <http://dbpedia.org/property/marRainDays>
+                9.1 ;
+        <http://dbpedia.org/property/marRainMm>
+                40.5 ;
+        <http://dbpedia.org/property/marSun>
+                120.9 ;
+        <http://dbpedia.org/property/mayHighC>
+                18.9 ;
+        <http://dbpedia.org/property/mayLowC>
+                9 ;
+        <http://dbpedia.org/property/mayMeanC>
+                14 ;
+        <http://dbpedia.org/property/mayRainDays>
+                8.9 ;
+        <http://dbpedia.org/property/mayRainMm>
+                53.8 ;
+        <http://dbpedia.org/property/maySun>
+                220.1 ;
+        <http://dbpedia.org/property/metricFirst>
+                "yes"@en ;
+        <http://dbpedia.org/property/name>
+                "Berlin"@en ;
+        <http://dbpedia.org/property/novHighC>
+                7.1 ;
+        <http://dbpedia.org/property/novLowC>
+                2.2 ;
+        <http://dbpedia.org/property/novMeanC>
+                4.7 ;
+        <http://dbpedia.org/property/novRainDays>
+                9.6 ;
+        <http://dbpedia.org/property/novRainMm>
+                43.6 ;
+        <http://dbpedia.org/property/novSun>
+                51 ;
+        <http://dbpedia.org/property/nuts>
+                "DE3"@en ;
+        <http://dbpedia.org/property/octHighC>
+                13.4 ;
+        <http://dbpedia.org/property/octLowC>
+                6.4 ;
+        <http://dbpedia.org/property/octMeanC>
+                9.9 ;
+        <http://dbpedia.org/property/octRainDays>
+                7.6 ;
+        <http://dbpedia.org/property/octRainMm>
+                37.3 ;
+        <http://dbpedia.org/property/octSun>
+                111.6 ;
+        <http://dbpedia.org/property/plz>
+                10115 ;
+        <http://dbpedia.org/property/popDate>
+                "2013-10-31+02:00"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        <http://dbpedia.org/property/population>
+                3415091 ;
+        <http://dbpedia.org/property/right>
+                "percent"@en ;
+        <http://dbpedia.org/property/rulingParty>
+                <http://dbpedia.org/resource/Christian_Democratic_Union_(Germany)> , <http://dbpedia.org/resource/Social_Democratic_Party_of_Germany> ;
+        <http://dbpedia.org/property/sepHighC>
+                18.8 ;
+        <http://dbpedia.org/property/sepLowC>
+                10.6 ;
+        <http://dbpedia.org/property/sepMeanC>
+                14.7 ;
+        <http://dbpedia.org/property/sepRainDays>
+                7.8 ;
+        <http://dbpedia.org/property/sepRainMm>
+                45.1 ;
+        <http://dbpedia.org/property/sepSun>
+                156 ;
+        <http://dbpedia.org/property/singleLine>
+                "yes"@en ;
+        <http://dbpedia.org/property/source>
+                "World Meteorological Organization , HKO"@en ;
+        <http://dbpedia.org/property/state>
+                "Berlin"@en ;
+        <http://dbpedia.org/property/stateCoa>
+                "Coat of arms of Berlin.svg"@en ;
+        <http://dbpedia.org/property/title>
+                "Religion in Berlin - 2010"@en ;
+        <http://dbpedia.org/property/unLocode>
+                "DEBER"@en ;
+        <http://dbpedia.org/property/unitRainDays>
+                "1.0"^^<http://dbpedia.org/datatype/millimetre> ;
+        <http://dbpedia.org/property/vorwahl>
+                30 ;
+        <http://dbpedia.org/property/votes>
+                4 ;
+        <http://dbpedia.org/property/website>
+                <http://www.berlin.de/international/index.en.php> ;
+        <http://dbpedia.org/property/width>
+                360 , 285 , 125 ;
+        <http://dbpedia.org/property/yearHighC>
+                13.4 ;
+        <http://dbpedia.org/property/yearLowC>
+                5.9 ;
+        <http://dbpedia.org/property/yearSun>
+                1625.6 ;
+        <http://geoknow.org/ontology/relatedTo>
+                <http://scms.eu/Germany.Berlin> , <http://scms.eu/Spree_und> , <http://dbpedia.org/resource/Berlin> , <http://dbpedia.org/resource/DE> , <http://scms.eu/%C3%90%C2%A3%C3%90%C2%BD%C3%90%C2%B8%C3%90%C2%B2%C3%90%C2%B5%C3%91%C2%80%C3%91%C2%81%C3%90%C2%B8%C3%91%C2%82%C3%90%C2%B5%C3%91%C2%82%C3%91%C2%8B> , <http://dbpedia.org/resource/East_Germany> , <http://dbpedia.org/resource/West_Germany> , <http://scms.eu/Berlim> , <http://scms.eu/%C3%83%C2%A9t%C3%83%C2%A9> , <http://dbpedia.org/resource/Weimar> , <http://dbpedia.org/resource/Brandenburg> , <http://dbpedia.org/resource/Germany> , <http://dbpedia.org/resource/Kingdom_Holding_Company> , <http://dbpedia.org/resource/Reino> , <http://dbpedia.org/resource/Prussia> , <http://dbpedia.org/resource/West_Berlin> , <http://scms.eu/Acerca_de_este> , <http://dbpedia.org/resource/London> , <http://dbpedia.org/resource/East_Berlin> , <http://scms.eu/Berlim_Oriental> , <http://dbpedia.org/resource/Europa_%28oil_company%29> , <http://scms.eu/M%C3%83%C2%BCggelsee.Pierwsza> , <http://dbpedia.org/resource/Spree> , <http://scms.eu/Zudem> , <http://dbpedia.org/resource/The_La%27s> , <http://dbpedia.org/resource/Weimar_Republic> ;
+        <http://purl.org/dc/terms/subject>
+                <http://dbpedia.org/resource/Category:German_state_capitals> , <http://dbpedia.org/resource/Category:Capitals_in_Europe> , <http://dbpedia.org/resource/Category:Cities_with_millions_of_inhabitants> , <http://dbpedia.org/resource/Category:Populated_places_established_in_the_13th_century> , <http://dbpedia.org/resource/Category:City-states> , <http://dbpedia.org/resource/Category:Members_of_the_Hanseatic_League> , <http://dbpedia.org/resource/Category:Berlin> ;
+        <http://www.georss.org/georss/point>
+                "52.516666666666666 13.383333333333333" ;
+        <http://www.w3.org/2002/07/owl#sameAs>
+                <http://lv.dbpedia.org/resource/Berlīne> , <http://pap.dbpedia.org/resource/Berlin> , <http://cbk_zam.dbpedia.org/resource/Berlín> , <http://mhr.dbpedia.org/resource/Берлин> , <http://vls.dbpedia.org/resource/Berlyn> , <http://nds_nl.dbpedia.org/resource/Berlien> , <http://szl.dbpedia.org/resource/Berlin> , <http://wikidata.dbpedia.org/resource/Q64> , <http://vo.dbpedia.org/resource/Berlin> , <http://mg.dbpedia.org/resource/Berlin> , <http://hsb.dbpedia.org/resource/Berlin> , <http://myv.dbpedia.org/resource/Берлин_ош> , <http://sv.dbpedia.org/resource/Berlin> , <http://hi.dbpedia.org/resource/बर्लिन> , <http://ce.dbpedia.org/resource/Берлин> , <http://pt.dbpedia.org/resource/Berlim> , <http://gv.dbpedia.org/resource/Berleen> , <http://pcd.dbpedia.org/resource/Berlin> , <http://arz.dbpedia.org/resource/بيرلين> , <http://vep.dbpedia.org/resource/Berlin> , <http://new.dbpedia.org/resource/बर्लिन> , <http://gd.dbpedia.org/resource/Berlin> , <http://an.dbpedia.org/resource/Berlín> , <http://zea.dbpedia.org/resource/Berlijn> , <http://fi.dbpedia.org/resource/Berliini> , <http://tt.dbpedia.org/resource/Берлин> , <http://mi.dbpedia.org/resource/Pearīni> , <http://zh_min_nan.dbpedia.org/resource/Berlin> , <http://nah.dbpedia.org/resource/Berlin> , <http://lb.dbpedia.org/resource/Berlin> , <http://tpi.dbpedia.org/resource/Berlin> , <http://csb.dbpedia.org/resource/Berlëno> , <http://nrm.dbpedia.org/resource/Bèrlîn> , <http://es.dbpedia.org/resource/Berlín> , <http://sw.dbpedia.org/resource/Berlin> , <http://da.dbpedia.org/resource/Berlin> , <http://ta.dbpedia.org/resource/பெர்லின்> , <http://gag.dbpedia.org/resource/Berlin> , <http://se.dbpedia.org/resource/Berlin> , <http://hu.dbpedia.org/resource/Berlin> , <http://iu.dbpedia.org/resource/ᐱᕐᓖᓐ> , <http://ee.dbpedia.org/resource/Berlin> , <http://bo.dbpedia.org/resource/པེར་ལིན།> , <http://bg.dbpedia.org/resource/Берлин> , <http://ilo.dbpedia.org/resource/Berlin> , <http://ie.dbpedia.org/resource/Berlin> , <http://uz.dbpedia.org/resource/Berlin> , <http://rdf.freebase.com/ns/m.0156q> , <http://de.dbpedia.org/resource/Berlin> , <http://ro.dbpedia.org/resource/Berlin> , <http://koi.dbpedia.org/resource/Берлин> , <http://jbo.dbpedia.org/resource/berlin> , <http://la.dbpedia.org/resource/Berolinum> , <http://be_x_old.dbpedia.org/resource/Бэрлін> , <http://bat_smg.dbpedia.org/resource/Berlīns> , <http://bi.dbpedia.org/resource/Berlin> , <http://cy.dbpedia.org/resource/Berlin> , <http://cv.dbpedia.org/resource/Берлин> , <http://kw.dbpedia.org/resource/Berlin> , <http://roa_tara.dbpedia.org/resource/Berline> , <http://rmy.dbpedia.org/resource/Berlin> , <http://rm.dbpedia.org/resource/Berlin> , <http://sk.dbpedia.org/resource/Berlín> , <http://frr.dbpedia.org/resource/Berlin> , <http://io.dbpedia.org/resource/Berlin> , <http://vi.dbpedia.org/resource/Berlin> , <http://id.dbpedia.org/resource/Berlin> , <http://ia.dbpedia.org/resource/Berlin> , <http://crh.dbpedia.org/resource/Berlin> , <http://eo.dbpedia.org/resource/Berlino> , <http://pl.dbpedia.org/resource/Berlin> , <http://pfl.dbpedia.org/resource/Balin> , <http://pa.dbpedia.org/resource/ਬਰਲਿਨ> , <http://sq.dbpedia.org/resource/Berlini> , <http://kv.dbpedia.org/resource/Берлин> , <http://ty.dbpedia.org/resource/Berlin> , <http://www4.wiwiss.fu-berlin.de/eurostat/resource/regions/Berlin> , <http://hr.dbpedia.org/resource/Berlin> , <http://mt.dbpedia.org/resource/Berlin> , <http://pam.dbpedia.org/resource/Berlin> , <http://ha.dbpedia.org/resource/Berlin> , <http://sc.dbpedia.org/resource/Berlino> , <http://mk.dbpedia.org/resource/Берлин> , <http://jv.dbpedia.org/resource/Berlin> , <http://tet.dbpedia.org/resource/Berlín> , <http://os.dbpedia.org/resource/Берлин> , <http://diq.dbpedia.org/resource/Berlin> , <http://cs.dbpedia.org/resource/Berlín> , <http://fj.dbpedia.org/resource/Berlin> , <http://nds.dbpedia.org/resource/Berlin> , <http://it.dbpedia.org/resource/Berlino> , <http://zh_classical.dbpedia.org/resource/柏林> , <http://ru.dbpedia.org/resource/Берлин> , <http://lmo.dbpedia.org/resource/Berlin> , <http://ak.dbpedia.org/resource/Berlin> , <http://sw.cyc.com/concept/Mx4rvVjrhpwpEbGdrcN5Y29ycA> , <http://yi.dbpedia.org/resource/בערלין> , <http://xmf.dbpedia.org/resource/ბერლინი> , <http://ku.dbpedia.org/resource/Berlîn> , <http://ltg.dbpedia.org/resource/Berlins> , <http://na.dbpedia.org/resource/Berlin> , <http://kaa.dbpedia.org/resource/Berlin> , <http://mrj.dbpedia.org/resource/Берлин> , <http://tw.dbpedia.org/resource/Berlin> , <http://kn.dbpedia.org/resource/ಬರ್ಲಿನ್> , <http://fur.dbpedia.org/resource/Berlin> , <http://lij.dbpedia.org/resource/Berlin> , <http://als.dbpedia.org/resource/Berlin> , <http://mn.dbpedia.org/resource/Берлин> , <http://nap.dbpedia.org/resource/Berlino> , <http://kab.dbpedia.org/resource/Berlin> , <http://fy.dbpedia.org/resource/Berlyn> , <http://br.dbpedia.org/resource/Berlin> , <http://co.dbpedia.org/resource/Berlinu> , <http://ht.dbpedia.org/resource/Bèlen> , <http://udm.dbpedia.org/resource/Берлин> , <http://tum.dbpedia.org/resource/Berlin> , <http://te.dbpedia.org/resource/బెర్లిన్> , <http://roa_rup.dbpedia.org/resource/Berlin> , <http://pdc.dbpedia.org/resource/Berlin> , <http://yo.dbpedia.org/resource/Berlin> , <http://ne.dbpedia.org/resource/बर्लिन> , <http://uk.dbpedia.org/resource/Берлін> , <http://ja.dbpedia.org/resource/ベルリン> , <http://ps.dbpedia.org/resource/برلين> , <http://sws.geonames.org/2950157/> , <http://he.dbpedia.org/resource/ברלין> , <http://az.dbpedia.org/resource/Berlin> , <http://so.dbpedia.org/resource/Baarliin> , <http://sh.dbpedia.org/resource/Berlin> , <http://bn.dbpedia.org/resource/বার্লিন> , <http://rn.dbpedia.org/resource/Berlin> , <http://sah.dbpedia.org/resource/Берлин> , <http://yago-knowledge.org/resource/Berlin> , <http://tr.dbpedia.org/resource/Berlin> , <http://pms.dbpedia.org/resource/Berlin> , <http://wikidata.org/entity/Q64> , <http://ba.dbpedia.org/resource/Берлин> , <http://mwl.dbpedia.org/resource/Berlin> , <http://bs.dbpedia.org/resource/Berlin> , <http://frp.dbpedia.org/resource/Bèrlin> , <http://lt.dbpedia.org/resource/Berlynas> , <http://gadm.geovocab.org/id/3_22976> , <http://li.dbpedia.org/resource/Berlien> , <http://tk.dbpedia.org/resource/Berlin> , <http://el.dbpedia.org/resource/Βερολίνο> , <http://srn.dbpedia.org/resource/Berlin> , <http://bar.dbpedia.org/resource/Berlin> , <http://kg.dbpedia.org/resource/Berlin_(kizunga)> , <http://be.dbpedia.org/resource/Горад_Берлін> , <http://ca.dbpedia.org/resource/Berlín> , <http://th.dbpedia.org/resource/เบอร์ลิน> , <http://tg.dbpedia.org/resource/Берлин> , <http://pih.dbpedia.org/resource/Berlin> , <http://oc.dbpedia.org/resource/Berlin> , <http://rue.dbpedia.org/resource/Берлін> , <http://is.dbpedia.org/resource/Berlín> , <http://my.dbpedia.org/resource/ဘာလင်မြို့> , <http://bxr.dbpedia.org/resource/Берлин> , <http://kl.dbpedia.org/resource/Berlin> , <http://arc.dbpedia.org/resource/ܒܪܠܝܢ> , <http://lg.dbpedia.org/resource/Berlin> , <http://ar.dbpedia.org/resource/برلين> , <http://war.dbpedia.org/resource/Berlin> , <http://zu.dbpedia.org/resource/IBerlini> , <http://ka.dbpedia.org/resource/ბერლინი> , <http://hif.dbpedia.org/resource/Berlin> , <http://pnt.dbpedia.org/resource/Βερολίνον> , <http://vec.dbpedia.org/resource/Berlin> , <http://ko.dbpedia.org/resource/베를린> , <http://eu.dbpedia.org/resource/Berlin> , <http://fo.dbpedia.org/resource/Berlin> , <http://ab.dbpedia.org/resource/Берлин> , <http://zh.dbpedia.org/resource/柏林> , <http://nov.dbpedia.org/resource/Berlin> , <http://ast.dbpedia.org/resource/Berlín> , <http://sws.geonames.org/2950159/> , <http://fiu_vro.dbpedia.org/resource/Berliin> , <http://et.dbpedia.org/resource/Berliin> , <http://ckb.dbpedia.org/resource/بەرلین> , <http://tl.dbpedia.org/resource/Berlin> , <http://qu.dbpedia.org/resource/Berlin> , <http://scn.dbpedia.org/resource/Birlinu> , <http://mzn.dbpedia.org/resource/برلین> , <http://ay.dbpedia.org/resource/Berlin> , <http://nn.dbpedia.org/resource/Berlin> , <http://fa.dbpedia.org/resource/برلین> , <http://fr.dbpedia.org/resource/Berlin> , <http://or.dbpedia.org/resource/ବର୍ଲିନ> , <http://simple.dbpedia.org/resource/Berlin> , <http://ug.dbpedia.org/resource/Bérlin> , <http://kbd.dbpedia.org/resource/Берлин> , <http://haw.dbpedia.org/resource/Pelelina> , <http://ms.dbpedia.org/resource/Berlin> , <http://ace.dbpedia.org/resource/Berlin> , <http://ln.dbpedia.org/resource/Berlin> , <http://mr.dbpedia.org/resource/बर्लिन> , <http://stq.dbpedia.org/resource/Berlin> , <http://nl.dbpedia.org/resource/Berlijn> , <http://lez.dbpedia.org/resource/Берлин> , <http://af.dbpedia.org/resource/Berlyn> , <http://dsb.dbpedia.org/resource/Barliń> , <http://zh_yue.dbpedia.org/resource/柏林> , <http://si.dbpedia.org/resource/බර්ලිනය> , <http://ga.dbpedia.org/resource/Beirlín> , <http://sws.geonames.org/6547383/> , <http://ext.dbpedia.org/resource/Berlín> , <http://gn.dbpedia.org/resource/Berlin> , <http://ky.dbpedia.org/resource/Берлин> , <http://gl.dbpedia.org/resource/Berlín> , <http://lad.dbpedia.org/resource/Berlin> , <http://sco.dbpedia.org/resource/Berlin> , <http://no.dbpedia.org/resource/Berlin> , <http://pnb.dbpedia.org/resource/برلن> , <http://ml.dbpedia.org/resource/ബെർലിൻ> , <http://am.dbpedia.org/resource/በርሊን> , <http://kk.dbpedia.org/resource/Берлин> , <http://ksh.dbpedia.org/resource/Berlin> , <http://rw.dbpedia.org/resource/Berlin> , <http://sl.dbpedia.org/resource/Berlin> , <http://gan.dbpedia.org/resource/柏林> , <http://ur.dbpedia.org/resource/برلن> , <http://hy.dbpedia.org/resource/Բեռլին> , <http://sr.dbpedia.org/resource/Берлин> , <http://linkedgeodata.org/triplify/node240109189> , <http://cu.dbpedia.org/resource/Бєрлинъ> , <http://wo.dbpedia.org/resource/Berlin> , <http://ang.dbpedia.org/resource/Berlin> ;
+        <http://www.w3.org/2003/01/geo/wgs84_pos#geometry>
+                "POINT(13.383333 52.516666)"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry> ;
+        <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+                "52.5167"^^<http://www.w3.org/2001/XMLSchema#float> ;
+        <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+                "13.3833"^^<http://www.w3.org/2001/XMLSchema#float> ;
+        <http://www.w3.org/ns/prov#wasDerivedFrom>
+                <http://en.wikipedia.org/wiki/Berlin?oldid=606295350> ;
+        <http://xmlns.com/foaf/0.1/depiction>
+                <http://commons.wikimedia.org/wiki/Special:FilePath/Berlin_Montage_4.jpg> ;
+        <http://xmlns.com/foaf/0.1/homepage>
+                <http://www.berlin.de/international/index.en.php> ;
+        <http://xmlns.com/foaf/0.1/isPrimaryTopicOf>
+                <http://en.wikipedia.org/wiki/Berlin> .
+
+<http://example.org/resource/Christian_Democratic_Union_(Germany)>
+        <http://dbpedia.org/ontology/ideology>
+                <http://dbpedia.org/resource/Liberal_conservatism> , <http://dbpedia.org/resource/Pro-Europeanism> , <http://dbpedia.org/resource/Christian_democracy> .

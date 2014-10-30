@@ -51,14 +51,10 @@ public class SpecsLearn {
 	RDFConfigWriter configWriter = new RDFConfigWriter();
 	private int iterationNr = 0;
 
-	private final double 	MAX_FITNESS_THRESHOLD = 1; 
+	private final double 	MAX_FITNESS_THRESHOLD = 0.99; 
 	private final long 	MAX_TREE_SIZE = 50;
 	public final double 	CHILDREN_PENALTY_WEIGHT   = 1; 
 	public final double 	COMPLEXITY_PENALTY_WEIGHT = 1;
-
-
-
-
 
 	SpecsLearn(Model source, Model target){
 		this();
@@ -76,41 +72,43 @@ public class SpecsLearn {
 	}
 
 	public RefinementNode run(){
-		//		initiateExecutionTree();
-		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-		Model config = ModelFactory.createDefaultModel();
-		double f = Double.MAX_VALUE;
-		RefinementNode initialNode = new RefinementNode(null,f,sourceModel,sourceModel,outputDataset,outputDataset,config);
-		refinementTreeRoot = new Tree<RefinementNode>(null,initialNode, null);
+		refinementTreeRoot = createRefinementTreeRoot();
 		refinementTreeRoot = expandNode(refinementTreeRoot);
-
 		Tree<RefinementNode> mostPromisingNode = getMostPromisingNode(refinementTreeRoot, true);
-//		refinementTreeRoot.print(refinementTreeRoot);
-//		System.out.println("+++++++++++++++++++++++");
 		refinementTreeRoot.print();
-		logger.info("Max fitness Node: " + mostPromisingNode.getValue());
+		logger.info("Most promising node: " + mostPromisingNode.getValue());
 		iterationNr ++;
-		while(mostPromisingNode.getValue().fitness < MAX_FITNESS_THRESHOLD	 && refinementTreeRoot.size() <= MAX_TREE_SIZE){
+		while((mostPromisingNode.getValue().fitness) < MAX_FITNESS_THRESHOLD	 
+				&& refinementTreeRoot.size() <= MAX_TREE_SIZE)
+		{
 			iterationNr++;
 			mostPromisingNode = expandNode(mostPromisingNode);
 			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, true);
 			refinementTreeRoot.print();
 			logger.info("Most promising node: " + mostPromisingNode.getValue());
-
 		}
 		logger.info("----------------------------------------------");
 		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, false).getValue();
-		logger.info("Best Solution: " + bestSolution.toString());
-		System.out.println("===== Output Config =====");
-		bestSolution.configModel.write(System.out,"TTL");
+//		logger.info("Best Solution: " + bestSolution.toString());
+//		System.out.println("===== Output Config =====");
+//		bestSolution.configModel.write(System.out,"TTL");
 //		System.out.println("===== Output Dataset =====");
 //		bestSolution.outputModel.write(System.out,"TTL");
-		return bestSolution;
 //		System.out.println("===== Output Config =====");
 //		mostPromisingNode.getValue().configModel.write(System.out,"TTL");
 //		System.out.println("===== Output Dataset =====");
 //		mostPromisingNode.getValue().outputModel.write(System.out,"TTL");
+		return bestSolution;
 	}
+	
+	private Tree<RefinementNode> createRefinementTreeRoot(){
+		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+		Model config = ModelFactory.createDefaultModel();
+		double f = -Double.MAX_VALUE;
+		RefinementNode initialNode = new RefinementNode(null,f,sourceModel,sourceModel,outputDataset,outputDataset,config);
+		return new Tree<RefinementNode>(null,initialNode, null);
+	}
+	
 
 
 	private void updateParentsFitness(	Tree<RefinementNode> root) {
@@ -128,6 +126,7 @@ public class SpecsLearn {
 			Model configModel = ModelFactory.createDefaultModel();
 			RefinementNode node = new RefinementNode();
 			parameters = module.selfConfig(sourceModel, targetModel);
+			logger.info("Self-Config parameter(s):" + parameters);
 			if(parameters == null || parameters.size() == 0){
 				// mark as dead end, fitness = -2
 				configModel = ModelFactory.createDefaultModel();
@@ -157,6 +156,7 @@ public class SpecsLearn {
 			Resource inputDataset  = root.getValue().outputDataset;
 			Model configMdl = ModelFactory.createDefaultModel();
 			RefinementNode node = new RefinementNode();
+			logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
 			if(parameters == null || parameters.size() == 0){
 				// mark as dead end, fitness = -2
 				configMdl = root.getValue().configModel;
@@ -164,7 +164,7 @@ public class SpecsLearn {
 			}else{
 				Model currentMdl = module.process(inputModel, parameters);
 				double fitness;
-				if(currentMdl == null || currentMdl.size() == 0 || currentMdl.remove(inputModel).size() == 0){
+				if(currentMdl == null || currentMdl.size() == 0 || currentMdl.isIsomorphicWith(inputModel)){
 					fitness = -2;
 				}else{
 					fitness = computeFitness(currentMdl, targetModel);
@@ -248,16 +248,11 @@ public class SpecsLearn {
 				Tree<RefinementNode> promesyChild = getMostPromisingNode(child, usePenalty);
 				double newFitness;
 				if(usePenalty){
-					long childrenCount = promesyChild.size() - 1;
-					double childrenPenalty = CHILDREN_PENALTY_WEIGHT * childrenCount;
-					long complexty = promesyChild.level();
-					double complextyPenalty = COMPLEXITY_PENALTY_WEIGHT * complexty;
-					newFitness = promesyChild.getValue().fitness - childrenPenalty - complextyPenalty;
+					newFitness = promesyChild.getValue().fitness - computePenality(promesyChild);
 				}else{
 					newFitness = promesyChild.getValue().fitness;
 				}
-				double f = mostPromesyChild.getValue().fitness;
-				if( newFitness > f  ){
+				if( newFitness > mostPromesyChild.getValue().fitness  ){
 					mostPromesyChild = promesyChild;
 				}
 			}
@@ -272,6 +267,18 @@ public class SpecsLearn {
 		}
 	}
 
+
+	/**
+	 * @return
+	 * @author sherif
+	 */
+	private double computePenality(Tree<RefinementNode> promesyChild) {
+		long childrenCount = promesyChild.size() - 1;
+		double childrenPenalty = (CHILDREN_PENALTY_WEIGHT * childrenCount) / refinementTreeRoot.size();
+		long level = promesyChild.level();
+		double complextyPenalty = (COMPLEXITY_PENALTY_WEIGHT * level) / refinementTreeRoot.depth();
+		return  childrenPenalty + complextyPenalty;
+	}
 
 	public static void main(String args[]) throws IOException{
 //		trivialRun(args);
@@ -305,8 +312,10 @@ public class SpecsLearn {
 					learner.refinementTreeRoot.size() + "\t" + 
 					learner.iterationNr + "\t" + bestSolution.fitness + "\n";
 //			Writer.writeModel(bestSolution.configModel, "TTL", folder + i + "/self_config.ttl");
-			bestSolution.outputModel.write(System.out,"TTL");
-			break;
+//			bestSolution.outputModel.write(System.out,"TTL");
+			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+			System.out.println(results);
+//			break;
 		}
 		System.out.println(results);
 	}

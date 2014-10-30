@@ -132,6 +132,20 @@ public class Tree<T> {
 		return 1 + size;
 	}
 	
+	public long depth(){
+		if(children == null || children.size() == 0){
+			return 1;
+		}
+		long maxDepth = 0;
+		for(Tree<T> child : children){
+			long d = child.depth();
+			if(maxDepth < d ){
+				maxDepth = d;
+			}
+		}
+		return maxDepth + 1;
+	}
+	
 	public long level(){
 		long level = 0;
 		Tree<T> t = this;
