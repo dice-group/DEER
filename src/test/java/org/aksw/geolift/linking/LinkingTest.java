@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
-import org.aksw.geolift.modules.linking.LinkingModule;
+import org.aksw.deer.modules.Dereferencing.DereferencingModule;
+import org.aksw.deer.modules.linking.LinkingModule;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -36,11 +36,11 @@ public class LinkingTest {
 		parameters.put("linksFilePath",args[2]);// The path to the file contains the resulted links
 		parameters.put("linksPart",args[3]);//The position of the Original URI to be enriched in the links generated (right side or left side), so the otherside is the link partner to be added to it
 		
-		Model model=org.aksw.geolift.io.Reader.readModel(parameters.get("datasetFilePath"));
+		Model model=org.aksw.deer.io.Reader.readModel(parameters.get("datasetFilePath"));
 		LinkingModule l= new LinkingModule();
 		l.process(model, parameters);
 		try {
-			org.aksw.geolift.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetUpdated.nt");
+			org.aksw.deer.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetUpdated.nt");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,7 +57,7 @@ public class LinkingTest {
 			
 		model=d.process(model, parameters2);
 		try {
-			org.aksw.geolift.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetLinkingDereferenced.nt");
+			org.aksw.deer.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetLinkingDereferenced.nt");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -98,7 +98,7 @@ public class LinkingTest {
     	 	  }
 		}
 		try {
-			org.aksw.geolift.io.Writer.writeModel(model, "TTL", "/home/mofeed/Projects/GeoLift/src/main/resources/dataset.nt");
+			org.aksw.deer.io.Writer.writeModel(model, "TTL", "/home/mofeed/Projects/GeoLift/src/main/resources/dataset.nt");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

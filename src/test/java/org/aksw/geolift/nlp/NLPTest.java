@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.aksw.geolift.modules.nlp.LiteralPropertyRanker;
-import org.aksw.geolift.modules.nlp.NLPModule;
+import org.aksw.deer.modules.nlp.LiteralPropertyRanker;
+import org.aksw.deer.modules.nlp.NLPModule;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
