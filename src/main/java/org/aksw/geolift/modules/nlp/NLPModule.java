@@ -424,7 +424,12 @@ public class NLPModule implements GeoLiftModule{
 			RDFNode subject = st.getSubject();
 			if(object.isLiteral()){
 				if(!object.asLiteral().toString().contains("^^")){ 
-					Model namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
+					Model namedEntityModel = ModelFactory.createDefaultModel();
+					if(object.toString().contains("@")){
+						namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
+					}else{
+						namedEntityModel = getNamedEntityModel(object.toString());
+					}
 					if(!namedEntityModel.isEmpty()){
 						if(NEType.equalsIgnoreCase("all")){ // Extract all NE (Generalization of GeoLift)
 							resultModel.add(getNE(namedEntityModel, subject));

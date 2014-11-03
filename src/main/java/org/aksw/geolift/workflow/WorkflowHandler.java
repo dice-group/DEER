@@ -14,10 +14,11 @@ import java.util.TreeSet;
 import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
-import org.aksw.geolift.modules.conformation.ConformationModule;
+import org.aksw.geolift.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.geolift.modules.filter.FilterModule;
 import org.aksw.geolift.modules.linking.LinkingModule;
 import org.aksw.geolift.modules.nlp.NLPModule;
+import org.aksw.geolift.modules.predicateconformation.PredicateConformationModule;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Multimap;
@@ -75,8 +76,13 @@ public class WorkflowHandler{
 			enrichedModel = geoEnricher.process(inputModel, modueParameters);
 			return enrichedModel;
 		}
-		if(moduleName.toLowerCase().equals("conformation")){
-			ConformationModule geoEnricher= new ConformationModule();
+		if(moduleName.toLowerCase().equals("authorityconformation")){
+			AuthorityConformationModule geoEnricher= new AuthorityConformationModule();
+			enrichedModel = geoEnricher.process(inputModel, modueParameters);
+			return enrichedModel;
+		}
+		if(moduleName.toLowerCase().equals("predicateconformation")){
+			PredicateConformationModule geoEnricher= new PredicateConformationModule();
 			enrichedModel = geoEnricher.process(inputModel, modueParameters);
 			return enrichedModel;
 		}

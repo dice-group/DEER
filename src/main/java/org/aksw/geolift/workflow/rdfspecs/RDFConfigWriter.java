@@ -3,18 +3,17 @@
  */
 package org.aksw.geolift.workflow.rdfspecs;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.aksw.geolift.helper.vacabularies.SPECS;
-import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
-import org.aksw.geolift.modules.conformation.ConformationModule;
+import org.aksw.geolift.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.geolift.modules.filter.FilterModule;
 import org.aksw.geolift.modules.linking.LinkingModule;
 import org.aksw.geolift.modules.nlp.NLPModule;
+import org.aksw.geolift.modules.predicateconformation.PredicateConformationModule;
 import org.aksw.geolift.operators.GeoLiftOperator;
 import org.aksw.geolift.operators.MergeOperator;
 import org.aksw.geolift.operators.SplitOperator;
@@ -61,11 +60,17 @@ public class RDFConfigWriter{
 		config = ModelFactory.createDefaultModel(); 
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
-		if(module instanceof ConformationModule){
-			s = ResourceFactory.createResource(SPECS.uri + "conformation_module_" + moduleNr++);
+		if(module instanceof AuthorityConformationModule){
+			s = ResourceFactory.createResource(SPECS.uri + "authority_conformation_module_" + moduleNr++);
 			config.add(s, RDF.type, SPECS.Module);
-			config.add(s, RDF.type, SPECS.ConformationModule);
-			parameterType = SPECS.ConformationModuleParameter;
+			config.add(s, RDF.type, SPECS.AuthorityConformationModule);
+			parameterType = SPECS.AuthorityConformationModuleParameter;
+		}
+		else if(module instanceof PredicateConformationModule){
+			s = ResourceFactory.createResource(SPECS.uri + "predicate_conformation_module_" + moduleNr++);
+			config.add(s, RDF.type, SPECS.Module);
+			config.add(s, RDF.type, SPECS.PredicateConformationModule);
+			parameterType = SPECS.PredicateConformationModuleParameter;
 		}
 		else if(module instanceof DereferencingModule){
 			s = ResourceFactory.createResource(SPECS.uri + "dereferencing_module_" + moduleNr++);

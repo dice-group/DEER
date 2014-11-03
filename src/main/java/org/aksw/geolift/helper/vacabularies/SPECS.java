@@ -49,18 +49,20 @@ public class SPECS {
 	public static final Resource LinkingModule 				= resource( "LinkingModule" );
 	public static final Resource NLPModule 					= resource( "NLPModule" );
 	public static final Resource FilterModule 				= resource( "FilterModule" );
-	public static final Resource ConformationModule 			= resource( "ConformationModule" );
+	public static final Resource AuthorityConformationModule 	= resource( "AuthorityConformationModule" );
+	public static final Resource PredicateConformationModule 	= resource( "PredicateConformationModule" );
 	public static final Resource ModuleParameter 				= resource( "ModuleParameter" );
 	public static final Resource NLPModuleParameter 			= resource( "NLPModuleParameter" );
 	public static final Resource DereferencingModuleParameter	= resource( "DereferencingModuleParameter" );
 	public static final Resource LinkingModuleParameter 		= resource( "linkingModuleParameter" );
 	public static final Resource FilterModuleParameter 		= resource( "FilterModuleParameter" );
-	public static final Resource ConformationModuleParameter 	= resource( "ConformationModuleParameter" );
 	public static final Resource Operator 					= resource( "Operator" );
 	public static final Resource SplitOperator 				= resource( "SplitOperator" );
 	public static final Resource MergeOperator 				= resource( "MergeOperator" );
 	public static final Resource OperatorParameter 			= resource( "OperatorParameter" );
 	public static final Resource SplitOperatorParameter 		= resource( "SplitOperatorParameter" );
 	public static final Resource MergeOperatorParameter 		= resource( "MergeOperatorParameter" );
+	public static final Resource AuthorityConformationModuleParameter 	= resource( "AuthorityConformationModuleParameter" );
+	public static final Resource PredicateConformationModuleParameter 	= resource( "PredicateConformationModuleParameter" );
 	
 }

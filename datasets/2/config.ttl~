@@ -31,10 +31,10 @@
 		:hasOutput		:d3 ;
 		:hasParameter	:conformPram1, :conformPram2 .
 
-:conformPram1	a				:ModuleParameter, :NLPModuleParameter ;
+:conformPram1	a		:ModuleParameter, :ConformationModuleParameter ;
 		:hasKey			"sourceSubjectAuthority" ;
 		:hasValue		"http://dbpedia.org" .
 
-:conformPram2	a				:ModuleParameter, :NLPModuleParameter ;
+:conformPram2	a		:ModuleParameter, :ConformationModuleParameter ;
 		:hasKey			"targetSubjectAuthority" ;
 		:hasValue		"http://geolift.org" .

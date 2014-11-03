@@ -15,7 +15,8 @@ import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.GeoLiftModule;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
-import org.aksw.geolift.modules.conformation.ConformationModule;
+import org.aksw.geolift.modules.authorityconformation.AuthorityConformationModule;
+import org.aksw.geolift.modules.predicateconformation.PredicateConformationModule;
 import org.aksw.geolift.workflow.rdfspecs.RDFConfigWriter;
 import org.apache.log4j.Logger;
 
@@ -26,6 +27,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import org.aksw.geolift.modules.filter.FilterModule;
 import org.aksw.geolift.modules.linking.LinkingModule;
 import org.aksw.geolift.modules.nlp.NLPModule;
+
 
 
 /**
@@ -40,18 +42,19 @@ public class SpecsLearn {
 					new LinkingModule(),
 					new NLPModule(),
 					new FilterModule(),
-					new ConformationModule(), 
+					new AuthorityConformationModule(), 
+					new PredicateConformationModule(), 
 					new DereferencingModule()
 					));
 
 	private int datasetCounter = 1;
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
-	private Tree<RefinementNode> refinementTreeRoot = new Tree<RefinementNode>(new RefinementNode());
+	public Tree<RefinementNode> refinementTreeRoot = new Tree<RefinementNode>(new RefinementNode());
 	RDFConfigWriter configWriter = new RDFConfigWriter();
-	private int iterationNr = 0;
+	public int iterationNr = 0;
 
-	private final double 	MAX_FITNESS_THRESHOLD = 0.99; 
+	private final double 	MAX_FITNESS_THRESHOLD = 1; 
 	private final long 	MAX_TREE_SIZE = 50;
 	public final double 	CHILDREN_PENALTY_WEIGHT   = 1; 
 	public final double 	COMPLEXITY_PENALTY_WEIGHT = 1;
@@ -111,43 +114,43 @@ public class SpecsLearn {
 	
 
 
-	private void updateParentsFitness(	Tree<RefinementNode> root) {
-		while(root != null){
-			long rootChildrenCount = root.size() - 1;
-			root.getValue().fitness += CHILDREN_PENALTY_WEIGHT * rootChildrenCount;
-			root = root.getParent();
-		}
-	}
+//	private void updateParentsFitness(	Tree<RefinementNode> root) {
+//		while(root != null){
+//			long rootChildrenCount = root.size() - 1;
+//			root.getValue().fitness += CHILDREN_PENALTY_WEIGHT * rootChildrenCount;
+//			root = root.getParent();
+//		}
+//	}
 
-	private Tree<RefinementNode> initiateExecutionTree(){
-		Map<String, String> parameters = new HashMap<String, String>();
-		for(GeoLiftModule module : MODULES){
-			Resource inputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-			Model configModel = ModelFactory.createDefaultModel();
-			RefinementNode node = new RefinementNode();
-			parameters = module.selfConfig(sourceModel, targetModel);
-			logger.info("Self-Config parameter(s):" + parameters);
-			if(parameters == null || parameters.size() == 0){
-				// mark as dead end, fitness = -2
-				configModel = ModelFactory.createDefaultModel();
-				node = new RefinementNode(module, -2, sourceModel, sourceModel, inputDataset, inputDataset, configModel);
-			}else{
-				Model currentModel = module.process(sourceModel, parameters);
-				double fitness;
-				if(currentModel == null || currentModel.size() == 0){
-					fitness = -2;
-				}else{
-					fitness = computeFitness(currentModel, targetModel);
-				}
-				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-				configModel = configWriter.addModule(ModelFactory.createDefaultModel(), module, parameters, inputDataset, outputDataset);
-				node = new RefinementNode(module, fitness, sourceModel, currentModel, inputDataset, outputDataset, configModel);
-			}
-			Tree<RefinementNode> level1Node = new Tree<RefinementNode>(node);
-			refinementTreeRoot.addChild(level1Node);
-		}
-		return refinementTreeRoot;
-	}
+//	private Tree<RefinementNode> initiateExecutionTree(){
+//		Map<String, String> parameters = new HashMap<String, String>();
+//		for(GeoLiftModule module : MODULES){
+//			Resource inputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+//			Model configModel = ModelFactory.createDefaultModel();
+//			RefinementNode node = new RefinementNode();
+//			parameters = module.selfConfig(sourceModel, targetModel);
+//			logger.info("Self-Config parameter(s):" + parameters);
+//			if(parameters == null || parameters.size() == 0){
+//				// mark as dead end, fitness = -2
+//				configModel = ModelFactory.createDefaultModel();
+//				node = new RefinementNode(module, -2, sourceModel, sourceModel, inputDataset, inputDataset, configModel);
+//			}else{
+//				Model currentModel = module.process(sourceModel, parameters);
+//				double fitness;
+//				if(currentModel == null || currentModel.size() == 0){
+//					fitness = -2;
+//				}else{
+//					fitness = computeFitness(currentModel, targetModel);
+//				}
+//				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+//				configModel = configWriter.addModule(ModelFactory.createDefaultModel(), module, parameters, inputDataset, outputDataset);
+//				node = new RefinementNode(module, fitness, sourceModel, currentModel, inputDataset, outputDataset, configModel);
+//			}
+//			Tree<RefinementNode> level1Node = new Tree<RefinementNode>(node);
+//			refinementTreeRoot.addChild(level1Node);
+//		}
+//		return refinementTreeRoot;
+//	}
 
 	private Tree<RefinementNode> expandNode(Tree<RefinementNode> root) {
 		for( GeoLiftModule module : MODULES){
@@ -167,7 +170,8 @@ public class SpecsLearn {
 				if(currentMdl == null || currentMdl.size() == 0 || currentMdl.isIsomorphicWith(inputModel)){
 					fitness = -2;
 				}else{
-					fitness = computeFitness(currentMdl, targetModel);
+//					fitness = computeFitness(currentMdl, targetModel);
+					fitness = computeFMeasure(currentMdl, targetModel);
 				}
 				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 				configMdl = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
@@ -191,49 +195,65 @@ public class SpecsLearn {
 		System.out.println("currentModel.difference(targetModel).size() = " + c_t);
 		return 1- ((double)(t_c + c_t) / (double)(currentModel.size() + targetModel.size()));
 	}
-
-
-
-	private Tree<RefinementNode> expandLeaves(Tree<RefinementNode> root){
-		Set<Tree<RefinementNode>> leaves = root.getLeaves();
-		for(Tree<RefinementNode> leaf : leaves){
-			for( GeoLiftModule module : MODULES){
-				Map<String, String> parameters = module.selfConfig(leaf.getValue().outputModel, targetModel);
-				Resource inputDataset  = leaf.getValue().outputDataset;
-				Model configModel = ModelFactory.createDefaultModel();
-				RefinementNode node = new RefinementNode();
-				if(parameters == null){
-					// mark as dead end, fitness = -2
-					configModel = leaf.getValue().outputModel;
-					node = new RefinementNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
-				}else{
-					Model currentModel = module.process(leaf.getValue().outputModel, parameters);
-					double fitness;
-					if(currentModel == null || currentModel.size() == 0){
-						fitness = -2;
-					}else{
-						fitness = computeFitness(currentModel, targetModel);
-					}
-					Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-					configModel = configWriter.addModule(leaf.getValue().configModel, module, parameters, inputDataset, outputDataset);
-					node = new RefinementNode(module, fitness, leaf.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
-				}
-				Tree<RefinementNode> child = new Tree<RefinementNode>(node);
-				leaf.addChild(child);
-				//				try {
-				//					Writer.writeModel(leaf.getValue().configModel, "TTL", "learnerReselt_" + 0);
-				//				} catch (IOException e) {
-				//					e.printStackTrace();
-				//				}
-				//				try {
-				//					Writer.writeModel(configModel, "TTL", "learnerReselt_" + 1);
-				//				} catch (IOException e) {
-				//					e.printStackTrace();
-				//				}
-			}
-		}
-		return root;
+	
+	double computeFMeasure(Model currentModel, Model targetModel){
+		double p = computePrecision(currentModel, targetModel);
+		double r = computeRecall(currentModel, targetModel);
+		return 2 * p * r / (p +r);
+		
 	}
+	
+	double computePrecision (Model currentModel, Model targetModel){
+		return (double) currentModel.intersection(targetModel).size() / (double) currentModel.size();
+	}
+	
+	double computeRecall(Model currentModel, Model targetModel){
+		return (double) currentModel.intersection(targetModel).size() / (double) targetModel.size();
+	}
+	
+
+
+
+//	private Tree<RefinementNode> expandLeaves(Tree<RefinementNode> root){
+//		Set<Tree<RefinementNode>> leaves = root.getLeaves();
+//		for(Tree<RefinementNode> leaf : leaves){
+//			for( GeoLiftModule module : MODULES){
+//				Map<String, String> parameters = module.selfConfig(leaf.getValue().outputModel, targetModel);
+//				Resource inputDataset  = leaf.getValue().outputDataset;
+//				Model configModel = ModelFactory.createDefaultModel();
+//				RefinementNode node = new RefinementNode();
+//				if(parameters == null){
+//					// mark as dead end, fitness = -2
+//					configModel = leaf.getValue().outputModel;
+//					node = new RefinementNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
+//				}else{
+//					Model currentModel = module.process(leaf.getValue().outputModel, parameters);
+//					double fitness;
+//					if(currentModel == null || currentModel.size() == 0){
+//						fitness = -2;
+//					}else{
+//						fitness = computeFitness(currentModel, targetModel);
+//					}
+//					Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+//					configModel = configWriter.addModule(leaf.getValue().configModel, module, parameters, inputDataset, outputDataset);
+//					node = new RefinementNode(module, fitness, leaf.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
+//				}
+//				Tree<RefinementNode> child = new Tree<RefinementNode>(node);
+//				leaf.addChild(child);
+//				//				try {
+//				//					Writer.writeModel(leaf.getValue().configModel, "TTL", "learnerReselt_" + 0);
+//				//				} catch (IOException e) {
+//				//					e.printStackTrace();
+//				//				}
+//				//				try {
+//				//					Writer.writeModel(configModel, "TTL", "learnerReselt_" + 1);
+//				//				} catch (IOException e) {
+//				//					e.printStackTrace();
+//				//				}
+//			}
+//		}
+//		return root;
+//	}
 
 
 	private Tree<RefinementNode> getMostPromisingNode(Tree<RefinementNode> root, boolean usePenalty){
@@ -282,7 +302,7 @@ public class SpecsLearn {
 
 	public static void main(String args[]) throws IOException{
 //		trivialRun(args);
-		evaluation(args);
+		evaluation(args, false, 1);
 	}
 	
 	public static void trivialRun(String args[]){
@@ -297,21 +317,29 @@ public class SpecsLearn {
 		logger.info("Done in " + (end - start) + "ms");
 	}
 	
-	public static void evaluation(String args[]) throws IOException{
+	public static void evaluation(String args[], boolean isBatch, int max) throws IOException{
 		String folder = args[0];
-		String results = "ModuleCount\tTime\tTreeSize\tIterationNr\tBestFitness\n";
-		for(int i = 1 ; i <= 5; i++){
+		String results = "ModuleCount\tTime\tTreeSize\tIterationNr\tP\tR\tF\n";
+		for(int i = 1 ; i <= max; i++){
 			SpecsLearn learner = new SpecsLearn();
-			learner.sourceModel  = Reader.readModel(folder + i + "/input.ttl");
-			learner.targetModel = Reader.readModel(folder + i + "/output.ttl");
+			if(isBatch){
+				folder = folder + i;
+			}
+			learner.sourceModel  = Reader.readModel(folder + "/input.ttl");
+			learner.targetModel  = Reader.readModel(folder + "/output.ttl");
 			long start = System.currentTimeMillis();
 			RefinementNode bestSolution = learner.run();
 			long end = System.currentTimeMillis();
 			long time = end - start;
 			results += i + "\t" + time + "\t" + 
 					learner.refinementTreeRoot.size() + "\t" + 
-					learner.iterationNr + "\t" + bestSolution.fitness + "\n";
-//			Writer.writeModel(bestSolution.configModel, "TTL", folder + i + "/self_config.ttl");
+					learner.iterationNr + "\t" + 
+//					bestSolution.fitness + "\t" +
+					learner.computePrecision(bestSolution.outputModel, targetModel) + "\t" + 
+					learner.computeRecall(bestSolution.outputModel, targetModel) + "\t" +
+					learner.computeFMeasure
+					(bestSolution.outputModel, targetModel);
+			Writer.writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
 //			bestSolution.outputModel.write(System.out,"TTL");
 			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 			System.out.println(results);

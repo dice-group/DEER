@@ -15,7 +15,7 @@ import org.aksw.geolift.helper.vacabularies.SPECS;
 import org.aksw.geolift.io.Reader;
 import org.aksw.geolift.io.Writer;
 import org.aksw.geolift.modules.Dereferencing.DereferencingModule;
-import org.aksw.geolift.modules.conformation.ConformationModule;
+import org.aksw.geolift.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.geolift.modules.filter.FilterModule;
 import org.aksw.geolift.modules.linking.LinkingModule;
 import org.aksw.geolift.modules.nlp.NLPModule;
@@ -97,8 +97,8 @@ public class RDFConfigExecuter {
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
-			if(type.equals(SPECS.ConformationModule)){
-				ConformationModule geoEnricher = new ConformationModule();
+			if(type.equals(SPECS.AuthorityConformationModule)){
+				AuthorityConformationModule geoEnricher = new AuthorityConformationModule();
 				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}

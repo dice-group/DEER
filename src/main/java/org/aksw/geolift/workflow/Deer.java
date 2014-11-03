@@ -20,8 +20,8 @@ import com.hp.hpl.jena.rdf.model.Model;
  * @author sherif
  *
  */
-public class GeoLift {
-	private static final Logger logger = Logger.getLogger(GeoLift.class.getName());
+public class Deer {
+	private static final Logger logger = Logger.getLogger(Deer.class.getName());
 	private static final String helpMessage = 
 			"parameters:\n" +
 					"\t-i --input: input file/URI" + "\n" +
@@ -36,7 +36,14 @@ public class GeoLift {
 					"\t2 nlp useFoxLight false" + "\n"+
 					"\t3 nlp useFoxLight true";
 
-
+	/**
+	 * 
+	 *@author sherif
+	 */
+	public Deer() {
+	}
+	
+	
 	/**
 	 * run GeoLift through command line
 	 * @param args
@@ -83,7 +90,7 @@ public class GeoLift {
             for(int i=0; i<args.length; i+=2){
                     if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")) {
                             //show help message
-                            logger.info(GeoLift.helpMessage);
+                            logger.info(Deer.helpMessage);
                             System.exit(0);
                     }
                     if(args[i].equals("-l") || args[i].toLowerCase().equals("--list")) {
