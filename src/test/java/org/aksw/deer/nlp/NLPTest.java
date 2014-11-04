@@ -1,4 +1,4 @@
-package org.aksw.geolift.nlp;
+package org.aksw.deer.nlp;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;

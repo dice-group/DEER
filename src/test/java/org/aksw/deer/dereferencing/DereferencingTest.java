@@ -1,4 +1,4 @@
-package org.aksw.geolift.dereferencing;
+package org.aksw.deer.dereferencing;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

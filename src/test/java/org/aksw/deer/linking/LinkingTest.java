@@ -1,4 +1,4 @@
-package org.aksw.geolift.linking;
+package org.aksw.deer.linking;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
