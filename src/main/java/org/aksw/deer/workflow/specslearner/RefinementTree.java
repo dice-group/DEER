@@ -6,6 +6,8 @@ package org.aksw.deer.workflow.specslearner;
 import java.util.List;
 import java.util.Set;
 
+import org.aksw.deer.helper.datastructure.Tree;
+
 /**
  * @author sherif
  *

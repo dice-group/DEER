@@ -86,7 +86,7 @@ public class Deer {
 		logger.info("***** Done in " + totalTime + "ms *****");
 	}
         
-        public static void determineRunMode(String args[]) throws IOException {            
+        public static void run(String args[]) throws IOException {            
             for(int i=0; i<args.length; i+=2){
                     if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")) {
                             //show help message
@@ -107,6 +107,6 @@ public class Deer {
 	 * @author sherif
 	 */
 	public static void main(String args[]) throws IOException{
-		determineRunMode(args);
+		run(args);
 	}
 }

@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
@@ -19,6 +21,7 @@ import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.deer.modules.filter.FilterModule;
 import org.aksw.deer.modules.linking.LinkingModule;
 import org.aksw.deer.modules.nlp.NLPModule;
+import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
 import org.aksw.deer.operators.MergeOperator;
 import org.aksw.deer.operators.SplitOperator;
 import org.apache.log4j.Logger;
@@ -48,7 +51,8 @@ public class RDFConfigExecuter {
 
 	public static void main(String args[]) throws IOException{
 		RDFConfigExecuter RDFConfigHandler = new RDFConfigExecuter();
-		RDFConfigHandler.run(args[0]);
+		configModel =  Reader.readModel(args[0]);
+		RDFConfigHandler.run(configModel);
 	}
 
 	/**
@@ -56,14 +60,16 @@ public class RDFConfigExecuter {
 	 * @author sherif
 	 * @throws IOException 
 	 */
-	private void run(String inputFile) throws IOException {
-		configModel =  Reader.readModel(inputFile);
+	public Set<Model> run(Model config) throws IOException {
+		Set<Model> result = new HashSet<Model>();
+		configModel =  config;
 		//		configModel.write(System.out,"TTL");
 		List<Resource> finalDatasets = getFinalDatasets();
 		logger.info("Found " + finalDatasets.size() + " output Datasets: " + finalDatasets);
 		for(Resource finalDataset : finalDatasets){
-			readDataset(finalDataset);
+			result.add(readDataset(finalDataset));
 		}
+		return result;
 	}
 
 
@@ -83,33 +89,39 @@ public class RDFConfigExecuter {
 				continue;
 			}
 			if(type.equals(SPECS.NLPModule)){
-				NLPModule geoEnricher = new NLPModule();
-				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
+				NLPModule enricher = new NLPModule();
+				enrichedModel = enricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
 			if(type.equals(SPECS.LinkingModule)){
-				LinkingModule geoEnricher = new LinkingModule();
-				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
+				LinkingModule enricher = new LinkingModule();
+				enrichedModel = enricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
 			if(type.equals(SPECS.DereferencingModule)){
-				DereferencingModule geoEnricher = new DereferencingModule();
-				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
+				DereferencingModule enricher = new DereferencingModule();
+				enrichedModel = enricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
 			if(type.equals(SPECS.AuthorityConformationModule)){
-				AuthorityConformationModule geoEnricher = new AuthorityConformationModule();
-				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
+				AuthorityConformationModule enricher = new AuthorityConformationModule();
+				enrichedModel = enricher.process(inputDatasets.get(0), moduleParameters);
+				return enrichedModel;
+			}
+			if(type.equals(SPECS.PredicateConformationModule)){
+				PredicateConformationModule enricher = new PredicateConformationModule();
+				enrichedModel = enricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
 			if(type.equals(SPECS.FilterModule)){
-				FilterModule geoEnricher = new FilterModule();
-				enrichedModel = geoEnricher.process(inputDatasets.get(0), moduleParameters);
+				FilterModule enricher = new FilterModule();
+				enrichedModel = enricher.process(inputDatasets.get(0), moduleParameters);
 				return enrichedModel;
 			}
 		}
 		logger.error(module + " module is not yet implemented,\n" +
-				"Currently,the nlp, linking, dereferencing, filter and conformation modules are only implemented\n" +
+				"Currently,the nlp, linking, dereferencing, filter, authority conformation " +
+				"and predicate conformation modules are only implemented\n" +
 				"Exit with error ...");
 		System.exit(1);
 		return null;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.aksw.deer.workflow.specslearner;
+package org.aksw.deer.helper.datastructure;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +22,7 @@ public class Tree<T> {
 	private T value;
 
 
-	Tree(Tree<T> parent, T value, List<Tree<T>> childrenlist) {
+	public Tree(Tree<T> parent, T value, List<Tree<T>> childrenlist) {
 		this.parent = parent;
 		this.value = value;
 		if (childrenlist != null) {
@@ -32,7 +32,7 @@ public class Tree<T> {
 		}
 	}
 
-	Tree(T value) {
+	public Tree(T value) {
 		this.parent = null;
 		this.value = value;
 		children = null;

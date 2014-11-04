@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.aksw.deer.helper.datastructure.Tree;
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
