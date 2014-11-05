@@ -165,6 +165,8 @@ public class RDFConfigWriter{
 		config.add(dataset, SPECS.FromEndPoint, endpoint);
 		config.add(dataset, SPECS.hasUri, uri);
 	}
+	
+	
 	/**
 	 * @param args
 	 * @author sherif

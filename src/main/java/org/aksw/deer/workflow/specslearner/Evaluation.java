@@ -24,14 +24,28 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
  * @author sherif
  *
  */
 public class Evaluation {
+	public Model manualConfig = ModelFactory.createDefaultModel();
+	public Model selfConfig = ModelFactory.createDefaultModel();
+
+	/**
+	 * 
+	 *@author sherif
+	 */
+	public Evaluation() {
+	}
+
 	static String resultStr = 
 			"ModuleComplexity" + "\t" +
 					"Time" + "\t" +
@@ -79,8 +93,8 @@ public class Evaluation {
 
 	public static FMeasure evaluateSelfConfig(Model manualConfig, Model selfConfig) throws IOException {
 		RDFConfigExecuter configExe = new RDFConfigExecuter();
-		Model manualKB = configExe.run(manualConfig).iterator().next();
-		Model selfConfigKB = configExe.run(selfConfig).iterator().next();
+		Model manualKB = configExe.execute(manualConfig).iterator().next();
+		Model selfConfigKB = configExe.execute(selfConfig).iterator().next();
 		return getFMeasure(selfConfigKB, manualKB);
 	}
 
@@ -105,29 +119,12 @@ public class Evaluation {
 		return (double) current.intersection(target).size() / (double) target.size();
 	}
 
-	public static void main(String args[]) throws IOException{
-		//		RefinementNode bestNode = run(args, false, 1);
-		//		Model manualConfig = Reader.readModel(args[0]);
-		//		Model selfConfig = Reader.readModel(args[1]);
-		//		System.out.println(evaluateSelfConfig(manualConfig, selfConfig));
-		Model kb = Reader.readModel(args[0]);
-		List<Resource> resources = getNResources("http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB001", kb, 1);
-		for (Resource resource : resources) {
-			System.out.println(resource);
-			System.out.println("-------------- DESCRIBE ----------------");
-			getCBD(resource, kb).write(System.out, "TTL");
-			System.out.println("--------------- SELECT ---------------");
-			readCBD(resource, kb).write(System.out, "TTL");
-			System.out.println("------------------------------");
-		}
-	}
-
-	public static List<Resource> getNResources(String authority, Model m, int n){
+	public List<Resource> getNResources(String authority, Model kb, int n){
 		List<Resource> results = new ArrayList<Resource>();
 		String sparqlQueryString = 
-				"SELECT DISTINCT ?s { ?s ?p ?o. FILTER (STRSTARTS(STR(?o), \"" + authority +"\")) } LIMIT " + n;
+				"SELECT DISTINCT ?s { ?s ?p ?o. FILTER (STRSTARTS(STR(?s), \'" + authority + "\')) } LIMIT " + n;
 		QueryFactory.create(sparqlQueryString);
-		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, m);
+		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, kb);
 		ResultSet queryResults = qexec.execSelect();
 		while(queryResults.hasNext()){
 			QuerySolution qs = queryResults.nextSolution();
@@ -137,7 +134,7 @@ public class Evaluation {
 		return results;
 	}
 
-	public static Model getCBD(Resource r, Model m){
+	public Model getCBD(Resource r, Model m){
 		String sparqlQueryString = 
 				"DESCRIBE <" + r + ">";
 		QueryFactory.create(sparqlQueryString);
@@ -147,14 +144,113 @@ public class Evaluation {
 		return cbd;
 	}
 
-	public static Model readCBD(Resource r, Model m) {
+	public void test(String kbFile, String manualConfigFile, String authority, int exampleNr) throws IOException{
+		String folder = kbFile.substring(0, kbFile.lastIndexOf("/")+1);
+		Model kb = Reader.readModel(kbFile);
+		Model manualConfig = Reader.readModel(manualConfigFile);
+		List<Resource> resources = getNResources(authority, kb, exampleNr);
+		int i = 1;
+		for (Resource r : resources) {
+			// (1) Generate CBD and save it
+			Model cbd = getCBD(r, kb);
+			String outputFile = folder + "cbd" + i + ".ttl";
+			Writer.writeModel(cbd, "TTL", outputFile);
+
+			// (2) Generate a manual-config file to the generated CBD in(1) and save it
+			Model cbdManualConfig = changeInputDatasetLocation(manualConfig, kbFile , outputFile);
+			outputFile = folder + "cbd" + i + "m.ttl";
+			String oldLocation = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_manual_enrichmed.ttl";
+			cbdManualConfig = changeOutputDatasetLocation(cbdManualConfig, oldLocation , outputFile);
+			cbdManualConfig.setNsPrefix("gl", SPECS.getURI());
+			cbdManualConfig.setNsPrefix("RDFS", RDFS.getURI());
+			outputFile =  folder + "m_config" + i +".ttl";
+			Writer.writeModel(cbdManualConfig, "TTL", outputFile);
+
+			// (3) run the config generated in(2) and save result
+			Model manuallyEnrichedCBD = RDFConfigExecuter.execute(cbdManualConfig).iterator().next();
+			if(manuallyEnrichedCBD.difference(cbd).size() == 0){
+				continue;
+			}
+
+			// (4) Generate self-config  and save it
+			SpecsLearn learner = new SpecsLearn();
+			learner.sourceModel  = cbd;
+			learner.targetModel  = manuallyEnrichedCBD;
+			long start = System.currentTimeMillis();
+			RefinementNode bestSolution = learner.run();
+			long end = System.currentTimeMillis();
+			long time = end - start;
+			Model selfConfEnrichedCBD = bestSolution.outputModel;
+			outputFile =  folder + "cbd" + i + "s.ttl";
+			Writer.writeModel(selfConfEnrichedCBD, "TTL",  outputFile);
+			Model cbdSelfConfig = bestSolution.configModel;
+			outputFile =  folder + "s_config" + i + ".ttl";
+			Writer.writeModel(cbdSelfConfig, "TTL", outputFile);
+
+			// (5) Compare manual and self-config in the entire KB
+			// I. Generate manuallyEnrichedKB by applying the manual config to the entire DB 
+			outputFile = folder + "cbd" + i + ".ttl";
+			Model manuallyEnrichedKB = changeInputDatasetLocation(cbdManualConfig, kbFile, outputFile);
+			outputFile = folder + "cbd" + i + "m.ttl";
+			String newLocation = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_manual_enrichmed.ttl";
+			manuallyEnrichedKB = changeOutputDatasetLocation(manuallyEnrichedKB, outputFile , newLocation);
+			// II. Generate selfConfigEnrichedKB by applying the self config to the entire DB 
+			outputFile = folder + "cbd" + i + ".ttl";
+			Model selfConfigEnrichedKB = changeInputDatasetLocation(cbdManualConfig, kbFile, outputFile);
+			outputFile = folder + "cbd" + i + "m.ttl";
+			newLocation = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_manual_enrichmed.ttl";
+			selfConfigEnrichedKB = changeOutputDatasetLocation(selfConfigEnrichedKB, outputFile , newLocation);
+
+
+			i++;
+		}
+	}
+
+
+	public static Model changeInputDatasetLocation(Model configModel, String oldLocation, String newLocation){
 		Model result = ModelFactory.createDefaultModel();
-		String sparqlQueryString = "CONSTRUCT {<" + r + "> ?p ?o} WHERE { <" + r + "> ?p ?o.}";
-		QueryFactory.create(sparqlQueryString);
-		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, m);
-		result = qexec.execConstruct();
-		qexec.close() ;
+		result = result.union(configModel);
+		StmtIterator list = result.listStatements(null, SPECS.inputFile, oldLocation);
+		Model remove = ModelFactory.createDefaultModel();
+		while(list.hasNext()){
+			Statement s = list.next();
+			remove.add(s);
+		}
+		result = result.remove(remove);
+		Model add = ModelFactory.createDefaultModel();
+		list = remove.listStatements();
+		while(list.hasNext()){
+			Statement s = list.next();
+			add.add(s.getSubject(), s.getPredicate(), newLocation);
+		}
+		result.add(add);
 		return result;
+	}
+
+	public static Model changeOutputDatasetLocation(Model configModel, String oldLocation, String newLocation){
+		Model result = ModelFactory.createDefaultModel();
+		result = result.union(configModel);
+		StmtIterator list = result.listStatements(null, SPECS.outputFile, oldLocation);
+		Model remove = ModelFactory.createDefaultModel();
+		while(list.hasNext()){
+			Statement s = list.next();
+			remove.add(s);
+		}
+		result = result.remove(remove);
+		Model add = ModelFactory.createDefaultModel();
+		list = remove.listStatements();
+		while(list.hasNext()){
+			Statement s = list.next();
+			add.add(s.getSubject(), s.getPredicate(), newLocation);
+		}
+		result.add(add);
+		return result;
+	}
+
+
+	public static void main(String args[]) throws IOException{
+		Evaluation e = new Evaluation();
+		e.test(args[0], args[1], args[2], 1);
 	}
 
 

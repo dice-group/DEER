@@ -47,6 +47,8 @@ public class SpecsLearn {
 					new PredicateConformationModule(), 
 					new DereferencingModule()
 					));
+	
+	public double penaltyWeight = 0.5;// [0, 1]
 
 	private int datasetCounter = 1;
 	public static Model sourceModel = ModelFactory.createDefaultModel();
@@ -78,7 +80,7 @@ public class SpecsLearn {
 	public RefinementNode run(){
 		refinementTreeRoot = createRefinementTreeRoot();
 		refinementTreeRoot = expandNode(refinementTreeRoot);
-		Tree<RefinementNode> mostPromisingNode = getMostPromisingNode(refinementTreeRoot, true);
+		Tree<RefinementNode> mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
 		refinementTreeRoot.print();
 		logger.info("Most promising node: " + mostPromisingNode.getValue());
 		iterationNr ++;
@@ -87,12 +89,12 @@ public class SpecsLearn {
 		{
 			iterationNr++;
 			mostPromisingNode = expandNode(mostPromisingNode);
-			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, true);
+			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
 			refinementTreeRoot.print();
 			logger.info("Most promising node: " + mostPromisingNode.getValue());
 		}
 		logger.info("----------------------------------------------");
-		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, false).getValue();
+		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, 0).getValue();
 //		logger.info("Best Solution: " + bestSolution.toString());
 //		System.out.println("===== Output Config =====");
 //		bestSolution.configModel.write(System.out,"TTL");
@@ -113,46 +115,6 @@ public class SpecsLearn {
 		return new Tree<RefinementNode>(null,initialNode, null);
 	}
 	
-
-
-//	private void updateParentsFitness(	Tree<RefinementNode> root) {
-//		while(root != null){
-//			long rootChildrenCount = root.size() - 1;
-//			root.getValue().fitness += CHILDREN_PENALTY_WEIGHT * rootChildrenCount;
-//			root = root.getParent();
-//		}
-//	}
-
-//	private Tree<RefinementNode> initiateExecutionTree(){
-//		Map<String, String> parameters = new HashMap<String, String>();
-//		for(GeoLiftModule module : MODULES){
-//			Resource inputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-//			Model configModel = ModelFactory.createDefaultModel();
-//			RefinementNode node = new RefinementNode();
-//			parameters = module.selfConfig(sourceModel, targetModel);
-//			logger.info("Self-Config parameter(s):" + parameters);
-//			if(parameters == null || parameters.size() == 0){
-//				// mark as dead end, fitness = -2
-//				configModel = ModelFactory.createDefaultModel();
-//				node = new RefinementNode(module, -2, sourceModel, sourceModel, inputDataset, inputDataset, configModel);
-//			}else{
-//				Model currentModel = module.process(sourceModel, parameters);
-//				double fitness;
-//				if(currentModel == null || currentModel.size() == 0){
-//					fitness = -2;
-//				}else{
-//					fitness = computeFitness(currentModel, targetModel);
-//				}
-//				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-//				configModel = configWriter.addModule(ModelFactory.createDefaultModel(), module, parameters, inputDataset, outputDataset);
-//				node = new RefinementNode(module, fitness, sourceModel, currentModel, inputDataset, outputDataset, configModel);
-//			}
-//			Tree<RefinementNode> level1Node = new Tree<RefinementNode>(node);
-//			refinementTreeRoot.addChild(level1Node);
-//		}
-//		return refinementTreeRoot;
-//	}
-
 	private Tree<RefinementNode> expandNode(Tree<RefinementNode> root) {
 		for( GeoLiftModule module : MODULES){
 			Model inputModel = root.getValue().outputModel;
@@ -212,52 +174,7 @@ public class SpecsLearn {
 		return (double) currentModel.intersection(targetModel).size() / (double) targetModel.size();
 	}
 	
-
-
-
-//	private Tree<RefinementNode> expandLeaves(Tree<RefinementNode> root){
-//		Set<Tree<RefinementNode>> leaves = root.getLeaves();
-//		for(Tree<RefinementNode> leaf : leaves){
-//			for( GeoLiftModule module : MODULES){
-//				Map<String, String> parameters = module.selfConfig(leaf.getValue().outputModel, targetModel);
-//				Resource inputDataset  = leaf.getValue().outputDataset;
-//				Model configModel = ModelFactory.createDefaultModel();
-//				RefinementNode node = new RefinementNode();
-//				if(parameters == null){
-//					// mark as dead end, fitness = -2
-//					configModel = leaf.getValue().outputModel;
-//					node = new RefinementNode( module, -2, sourceModel, sourceModel,inputDataset, inputDataset, configModel);
-//				}else{
-//					Model currentModel = module.process(leaf.getValue().outputModel, parameters);
-//					double fitness;
-//					if(currentModel == null || currentModel.size() == 0){
-//						fitness = -2;
-//					}else{
-//						fitness = computeFitness(currentModel, targetModel);
-//					}
-//					Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-//					configModel = configWriter.addModule(leaf.getValue().configModel, module, parameters, inputDataset, outputDataset);
-//					node = new RefinementNode(module, fitness, leaf.getValue().outputModel, currentModel, inputDataset, outputDataset, configModel);
-//				}
-//				Tree<RefinementNode> child = new Tree<RefinementNode>(node);
-//				leaf.addChild(child);
-//				//				try {
-//				//					Writer.writeModel(leaf.getValue().configModel, "TTL", "learnerReselt_" + 0);
-//				//				} catch (IOException e) {
-//				//					e.printStackTrace();
-//				//				}
-//				//				try {
-//				//					Writer.writeModel(configModel, "TTL", "learnerReselt_" + 1);
-//				//				} catch (IOException e) {
-//				//					e.printStackTrace();
-//				//				}
-//			}
-//		}
-//		return root;
-//	}
-
-
-	private Tree<RefinementNode> getMostPromisingNode(Tree<RefinementNode> root, boolean usePenalty){
+	private Tree<RefinementNode> getMostPromisingNode(Tree<RefinementNode> root, double penaltyWeight){
 		// trivial case
 		if(root.getchildren() == null || root.getchildren().size() == 0){
 			return root;
@@ -266,20 +183,16 @@ public class SpecsLearn {
 		Tree<RefinementNode> mostPromesyChild = new Tree<RefinementNode>(new RefinementNode());
 		for(Tree<RefinementNode> child : root.getchildren()){
 			if(child.getValue().fitness >= 0){
-				Tree<RefinementNode> promesyChild = getMostPromisingNode(child, usePenalty);
+				Tree<RefinementNode> promesyChild = getMostPromisingNode(child, penaltyWeight);
 				double newFitness;
-				if(usePenalty){
-					newFitness = promesyChild.getValue().fitness - computePenality(promesyChild);
-				}else{
-					newFitness = promesyChild.getValue().fitness;
-				}
+				newFitness = promesyChild.getValue().fitness - penaltyWeight * computePenality(promesyChild);
 				if( newFitness > mostPromesyChild.getValue().fitness  ){
 					mostPromesyChild = promesyChild;
 				}
 			}
 		}
 		// return the argmax{root, mostPromesyChild}
-		if(usePenalty){
+		if(penaltyWeight > 0){
 			return mostPromesyChild;
 		}else if(root.getValue().fitness >= mostPromesyChild.getValue().fitness){
 			return root;

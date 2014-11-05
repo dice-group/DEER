@@ -50,17 +50,16 @@ public class RDFConfigExecuter {
 	public static 	Model configModel;
 
 	public static void main(String args[]) throws IOException{
-		RDFConfigExecuter RDFConfigHandler = new RDFConfigExecuter();
 		configModel =  Reader.readModel(args[0]);
-		RDFConfigHandler.run(configModel);
+		RDFConfigExecuter.execute(configModel);
 	}
 
 	/**
-	 * @param inputFile
+	 * @param inputFile 
 	 * @author sherif
 	 * @throws IOException 
 	 */
-	public Set<Model> run(Model config) throws IOException {
+	public static Set<Model> execute(Model config) throws IOException{
 		Set<Model> result = new HashSet<Model>();
 		configModel =  config;
 		//		configModel.write(System.out,"TTL");
@@ -79,7 +78,7 @@ public class RDFConfigExecuter {
 	 * @return model resulted after executing the input module
 	 * @author sherif
 	 */
-	private Model executeModule(Resource module, List<Model> inputDatasets) {
+	private static Model executeModule(Resource module, List<Model> inputDatasets) {
 		Model enrichedModel = ModelFactory.createDefaultModel();
 		Map<String, String> moduleParameters = getParameters(module);
 		NodeIterator typeItr = configModel.listObjectsOfProperty(module, RDF.type);
@@ -134,7 +133,7 @@ public class RDFConfigExecuter {
 	 * @return model resulted after executing the input operator
 	 * @author sherif
 	 */
-	private Model executeOperator(Resource operator, List<Model> inputDatasets) {
+	private static Model executeOperator(Resource operator, List<Model> inputDatasets) {
 		Map<String, String> moduleParameters = getParameters(operator);
 		NodeIterator typeItr = configModel.listObjectsOfProperty(operator, RDF.type);
 		while(typeItr.hasNext()){
@@ -191,7 +190,7 @@ public class RDFConfigExecuter {
 	 * @author sherif
 	 * @throws IOException 
 	 */
-	private Model readDataset(Resource dataset) throws IOException{
+	private static Model readDataset(Resource dataset) throws IOException {
 		// trivial case: read dataset from file/uri/endpoint
 		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.FromEndPoint);
 		if(uriItr.hasNext()){
@@ -225,7 +224,7 @@ public class RDFConfigExecuter {
 	 * @throws IOException
 	 * @author sherif
 	 */
-	private void writeDataset(Resource datasetUri, Model dataSetModel) throws IOException{
+	private static void writeDataset(Resource datasetUri, Model dataSetModel) throws IOException{
 		NodeIterator uriItr = configModel.listObjectsOfProperty(datasetUri, SPECS.outputFile);
 		if(uriItr.hasNext()){
 			String outputFile = uriItr.next().toString();
@@ -245,7 +244,7 @@ public class RDFConfigExecuter {
 	 * @return
 	 * @author sherif
 	 */
-	private Model readCBD(Resource dataset, String endpointUri) {
+	private static Model readCBD(Resource dataset, String endpointUri) {
 		long startTime = System.currentTimeMillis();
 		Model result = ModelFactory.createDefaultModel();
 		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.hasUri);
@@ -272,7 +271,7 @@ public class RDFConfigExecuter {
 	 * @author sherif
 	 * @throws IOException 
 	 */
-	private Model executeModuleOrOperator(Resource moduleOrOperator) throws IOException {
+	private static Model executeModuleOrOperator(Resource moduleOrOperator) throws IOException {
 		List<Resource> inputDatasetsUris = getInputDatasetsUris(moduleOrOperator);
 		List<Model> inputDatasetsModels = new ArrayList<Model>();
 		for(Resource inputdatasetUri : inputDatasetsUris){
@@ -296,7 +295,7 @@ public class RDFConfigExecuter {
 	 * 			of some operators/models and not as input to any operator/model
 	 * @author sherif
 	 */
-	private List<Resource> getFinalDatasets(){
+	private static List<Resource> getFinalDatasets(){
 		List<Resource> result = new ArrayList<Resource>();
 		String sparqlQueryString = 
 				"SELECT DISTINCT ?d {?s1 <" + SPECS.hasOutput + "> ?d. " +
@@ -317,7 +316,7 @@ public class RDFConfigExecuter {
 	 * @return 	a list of all input datasets to a certain module/operator
 	 * @author sherif
 	 */
-	private List<Resource> getInputDatasetsUris(Resource moduleOrOperator){
+	private static List<Resource> getInputDatasetsUris(Resource moduleOrOperator){
 		List<Resource> result = new ArrayList<Resource>();
 		String s = "<" + moduleOrOperator + ">";
 		String sparqlQueryString = 
@@ -359,7 +358,7 @@ public class RDFConfigExecuter {
 	 * @return 	module/operator for a given in/output dataset. 
 	 * @author sherif
 	 */
-	private Resource getModuleOrOperator(Resource inputDataset, Resource outputDataset){
+	private static Resource getModuleOrOperator(Resource inputDataset, Resource outputDataset){
 		Resource result = ResourceFactory.createResource();
 		if(inputDataset == null){
 			String q = "<" + outputDataset + ">";
