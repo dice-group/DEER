@@ -4,9 +4,12 @@
 package org.aksw.deer.workflow.specslearner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,10 +27,16 @@ import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigWriter;
 import org.apache.log4j.Logger;
 
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 
 
@@ -62,20 +71,29 @@ public class SpecsLearn {
 	public final double 	CHILDREN_PENALTY_WEIGHT   = 1; 
 	public final double 	COMPLEXITY_PENALTY_WEIGHT = 1;
 
-	SpecsLearn(Model source, Model target){
-		this();
-		this.sourceModel  = source;
-		this.targetModel  = target;
-	}
 
 	/**
-	 * 
+	 * Contractors
 	 *@author sherif
 	 */
 	public SpecsLearn() {
 		sourceModel = ModelFactory.createDefaultModel();
 		targetModel = ModelFactory.createDefaultModel();
 	}
+	
+	SpecsLearn(Model source, Model target){
+		sourceModel  = source;
+		targetModel  = target;
+	}
+	
+	SpecsLearn(Model source, Model target, double penaltyWeight){
+		this(source, target);
+		this.penaltyWeight = penaltyWeight;
+	}
+
+
+	
+	
 
 	public RefinementNode run(){
 		refinementTreeRoot = createRefinementTreeRoot();
@@ -91,6 +109,10 @@ public class SpecsLearn {
 			mostPromisingNode = expandNode(mostPromisingNode);
 			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
 			refinementTreeRoot.print();
+			if(mostPromisingNode.getValue().fitness == -Double.MAX_VALUE){
+				// no better solution can be found
+				break;
+			}
 			logger.info("Most promising node: " + mostPromisingNode.getValue());
 		}
 		logger.info("----------------------------------------------");
@@ -104,6 +126,7 @@ public class SpecsLearn {
 //		mostPromisingNode.getValue().configModel.write(System.out,"TTL");
 //		System.out.println("===== Output Dataset =====");
 //		mostPromisingNode.getValue().outputModel.write(System.out,"TTL");
+		bestSolution.configModel = setIOFiles(bestSolution.configModel, "inputFile.ttl", "outputFile.ttl"); 
 		return bestSolution;
 	}
 	
@@ -162,6 +185,9 @@ public class SpecsLearn {
 	double computeFMeasure(Model currentModel, Model targetModel){
 		double p = computePrecision(currentModel, targetModel);
 		double r = computeRecall(currentModel, targetModel);
+		if(p == 0 && r == 0){
+			return 0;
+		}
 		return 2 * p * r / (p +r);
 		
 	}
@@ -260,6 +286,31 @@ public class SpecsLearn {
 //			break;
 		}
 		System.out.println(results);
+	}
+	
+	
+	Model setIOFiles(final Model sConfig, String inputFile, String outputFile){
+		Model resultModel = ModelFactory.createDefaultModel();
+		resultModel = resultModel.union(sConfig);
+		List<String> datasets = new ArrayList<String>();
+		String sparqlQueryString = 
+				"SELECT DISTINCT ?d {?d <" + RDF.type + "> <" + SPECS.Dataset + ">.} ";
+		QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, resultModel);
+		ResultSet queryResults = qexec.execSelect();
+		while(queryResults.hasNext()){
+			QuerySolution qs = queryResults.nextSolution();
+			Resource dataset = qs.getResource("?d");
+			datasets.add(dataset.toString());
+		}
+		qexec.close() ;
+		Collections.sort(datasets);
+		Resource inputDataset = ResourceFactory.createResource(datasets.get(0));
+		Resource outputDataset = ResourceFactory.createResource(datasets.get(datasets.size()-1));
+		resultModel.add(inputDataset, SPECS.inputFile, inputFile);
+		resultModel.add(outputDataset, SPECS.outputFile, outputFile);
+		resultModel.setNsPrefixes(sConfig);
+		return resultModel;
 	}
 
 }

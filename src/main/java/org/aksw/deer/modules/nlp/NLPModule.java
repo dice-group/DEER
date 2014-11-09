@@ -424,12 +424,13 @@ public class NLPModule implements GeoLiftModule{
 			RDFNode object = st.getObject();
 			RDFNode subject = st.getSubject();
 			if(object.isLiteral()){
-				if(!object.asLiteral().toString().contains("^^")){ 
+//				if(!object.asLiteral().toString().contains("^^")){ 
 					Model namedEntityModel = ModelFactory.createDefaultModel();
 					if(object.toString().contains("@")){
-						namedEntityModel = getNamedEntityModel(object.toString().substring(0,object.toString().lastIndexOf("@")));
+						String substring = object.toString().substring(0,object.toString().lastIndexOf("@")).replaceAll("@", "");
+						namedEntityModel = getNamedEntityModel(substring);
 					}else{
-						namedEntityModel = getNamedEntityModel(object.toString());
+						namedEntityModel = getNamedEntityModel(object.toString().replaceAll("@", ""));
 					}
 					if(!namedEntityModel.isEmpty()){
 						if(NEType.equalsIgnoreCase("all")){ // Extract all NE (Generalization of GeoLift)
@@ -444,7 +445,7 @@ public class NLPModule implements GeoLiftModule{
 					}				
 				}
 			}
-		}
+//		}
 		resultModel.add(model);
 		return resultModel;
 	}

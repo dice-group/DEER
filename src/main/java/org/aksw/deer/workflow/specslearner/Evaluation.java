@@ -5,6 +5,7 @@ package org.aksw.deer.workflow.specslearner;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import org.aksw.deer.io.Writer;
 import org.aksw.deer.workflow.Deer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
+import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -29,6 +31,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
@@ -36,8 +39,12 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *
  */
 public class Evaluation {
+	private static final Logger logger = Logger.getLogger(SpecsLearn.class.getName());
+
 	public Model manualConfig = ModelFactory.createDefaultModel();
 	public Model selfConfig = ModelFactory.createDefaultModel();
+	private Model cbdManualConfig;
+	private Model cbdSelfConfig;
 
 	/**
 	 * 
@@ -47,8 +54,13 @@ public class Evaluation {
 	}
 
 	static String resultStr = 
-			"ModuleComplexity" + "\t" +
-					"Time" + "\t" +
+			"ExampleCount" + "\t" +
+					"penaltyWeight" + "\t" +
+					"manualConfigComplexity" + "\t" +
+					"kbManualConfigTime" + "\t" +
+					"selfConfigXComplexity" + "\t" +
+					"kbSelfConfigTime" + "\t" +
+					"LearningTime" + "\t" +
 					"TreeSize" +"\t" +
 					"IterationNr" + "\t" +
 					"P" + "\t" +
@@ -101,14 +113,14 @@ public class Evaluation {
 	static FMeasure getFMeasure(Model current, Model target){
 		double p = computePrecision(current, target);
 		double r = computeRecall(current, target);
-		double f = 2 * p * r / (p +r);
+		double f = 2 * p * r / (p + r);
 		return new FMeasure(p, r, f);
 	}
 
 	static double computeFMeasure(Model current, Model target){
 		double p = computePrecision(current, target);
 		double r = computeRecall(current, target);
-		return 2 * p * r / (p +r);
+		return 2 * p * r / (p + r);
 	}
 
 	static double computePrecision (Model current, Model target){
@@ -134,7 +146,23 @@ public class Evaluation {
 		return results;
 	}
 
+	public List<Resource> getAllResources(String authority, Model kb){
+		List<Resource> results = new ArrayList<Resource>();
+		String sparqlQueryString = 
+				"SELECT DISTINCT ?s { ?s ?p ?o. FILTER (STRSTARTS(STR(?s), \'" + authority + "\')) }";
+		QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, kb);
+		ResultSet queryResults = qexec.execSelect();
+		while(queryResults.hasNext()){
+			QuerySolution qs = queryResults.nextSolution();
+			results.add(qs.getResource("?s"));
+		}
+		qexec.close() ;
+		return results;
+	}
+
 	public Model getCBD(Resource r, Model m){
+		logger.info("Generating CBD of Resource " + r);
 		String sparqlQueryString = 
 				"DESCRIBE <" + r + ">";
 		QueryFactory.create(sparqlQueryString);
@@ -144,70 +172,129 @@ public class Evaluation {
 		return cbd;
 	}
 
-	public void test(String kbFile, String manualConfigFile, String authority, int exampleNr) throws IOException{
+	public void testExampleCount(String kbFile, String manualConfigFile, String authority, int exampleCount, double penaltyWeight) throws IOException{
 		String folder = kbFile.substring(0, kbFile.lastIndexOf("/")+1);
 		Model kb = Reader.readModel(kbFile);
 		Model manualConfig = Reader.readModel(manualConfigFile);
-		List<Resource> resources = getNResources(authority, kb, exampleNr);
-		int i = 1;
-		for (Resource r : resources) {
-			// (1) Generate CBD and save it
-			Model cbd = getCBD(r, kb);
-			String outputFile = folder + "cbd" + i + ".ttl";
-			Writer.writeModel(cbd, "TTL", outputFile);
+		//		List<Resource> resources = getNResources(authority, kb, exampleCount);
+		List<Resource> resources = getAllResources(authority, kb);
+		Model cbd = ModelFactory.createDefaultModel();
+		String cbdOutputFile = new String(), cbdMOutputFile = new String(), kbMOutputFile = new String();
+		Model manuallyEnrichedCBD = ModelFactory.createDefaultModel();
+		int foundExamples = 0;
+		do{
+			cbd = ModelFactory.createDefaultModel();
+			for(int j = 0 ; j < exampleCount ; j++ ){
+				Resource r = resources.iterator().next(); 
+				resources.remove(r);
+				// (1) Generate CBDs and save it
+				cbd.add(getCBD(r, kb));
+			}
+			cbdOutputFile = folder + "cbd" + exampleCount + ".ttl";
+			Writer.writeModel(cbd, "TTL", cbdOutputFile);
 
 			// (2) Generate a manual-config file to the generated CBD in(1) and save it
-			Model cbdManualConfig = changeInputDatasetLocation(manualConfig, kbFile , outputFile);
-			outputFile = folder + "cbd" + i + "m.ttl";
-			String oldLocation = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_manual_enrichmed.ttl";
-			cbdManualConfig = changeOutputDatasetLocation(cbdManualConfig, oldLocation , outputFile);
-			cbdManualConfig.setNsPrefix("gl", SPECS.getURI());
-			cbdManualConfig.setNsPrefix("RDFS", RDFS.getURI());
-			outputFile =  folder + "m_config" + i +".ttl";
-			Writer.writeModel(cbdManualConfig, "TTL", outputFile);
+			cbdManualConfig = changeInputDataset(manualConfig, kbFile , cbdOutputFile);
+			cbdMOutputFile = folder + "cbd" + exampleCount + "m.ttl";
+			kbMOutputFile = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_manual_enrichmed.ttl";
+			cbdManualConfig = changeOutputDataset(cbdManualConfig, kbMOutputFile , cbdMOutputFile);
+			cbdManualConfig.setNsPrefixes(manualConfig);
+			String cbdManualConfigOutputFile =  folder + "m_config" + exampleCount +".ttl";
+			Writer.writeModel(cbdManualConfig, "TTL", cbdManualConfigOutputFile);
 
 			// (3) run the config generated in(2) and save result
-			Model manuallyEnrichedCBD = RDFConfigExecuter.execute(cbdManualConfig).iterator().next();
-			if(manuallyEnrichedCBD.difference(cbd).size() == 0){
-				continue;
+			manuallyEnrichedCBD = RDFConfigExecuter.simpleExecute(cbdManualConfig);
+			if(!manuallyEnrichedCBD.isIsomorphicWith(cbd)){
+				foundExamples++;
 			}
+		}while(foundExamples<exampleCount);
 
-			// (4) Generate self-config  and save it
-			SpecsLearn learner = new SpecsLearn();
-			learner.sourceModel  = cbd;
-			learner.targetModel  = manuallyEnrichedCBD;
-			long start = System.currentTimeMillis();
-			RefinementNode bestSolution = learner.run();
-			long end = System.currentTimeMillis();
-			long time = end - start;
-			Model selfConfEnrichedCBD = bestSolution.outputModel;
-			outputFile =  folder + "cbd" + i + "s.ttl";
-			Writer.writeModel(selfConfEnrichedCBD, "TTL",  outputFile);
-			Model cbdSelfConfig = bestSolution.configModel;
-			outputFile =  folder + "s_config" + i + ".ttl";
-			Writer.writeModel(cbdSelfConfig, "TTL", outputFile);
-
-			// (5) Compare manual and self-config in the entire KB
-			// I. Generate manuallyEnrichedKB by applying the manual config to the entire DB 
-			outputFile = folder + "cbd" + i + ".ttl";
-			Model manuallyEnrichedKB = changeInputDatasetLocation(cbdManualConfig, kbFile, outputFile);
-			outputFile = folder + "cbd" + i + "m.ttl";
-			String newLocation = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_manual_enrichmed.ttl";
-			manuallyEnrichedKB = changeOutputDatasetLocation(manuallyEnrichedKB, outputFile , newLocation);
-			// II. Generate selfConfigEnrichedKB by applying the self config to the entire DB 
-			outputFile = folder + "cbd" + i + ".ttl";
-			Model selfConfigEnrichedKB = changeInputDatasetLocation(cbdManualConfig, kbFile, outputFile);
-			outputFile = folder + "cbd" + i + "m.ttl";
-			newLocation = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_manual_enrichmed.ttl";
-			selfConfigEnrichedKB = changeOutputDatasetLocation(selfConfigEnrichedKB, outputFile , newLocation);
-
-
-			i++;
+		// (4) Generate self-config and save it
+		SpecsLearn learner = new SpecsLearn(cbd,manuallyEnrichedCBD, penaltyWeight);
+		long start = System.currentTimeMillis();
+		RefinementNode bestSolution = learner.run();
+		if(bestSolution.configModel.equals(null)){
+			logger.error("NO Specs learned");
 		}
+		long learningTime = System.currentTimeMillis() - start;
+		Model selfConfEnrichedCBD = bestSolution.outputModel;
+		String selfConfEnrichedCbdOutputFile =  folder + "cbd" + exampleCount + "s.ttl";
+		Writer.writeModel(selfConfEnrichedCBD, "TTL",  selfConfEnrichedCbdOutputFile);
+		cbdSelfConfig = bestSolution.configModel;
+		String cbdSelfConfigOutputFile =  folder + "s_config" + exampleCount + ".ttl";
+		Writer.writeModel(cbdSelfConfig, "TTL", cbdSelfConfigOutputFile);
+
+		// (5) Compare manual and self-config in the entire KB
+		// I. Generate KBManualConfig and save it
+		Model KBManualConfig = changeInputDataset(cbdManualConfig, cbdOutputFile, kbFile);
+		KBManualConfig = changeOutputDataset(KBManualConfig, cbdMOutputFile , kbMOutputFile);
+		KBManualConfig.setNsPrefixes(manualConfig);
+		String KBManualConfigOutputFile =  folder + "kb_m_config" + exampleCount + ".ttl";
+		Writer.writeModel(KBManualConfig, "TTL", KBManualConfigOutputFile);
+
+		// II. Generate manuallyEnrichedKB by applying KBManualConfig to the entire KB and save it
+		start = System.currentTimeMillis();
+		Model manuallyEnrichedKB = RDFConfigExecuter.simpleExecute(KBManualConfig);
+		long manualConfigKBTime = System.currentTimeMillis() - start;
+		//		outputFile =  folder + "kb" + exampleCount + "m.ttl";
+		//		Writer.writeModel(manuallyEnrichedKB, "TTL", outputFile);
+
+		// III. Generate KBSelfConfig and save it
+		String inputFile = "inputFile.ttl";
+		Model KBSelfConfig = changeInputDataset(cbdSelfConfig, inputFile, kbFile);
+		String outputFile = "outputFile.ttl";
+		String kbSOutputFile = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_self_enrichmed.ttl";
+		KBSelfConfig = changeOutputDataset(KBSelfConfig, outputFile , kbSOutputFile);
+		KBSelfConfig.setNsPrefixes(manualConfig);
+		String KBSelfConfigOutputFile =  folder + "kb_s_config" + exampleCount + ".ttl";
+		Writer.writeModel(KBSelfConfig, "TTL", KBSelfConfigOutputFile);
+
+		// IV. Generate selfConfigEnrichedKB by applying the self config to the entire KB 
+		start = System.currentTimeMillis();
+		Model selfConfigEnrichedKB = RDFConfigExecuter.simpleExecute(KBSelfConfig);
+		long selfConfigKBTime = System.currentTimeMillis() - start;
+		String selfConfigEnrichedKBoutputFile =  folder + "kb" + exampleCount + "s.ttl";
+		Writer.writeModel(selfConfigEnrichedKB, "TTL", selfConfigEnrichedKBoutputFile);
+
+		// V. compare manuallyEnrichedKB vs selfConfigEnrichedKB
+		System.out.println("+++++++++++++++++++");
+		System.out.println("selfConfigEnrichedKB:" +selfConfigEnrichedKB.size());
+		System.out.println("manuallyEnrichedKB:" + manuallyEnrichedKB.size());
+		FMeasure fMeasure = getFMeasure(selfConfigEnrichedKB, manuallyEnrichedKB);
+
+		// add results
+		//			"ExampleCount" + "\t" +
+		resultStr += exampleCount + "\t";
+		//		"penaltyWeight" + "\t" +	
+		resultStr += penaltyWeight + "\t";
+		//			"manualConfigXComplexity" + "\t" +
+		resultStr += RDFConfigAnalyzer.getModules(manualConfig).size() + "\t";
+		//			"manualConfigTime" + "\t" +
+		resultStr += manualConfigKBTime+ "\t";
+		//			"selfConfigXComplexity" + "\t" +
+		resultStr +=  RDFConfigAnalyzer.getModules(KBSelfConfig).size() + "\t";
+		//			"SelfConfigTime" + "\t" +
+		resultStr += selfConfigKBTime + "\t";
+		//			"LearningTime" + "\t" +
+		resultStr += learningTime + "\t";
+		//			"TreeSize" +"\t" +
+		resultStr += learner.refinementTreeRoot.size() + "\t";
+		//			"IterationNr" + "\t" +
+		resultStr += learner.iterationNr + "\t";
+		//			"P" + "\t" +
+		resultStr += fMeasure.P + "\t";
+		//			"R" + "\t" +
+		resultStr += fMeasure.R+ "\t";
+		//			"F\n";
+		resultStr += fMeasure.F + "\n";
+
+		System.out.println("**********************************");
+		System.out.println(resultStr);
+		System.out.println("**********************************");			
 	}
 
 
-	public static Model changeInputDatasetLocation(Model configModel, String oldLocation, String newLocation){
+	public static Model changeInputDataset(Model configModel, String oldLocation, String newLocation){
 		Model result = ModelFactory.createDefaultModel();
 		result = result.union(configModel);
 		StmtIterator list = result.listStatements(null, SPECS.inputFile, oldLocation);
@@ -227,7 +314,7 @@ public class Evaluation {
 		return result;
 	}
 
-	public static Model changeOutputDatasetLocation(Model configModel, String oldLocation, String newLocation){
+	public static Model changeOutputDataset(Model configModel, String oldLocation, String newLocation){
 		Model result = ModelFactory.createDefaultModel();
 		result = result.union(configModel);
 		StmtIterator list = result.listStatements(null, SPECS.outputFile, oldLocation);
@@ -250,7 +337,15 @@ public class Evaluation {
 
 	public static void main(String args[]) throws IOException{
 		Evaluation e = new Evaluation();
-		e.test(args[0], args[1], args[2], 1);
+		String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/datasets/usecases/music/jamendo-rdf/";
+		String kbFile = folder +"jamendo.ttl";
+		String manualConfigFile = folder + "config.ttl";
+		String authority = "http://dbtune.org/jamendo/artist/";
+		e.testExampleCount(kbFile, manualConfigFile, authority, 3, 0.75);
+
+		//		e.testExampleCount(args[0], args[1], args[2], 2, 0.5);
+
+		//		e.testExampleCount(args[0], args[1], args[2], 1, 0.75);
 	}
 
 

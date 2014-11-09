@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
+import org.aksw.deer.io.Reader;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -28,7 +29,7 @@ public class RDFConfigAnalyzer {
 	public static Set<Resource> getModules(Model configModel){
 		Set<Resource> result = new HashSet<Resource>();
 		String sparqlQueryString = 
-				"SELECT DISTINCT ?m {?m <" + RDF.type + "> < " + SPECS.Module + "> . }";
+				"SELECT DISTINCT ?m {?m <" + RDF.type + "> <" + SPECS.Module + "> . }";
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 		ResultSet queryResults = qexec.execSelect();
@@ -39,6 +40,11 @@ public class RDFConfigAnalyzer {
 		}
 		qexec.close() ;
 		return result;
+	}
+	
+	public static void main(String args[]){
+		System.out.println(getModules(Reader.readModel(args[0])));
+		
 	}
 
 }

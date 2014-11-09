@@ -47,7 +47,7 @@
 		rdfs:label		"NLP module" ;
 		:hasInput		:d3 ;
 		:hasOutput		:d4 ;
-		:hasParameter	:nlpPram1, :nlpPram2 .
+		:hasParameter	:nlpPram1 .
 
 :nlpPram1	a			:ModuleParameter, :NLPModuleParameter ;
 		:hasKey			"NEType" ;

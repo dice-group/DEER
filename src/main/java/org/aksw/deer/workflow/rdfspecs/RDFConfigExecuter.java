@@ -55,6 +55,7 @@ public class RDFConfigExecuter {
 	}
 
 	/**
+	 * execute the input RDF config file and return set of all enriched dataset
 	 * @param inputFile 
 	 * @author sherif
 	 * @throws IOException 
@@ -69,6 +70,18 @@ public class RDFConfigExecuter {
 			result.add(readDataset(finalDataset));
 		}
 		return result;
+	}
+	
+	/**
+	 * execute the input RDF config file and return only the first enriched dataset
+	 * sutable for simple liner config file 
+	 * @param config
+	 * @return
+	 * @throws IOException
+	 * @author sherif
+	 */
+	public static Model simpleExecute(Model config) throws IOException{
+		return execute(config).iterator().next();
 	}
 
 
