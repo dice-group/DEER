@@ -30,6 +30,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -41,6 +42,10 @@ import org.aksw.deer.helper.vacabularies.SCMSANN;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.fox.binding.java.FoxApi;
+import org.aksw.fox.binding.java.FoxResponse;
+import org.aksw.fox.binding.java.IFoxApi;
+import org.aksw.fox.binding.java.FoxParameter.OUTPUT;
 
 //import org.junit.Test;
 import org.apache.log4j.Logger;
@@ -51,40 +56,40 @@ import org.apache.log4j.Logger;
  */
 public class NLPModule implements GeoLiftModule{
 	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
-	
+
 	private static final String ORGANIZATION 	= "organization";
 	private static final String LOCATION 		= "location";
 	private static final String PERSON 		= "person";
-	
+
 	private static final String LITERAL_PROPERTY_DESC = 
 			"Literal property used by FOX for NER. " +
-			"If not set, the top ranked literal property will be pecked";
+					"If not set, the top ranked literal property will be pecked";
 	private static final String ADDED_PROPERTY_DESC = 
 			"Property added to the input model with additional Geospatial " +
-			"knowledge through NLP. By default, " +
-			"this parameter is set to 'gn:relatedTo'";
+					"knowledge through NLP. By default, " +
+					"this parameter is set to 'gn:relatedTo'";
 	private static final String USE_FOX_LIGHT_DESC =
 			"An implemented NER class name. " +
-			"By default this parameter is set to 'OFF' " +
-			"in which all NER classes run in parallel " +
-			"and a combined result will be returned. " +
-			"If this parameter is given with a wrong value, " +
-			"'NERStanford' will be used";
+					"By default this parameter is set to 'OFF' " +
+					"in which all NER classes run in parallel " +
+					"and a combined result will be returned. " +
+					"If this parameter is given with a wrong value, " +
+					"'NERStanford' will be used";
 	private static final String USE_FOX_LIGHT_VALUES =
 			"OFF, org.aksw.fox.nertools.NEROpenNLP," +
-			"org.aksw.fox.nertools.NERIllinoisExtended," +
-			"org.aksw.fox.nertools.NERIllinoisExtended," +
-			"org.aksw.fox.nertools.NERBalie," +
-			"org.aksw.fox.nertools.NERStanford";
+					"org.aksw.fox.nertools.NERIllinoisExtended," +
+					"org.aksw.fox.nertools.NERIllinoisExtended," +
+					"org.aksw.fox.nertools.NERBalie," +
+					"org.aksw.fox.nertools.NERStanford";
 	private static final String ASK_END_POINT_DESC = 
 			"Ask the DBpedia endpoint for each location returned by FOX " +
-			"(setting it generates slower execution time but more accurate results). " +
-			"By default this parameter is set to 'false'";
+					"(setting it generates slower execution time but more accurate results). " +
+					"By default this parameter is set to 'false'";
 	private static final String NER_TYPE_DESC = 
 			"Force FOX to look for a specific NE’s types only. ";
 	private static final String NER_TYPE_VALUES =
 			LOCATION + "," + ORGANIZATION + "," + PERSON;
-	
+
 	private static final String ASK_END_POINT 	= "askEndPoint";
 	private static final String ADDED_PROPERTY 	= "addedProperty";
 	private static final String NER_TYPE 			= "NERType";
@@ -107,7 +112,7 @@ public class NLPModule implements GeoLiftModule{
 	private String 		inputFile		= "";
 	private String 		outputFile		= "";
 	private Property 	addedProperty= ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
-	
+
 	private static String NEType = LOCATION;
 
 
@@ -420,32 +425,38 @@ public class NLPModule implements GeoLiftModule{
 		StmtIterator stItr = model.listStatements(null, literalProperty, (RDFNode) null);
 		logger.info("--------------- Added triples through  NLP ---------------");
 		while (stItr.hasNext()) {
+			Model namedEntityModel = ModelFactory.createDefaultModel();
 			Statement st = stItr.nextStatement();
 			RDFNode object = st.getObject();
 			RDFNode subject = st.getSubject();
 			if(object.isLiteral()){
-//				if(!object.asLiteral().toString().contains("^^")){ 
-					Model namedEntityModel = ModelFactory.createDefaultModel();
-					if(object.toString().contains("@")){
-						String substring = object.toString().substring(0,object.toString().lastIndexOf("@")).replaceAll("@", "");
-						namedEntityModel = getNamedEntityModel(substring);
-					}else{
-						namedEntityModel = getNamedEntityModel(object.toString().replaceAll("@", ""));
-					}
-					if(!namedEntityModel.isEmpty()){
-						if(NEType.equalsIgnoreCase("all")){ // Extract all NE (Generalization of GeoLift)
-							resultModel.add(getNE(namedEntityModel, subject));
-						}else if(NEType.equalsIgnoreCase(LOCATION)){
-							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.LOCATION));
-						}else if(NEType.equalsIgnoreCase(PERSON)){
-							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.PERSON));
-						}else if(NEType.equalsIgnoreCase(ORGANIZATION)){
-							resultModel.add(getNE(namedEntityModel, subject, SCMSANN.ORGANIZATION));
-						}
-					}				
-				}
+				IFoxApi fox = new FoxApi();
+				FoxResponse foxRes = fox.setInput(object.toString()).setOutputFormat(OUTPUT.TURTLE).send();
+				namedEntityModel.read(new StringReader(foxRes.getOutput().trim()), null, "TTL");
+		
 			}
-//		}
+			//				if(!object.asLiteral().toString().contains("^^")){ //-------------
+			//					Model namedEntityModel = ModelFactory.createDefaultModel();
+			//					if(object.toString().contains("@")){
+			//						String substring = object.toString().substring(0,object.toString().lastIndexOf("@")).replaceAll("@", "");
+			//						namedEntityModel = getNamedEntityModel(substring);
+			//					}else{
+			//						namedEntityModel = getNamedEntityModel(object.toString().replaceAll("@", ""));
+			//					}
+			if(!namedEntityModel.isEmpty()){
+				if(NEType.equalsIgnoreCase("all")){ // Extract all NE (Generalization of GeoLift)
+					resultModel.add(getNE(namedEntityModel, subject));
+				}else if(NEType.equalsIgnoreCase(LOCATION)){
+					resultModel.add(getNE(namedEntityModel, subject, SCMSANN.LOCATION));
+				}else if(NEType.equalsIgnoreCase(PERSON)){
+					resultModel.add(getNE(namedEntityModel, subject, SCMSANN.PERSON));
+				}else if(NEType.equalsIgnoreCase(ORGANIZATION)){
+					resultModel.add(getNE(namedEntityModel, subject, SCMSANN.ORGANIZATION));
+				}
+			}				
+		}
+		//			}
+		//		}//-------------
 		resultModel.add(model);
 		return resultModel;
 	}
@@ -483,20 +494,20 @@ public class NLPModule implements GeoLiftModule{
 			useFoxLight = parameters.get(USE_FOX_LIGHT).toLowerCase();
 		if( parameters.containsKey(ASK_END_POINT))
 			askEndPoint = parameters.get(ASK_END_POINT).toLowerCase().equals("true")? true : false;
-//		if( parameters.containsKey("foxType"))
-//			foxType = parameters.get("foxType").toUpperCase();
-//		if( parameters.containsKey("foxTask"))
-//			foxTask = parameters.get("foxTask").toUpperCase();
-//		if( parameters.containsKey("foxInput"))
-//			foxInput = parameters.get("foxInput");
-//		if( parameters.containsKey("foxOutput"))
-//			foxOutput = parameters.get("foxOutput");
-//		if( parameters.containsKey("foxUseNif"))
-//			foxUseNif = parameters.get("foxUseNif").toLowerCase().equals("true")? true : false;
-//		if( parameters.containsKey("foxReturnHtml"))
-//			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
-//		if( parameters.containsKey("extractAllNE"))
-//			foxReturnHtml = parameters.get("extractAllNE").toLowerCase().equals("true")? true : false;
+		//		if( parameters.containsKey("foxType"))
+		//			foxType = parameters.get("foxType").toUpperCase();
+		//		if( parameters.containsKey("foxTask"))
+		//			foxTask = parameters.get("foxTask").toUpperCase();
+		//		if( parameters.containsKey("foxInput"))
+		//			foxInput = parameters.get("foxInput");
+		//		if( parameters.containsKey("foxOutput"))
+		//			foxOutput = parameters.get("foxOutput");
+		//		if( parameters.containsKey("foxUseNif"))
+		//			foxUseNif = parameters.get("foxUseNif").toLowerCase().equals("true")? true : false;
+		//		if( parameters.containsKey("foxReturnHtml"))
+		//			foxReturnHtml = parameters.get("foxReturnHtml").toLowerCase().equals("true")? true : false;
+		//		if( parameters.containsKey("extractAllNE"))
+		//			foxReturnHtml = parameters.get("extractAllNE").toLowerCase().equals("true")? true : false;
 		if( parameters.containsKey(NER_TYPE))
 			NEType = parameters.get(NER_TYPE).toLowerCase();
 
@@ -526,12 +537,12 @@ public class NLPModule implements GeoLiftModule{
 		parameters.add(LITERAL_PROPERTY);
 		parameters.add(USE_FOX_LIGHT);
 		parameters.add(ASK_END_POINT);
-//		parameters.add("foxType");
-//		parameters.add("foxTask");
-//		parameters.add("foxInput");
-//		parameters.add("foxOutput");
-//		parameters.add("foxUseNif");
-//		parameters.add("foxReturnHtml");
+		//		parameters.add("foxType");
+		//		parameters.add("foxTask");
+		//		parameters.add("foxInput");
+		//		parameters.add("foxOutput");
+		//		parameters.add("foxUseNif");
+		//		parameters.add("foxReturnHtml");
 		parameters.add(ADDED_PROPERTY);
 		parameters.add(NER_TYPE);
 		return parameters;
@@ -545,8 +556,8 @@ public class NLPModule implements GeoLiftModule{
 		List<String> parameters = new ArrayList<String>();
 		return parameters;
 	}
-	
-	
+
+
 	/**
 	 * Self configuration
 	 * Set all parameters to default values, also extract all NEs
@@ -556,9 +567,9 @@ public class NLPModule implements GeoLiftModule{
 	 * @author sherif
 	 */
 	public Map<String, String> selfConfig(Model source, Model target) {
-		
-//		Set<Resource> uriObjects = getDiffUriObjects(source, target);
-		
+
+		//		Set<Resource> uriObjects = getDiffUriObjects(source, target);
+
 		Map<String, String> p = new HashMap<String, String>();
 		p.put(NER_TYPE, "all");
 		return p;
@@ -644,14 +655,14 @@ public class NLPModule implements GeoLiftModule{
 		}
 	}
 
-    @Override
-    public List<ParameterType> getParameterWithTypes() {
-        List<ParameterType> parameters = new ArrayList<ParameterType>();
-        parameters.add(new ParameterType(ParameterType.STRING, LITERAL_PROPERTY, LITERAL_PROPERTY_DESC, false));
-        parameters.add(new ParameterType(ParameterType.STRING, ADDED_PROPERTY, USE_FOX_LIGHT_VALUES, ADDED_PROPERTY_DESC, false));
-        parameters.add(new ParameterType(ParameterType.STRING, USE_FOX_LIGHT, USE_FOX_LIGHT_DESC, false));
-        parameters.add(new ParameterType(ParameterType.BOOLEAN, ASK_END_POINT, ASK_END_POINT_DESC, false));
-        parameters.add(new ParameterType(ParameterType.STRING, NER_TYPE, NER_TYPE_VALUES, NER_TYPE_DESC, false));
-        return parameters;
-    }
+	@Override
+	public List<ParameterType> getParameterWithTypes() {
+		List<ParameterType> parameters = new ArrayList<ParameterType>();
+		parameters.add(new ParameterType(ParameterType.STRING, LITERAL_PROPERTY, LITERAL_PROPERTY_DESC, false));
+		parameters.add(new ParameterType(ParameterType.STRING, ADDED_PROPERTY, USE_FOX_LIGHT_VALUES, ADDED_PROPERTY_DESC, false));
+		parameters.add(new ParameterType(ParameterType.STRING, USE_FOX_LIGHT, USE_FOX_LIGHT_DESC, false));
+		parameters.add(new ParameterType(ParameterType.BOOLEAN, ASK_END_POINT, ASK_END_POINT_DESC, false));
+		parameters.add(new ParameterType(ParameterType.STRING, NER_TYPE, NER_TYPE_VALUES, NER_TYPE_DESC, false));
+		return parameters;
+	}
 }

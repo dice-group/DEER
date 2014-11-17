@@ -3,6 +3,9 @@
  */
 package org.aksw.deer.workflow.specslearner;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +61,7 @@ public class Evaluation {
 					"penaltyWeight" + "\t" +
 					"manualConfigComplexity" + "\t" +
 					"kbManualConfigTime" + "\t" +
-					"selfConfigXComplexity" + "\t" +
+					"selfConfigComplexity" + "\t" +
 					"kbSelfConfigTime" + "\t" +
 					"LearningTime" + "\t" +
 					"TreeSize" +"\t" +
@@ -172,7 +175,7 @@ public class Evaluation {
 		return cbd;
 	}
 
-	public void testExampleCount(String kbFile, String manualConfigFile, String authority, int exampleCount, double penaltyWeight) throws IOException{
+	public String testExampleCount(String kbFile, String kbSampleFile, String manualConfigFile, String authority, int exampleCount, double penaltyWeight) throws IOException{
 		String folder = kbFile.substring(0, kbFile.lastIndexOf("/")+1);
 		Model kb = Reader.readModel(kbFile);
 		Model manualConfig = Reader.readModel(manualConfigFile);
@@ -226,7 +229,12 @@ public class Evaluation {
 
 		// (5) Compare manual and self-config in the entire KB
 		// I. Generate KBManualConfig and save it
-		Model KBManualConfig = changeInputDataset(cbdManualConfig, cbdOutputFile, kbFile);
+		Model KBManualConfig = ModelFactory.createDefaultModel();
+		if(!kbSampleFile.isEmpty()){
+			KBManualConfig = changeInputDataset(cbdManualConfig, cbdOutputFile, kbFile);
+		}else{
+			KBManualConfig = changeInputDataset(cbdManualConfig, cbdOutputFile, kbSampleFile);
+		}
 		KBManualConfig = changeOutputDataset(KBManualConfig, cbdMOutputFile , kbMOutputFile);
 		KBManualConfig.setNsPrefixes(manualConfig);
 		String KBManualConfigOutputFile =  folder + "kb_m_config" + exampleCount + ".ttl";
@@ -241,7 +249,12 @@ public class Evaluation {
 
 		// III. Generate KBSelfConfig and save it
 		String inputFile = "inputFile.ttl";
-		Model KBSelfConfig = changeInputDataset(cbdSelfConfig, inputFile, kbFile);
+		Model KBSelfConfig = ModelFactory.createDefaultModel();
+		if(!kbSampleFile.isEmpty()){
+			KBSelfConfig = changeInputDataset(cbdSelfConfig, inputFile, kbFile);
+		}else{
+			KBSelfConfig = changeInputDataset(cbdSelfConfig, inputFile, kbSampleFile);
+		}
 		String outputFile = "outputFile.ttl";
 		String kbSOutputFile = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_self_enrichmed.ttl";
 		KBSelfConfig = changeOutputDataset(KBSelfConfig, outputFile , kbSOutputFile);
@@ -249,7 +262,7 @@ public class Evaluation {
 		String KBSelfConfigOutputFile =  folder + "kb_s_config" + exampleCount + ".ttl";
 		Writer.writeModel(KBSelfConfig, "TTL", KBSelfConfigOutputFile);
 
-		// IV. Generate selfConfigEnrichedKB by applying the self config to the entire KB 
+		// IV. Generate selfConfigEnrichedKB by applying the self config to the entire KgeB 
 		start = System.currentTimeMillis();
 		Model selfConfigEnrichedKB = RDFConfigExecuter.simpleExecute(KBSelfConfig);
 		long selfConfigKBTime = System.currentTimeMillis() - start;
@@ -270,13 +283,13 @@ public class Evaluation {
 		//			"manualConfigXComplexity" + "\t" +
 		resultStr += RDFConfigAnalyzer.getModules(manualConfig).size() + "\t";
 		//			"manualConfigTime" + "\t" +
-		resultStr += manualConfigKBTime+ "\t";
+		resultStr += (manualConfigKBTime/ (double)(1000*60)) + "\t";
 		//			"selfConfigXComplexity" + "\t" +
 		resultStr +=  RDFConfigAnalyzer.getModules(KBSelfConfig).size() + "\t";
 		//			"SelfConfigTime" + "\t" +
-		resultStr += selfConfigKBTime + "\t";
+		resultStr += (selfConfigKBTime/ (double)(1000*60)) + "\t";
 		//			"LearningTime" + "\t" +
-		resultStr += learningTime + "\t";
+		resultStr += (learningTime/ (double)(1000*60)) + "\t";
 		//			"TreeSize" +"\t" +
 		resultStr += learner.refinementTreeRoot.size() + "\t";
 		//			"IterationNr" + "\t" +
@@ -290,7 +303,8 @@ public class Evaluation {
 
 		System.out.println("**********************************");
 		System.out.println(resultStr);
-		System.out.println("**********************************");			
+		System.out.println("**********************************");		
+		return resultStr;
 	}
 
 
@@ -334,20 +348,56 @@ public class Evaluation {
 		return result;
 	}
 
+//	String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/";
+//	String kbFile = folder +"1000_resources_cbds.ttl";
+//	String kbSampleFile = folder +"100_resources_cbd.ttl";
+//	for(int i = 1 ; i <= 2 ; i++){
+//		Evaluation e = new Evaluation();
+//		String manualConfigFile = folder + "m" + i +".ttl";
+//		String authority = "http://dbpedia.org/resource/_Berlin";
+	
+//	String resultStr = new String();
+//	String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/pipeline_learner/drugbank/";
+//	String kbFile = folder +"drugbank_dump.ttl";
+//	String kbSampleFile = "";
+//	for(int i = 2 ; i <= 2 ; i++){
+//		Evaluation e = new Evaluation();
+//		String manualConfigFile = folder + "m" + i +".ttl";
+//		String authority = "http://wifo5-03.informatik.uni-mannheim.de/drugbank/page/drugs/DB00001";
 
 	public static void main(String args[]) throws IOException{
-		Evaluation e = new Evaluation();
-		String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/datasets/usecases/music/jamendo-rdf/";
-		String kbFile = folder +"jamendo.ttl";
-		String manualConfigFile = folder + "config.ttl";
-		String authority = "http://dbtune.org/jamendo/artist/";
-		e.testExampleCount(kbFile, manualConfigFile, authority, 3, 0.75);
-
-		//		e.testExampleCount(args[0], args[1], args[2], 2, 0.5);
-
-		//		e.testExampleCount(args[0], args[1], args[2], 1, 0.75);
+		String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/";
+		String kbFile = folder +"1000_resources_cbds.ttl";
+		String kbSampleFile = folder +"100_resources_cbd.ttl";
+		for(int i = 4 ; i <= 4 ; i++){
+			Evaluation e = new Evaluation();
+			String manualConfigFile = folder + "m" + i +".ttl";
+			String authority = "http://dbpedia.org/resource/Berlin";
+			resultStr += "-----------------------------------------------------------\n" + 
+					e.testExampleCount(kbFile, kbSampleFile, manualConfigFile, authority, 2, 0.75);
+		}
+		System.out.println("resultStr");
+		File file = new File(folder + "result.txt");
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(resultStr);
+		bw.close();
 	}
 
+	public Model getKBSample(Model kb, Resource className, int sampleSize){
+		logger.info("Generating "+ sampleSize +" CBDs from class " + className);
+		String sparqlQueryString = 
+				"DESCRIBE ?s {?s a <" + className + ">} limit " + sampleSize;
+		QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, kb);
+		Model kbSample = qexec.execDescribe();
+		qexec.close();
+		return kbSample;
+
+	}
 
 
 }

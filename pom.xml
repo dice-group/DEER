@@ -53,7 +53,15 @@
 	  <version>2013-10-02</version>
 	  <type>jar</type>
 	 </dependency>
-	</dependencies>
+	 
+    <dependency>
+        <groupId>org.aksw</groupId>
+        <artifactId>fox-java</artifactId>
+        <version>0.0.1</version>
+    </dependency>
+</dependencies>
+	 
+	 
 	<build>
 		<pluginManagement>
 			<plugins>
