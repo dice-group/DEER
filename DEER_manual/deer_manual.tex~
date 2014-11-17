@@ -43,7 +43,7 @@
 \definecolor{LodBlue}{rgb}{0.7529,0.8902,0.9490}
 
 \newcommand{\orchid}{\textsc{Orchid}\xspace}
-\newcommand{\geolift}{\textsc{GeoLift}\xspace}
+\newcommand{\geolift}{\textsc{DEER}\xspace}
 \newcommand{\limes}{\textsc{Limes}\xspace}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -85,7 +85,7 @@
 \end{center}
 \begin{flushleft}
  \Large{\geolift}
- \small{ - Spatial mapping framework for enriching RDF datasets with Geo-spatial information.}
+ \small{ - RDF Data Extraction and Enrichment Framework.}
 \end{flushleft}
 \end{quote}
 \vspace*{\fill}
@@ -95,10 +95,10 @@
 \begin{quote} 
 
 \textbf{Abstract}: \\
-This manual presents the spatial mapping component dubbed \geolift. 
-The goal of \geolift is to enrich RDF datasets with geo-spatial information. 
-To achieve this goal, GeoLit relies on three atomic modules based on dereferencing, linking and NLP. 
-\geolift was implemented in Java, is open-source and can be accessed at \url{https://github.com/GeoKnow/GeoLift/}. 
+Over the last years, the Linked Data principles have been used across academia and industry to publish and consume structured data. Thanks to the fourth Linked Data principle, many of the RDF datasets used within these applications contain implicit and explicit references to more data. For example, music datasets such as Jamendo include references to locations of record labels, places where artists were born or have been, etc. Datasets such as Drugbank contain references to drugs from DBpedia, were verbal description of the drugs and their usage is explicitly available. The goal of mapping component, dubbed DEER, is to retrieve this information, make it explicit and integrate it into data sources according to the specifications of the user. To this end, DEER relies on a simple yet powerful pipeline system that consists of two main components: modules and operators.
+
+Modules implement functionality for processing the content of a dataset (e.g., applying named entity recognition to a particular property). Thus, they take a dataset as input and return a dataset as output. Operators work at a higher level of granularity and combine datasets. Thus, they take sets of datasets as input and return sets of datasets.
+\geolift was implemented in Java, is open-source and can be accessed at \url{https://github.com/GeoKnow/DEER/}. 
 \end{quote}
 \vspace*{\fill}
 
@@ -295,7 +295,8 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
 	\item \texttt{DereferencingModule} class which handles dereferencing  geographical information extending process. 
 	\item \texttt{LinkingModule} class which handles linking geographical information extending processes. 
 	\item \texttt{NLPModule} class which handles named entity extraction process.
-	\item \texttt{ConformationModule} class which handles the conformation process.
+	\item \texttt{AuthorityConformationModule} class which handles the subject authority conformation process.
+	\item \texttt{PredicateConformationModule} class which handles the predicates conformation process.
 	\item \texttt{FilterModule} class which handles filter process.
       \end{itemize}
   
@@ -319,7 +320,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     The input for such a module is an RDF dataset.
     The output is also an RDF dataset enriched with geographical information.
     Formally, a module can thus be regarded as a function $\mu: \mathcal{R} \rightarrow \mathcal{R}$, where $\mathcal{R}$ is the set of all RDF datasets.
-    Currently, \geolift implements five modules: dereferencing, linking, NLP, conformation and filter.
+    Currently, \geolift implements six modules: dereferencing, linking, NLP, authority conformation, predicate conformation and filter.
 
     All modules implement the \texttt{GeoLiftModule} interface methods 
     \begin{itemize}
@@ -542,26 +543,40 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     \end{lstlisting}
     
 
-\subsubsection{Conformation Module}
-    Change a specified source URI authority to a specified target URI authority, 
-    for example using source URI authority of \url{http://dbpedia.org} and target URI authority of \url{http://geolift.org} changes a resource like \url{http://dbpedia.org/Berlin} to \url{http://geolift.org/Berlin}.
-    Moreover, the \texttt{ConformationModule} can be used to change a specific source properties to specific target properties.
-    As an example, listing~\ref{lst:conformModule} introduce a code segment to manipulate the \texttt{ConformationModule} to change the source authority from \url{http://dbpedia.org} to the target property \url{http://geolift.org/Berlin}, and also change all occurrences of \texttt{RDF:label} to \texttt{SKOS:prefLabel}.
-    Table~\ref{tbl:conformPram} provides a full list of conformation module parameters.
+\subsubsection{Authority Conformation Module}
+    Change a specified source URI authority to a specified target URI authority.
+    For example, using source URI authority of \url{http://dbpedia.org} and target URI authority of \url{http://deer.org} changes a resource like \url{http://dbpedia.org/Berlin} to \url{http://deer.org/Berlin}.
+    As an example, listing~\ref{lst:aConf} introduces a code segment to manipulate the \texttt{AuthorityConformationModule} to change the source authority from \url{http://dbpedia.org} to the target authority \url{http://deer.org/Berlin}.
+    Table~\ref{tbl:aConf} provides a full list of the authority conformation module parameters.
+    
+    \begin{table}
+      \caption{Conformation module parameters} \label{tbl:aConf}
+      \small
+	\begin{tabularx}{\textwidth}{@{}lX@{}}
+	    % \begin{tabular}{@{}  l  l  l @{}}
+	    \toprule
+	    \textbf{Parameter key} 	& \textbf{Parameter value} \\
+	    \toprule
+	    \texttt{sourceSubjectAuthority}	& Source URI to be replaced.\\
+	    \midrule
+	    \texttt{targetSubjectAuthority}	& Target URI to replace the sourceURI.\\
+	    \bottomrule
+	    % \end{tabular}
+	\end{tabularx}
+    \end{table}.
+    
+\subsubsection{Predicate Conformation Module}
+    The \texttt{PredicateConformationModule} can be used to change a specific source properties to specific target properties.
+    As an example, listing~\ref{lst:pConf} introduces a code segment to manipulate the \texttt{PredicateConformationModule} that changes all occurrences of \texttt{RDF:label} to \texttt{SKOS:prefLabel}.
+    Table~\ref{tbl:pConf} provides a full list of the predicate conformation module parameters.
     
 
     \begin{table}
-    \caption{Conformation module parameters} \label{tbl:conformPram}
+    \caption{Conformation module parameters} \label{tbl:pConf}
     \small
     \begin{tabularx}{\textwidth}{@{}lX@{}}
     % \begin{tabular}{@{}  l  l  l @{}}
     \toprule
-    \textbf{Parameter key} 	& \textbf{Parameter value} \\
-    \toprule
-    \texttt{sourceSubjectAuthority}	& Source URI to be replaced.\\
-    \midrule
-    \texttt{targetSubjectAuthority}	& Target URI to replace the sourceURI.\\
-    \midrule
     \texttt{sourceProperty<i>}	& $i^{th}$ source property to be replaced by the $i^{th}$ target property.\\
     \midrule
     \texttt{targetProperty<i>}	& $i^{th}$ target property to replace the $i^{th}$ source property.\\
@@ -570,14 +585,28 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     \end{tabularx}
     \end{table}.
     
-    \begin{lstlisting}[label=lst:conformModule, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{ConformationModule} class.]
+    \begin{lstlisting}[label=lst:aConf, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{AuthorityConformationModule} class.]
     // Define NLPModule object
-    ConformationModule geoEnricher= ModuleFactory.createModule("conformation");
+    AuthorityConformationModule geoEnricher = ModuleFactory.createModule("authorityconformation");
     // Define parameters Map
     Map<String, String> parameters = new HashMap<String, String>();
     // Set parameters
     parameters.put("sourceSubjectAuthority", "http://dbpedia.org");
-    parameters.put("targetSubjectAuthority", "http://geolift.org");
+    parameters.put("targetSubjectAuthority", "http://deer.org");
+    // read input Model
+    Model inputModel = Reader.readModel(inputFileValue);
+    // Enrich the Model
+    Model enrichedModel = geoEnricher.process(inputModel, parameters);
+    // Use the enriched model
+    Writer.writeModel(enrichedModel, "TTL", System.out);
+    \end{lstlisting}
+    
+        \begin{lstlisting}[label=lst:pConf, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{PredicateConformationModule} class.]
+    // Define NLPModule object
+    PredicateConformationModule geoEnricher = ModuleFactory.createModule("predicateconformation");
+    // Define parameters Map
+    Map<String, String> parameters = new HashMap<String, String>();
+    // Set parameters
     parameters.put("sourceProperty1", "http://www.w3.org/1999/02/22-rdf-syntax-ns#label");
     parameters.put("targetProperty1", "http://www.w3.org/2004/02/skos/core#prefLabel");
     // read input Model
@@ -728,17 +757,17 @@ in the following we will describe each of them along with our example shown in l
 		rdfs:label	"Merge operator" ;
 		:hasInput	:d6, :d5 ;
 		:hasOutput	:d7 .
-:conform	a			:Module, :ConformationModule  ;
-		rdfs:label	"Conformation module" ;
+:aconform	a	:Module, :AuthorityConformationModule  ;
+		rdfs:label	"Authority Conformation module" ;
 		:hasInput	:d7 ;
 		:hasOutput	:d8 ;
-		:hasParameter	:conformPram1, :conformPram2 .
-:conformPram1	a		:ModuleParameter, :NLPModuleParameter ;
-		:hasKey		"sourceURI" ;
+		:hasParameter	:aconformPram1, :aconformPram2 .
+:aconformPram1	a		:ModuleParameter, :NLPModuleParameter ;
+		:hasKey		"sourceSubjectAuthority" ;
 		:hasValue	"http://dbpedia.org" .
-:conformPram2	a		:ModuleParameter, :NLPModuleParameter ;
-		:hasKey		"targetURI" ;
-		:hasValue	"http://geolift.org" .
+:aconformPram2	a		:ModuleParameter, :NLPModuleParameter ;
+		:hasKey		"targetSubjectAuthority" ;
+		:hasValue	"http://deer.org" .
 \end{lstlisting}
 
 
@@ -824,10 +853,10 @@ in the following we will describe each of them along with our example shown in l
       \draw[thick,->] (d6) -- (merge);
       \node[database] (d7) at (15,-7.5) {\textbf{$d_7$}};
       \draw[thick,->] (merge) -- (d7);
-      \node (conform)  at (15,-9.5) [module] {\texttt{Conformation}};
-      \draw[thick,->] (d7) -- (conform);
+      \node (AuthorityConform)  at (15,-9.5) [module] {\texttt{AuthorityConform}};
+      \draw[thick,->] (d7) -- (AuthorityConform);
       \node[database] (d8) at (15,-11.5) {\textbf{$d_8$}};
-      \draw[thick,->] (conform) -- (d8);
+      \draw[thick,->] (AuthorityConform) -- (d8);
   \end{tikzpicture}
   \caption{Graph representation of configuration file presented by listing~\ref{lst:rdfconf}}
   \label{fig:rdfconf}
@@ -1048,17 +1077,17 @@ in the following we will describe each of them along with our example shown in l
 
 \section{Running \geolift From Command-Line }
 
-The \geolift can be directly executed from command-line using the provided \texttt{geolift.jar}\footnote{the \texttt{geolift.jar} file is in the \texttt{jars} folder of the project} file.
+The \geolift can be directly executed from command-line using the provided \texttt{deer.jar}\footnote{the \texttt{deer.jar} file is in the \texttt{jars} folder of the project} file.
 % Table \ref{tbl:geoLiftPram} explains the various parameters that can be used with the \geolift through command-line. 
 Simpley, provide the RDf configuration file as the only one parameter for the \geolift jar file.
 \begin{equation*}
-  Example: \texttt{ geolift.jar src/main/resources/workflow/config.ttl }
+  Example: \texttt{ deer.jar src/main/resources/workflow/config.ttl }
 \end{equation*}
 
 \section{Conclusions}
-In this manual, we presented the \geolift component for enriching RDF datasets with geo-spatial data.
+In this manual, we presented the \geolift component for enriching RDF datasets.
 In future work, we aim to implement a graphical user interface on top of \geolift to enable users to specify their workflows graphically.
-Moreover, we aim to implement workflow checking functionality.
+Moreover, we aim to develop an algorithm for learning the RDF specs of \geolift from a small set of positive examples.
 
 \bibliographystyle{plain}
 \bibliography{limes,literature,bibliography,aksw,references}
