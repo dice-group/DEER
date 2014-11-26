@@ -12,7 +12,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.aksw.deer.io.Reader;
-import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.deer.modules.DeerModule;
 import org.aksw.deer.modules.Dereferencing.DereferencingModule;
 import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.deer.modules.filter.FilterModule;
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  */
 public class WorkflowHandler{
-	private static final Logger logger = Logger.getLogger(GeoLiftModule.class.getName());
+	private static final Logger logger = Logger.getLogger(DeerModule.class.getName());
 
 	private Model inputModel = ModelFactory.createDefaultModel();
 

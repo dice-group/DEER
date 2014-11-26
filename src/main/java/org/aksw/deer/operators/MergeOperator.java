@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * @author sherif
  *
  */
-public class MergeOperator implements GeoLiftOperator {
+public class MergeOperator implements DeerOperator {
 	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
 
 	/* (non-Javadoc)

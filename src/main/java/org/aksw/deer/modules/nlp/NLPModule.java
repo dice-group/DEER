@@ -41,7 +41,7 @@ import org.aksw.deer.helper.vacabularies.DBpedia;
 import org.aksw.deer.helper.vacabularies.SCMSANN;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.json.ParameterType;
-import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.deer.modules.DeerModule;
 import org.aksw.fox.binding.java.FoxApi;
 import org.aksw.fox.binding.java.FoxResponse;
 import org.aksw.fox.binding.java.IFoxApi;
@@ -54,7 +54,7 @@ import org.apache.log4j.Logger;
  *
  * @author sherif
  */
-public class NLPModule implements GeoLiftModule{
+public class NLPModule implements DeerModule{
 	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
 
 	private static final String ORGANIZATION 	= "organization";

@@ -42,7 +42,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *
  */
 public class Evaluation {
-	private static final Logger logger = Logger.getLogger(SpecsLearn.class.getName());
+	private static final Logger logger = Logger.getLogger(SimplePipeLineLearner.class.getName());
 
 	public Model manualConfig = ModelFactory.createDefaultModel();
 	public Model selfConfig = ModelFactory.createDefaultModel();
@@ -76,7 +76,7 @@ public class Evaluation {
 		RefinementNode bestSolution = new RefinementNode();
 
 		for(int i = 1 ; i <= max; i++){
-			SpecsLearn learner = new SpecsLearn();
+			SimplePipeLineLearner learner = new SimplePipeLineLearner();
 			if(isBatch){
 				folder = folder + i;
 			}
@@ -213,7 +213,7 @@ public class Evaluation {
 		}while(foundExamples<exampleCount);
 
 		// (4) Generate self-config and save it
-		SpecsLearn learner = new SpecsLearn(cbd,manuallyEnrichedCBD, penaltyWeight);
+		SimplePipeLineLearner learner = new SimplePipeLineLearner(cbd,manuallyEnrichedCBD, penaltyWeight);
 		long start = System.currentTimeMillis();
 		RefinementNode bestSolution = learner.run();
 		if(bestSolution.configModel.equals(null)){

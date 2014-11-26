@@ -8,7 +8,7 @@ import java.util.Comparator;
 import javax.swing.text.AsyncBoxView.ChildLocator;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
-import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.deer.modules.DeerModule;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
  */
 public class RefinementNode implements Comparable<RefinementNode> {
 
-	public GeoLiftModule module;
+	public DeerModule module;
 	public double fitness = -Double.MAX_VALUE;
 	public Model inputModel = ModelFactory.createDefaultModel();
 	public Model outputModel = ModelFactory.createDefaultModel();
@@ -53,7 +53,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
 	 * @param childNr
 	 *@author sherif
 	 */
-	public RefinementNode(GeoLiftModule module, double fitness, Model inputModel, Model outputModel, 
+	public RefinementNode(DeerModule module, double fitness, Model inputModel, Model outputModel, 
 			Resource inputDataset, Resource outputDataset, Model configModel) {
 		super();
 		this.module = module;

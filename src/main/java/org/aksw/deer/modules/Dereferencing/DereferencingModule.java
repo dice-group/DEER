@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.aksw.deer.json.ParameterType;
-import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Sets;
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.vocabulary.OWL;
  * targeted predicates to be added. This is done by following each URI-typed 
  * objects in the model and query for such information in the dereferenced target
  */
-public class DereferencingModule implements GeoLiftModule{
+public class DereferencingModule implements DeerModule{
 	/**
 	 * 
 	 */

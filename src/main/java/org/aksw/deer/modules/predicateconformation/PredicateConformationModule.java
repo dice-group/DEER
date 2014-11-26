@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.aksw.deer.json.ParameterType;
-import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Sets;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  * @author sherif
  *
  */
-public class PredicateConformationModule implements GeoLiftModule{
+public class PredicateConformationModule implements DeerModule{
 
 	private static final Logger logger = Logger.getLogger(PredicateConformationModule.class.getName());
 	private Model model = null;

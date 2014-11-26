@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.aksw.deer.json.ParameterType;
-import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
 
 import com.github.jsonldjava.core.RDFDataset.Literal;
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  * @author sherif
  *
  */
-public class FilterModule implements GeoLiftModule{
+public class FilterModule implements DeerModule{
 	private static final Logger logger = Logger.getLogger(FilterModule.class.getName());
 
 	private static final String TRIPLES_PATTERN = "triplesPattern";

@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class ModuleFactory {
-	private static final Logger logger = Logger.getLogger(GeoLiftModule.class.getName());
+	private static final Logger logger = Logger.getLogger(DeerModule.class.getName());
 
 	public static final String DEREFERENCING_MODULE 	= "dereferencing";
 	public static final String LINKING_MODULE 		= "linking";
@@ -59,7 +59,7 @@ public class ModuleFactory {
 	 * @return a specific module instance given its module's name
 	 * @author sherif
 	 */
-	public static GeoLiftModule createModule(String name) {
+	public static DeerModule createModule(String name) {
 		logger.info("Creating Module with name " + name);
 
 		if(name.equalsIgnoreCase(DEREFERENCING_MODULE))
@@ -121,8 +121,8 @@ public class ModuleFactory {
 	 * @return list of instances of all implemented modules
 	 * @author sherif
 	 */
-	List<GeoLiftModule> getImplementations(){
-		List<GeoLiftModule> result = new ArrayList<GeoLiftModule>();
+	List<DeerModule> getImplementations(){
+		List<DeerModule> result = new ArrayList<DeerModule>();
 		result.add(new DereferencingModule());
 		result.add(new LinkingModule());
 		result.add(new NLPModule());

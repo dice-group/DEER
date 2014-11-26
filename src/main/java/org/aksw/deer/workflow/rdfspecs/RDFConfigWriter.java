@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
-import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.deer.modules.DeerModule;
 import org.aksw.deer.modules.Dereferencing.DereferencingModule;
 import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.deer.modules.filter.FilterModule;
 import org.aksw.deer.modules.linking.LinkingModule;
 import org.aksw.deer.modules.nlp.NLPModule;
 import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
-import org.aksw.deer.operators.GeoLiftOperator;
+import org.aksw.deer.operators.DeerOperator;
 import org.aksw.deer.operators.MergeOperator;
 import org.aksw.deer.operators.SplitOperator;
 import org.apache.log4j.Logger;
@@ -56,7 +56,7 @@ public class RDFConfigWriter{
 		// TODO Auto-generated constructor stub
 	}
 
-	public  Model addModule(final Model inputConfig, GeoLiftModule module, Map<String, String> parameters, Resource inputDataset, Resource outputDataset){
+	public  Model addModule(final Model inputConfig, DeerModule module, Map<String, String> parameters, Resource inputDataset, Resource outputDataset){
 		config = ModelFactory.createDefaultModel(); 
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
@@ -118,7 +118,7 @@ public class RDFConfigWriter{
 		return config;
 	}
 	
-	public Model addOperator(GeoLiftOperator operator, Map<String, String> parameters, List<Resource> inputDatasets, List<Resource> outputDatasets){
+	public Model addOperator(DeerOperator operator, Map<String, String> parameters, List<Resource> inputDatasets, List<Resource> outputDatasets){
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
 		if(operator instanceof SplitOperator){

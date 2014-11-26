@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * @author sherif
  *
  */
-public class SplitOperator implements GeoLiftOperator {
+public class SplitOperator implements DeerOperator {
 	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
 	public int splitsCount = 2;
 	/* (non-Javadoc)

@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.Model;
  * @author sherif
  *
  */
-public interface GeoLiftModule {
+public interface DeerModule {
 	public Model process(Model model, Map<String, String> parameters);
 	public List<String> getParameters();
 	public List<String> getNecessaryParameters();

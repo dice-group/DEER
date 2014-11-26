@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.Model;
  * @author sherif
  *
  */
-public interface GeoLiftOperator {
+public interface DeerOperator {
 	public List<Model> process(List<Model> models, Map<String, String> parameters);
 	public List<String> getParameters();
 	public List<String> getNecessaryParameters(); 

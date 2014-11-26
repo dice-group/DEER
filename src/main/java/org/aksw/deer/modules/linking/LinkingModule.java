@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.deer.json.ParameterType;
-import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -24,7 +24,7 @@ import de.uni_leipzig.simba.controller.PPJoinController;
  * @author mofeed
  *
  */
-public class LinkingModule implements GeoLiftModule{
+public class LinkingModule implements DeerModule{
 	private static final Logger logger = Logger.getLogger(LinkingModule.class.getName());
 	
 	private static final String LINKS_PART = "linkspart";

@@ -17,7 +17,7 @@ import org.aksw.deer.helper.datastructure.Tree;
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
-import org.aksw.deer.modules.GeoLiftModule;
+import org.aksw.deer.modules.DeerModule;
 import org.aksw.deer.modules.Dereferencing.DereferencingModule;
 import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.deer.modules.filter.FilterModule;
@@ -44,21 +44,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * @author sherif
  *
  */
-public class SpecsLearn {
-	private static final Logger logger = Logger.getLogger(SpecsLearn.class.getName());
-
-	private final Set<GeoLiftModule> MODULES = 
-			new HashSet<GeoLiftModule>(Arrays.asList(
-					new LinkingModule(),
-					new NLPModule(),
-					new FilterModule(),
-					new AuthorityConformationModule(), 
-					new PredicateConformationModule(), 
-					new DereferencingModule()
-					));
-	
+public class ComplexPipeLineLearner implements PipelineLearner{
+	private static final Logger logger = Logger.getLogger(ComplexPipeLineLearner.class.getName());
 	public double penaltyWeight = 0.5;// [0, 1]
-
 	private int datasetCounter = 1;
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
@@ -76,17 +64,17 @@ public class SpecsLearn {
 	 * Contractors
 	 *@author sherif
 	 */
-	public SpecsLearn() {
+	public ComplexPipeLineLearner() {
 		sourceModel = ModelFactory.createDefaultModel();
 		targetModel = ModelFactory.createDefaultModel();
 	}
 	
-	SpecsLearn(Model source, Model target){
+	ComplexPipeLineLearner(Model source, Model target){
 		sourceModel  = source;
 		targetModel  = target;
 	}
 	
-	SpecsLearn(Model source, Model target, double penaltyWeight){
+	ComplexPipeLineLearner(Model source, Model target, double penaltyWeight){
 		this(source, target);
 		this.penaltyWeight = penaltyWeight;
 	}
@@ -139,7 +127,7 @@ public class SpecsLearn {
 	}
 	
 	private Tree<RefinementNode> expandNode(Tree<RefinementNode> root) {
-		for( GeoLiftModule module : MODULES){
+		for( DeerModule module : MODULES){
 			Model inputModel = root.getValue().outputModel;
 			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
 			Resource inputDataset  = root.getValue().outputDataset;
@@ -248,7 +236,7 @@ public class SpecsLearn {
 	public static void trivialRun(String args[]){
 		String sourceUri = args[0];
 		String targetUri = args[1];
-		SpecsLearn learner = new SpecsLearn();
+		ComplexPipeLineLearner learner = new ComplexPipeLineLearner();
 		learner.sourceModel  = Reader.readModel(sourceUri);
 		learner.targetModel = Reader.readModel(targetUri);
 		long start = System.currentTimeMillis();
@@ -261,7 +249,7 @@ public class SpecsLearn {
 		String folder = args[0];
 		String results = "ModuleCount\tTime\tTreeSize\tIterationNr\tP\tR\tF\n";
 		for(int i = 1 ; i <= max; i++){
-			SpecsLearn learner = new SpecsLearn();
+			ComplexPipeLineLearner learner = new ComplexPipeLineLearner();
 			if(isBatch){
 				folder = folder + i;
 			}
