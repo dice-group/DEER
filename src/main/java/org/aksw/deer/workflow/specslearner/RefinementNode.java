@@ -9,6 +9,7 @@ import javax.swing.text.AsyncBoxView.ChildLocator;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.modules.DeerModule;
+import org.aksw.deer.operators.DeerOperator;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -22,7 +23,8 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
  */
 public class RefinementNode implements Comparable<RefinementNode> {
 
-	public DeerModule module;
+	public DeerModule module = null;
+	public DeerOperator operator = null;
 	public double fitness = -Double.MAX_VALUE;
 	public Model inputModel = ModelFactory.createDefaultModel();
 	public Model outputModel = ModelFactory.createDefaultModel();
@@ -69,8 +71,27 @@ public class RefinementNode implements Comparable<RefinementNode> {
 		if(configModel != null){
 			configModel.setNsPrefix("gl", SPECS.uri);
 		}
-		
 	}
+	
+	
+	public RefinementNode(DeerOperator operator, Model inputModel, Model outputModel, 
+			Resource inputDataset, Resource outputDataset, Model configModel) {
+		super();
+		this.module = module;
+		this.fitness = fitness;
+		if(fitness == -2){
+			status = NodeStatus.DEAD;
+		}
+		this.inputModel = inputModel;
+		this.outputModel = outputModel;
+		this.configModel = configModel;
+		this.inputDataset = inputDataset;
+		this.outputDataset = outputDataset;
+		if(configModel != null){
+			configModel.setNsPrefix("gl", SPECS.uri);
+		}
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

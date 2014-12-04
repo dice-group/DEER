@@ -16,6 +16,7 @@ import java.util.TreeMap;
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
+import org.aksw.deer.modules.DeerModule;
 import org.aksw.deer.modules.Dereferencing.DereferencingModule;
 import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.deer.modules.filter.FilterModule;
@@ -264,10 +265,11 @@ public class RDFConfigExecuter {
 		if(uriItr.hasNext()){
 			String uri = uriItr.next().toString();
 			logger.info("Generating CBD for " + uri + " from " + endpointUri+ "...");
-			String sparqlQueryString = "CONSTRUCT {<" + uri + "> ?p ?o} WHERE { <" + uri + "> ?p ?o.}";
+//			String sparqlQueryString = "CONSTRUCT {<" + uri + "> ?p ?o} WHERE { <" + uri + "> ?p ?o.}";
+			String sparqlQueryString = "DESCRIBE <" + uri + ">";
 			QueryFactory.create(sparqlQueryString);
 			QueryExecution qexec = QueryExecutionFactory.sparqlService(endpointUri, sparqlQueryString);
-			result = qexec.execConstruct();
+			result = qexec.execDescribe();
 			qexec.close() ;
 			logger.info("Generating CBD is done in " + (System.currentTimeMillis() - startTime) + "ms, " + 
 					result.size() + " triples found.");
@@ -368,10 +370,13 @@ public class RDFConfigExecuter {
 	}
 
 	/**
-	 * @return 	module/operator for a given in/output dataset. 
+	 * @return 	module/operator for a given input/output dataset. 
 	 * @author sherif
 	 */
 	private static Resource getModuleOrOperator(Resource inputDataset, Resource outputDataset){
+		if(inputDataset == null && outputDataset == null){
+			return null;
+		}
 		Resource result = ResourceFactory.createResource();
 		if(inputDataset == null){
 			String q = "<" + outputDataset + ">";
@@ -415,5 +420,10 @@ public class RDFConfigExecuter {
 		}
 		return result;
 	}
+	
+//	public static DeerModule getLastModule(){
+//		List<Resource> finalDatasets = getFinalDatasets();
+//		return (DeerModule) getModuleOrOperator(null, finalDatasets.get(0));
+//	}
 
 }
