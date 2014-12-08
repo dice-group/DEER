@@ -303,7 +303,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
    \item \texttt{Operators package} contains the \texttt{GeoLiftOperator} interface which is implemented by all operators' classes.
     All operators can be created using the \texttt{OperatorFactory} class calling its \texttt{createOperator()} method with the desired operator's name as parameter.
       \begin{itemize}
-	\item \texttt{SplitOperator} class to generate from 1 input dataset a set of $n \geq 2$ clone output datasets.
+	\item \texttt{CloneOperator} class to generate from 1 input dataset a set of $n \geq 2$ clone output datasets.
 	\item \texttt{MergeOperator} class to generate one merged output dataset out of $n \geq 2$ input datasets.
       \end{itemize}
  
@@ -468,7 +468,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
 %     \subsubsection{Output}
 %     \begin{itemize}
 %     \item \texttt{Data model} enriched with additional Geo-spatial information URIs represented by the \texttt{addedGeoProperty} predicates, 
-%     witch by default is \texttt{gn:relatedTo\footnote{Prefix \texttt{gn} stands for \texttt{http://geoknow.org/ontology/}}} predicates.
+%     witch by default is \texttt{gn:relatedTo\footnote{Prefix \texttt{deer} stands for \texttt{http://geoknow.org/ontology/}}} predicates.
 %     \end{itemize}
 % 
 %     \subsubsection{Process}
@@ -493,7 +493,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     % \midrule
     \texttt{literalProperty}	& Literal property used by FOX for NER. If not set, the top ranked literal property will be pecked automatically by \texttt{LiteralPropertyRanker} sub-module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
     \midrule
-    \texttt{addedGeoProperty}& property added to the input model with additional Geo-spatial knowledge through NLP. By default, this parameter is set to \emph{gn:relatedTo\footnotemark[11]}\\
+    \texttt{addedGeoProperty}& property added to the input model with additional knowledge through NLP. By default, this parameter is set to \emph{gn:relatedTo\footnotemark[11]}\\
     \midrule
     \texttt{useFoxLight} 	& An implemented NER class name, either: 
 			      \begin{itemize}
@@ -667,7 +667,7 @@ Formally, an operator can be regarded as a function $\varphi: \mathcal{R}^* \rig
  This organization ease the usage of the operators in different workflows.
  Adding new operators to \geolift is possible by implementing the \texttt{GeoLiftOperator}.
 
-\subsubsection{Split Operator}
+\subsubsection{Clone Operator}
 The idea behind the split operator is to enable parallel execution of different modules in the same dataset. 
 The split operator takes one dataset as input and produces $n \geq 2$ output datasets, which are all identical to the input dataset.
 Each of the output datasets of the split operator has its own workflow (as to be input to any other module or operator).
@@ -730,8 +730,8 @@ in the following we will describe each of them along with our example shown in l
 :derefParam1	a   :ModuleParameter, :DereferencingModuleParameter ;
 		:hasKey		"inputProperty1" ;
 		:hasValue	geo:lat .
-:split		a		:Operator, :SplitOperator  ;
-		rdfs:label	"Split operator" ;
+:clone		a		:Operator, :CloneOperator  ;
+		rdfs:label	"Clone operator" ;
 		:hasInput	:d2 ;
 		:hasOutput	:d3, :d4 .
 :nlp		a		:Module, :NLPModule  ;
@@ -833,7 +833,7 @@ in the following we will describe each of them along with our example shown in l
 %       \node (derefParam1)  at (23,3)  {\texttt{geo:lat}};
 %       \draw[->,thin] (deref) to node[ rectangle, draw, fill=white,draw=white]{$inputProperty1$} (derefParam1);
       \node[database] (d2) at (15,1) {\textbf{$d_2$}};
-      \node (split)  at (15,-1) [operator] {\texttt{Split}};
+      \node (split)  at (15,-1) [operator] {\texttt{clone}};
       \draw[thick,->] (deref) -- (d2);
       \draw[thick,->] (d2) -- (split);
       \node[database] (d3) at (10,-1) {\textbf{$d_3$}};
@@ -952,8 +952,8 @@ in the following we will describe each of them along with our example shown in l
 % :derefParam1	a   :ModuleParameter, :DereferencingModuleParameter ;
 % 		:hasKey		"inputProperty1" ;
 % 		:hasValue	geo:lat .
-% :split		a		:Operator, :SplitOperator  ;
-% 		rdfs:label	"Split operator" ;
+% :split		a		:Operator, :CloneOperator  ;
+% 		rdfs:label	"Clone operator" ;
 % 		:hasInput	:d2 ;
 % 		:hasOutput	:d3, :d4 .
 % :nlp		a		:Module, :NLPModule  ;
@@ -1006,7 +1006,7 @@ in the following we will describe each of them along with our example shown in l
 % %       \node (derefParam1)  at (23,3)  {\texttt{geo:lat}};
 % %       \draw[->,thin] (deref) to node[ rectangle, draw, fill=white,draw=white]{$inputProperty1$} (derefParam1);
 %       \node[database] (d2) at (15,1) {\textbf{$d_2$}};
-%       \node (split)  at (15,-1) [operator] {\texttt{Split}};
+%       \node (split)  at (15,-1) [operator] {\texttt{Clone}};
 %       \draw[thick,->] (deref) -- (d2);
 %       \draw[thick,->] (d2) -- (split);
 %       \node[database] (d3) at (10,-1) {\textbf{$d_3$}};

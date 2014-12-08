@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class ModuleFactory {
-	private static final Logger logger = Logger.getLogger(DeerModule.class.getName());
+	private static final Logger logger = Logger.getLogger(ModuleFactory.class.getName());
 
 	public static final String DEREFERENCING_MODULE 	= "dereferencing";
 	public static final String LINKING_MODULE 		= "linking";

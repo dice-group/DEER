@@ -157,7 +157,14 @@ public class Tree<T> {
 	}
 
 
-
+	public static void main(String args[]){
+		Tree<Integer> t = new Tree<Integer>(1);
+		Tree<Integer> child = new Tree<Integer>(2);
+		new Tree<Integer>(t,2, null);
+		t.addChild(child);
+//		t.addChild(new TreeX<Integer>(4));
+		t.print();
+	}
 
 
 }

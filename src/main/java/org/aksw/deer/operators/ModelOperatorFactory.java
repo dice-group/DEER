@@ -33,7 +33,7 @@ public class ModelOperatorFactory {
 		if(name.equalsIgnoreCase(MERGE_OPERATOR))
 			return new MergeOperator();
 		if(name.equalsIgnoreCase(SPLIT_OPERATOR ))
-			return new SplitOperator();
+			return new CloneOperator();
 		//TODO Add any new operator here 
 
 		logger.error("Sorry, The operator " + name + " is not yet implemented. Exit with error ...");
@@ -72,7 +72,7 @@ public class ModelOperatorFactory {
 	List<DeerOperator> getImplementations(){
 		List<DeerOperator> result = new ArrayList<DeerOperator>();
 		result.add(new MergeOperator());
-		result.add(new SplitOperator());
+		result.add(new CloneOperator());
 		//TODO Add any new operator here 
 		return result;
 	}

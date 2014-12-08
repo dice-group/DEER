@@ -8,19 +8,15 @@ import java.util.Map;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
-import org.aksw.deer.modules.linking.LinkingModule;
-import org.aksw.deer.workflow.TSVConfigReader;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.aksw.deer.helper.datastructure.Tree;
+import org.aksw.deer.helper.datastructure.TreeX;
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
@@ -24,6 +24,9 @@ import org.aksw.deer.modules.filter.FilterModule;
 import org.aksw.deer.modules.linking.LinkingModule;
 import org.aksw.deer.modules.nlp.NLPModule;
 import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
+import org.aksw.deer.operators.CloneOperator;
+import org.aksw.deer.operators.DeerOperator;
+import org.aksw.deer.operators.OperatorFactory;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigWriter;
 import org.apache.log4j.Logger;
 
@@ -50,7 +53,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	private int datasetCounter = 1;
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
-	public Tree<RefinementNode> refinementTreeRoot = new Tree<RefinementNode>(new RefinementNode());
+	public TreeX<RefinementNode> refinementTreeRoot = new TreeX<RefinementNode>(new RefinementNode());
 	RDFConfigWriter configWriter = new RDFConfigWriter();
 	public int iterationNr = 0;
 
@@ -58,7 +61,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	private final long 	MAX_TREE_SIZE = 50;
 	public final double 	CHILDREN_PENALTY_WEIGHT   = 1; 
 	public final double 	COMPLEXITY_PENALTY_WEIGHT = 1;
-	
+
 	private DeerModule leftModule = null;
 
 
@@ -86,37 +89,37 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		refinementTreeRoot = createRefinementTreeRoot();
 		RefinementNode left = getLeftNode(refinementTreeRoot);
 		RefinementNode right = getRightNode(refinementTreeRoot);
-		createCloneMergeNode(refinementTreeRoot, left, right);
+		createCloneMergeNodes(refinementTreeRoot, left, right);
 
 		refinementTreeRoot.print();
-//		logger.info("Most promising node: " + mostPromisingNode.getValue());
-//		iterationNr ++;
-//		while((mostPromisingNode.getValue().fitness) < MAX_FITNESS_THRESHOLD	 
-//				&& refinementTreeRoot.size() <= MAX_TREE_SIZE)
-//		{
-//			iterationNr++;
-//			mostPromisingNode = expandNode(mostPromisingNode);
-//			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
-//			refinementTreeRoot.print();
-//			if(mostPromisingNode.getValue().fitness == -Double.MAX_VALUE){
-//				// no better solution can be found
-//				break;
-//			}
-//			logger.info("Most promising node: " + mostPromisingNode.getValue());
-//		}
-//		logger.info("----------------------------------------------");
-//		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, 0).getValue();
-//		//		logger.info("Best Solution: " + bestSolution.toString());
-//		//		System.out.println("===== Output Config =====");
-//		//		bestSolution.configModel.write(System.out,"TTL");
-//		//		System.out.println("===== Output Dataset =====");
-//		//		bestSolution.outputModel.write(System.out,"TTL");
-//		//		System.out.println("===== Output Config =====");
-//		//		mostPromisingNode.getValue().configModel.write(System.out,"TTL");
-//		//		System.out.println("===== Output Dataset =====");
-//		//		mostPromisingNode.getValue().outputModel.write(System.out,"TTL");
-//		bestSolution.configModel = setIOFiles(bestSolution.configModel, "inputFile.ttl", "outputFile.ttl"); 
-//		return bestSolution;
+		//		logger.info("Most promising node: " + mostPromisingNode.getValue());
+		//		iterationNr ++;
+		//		while((mostPromisingNode.getValue().fitness) < MAX_FITNESS_THRESHOLD	 
+		//				&& refinementTreeRoot.size() <= MAX_TREE_SIZE)
+		//		{
+		//			iterationNr++;
+		//			mostPromisingNode = expandNode(mostPromisingNode);
+		//			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
+		//			refinementTreeRoot.print();
+		//			if(mostPromisingNode.getValue().fitness == -Double.MAX_VALUE){
+		//				// no better solution can be found
+		//				break;
+		//			}
+		//			logger.info("Most promising node: " + mostPromisingNode.getValue());
+		//		}
+		//		logger.info("----------------------------------------------");
+		//		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, 0).getValue();
+		//		//		logger.info("Best Solution: " + bestSolution.toString());
+		//		//		System.out.println("===== Output Config =====");
+		//		//		bestSolution.configModel.write(System.out,"TTL");
+		//		//		System.out.println("===== Output Dataset =====");
+		//		//		bestSolution.outputModel.write(System.out,"TTL");
+		//		//		System.out.println("===== Output Config =====");
+		//		//		mostPromisingNode.getValue().configModel.write(System.out,"TTL");
+		//		//		System.out.println("===== Output Dataset =====");
+		//		//		mostPromisingNode.getValue().outputModel.write(System.out,"TTL");
+		//		bestSolution.configModel = setIOFiles(bestSolution.configModel, "inputFile.ttl", "outputFile.ttl"); 
+		//		return bestSolution;
 		return null;
 	}
 
@@ -129,27 +132,39 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	 * @param right
 	 * @author sherif
 	 */
-	private Tree<RefinementNode> createCloneMergeNode(Tree<RefinementNode> root, RefinementNode left, RefinementNode right) {
+	private TreeX<RefinementNode> createCloneMergeNodes(TreeX<RefinementNode> root, RefinementNode left, RefinementNode right) {
 		if(left == null && right == null){
+			logger.warn("no clone merge nodes created, root returned!");
 			return root;
 		}
 		if(right == null){
-			root.addChild(new Tree<RefinementNode>(left));
+			root.addChild(new TreeX<RefinementNode>(left));
 		}else if(left == null){
-			root.addChild(new Tree<RefinementNode>(right));
+			root.addChild(new TreeX<RefinementNode>(right));
 		}else{
-			RefinementNode clone = new RefinementNode(module, fitness, inputModel, outputModel, inputDataset, outputDataset, configModel)
-			root.addChild(new Tree<RefinementNode>(right));
+			DeerOperator clone = OperatorFactory.createOperator("clone");
+			
+			List<Model> cloneInputModels = new ArrayList<Model>();
+			cloneInputModels.add(left.getOutputModel());
+			cloneInputModels.add(right.getOutputModel());
+			
+			List<Resource> cloneInputDatasets = new ArrayList<Resource>();
+			cloneInputDatasets.add(left.getOutputDataset());
+			cloneInputDatasets.add(right.getOutputDataset());
+			
+			RefinementNode cloneNode = new RefinementNode(clone,cloneInputModels,null, null, cloneInputDatasets, null);
+			TreeX<RefinementNode> c = root.addChild(new TreeX<RefinementNode> (cloneNode));
+			
+			new TreeX<RefinementNode>(c, cloneNode, null);
+//			cloneNode.addChild(new TreeX<RefinementNode>(right));
 		}
-		
-		
 		return root;
 	}
 
 	public RefinementNode run(){
 		refinementTreeRoot = createRefinementTreeRoot();
 		refinementTreeRoot = expandNode(refinementTreeRoot);
-		Tree<RefinementNode> mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
+		TreeX<RefinementNode> mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
 		refinementTreeRoot.print();
 		logger.info("Most promising node: " + mostPromisingNode.getValue());
 		iterationNr ++;
@@ -181,26 +196,26 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		return bestSolution;
 	}
 
-	private Tree<RefinementNode> createRefinementTreeRoot(){
+	private TreeX<RefinementNode> createRefinementTreeRoot(){
 		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 		Model config = ModelFactory.createDefaultModel();
 		double f = -Double.MAX_VALUE;
-		RefinementNode initialNode = new RefinementNode(null,f,sourceModel,sourceModel,outputDataset,outputDataset,config);
-		return new Tree<RefinementNode>(null,initialNode, null);
+		RefinementNode initialNode = new RefinementNode(null, f, sourceModel, sourceModel,config,outputDataset,outputDataset);
+		return new TreeX<RefinementNode>((TreeX<RefinementNode>)null,initialNode, null);
 	}
 
-	private Tree<RefinementNode> expandNode(Tree<RefinementNode> root) {
+	private TreeX<RefinementNode> expandNode(TreeX<RefinementNode> root) {
 		for( DeerModule module : MODULES){
-			Model inputModel = root.getValue().outputModel;
+			Model inputModel = root.getValue().getOutputModel();
 			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
-			Resource inputDataset  = root.getValue().outputDataset;
-			Model configMdl = ModelFactory.createDefaultModel();
+			Resource inputDataset  = root.getValue().getOutputDataset();
+			Model configModel = ModelFactory.createDefaultModel();
 			RefinementNode node = new RefinementNode();
 			logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
 			if(parameters == null || parameters.size() == 0){
 				// mark as dead end, fitness = -2
-				configMdl = root.getValue().configModel;
-				node = new RefinementNode( module, -2, sourceModel, sourceModel, inputDataset, inputDataset, configMdl);
+				configModel = root.getValue().configModel;
+				node = new RefinementNode(module, -2, sourceModel, sourceModel,configModel, inputDataset, inputDataset);
 			}else{
 				Model currentMdl = module.process(inputModel, parameters);
 				double fitness;
@@ -211,20 +226,20 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 					fitness = computeFMeasure(currentMdl, targetModel);
 				}
 				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-				configMdl = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
-				node = new RefinementNode(module, fitness, root.getValue().outputModel, currentMdl, inputDataset, outputDataset, configMdl);
+				configModel = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
+				node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
 			}
-			root.addChild(new Tree<RefinementNode>(node));
+			root.addChild(new TreeX<RefinementNode>(node));
 		}
 		return root;
 	}
 
-	private RefinementNode getLeftNode(Tree<RefinementNode> root) {
+	private RefinementNode getLeftNode(TreeX<RefinementNode> root) {
 		RefinementNode promisingNode = null; 
 		for( DeerModule module : MODULES){
-			Model inputModel = root.getValue().outputModel;
+			Model inputModel = root.getValue().getOutputModel();
 			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
-			Resource inputDataset  = root.getValue().outputDataset;
+			Resource inputDataset  = root.getValue().getInputDataset();
 			Model configMdl = ModelFactory.createDefaultModel();
 			RefinementNode node = new RefinementNode();
 			logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
@@ -238,7 +253,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 					double fitness = computeFMeasure(currentMdl, targetModel);
 					Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 					configMdl = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
-					node = new RefinementNode(module, fitness, root.getValue().outputModel, currentMdl, inputDataset, outputDataset, configMdl);
+					node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configMdl, inputDataset, outputDataset);
 					if(promisingNode == null || promisingNode.fitness < fitness){
 						promisingNode = node;
 						leftModule = module;
@@ -246,19 +261,20 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 				}
 			}
 		}
-//		root.addChild(new Tree<RefinementNode>(promisingNode));
+		//		root.addChild(new TreeX<RefinementNode>(promisingNode));
+		System.err.println("getLeftNode: " + promisingNode);
 		return promisingNode;
 	}
-	
-	private RefinementNode getRightNode(Tree<RefinementNode> root) {
+
+	private RefinementNode getRightNode(TreeX<RefinementNode> root) {
 		RefinementNode promisingNode = null; 
 		for( DeerModule module : MODULES){
 			if(module.getClass().equals(leftModule.getClass())){
 				continue;
 			}
-			Model inputModel = root.getValue().outputModel;
+			Model inputModel = root.getValue().getOutputModel();
 			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
-			Resource inputDataset  = root.getValue().outputDataset;
+			Resource inputDataset  = root.getValue().getOutputDataset();
 			Model configMdl = ModelFactory.createDefaultModel();
 			RefinementNode node = new RefinementNode();
 			logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
@@ -272,14 +288,15 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 					double fitness = computeFMeasure(currentMdl, targetModel);
 					Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
 					configMdl = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
-					node = new RefinementNode(module, fitness, root.getValue().outputModel, currentMdl, inputDataset, outputDataset, configMdl);
+					node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configMdl, inputDataset, outputDataset);
 					if(promisingNode == null || promisingNode.fitness < fitness){
 						promisingNode = node;
 					}
 				}
 			}
 		}
-//		root.addChild(new Tree<RefinementNode>(promisingNode));
+		//		root.addChild(new TreeX<RefinementNode>(promisingNode));
+		System.err.println("getRightNode: " + promisingNode);
 		return promisingNode;
 	}
 
@@ -316,16 +333,16 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		return (double) currentModel.intersection(targetModel).size() / (double) targetModel.size();
 	}
 
-	private Tree<RefinementNode> getMostPromisingNode(Tree<RefinementNode> root, double penaltyWeight){
+	private TreeX<RefinementNode> getMostPromisingNode(TreeX<RefinementNode> root, double penaltyWeight){
 		// trivial case
 		if(root.getchildren() == null || root.getchildren().size() == 0){
 			return root;
 		}
 		// get mostPromesyChild of children
-		Tree<RefinementNode> mostPromesyChild = new Tree<RefinementNode>(new RefinementNode());
-		for(Tree<RefinementNode> child : root.getchildren()){
+		TreeX<RefinementNode> mostPromesyChild = new TreeX<RefinementNode>(new RefinementNode());
+		for(TreeX<RefinementNode> child : root.getchildren()){
 			if(child.getValue().fitness >= 0){
-				Tree<RefinementNode> promesyChild = getMostPromisingNode(child, penaltyWeight);
+				TreeX<RefinementNode> promesyChild = getMostPromisingNode(child, penaltyWeight);
 				double newFitness;
 				newFitness = promesyChild.getValue().fitness - penaltyWeight * computePenality(promesyChild);
 				if( newFitness > mostPromesyChild.getValue().fitness  ){
@@ -348,7 +365,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	 * @return
 	 * @author sherif
 	 */
-	private double computePenality(Tree<RefinementNode> promesyChild) {
+	private double computePenality(TreeX<RefinementNode> promesyChild) {
 		long childrenCount = promesyChild.size() - 1;
 		double childrenPenalty = (CHILDREN_PENALTY_WEIGHT * childrenCount) / refinementTreeRoot.size();
 		long level = promesyChild.level();
@@ -356,10 +373,6 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		return  childrenPenalty + complextyPenalty;
 	}
 
-	public static void main(String args[]) throws IOException{
-				trivialRun(args);
-//		evaluation(args, false, 1);
-	}
 
 	public static void trivialRun(String args[]){
 		String sourceUri = args[0];
@@ -391,10 +404,9 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 					learner.refinementTreeRoot.size() + "\t" + 
 					learner.iterationNr + "\t" + 
 					//					bestSolution.fitness + "\t" +
-					learner.computePrecision(bestSolution.outputModel, targetModel) + "\t" + 
-					learner.computeRecall(bestSolution.outputModel, targetModel) + "\t" +
-					learner.computeFMeasure
-					(bestSolution.outputModel, targetModel);
+					learner.computePrecision(bestSolution.getOutputModel(), targetModel) + "\t" + 
+					learner.computeRecall(bestSolution.getOutputModel(), targetModel) + "\t" +
+					learner.computeFMeasure(bestSolution.getOutputModel(), targetModel);
 			Writer.writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
 			//			bestSolution.outputModel.write(System.out,"TTL");
 			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
@@ -427,6 +439,12 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		resultModel.add(outputDataset, SPECS.outputFile, outputFile);
 		resultModel.setNsPrefixes(sConfig);
 		return resultModel;
+	}
+
+
+	public static void main(String args[]) throws IOException{
+		trivialRun(args);
+		//evaluation(args, false, 1);
 	}
 
 }

@@ -24,7 +24,7 @@ import org.aksw.deer.modules.linking.LinkingModule;
 import org.aksw.deer.modules.nlp.NLPModule;
 import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
 import org.aksw.deer.operators.MergeOperator;
-import org.aksw.deer.operators.SplitOperator;
+import org.aksw.deer.operators.CloneOperator;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.QueryExecution;
@@ -161,7 +161,7 @@ public class RDFConfigExecuter {
 				return resultModels.get(0);
 			}
 			if(type.equals(SPECS.SplitOperator)){
-				SplitOperator splitOperator = new SplitOperator();
+				CloneOperator splitOperator = new CloneOperator();
 				List<Model> resultModels = splitOperator.process(inputDatasets, moduleParameters);
 				return resultModels.get(0);
 			}

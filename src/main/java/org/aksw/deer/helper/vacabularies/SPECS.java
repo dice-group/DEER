@@ -14,6 +14,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  */
 public class SPECS {
 	public static final String uri = "http://geoknow.org/specsontology/";
+	public static final String prefix = "deer";
 
 	private static Property property(String name) {
 		Property result = ResourceFactory.createProperty(uri + name);
