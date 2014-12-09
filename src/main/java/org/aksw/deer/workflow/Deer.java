@@ -23,18 +23,12 @@ import com.hp.hpl.jena.rdf.model.Model;
 public class Deer {
 	private static final Logger logger = Logger.getLogger(Deer.class.getName());
 	private static final String helpMessage = 
-			"parameters:\n" +
-					"\t-i --input: input file/URI" + "\n" +
-					"\t-o --output: output file/URI" + "\n" +
-					"\t-c --Config: config file to read the parameters for each module from" + "\n" +
-					"Config file format:" + "\n"+
-					"\t moduleNo moduleName moduleParameterName moduleParameterValue" + "\n"+
-					"Config File Example:\n" +
-					"\t1 nlp useFoxLight true" + "\n"+
-					"\t1 nlp askEndPoint false" + "\n"+
-					"\t2 nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment" + "\n"+
-					"\t2 nlp useFoxLight false" + "\n"+
-					"\t3 nlp useFoxLight true";
+			"To run DEER from command-line, provide the RDf configuration file as " +
+					"the only one parameter for the DEER jar file. \n" +
+					"Example: deer.jar config.ttl \n" +
+					"For details about the configuration file see DEER manual at " +
+					"https://github.com/GeoKnow/DEER/blob/master/DEER_manual/deer_manual.pdf ";
+
 
 	/**
 	 * 
@@ -42,15 +36,15 @@ public class Deer {
 	 */
 	public Deer() {
 	}
-	
-	
+
+
 	/**
 	 * run GeoLift through command line
 	 * @param args
 	 * @throws IOException
 	 * @author sherif
 	 */
-	public static void runGeoLift(String args[]) throws IOException{
+	public static void runDeer(String args[]) throws IOException{
 		long startTime = System.currentTimeMillis();
 		String inputFile	= "";
 		String configFile	= "";
@@ -85,23 +79,24 @@ public class Deer {
 		Long totalTime = System.currentTimeMillis() - startTime;
 		logger.info("***** Done in " + totalTime + "ms *****");
 	}
-        
-        public static void run(String args[]) throws IOException {            
-            for(int i=0; i<args.length; i+=2){
-                    if(args[i].equals("-?") || args[i].toLowerCase().equals("--help")) {
-                            //show help message
-                            logger.info(Deer.helpMessage);
-                            System.exit(0);
-                    }
-                    if(args[i].equals("-l") || args[i].toLowerCase().equals("--list")) {
-                            org.aksw.deer.json.JSONConfigWriter.write();
-                            System.exit(0);
-                    }
-            } 
-            //program didn't terminate until here so run TSV config mode
-            RDFConfigExecuter.main(args);
-        }
-	
+
+	public static void run(String args[]) throws IOException {            
+		if(args.length == 0 || args[0].equals("-?") || args[0].toLowerCase().equals("--help")) {
+			//show help message
+			logger.info(Deer.helpMessage);
+			System.exit(0);
+		}
+		if(args[0].equals("-l") || args[0].toLowerCase().equals("--list")) {
+			org.aksw.deer.json.JSONConfigWriter.write();
+			System.exit(0);
+		}
+		//program didn't terminate until here so run TSV config mode
+		long startTime = System.currentTimeMillis();
+		RDFConfigExecuter.main(args);
+		Long totalTime = System.currentTimeMillis() - startTime;
+		logger.info("Running DEER Done in " + totalTime + "ms");
+	}
+
 	/**
 	 * @param args
 	 * @author sherif

@@ -4,6 +4,7 @@
 package org.aksw.deer.helper.datastructure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,48 +23,74 @@ public class TreeX<T> {
 	private T value;
 
 
+	/**
+	 * create tree node with many parents and many children
+	 * @param parents
+	 * @param value
+	 * @param childrenlist
+	 *@author sherif
+	 */
 	public TreeX(List<TreeX<T>> parents, T value, List<TreeX<T>> childrenlist) {
-		this.parents = parents;
+//		this.parents = parents;
 		this.value = value;
 		for(TreeX<T> parent : parents){
-			if (parent.children == null) {
-				parent.children = new ArrayList<TreeX<T>>();
-			}
-			parent.children.add(this);
+			this.addParent(parent);
 		}
 		if (childrenlist != null) {
 			for (TreeX<T> child : childrenlist) {
-				children.add(new TreeX<T>(this, child.value, child.children));
+				this.addChild(child);
 			}
 		}
 	}
 
+	/**
+	 * create tree node with a single parent and many children
+	 * @param parent
+	 * @param value
+	 * @param childrenlist
+	 *@author sherif
+	 */
 	public TreeX(TreeX<T> parent, T value, List<TreeX<T>> childrenlist) {
-		if (parents == null) {
-			parents = new ArrayList<TreeX<T>>();
-		}
 		if(parent != null){
-			this.parents.add(parent);
-			if (parent.children == null) {
-				parent.children = new ArrayList<TreeX<T>>();
-			}
-			parent.children.add(this);
+			this.addParent(parent);
 		}
 		this.value = value;
 		if (childrenlist != null) {
 			for (TreeX<T> child : childrenlist) {
-				children.add(new TreeX<T>(this, child.value, child.children));
+				this.addChild(child);
 			}
 		}
 	}
+	
+	/**
+	 * create tree node with many parents and a single child
+	 * @param parents
+	 * @param value
+	 * @param child
+	 *@author sherif
+	 */
+	public TreeX(List<TreeX<T>> parents, T value, TreeX<T> child) {
+		this.value = value;
+		for(TreeX<T> parent : parents){
+			this.addParent(parent);
+		}
+		if (child != null) {
+			this.addChild(child);
+		}
+	}
 
+	/**
+	 * Create a tree node with the given value with a null parents and children
+	 * @param value
+	 *@author sherif
+	 */
 	public TreeX(T value) {
 		this.parents = null;
 		this.value = value;
 		children = null;
 	}
 	/**
-	 * 
+	 * Create an empty tree node
 	 *@author sherif
 	 */
 	public TreeX() {
@@ -72,6 +99,11 @@ public class TreeX<T> {
 		value    = null;
 	}
 
+	/**
+	 * returns tree leaves 
+	 * @return
+	 * @author sherif
+	 */
 	public Set<TreeX<T>> getLeaves(){
 		Set<TreeX<T>> leaves = new HashSet<TreeX<T>>();
 		for(TreeX<T> child : this.children){
@@ -87,6 +119,12 @@ public class TreeX<T> {
 		return leaves;
 	}
 
+	/**
+	 * Add child node to the current tree node
+	 * @param child
+	 * @return
+	 * @author sherif
+	 */
 	public TreeX<T> addChild(TreeX<T> child){
 		if(children == null){
 			children = new ArrayList<TreeX<T>>();
@@ -98,23 +136,66 @@ public class TreeX<T> {
 		child.parents.add(this);
 		return child;
 	}
+	
+	/**
+	 * Add parent node to the current tree node
+	 * @param child
+	 * @return the added parent node
+	 * @author sherif
+	 */
+	public TreeX<T> addParent(TreeX<T> parent){
+		if(parents == null){
+			parents = new ArrayList<TreeX<T>>();
+		}
+		parents.add(parent);
+		if(parent.children == null){
+			parent.children = new ArrayList<TreeX<T>>();
+		}
+		if(!parent.children.contains(this)){
+			parent.children.add(this);
+		}
+		return parent;
+	}
 
+	/**
+	 * Remove Child
+	 * @param child
+	 * @author sherif
+	 */
 	public void removeChild(TreeX<T> child){
 		children.remove(child);
 	}
 
+	/**
+	 * Return the first parent
+	 * @return
+	 * @author sherif
+	 */
 	public TreeX<T> getParent() {
 		return parents.get(0);
 	}
 
+	/**
+	 * Return all parents
+	 * @return
+	 * @author sherif
+	 */
 	public List<TreeX<T>> getParents() {
 		return parents;
 	}
 
+	/**
+	 * @return a list of all children nodes of the current tree node
+	 * @author sherif
+	 */
 	public List<TreeX<T>> getchildren() {
 		return children;
 	}
 
+	/**
+	 * @return the data value of the current tree node
+	 * @author sherif
+	 */
 	public T getValue() {
 		return value;
 	}
@@ -143,6 +224,10 @@ public class TreeX<T> {
 	//		}
 	//	}
 
+	/**
+	 * Print current tree in console
+	 * @author sherif
+	 */
 	public void print() {
 		print("", true);
 	}
@@ -183,6 +268,10 @@ public class TreeX<T> {
 
 
 
+	/**
+	 * @return tree size
+	 * @author sherif
+	 */
 	public long size(){
 		long size = 0;
 		if(children == null || children.size() == 0){
@@ -194,6 +283,10 @@ public class TreeX<T> {
 		return 1 + size;
 	}
 
+	/**
+	 * @return tree depth
+	 * @author sherif
+	 */
 	public long depth(){
 		if(children == null || children.size() == 0){
 			return 1;
@@ -208,6 +301,10 @@ public class TreeX<T> {
 		return maxDepth + 1;
 	}
 
+	/**
+	 * @return current node level
+	 * @author sherif
+	 */
 	public long level(){
 		long level = 0;
 		TreeX<T> t = this;
@@ -219,23 +316,17 @@ public class TreeX<T> {
 	}
 
 	public static void main(String args[]){
-		TreeX<Integer> t = new TreeX<Integer>(1);
-		TreeX<Integer> s1 = new TreeX<Integer>(t,21,null);
-		TreeX<Integer> s2 = new TreeX<Integer>(t,22,null);
-		TreeX<Integer> s3 = new TreeX<Integer>(t,23,null);
-		//		TreeX<Integer> s4 = new TreeX<Integer>(t,24,null);
-		//		TreeX<Integer> t1 = new TreeX<Integer>(s1,31,null);
-		//		TreeX<Integer> t2 = new TreeX<Integer>(s1,32,null);
-		List<TreeX<Integer>> parents = new ArrayList<TreeX<Integer>>();
-		parents.add(s1);
-		parents.add(s2);
-		TreeX<Integer> t1 = new TreeX<Integer>(parents,31,null);
-		TreeX<Integer> f1 = new TreeX<Integer>(t1,41,null);
-		TreeX<Integer> f2 = new TreeX<Integer>(t1,42,null);
-		List<TreeX<Integer>> parents2 = new ArrayList<TreeX<Integer>>();
-		parents2.add(f1);
-		parents2.add(f2);
-		TreeX<Integer> f3 = new TreeX<Integer>(parents2,51,null);
+		TreeX<String> t = new TreeX<String>("root");
+		TreeX<String> c = new TreeX<String>(t,"clone",null);
+//		TreeX<String> l = new TreeX<String>(c,"left",null);
+		TreeX<String> l = c.addChild(new TreeX<String>("left"));
+//		TreeX<String> r = new TreeX<String>(c,"right",null);
+		TreeX<String> r = c.addChild(new TreeX<String>("right"));
+		ArrayList<TreeX<String>> p = new ArrayList<TreeX<String>>(Arrays.asList(l, r));
+		TreeX<String> m  = new TreeX<String>(p,"merge", (TreeX<String>)null);
+		TreeX<String> l1 = new TreeX<String>(m,"leaf1",null);
+		TreeX<String> l2 = new TreeX<String>(m,"leaf2",null);
+		TreeX<String> l3 = new TreeX<String>(m,"leaf3",null);
 		t.print();
 	}
 

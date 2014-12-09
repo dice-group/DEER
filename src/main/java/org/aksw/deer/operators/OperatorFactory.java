@@ -6,12 +6,6 @@ package org.aksw.deer.operators;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aksw.deer.modules.Dereferencing.DereferencingModule;
-import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
-import org.aksw.deer.modules.filter.FilterModule;
-import org.aksw.deer.modules.linking.LinkingModule;
-import org.aksw.deer.modules.nlp.NLPModule;
-import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
 import org.apache.log4j.Logger;
 
 
@@ -68,7 +62,7 @@ public class OperatorFactory {
         }
 	
 	/**
-	 * @return list of names of all implemented operator
+	 * @return list of names of all implemented operators
 	 * @author sherif
 	 */
 	public List<String> getNames(){
@@ -80,7 +74,7 @@ public class OperatorFactory {
 	}
 	
 	/**
-	 * @return list of instances of all implemented operator
+	 * @return list of instances of all implemented operators
 	 * @author sherif
 	 */
 	List<DeerOperator> getImplementations(){

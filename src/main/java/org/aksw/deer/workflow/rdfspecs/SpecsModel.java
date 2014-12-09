@@ -56,6 +56,15 @@ public class SpecsModel {
 		specs = ModelFactory.createDefaultModel();
 	}
 
+	/**
+	 * Add DEER module to specs
+	 * @param module
+	 * @param parameters
+	 * @param inputDataset
+	 * @param outputDataset
+	 * @return
+	 * @author sherif
+	 */
 	public  Model add(DeerModule module, Map<String, String> parameters, Resource inputDataset, Resource outputDataset){
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
@@ -116,6 +125,15 @@ public class SpecsModel {
 		return specs;
 	}
 	
+	/**
+	 * Add DEER operator to specs
+	 * @param operator
+	 * @param parameters
+	 * @param inputDatasets
+	 * @param outputDatasets
+	 * @return
+	 * @author sherif
+	 */
 	public Model add(DeerOperator operator, Map<String, String> parameters, List<Resource> inputDatasets, List<Resource> outputDatasets){
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
@@ -154,10 +172,22 @@ public class SpecsModel {
 		return specs;
 	}
 	
+	/**
+	 * Add DEER dataset to specs
+	 * @param dataset
+	 * @author sherif
+	 */
 	public void add(Resource dataset){
 		specs.add(dataset, RDF.type, SPECS.Dataset);
 	}
 	
+	/**
+	 * Add DEER dataset to specs
+	 * @param dataset
+	 * @param uri
+	 * @param endpoint
+	 * @author sherif
+	 */
 	public void add(Resource dataset, Resource uri, Resource endpoint){
 		add(dataset);
 		specs.add(dataset, SPECS.FromEndPoint, endpoint);

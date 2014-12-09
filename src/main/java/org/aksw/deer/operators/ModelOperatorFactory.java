@@ -17,10 +17,10 @@ public class ModelOperatorFactory {
 	private static final Logger logger = Logger.getLogger(ModelOperatorFactory.class.getName());
 
 	public static final String MERGE_OPERATOR = "merge";
-	public static final String SPLIT_OPERATOR = "split";
+	public static final String CLONE_OPERATOR = "clone";
 
 	public static final String MERGE_OPERATOR_DESCRIPTION = "The purpose of the merge operator is to merge n>2 models to one single model";
-	public static final String SPLIT_OPERATOR_DESCRIPTION = "The purpose of the split operator is to split one model into n>2 identical models";
+	public static final String CLONE_OPERATOR_DESCRIPTION = "The purpose of the clone operator is to clone one model into n>2 identical models";
 
 	/**
 	 * @param name
@@ -32,7 +32,7 @@ public class ModelOperatorFactory {
 
 		if(name.equalsIgnoreCase(MERGE_OPERATOR))
 			return new MergeOperator();
-		if(name.equalsIgnoreCase(SPLIT_OPERATOR ))
+		if(name.equalsIgnoreCase(CLONE_OPERATOR ))
 			return new CloneOperator();
 		//TODO Add any new operator here 
 
@@ -46,8 +46,8 @@ public class ModelOperatorFactory {
 
 		if(name.equalsIgnoreCase(MERGE_OPERATOR)) {
 			description = MERGE_OPERATOR_DESCRIPTION;
-		} else if (name.equalsIgnoreCase(SPLIT_OPERATOR)) {
-			description = SPLIT_OPERATOR_DESCRIPTION;
+		} else if (name.equalsIgnoreCase(CLONE_OPERATOR)) {
+			description = CLONE_OPERATOR_DESCRIPTION;
 		} 
 
 		return description;
@@ -60,7 +60,7 @@ public class ModelOperatorFactory {
 	public List<String> getNames(){
 		List<String> result = new ArrayList<String>();
 		result.add(MERGE_OPERATOR);
-		result.add(SPLIT_OPERATOR);
+		result.add(CLONE_OPERATOR);
 		//TODO Add any new operator here 
 		return result;
 	}

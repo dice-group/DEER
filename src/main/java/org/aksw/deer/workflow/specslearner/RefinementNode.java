@@ -4,8 +4,8 @@
 package org.aksw.deer.workflow.specslearner;
 
 
-import gnu.getopt.Getopt;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,7 +99,8 @@ public class RefinementNode implements Comparable<RefinementNode> {
 	 */
 	public RefinementNode(DeerOperator operator, List<Model> inputModels, List<Model> outputModels, 
 			Model configModel, List<Resource> inputDatasets, List<Resource> outputDatasets) {
-		this(null, operator, -Double.MAX_VALUE, inputModels, outputModels, configModel, inputDatasets, outputDatasets);
+		//use fitness of -1 as a special value for operator's fitness
+		this(null, operator, -1, inputModels, outputModels, configModel, inputDatasets, outputDatasets);
 	}
 
 	
@@ -196,9 +197,10 @@ public class RefinementNode implements Comparable<RefinementNode> {
 	@Override
 	public String toString() {
 		if(module != null){
-			return module.getClass().getSimpleName() + "(" + fitness +")"; 
+			String format = new DecimalFormat("#.###").format(fitness);
+			return module.getClass().getSimpleName().replace("Module", "") + "(" + format +")"; 
 		}else if(operator != null){
-			return operator.getClass().getSimpleName() + "(" + fitness +")"; 
+			return operator.getClass().getSimpleName().toUpperCase().replace("OPERATOR", ""); 
 		}else{
 			return "invalid node"; 
 		}
@@ -208,6 +210,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
 
 
 	/* (non-Javadoc)
+	 * Compare RefinementNodes based on fitness
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override

@@ -10,16 +10,16 @@
 		:outputFile		"output.ttl" ;
 		:outputFormat	"Turtle" .
 
-:conform	a			:Module, :ConformationModule  ;
+:conform	a			:Module, :AuthorityConformationModule  ;
 		rdfs:label		"Conformation module" ;
 		:hasInput		:d1 ;
 		:hasOutput		:d2 ;
 		:hasParameter	:conformPram1, :conformPram2 .
 
-:conformPram1	a		:ModuleParameter, :NLPModuleParameter ;
+:conformPram1	a		:ModuleParameter, :AuthorityConformationModule ;
 		:hasKey			"sourceSubjectAuthority" ;
 		:hasValue		"http://dbpedia.org" .
 
 :conformPram2	a		:ModuleParameter, :NLPModuleParameter ;
 		:hasKey			"targetSubjectAuthority" ;
-		:hasValue		"http://geolift.org" .
+		:hasValue		"http://deer.org" .

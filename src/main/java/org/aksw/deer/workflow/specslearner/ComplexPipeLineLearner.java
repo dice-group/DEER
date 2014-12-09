@@ -142,21 +142,23 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		}else if(left == null){
 			root.addChild(new TreeX<RefinementNode>(right));
 		}else{
-			DeerOperator clone = OperatorFactory.createOperator("clone");
+			// create clone node
+			DeerOperator cloneOperator = OperatorFactory.createOperator(OperatorFactory.CLONE_OPERATOR);
+			List<Model> rootOutputModels = root.getValue().outputModels;
+			List<Resource> rootOutputDatasets = root.getValue().outputDatasets;
+			RefinementNode cloneNode = new RefinementNode(cloneOperator,rootOutputModels,rootOutputModels, null, rootOutputDatasets, null);
+			List<TreeX<RefinementNode>> leftRightNodes = new ArrayList<TreeX<RefinementNode>>();
+			leftRightNodes.add(new TreeX<RefinementNode>(left));
+			leftRightNodes.add(new TreeX<RefinementNode>(right));
+			TreeX<RefinementNode> clone = new TreeX<RefinementNode>(root ,cloneNode, leftRightNodes);
 			
-			List<Model> cloneInputModels = new ArrayList<Model>();
-			cloneInputModels.add(left.getOutputModel());
-			cloneInputModels.add(right.getOutputModel());
-			
-			List<Resource> cloneInputDatasets = new ArrayList<Resource>();
-			cloneInputDatasets.add(left.getOutputDataset());
-			cloneInputDatasets.add(right.getOutputDataset());
-			
-			RefinementNode cloneNode = new RefinementNode(clone,cloneInputModels,null, null, cloneInputDatasets, null);
-			TreeX<RefinementNode> c = root.addChild(new TreeX<RefinementNode> (cloneNode));
-			
-			new TreeX<RefinementNode>(c, cloneNode, null);
-//			cloneNode.addChild(new TreeX<RefinementNode>(right));
+			// create merge node
+			DeerOperator mergeOperator = OperatorFactory.createOperator(OperatorFactory.MERGE_OPERATOR);
+			List<Model> mergeInputModels = new ArrayList<Model>(Arrays.asList(left.getOutputModel(), right.getOutputModel()));
+			List<Resource> mergeInputDatasets = new ArrayList<Resource>(Arrays.asList(left.getOutputDataset(), right.getOutputDataset()));
+			RefinementNode mergeNode = new RefinementNode(mergeOperator, mergeInputModels, null, null, mergeInputDatasets, null);
+			TreeX<RefinementNode> mergeChild = new TreeX<RefinementNode>();
+			TreeX<RefinementNode> merge = new TreeX<RefinementNode>(leftRightNodes ,mergeNode, mergeChild);
 		}
 		return root;
 	}

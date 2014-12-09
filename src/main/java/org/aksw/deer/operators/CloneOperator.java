@@ -19,21 +19,21 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  */
 public class CloneOperator implements DeerOperator {
 	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
-	public int splitsCount = 2;
+	public int clonesCount = 2;
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.operators.ModelOperator#run(java.util.List)
 	 */
 	@Override
 	public List<Model> process(List<Model> models, Map<String, String> parameters) {
-		logger.info("--------------- Split Operator ---------------");
-		if(parameters.containsKey("splitsCount")){
-			splitsCount = Integer.parseInt(parameters.get("splitsCount"));
+		logger.info("--------------- Clone Operator ---------------");
+		if(parameters.containsKey("cloneCount")){
+			clonesCount = Integer.parseInt(parameters.get("cloneCount"));
 		}
 		List<Model> result = new ArrayList<Model>();
-		for (int i=0; i<splitsCount ; i++) {
-			Model split = ModelFactory.createDefaultModel();
-			split.add(models.get(0));
-			result.add(split);
+		for (int i=0; i<clonesCount ; i++) {
+			Model clone = ModelFactory.createDefaultModel();
+			clone.add(models.get(0));
+			result.add(clone);
 		}
 		return result;
 	}
@@ -44,7 +44,7 @@ public class CloneOperator implements DeerOperator {
 	 */
 	public List<String> getParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("splitsCount");
+		parameters.add("cloneCount");
 		return parameters;
 	}
 	

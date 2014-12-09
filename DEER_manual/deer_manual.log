@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.11.8)  8 DEC 2014 18:10
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.11.8)  9 DEC 2014 18:35
 entering extended mode
  %&-line parsing enabled.
 **deer_manual.tex
@@ -995,11 +995,11 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 16130 strings out of 493848
- 302125 string characters out of 1152823
+ 16129 strings out of 493848
+ 302110 string characters out of 1152823
  488447 words of memory out of 3000000
- 19060 multiletter control sequences out of 15000+50000
- 15963 words of font info for 63 fonts, out of 3000000 for 9000
+ 19059 multiletter control sequences out of 15000+50000
+ 15662 words of font info for 62 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
  56i,16n,60p,895b,1390s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sha
@@ -1018,7 +1018,7 @@ usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/t
 exmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texliv
 e/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-texlive/fonts/typ
 e1/public/amsfonts/cm/cmtt12.pfb>
-Output written on deer_manual.pdf (26 pages, 1176987 bytes).
+Output written on deer_manual.pdf (26 pages, 1176758 bytes).
 PDF statistics:
  272 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
