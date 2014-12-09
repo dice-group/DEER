@@ -1,0 +1,11 @@
+Package: deer
+Version: [[version]]
+Section: misc
+Priority: optional
+Architecture: all
+Homepage: http://aksw.org/Projects/deer.html
+Depends: openjdk-6-jre | sun-java6-jre
+Maintainer: Mohamed Sherif <sherif@informatik.uni-leipzig.de>
+Description: Spatial mapping framework for enriching RDF datasets with Geo-spatial information.
+        DEER is a spatial mapping component aims to enrich RDF datasets with geo-spatial information. To achieve this goal, DEER relies on three atomic modules based on dereferencing, linking and NLP. DEER implemented in Java as an open-source project.
+Distribution: development
