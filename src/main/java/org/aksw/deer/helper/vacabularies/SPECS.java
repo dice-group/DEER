@@ -14,7 +14,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  */
 public class SPECS {
 	public static final String uri = "http://geoknow.org/specsontology/";
-	public static final String prefix = "deer";
+	public static final String prefix = "DEER";
 
 	private static Property property(String name) {
 		Property result = ResourceFactory.createProperty(uri + name);
@@ -58,10 +58,10 @@ public class SPECS {
 	public static final Resource LinkingModuleParameter 		= resource( "linkingModuleParameter" );
 	public static final Resource FilterModuleParameter 		= resource( "FilterModuleParameter" );
 	public static final Resource Operator 					= resource( "Operator" );
-	public static final Resource SplitOperator 				= resource( "SplitOperator" );
+	public static final Resource CloneOperator 				= resource( "CloneOperator" );
 	public static final Resource MergeOperator 				= resource( "MergeOperator" );
 	public static final Resource OperatorParameter 			= resource( "OperatorParameter" );
-	public static final Resource SplitOperatorParameter 		= resource( "SplitOperatorParameter" );
+	public static final Resource CloneOperatorParameter 		= resource( "CloneOperatorParameter" );
 	public static final Resource MergeOperatorParameter 		= resource( "MergeOperatorParameter" );
 	public static final Resource AuthorityConformationModuleParameter 	= resource( "AuthorityConformationModuleParameter" );
 	public static final Resource PredicateConformationModuleParameter 	= resource( "PredicateConformationModuleParameter" );

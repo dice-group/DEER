@@ -56,6 +56,16 @@ public class RDFConfigWriter{
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @param inputConfig
+	 * @param module
+	 * @param parameters
+	 * @param inputDataset
+	 * @param outputDataset
+	 * @return add configuration for the input module to the input configuration model, 
+	 * 			the returned configuration model  is independent of the input configuration model
+	 * @author sherif
+	 */
 	public  Model addModule(final Model inputConfig, DeerModule module, Map<String, String> parameters, Resource inputDataset, Resource outputDataset){
 		config = ModelFactory.createDefaultModel(); 
 		Resource s = ResourceFactory.createResource();
@@ -113,19 +123,28 @@ public class RDFConfigWriter{
 			config.add(param, SPECS.hasValue, value);
 		}
 		config = config.union(inputConfig);
-		config.setNsPrefix("gl", SPECS.getURI());
+		config.setNsPrefix(SPECS.prefix, SPECS.getURI());
 		config.setNsPrefix("RDFS", RDFS.getURI());
 		return config;
 	}
 	
+	/**
+	 * @param operator
+	 * @param parameters
+	 * @param inputDatasets
+	 * @param outputDatasets
+	 * @return add configuration for the input operator to the input configuration model, 
+	 * 			the returned configuration model  is independent of the input configuration model
+	 * @author sherif
+	 */
 	public Model addOperator(DeerOperator operator, Map<String, String> parameters, List<Resource> inputDatasets, List<Resource> outputDatasets){
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
 		if(operator instanceof CloneOperator){
-			s = ResourceFactory.createResource(SPECS.uri + "split_operator_" + System.currentTimeMillis());
+			s = ResourceFactory.createResource(SPECS.uri + "clone_operator_" + System.currentTimeMillis());
 			config.add(s, RDF.type, SPECS.Operator);
-			config.add(s, RDF.type, SPECS.SplitOperator);
-			parameterType = SPECS.SplitOperatorParameter;
+			config.add(s, RDF.type, SPECS.CloneOperator);
+			parameterType = SPECS.CloneOperatorParameter;
 		}
 		else if(operator instanceof MergeOperator){
 			s = ResourceFactory.createResource(SPECS.uri +"merge_operator_" + System.currentTimeMillis());
@@ -144,22 +163,34 @@ public class RDFConfigWriter{
 			addDataset(outputDataset);
 			config.add(s, SPECS.hasOutput, outputDataset);
 		}
-		for(String key : parameters.keySet()){
-			String value = parameters.get(key);
-			Resource param = ResourceFactory.createResource(SPECS.uri + "Parameter_" + parameterNr++);
-			config.add(s, SPECS.hasParameter, param);
-			config.add(param, RDF.type, SPECS.OperatorParameter);
-			config.add(param, RDF.type, parameterType);
-			config.add(param, SPECS.hasKey, key);
-			config.add(param, SPECS.hasValue, value);
+		if(parameters!= null){
+			for(String key : parameters.keySet()){
+				String value = parameters.get(key);
+				Resource param = ResourceFactory.createResource(SPECS.uri + "Parameter_" + parameterNr++);
+				config.add(s, SPECS.hasParameter, param);
+				config.add(param, RDF.type, SPECS.OperatorParameter);
+				config.add(param, RDF.type, parameterType);
+				config.add(param, SPECS.hasKey, key);
+				config.add(param, SPECS.hasValue, value);
+			}
 		}
 		return config;
 	}
 	
+	/**
+	 * @param dataset
+	 * @author sherif
+	 */
 	public void addDataset(Resource dataset){
 		config.add(dataset, RDF.type, SPECS.Dataset);
 	}
 	
+	/**
+	 * @param dataset
+	 * @param uri
+	 * @param endpoint
+	 * @author sherif
+	 */
 	public void addDataset(Resource dataset, Resource uri, Resource endpoint){
 		addDataset(dataset);
 		config.add(dataset, SPECS.FromEndPoint, endpoint);

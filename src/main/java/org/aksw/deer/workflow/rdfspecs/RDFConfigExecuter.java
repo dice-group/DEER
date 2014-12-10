@@ -160,7 +160,7 @@ public class RDFConfigExecuter {
 				List<Model> resultModels = mergeOperator.process(inputDatasets, moduleParameters);
 				return resultModels.get(0);
 			}
-			if(type.equals(SPECS.SplitOperator)){
+			if(type.equals(SPECS.CloneOperator)){
 				CloneOperator splitOperator = new CloneOperator();
 				List<Model> resultModels = splitOperator.process(inputDatasets, moduleParameters);
 				return resultModels.get(0);

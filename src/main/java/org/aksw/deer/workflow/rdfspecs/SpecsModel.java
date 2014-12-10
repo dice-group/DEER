@@ -140,8 +140,8 @@ public class SpecsModel {
 		if(operator instanceof CloneOperator){
 			s = ResourceFactory.createResource(SPECS.uri + "split_operator_" + System.currentTimeMillis());
 			specs.add(s, RDF.type, SPECS.Operator);
-			specs.add(s, RDF.type, SPECS.SplitOperator);
-			parameterType = SPECS.SplitOperatorParameter;
+			specs.add(s, RDF.type, SPECS.CloneOperator);
+			parameterType = SPECS.CloneOperatorParameter;
 		}
 		else if(operator instanceof MergeOperator){
 			s = ResourceFactory.createResource(SPECS.uri +"merge_operator_" + System.currentTimeMillis());

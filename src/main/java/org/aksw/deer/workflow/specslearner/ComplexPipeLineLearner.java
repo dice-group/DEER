@@ -87,8 +87,14 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 
 	public RefinementNode runComplex(){
 		refinementTreeRoot = createRefinementTreeRoot();
+		logger.info("Root Config Model:");
+		refinementTreeRoot.getValue().configModel.write(System.out, "TTL");
 		RefinementNode left = getLeftNode(refinementTreeRoot);
+		logger.info("Left Config Model:");
+		left.configModel.write(System.out, "TTL");
 		RefinementNode right = getRightNode(refinementTreeRoot);
+		logger.info("Right Config Model:");
+		right.configModel.write(System.out, "TTL");
 		createCloneMergeNodes(refinementTreeRoot, left, right);
 
 		refinementTreeRoot.print();
@@ -144,9 +150,14 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		}else{
 			// create clone node
 			DeerOperator cloneOperator = OperatorFactory.createOperator(OperatorFactory.CLONE_OPERATOR);
-			List<Model> rootOutputModels = root.getValue().outputModels;
-			List<Resource> rootOutputDatasets = root.getValue().outputDatasets;
-			RefinementNode cloneNode = new RefinementNode(cloneOperator,rootOutputModels,rootOutputModels, null, rootOutputDatasets, null);
+			List<Model> cloneInputModels = root.getValue().outputModels;
+			List<Model> cloneOutputModels = new ArrayList<Model>(Arrays.asList(cloneInputModels.get(0),cloneInputModels.get(0)));
+			List<Resource> cloneInputDatasets = root.getValue().outputDatasets;
+			List<Resource> cloneOutputDatasets = new ArrayList<Resource>(Arrays.asList(generateDatasetURI(), generateDatasetURI()));
+			Model cloneConfigModel = configWriter.addOperator(cloneOperator, null, cloneInputDatasets, cloneOutputDatasets);
+			logger.info("Clone Config Model:");
+			cloneConfigModel.write(System.out, "TTL");
+			RefinementNode cloneNode = new RefinementNode(cloneOperator,cloneInputModels,cloneOutputModels, cloneConfigModel, cloneInputDatasets, null);
 			List<TreeX<RefinementNode>> leftRightNodes = new ArrayList<TreeX<RefinementNode>>();
 			leftRightNodes.add(new TreeX<RefinementNode>(left));
 			leftRightNodes.add(new TreeX<RefinementNode>(right));
@@ -162,6 +173,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		}
 		return root;
 	}
+
 
 	public RefinementNode run(){
 		refinementTreeRoot = createRefinementTreeRoot();
@@ -199,7 +211,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	}
 
 	private TreeX<RefinementNode> createRefinementTreeRoot(){
-		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+		Resource outputDataset  = generateDatasetURI();
 		Model config = ModelFactory.createDefaultModel();
 		double f = -Double.MAX_VALUE;
 		RefinementNode initialNode = new RefinementNode(null, f, sourceModel, sourceModel,config,outputDataset,outputDataset);
@@ -227,7 +239,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 					//					fitness = computeFitness(currentMdl, targetModel);
 					fitness = computeFMeasure(currentMdl, targetModel);
 				}
-				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+				Resource outputDataset = generateDatasetURI();
 				configModel = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
 				node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
 			}
@@ -253,7 +265,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 					continue; // Dead node
 				}else{
 					double fitness = computeFMeasure(currentMdl, targetModel);
-					Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+					Resource outputDataset = generateDatasetURI();
 					configMdl = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
 					node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configMdl, inputDataset, outputDataset);
 					if(promisingNode == null || promisingNode.fitness < fitness){
@@ -288,7 +300,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 					continue; // Dead node
 				}else{
 					double fitness = computeFMeasure(currentMdl, targetModel);
-					Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+					Resource outputDataset = generateDatasetURI();
 					configMdl = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
 					node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configMdl, inputDataset, outputDataset);
 					if(promisingNode == null || promisingNode.fitness < fitness){
@@ -443,6 +455,10 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		return resultModel;
 	}
 
+	
+	private Resource generateDatasetURI() {
+		return ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+	}
 
 	public static void main(String args[]) throws IOException{
 		trivialRun(args);
