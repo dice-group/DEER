@@ -143,7 +143,7 @@
                                             </mapper>
                                         </data>
                                         <data>
-                                            <src>${project.basedir}/src/debian/deer</src>
+                                            <src>${project.basedir}/debian/deer</src>
                                             <type>file</type>
                                             <mapper>
                                                 <type>perm</type>
