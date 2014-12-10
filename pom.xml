@@ -142,6 +142,15 @@
                                                 <prefix>/etc/share/java/deer</prefix>
                                             </mapper>
                                         </data>
+                                        <data>
+                                            <src>${project.basedir}/src/debian/deer</src>
+                                            <type>file</type>
+                                            <mapper>
+                                                <type>perm</type>
+                                                <filemode>777</filemode>
+                                                <prefix>/usr/bin</prefix>
+                                            </mapper>
+                                        </data>
                                     </dataSet>
                                     <changesIn>${basedir}/debian/CHANGES.txt</changesIn>
                                     <changesSave>${basedir}/debian/CHANGES.txt</changesSave>
