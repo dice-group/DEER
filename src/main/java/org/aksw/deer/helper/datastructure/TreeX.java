@@ -31,7 +31,7 @@ public class TreeX<T> {
 	 *@author sherif
 	 */
 	public TreeX(List<TreeX<T>> parents, T value, List<TreeX<T>> childrenlist) {
-//		this.parents = parents;
+		//		this.parents = parents;
 		this.value = value;
 		for(TreeX<T> parent : parents){
 			this.addParent(parent);
@@ -61,7 +61,7 @@ public class TreeX<T> {
 			}
 		}
 	}
-	
+
 	/**
 	 * create tree node with many parents and a single child
 	 * @param parents
@@ -136,7 +136,7 @@ public class TreeX<T> {
 		child.parents.add(this);
 		return child;
 	}
-	
+
 	/**
 	 * Add parent node to the current tree node
 	 * @param child
@@ -232,7 +232,7 @@ public class TreeX<T> {
 		print("", true);
 	}
 
-	Set<TreeX<Object>> PrintedNodes = new HashSet<TreeX<Object>>();
+	Set<TreeX<T>> PrintedNodes = new HashSet<TreeX<T>>();
 
 	private void print(String prefix, boolean isTail) {
 		if(!PrintedNodes.contains(this)){
@@ -249,14 +249,11 @@ public class TreeX<T> {
 			}else{
 				branch = "├── ";
 			}
-			//			String branch = isTail ? ((this.parents != null &&  this.parents.size() > 1) ? "╠══ ": "└── ") : "├── ";
 			System.out.println(prefix + branch + value);
-			PrintedNodes.add((TreeX<Object>) this);
+			PrintedNodes.add((TreeX<T>) this);
 			if(children != null){
 				for (int i = 0; i < children.size() - 1; i++) {
-					//					if(children.get(i).parents.size() == 1){
 					children.get(i).print(prefix + (isTail ? ((isMerge)? "║   " :"    ") : "│   "), false);
-					//					}
 				}
 				if (children.size() > 0) {
 					children.get(children.size() - 1).print(prefix + (isTail ? ((isMerge)? "║   " :"    ") : "│   "), true);
@@ -318,9 +315,9 @@ public class TreeX<T> {
 	public static void main(String args[]){
 		TreeX<String> t = new TreeX<String>("root");
 		TreeX<String> c = new TreeX<String>(t,"clone",null);
-//		TreeX<String> l = new TreeX<String>(c,"left",null);
+		//		TreeX<String> l = new TreeX<String>(c,"left",null);
 		TreeX<String> l = c.addChild(new TreeX<String>("left"));
-//		TreeX<String> r = new TreeX<String>(c,"right",null);
+		//		TreeX<String> r = new TreeX<String>(c,"right",null);
 		TreeX<String> r = c.addChild(new TreeX<String>("right"));
 		ArrayList<TreeX<String>> p = new ArrayList<TreeX<String>>(Arrays.asList(l, r));
 		TreeX<String> m  = new TreeX<String>(p,"merge", (TreeX<String>)null);

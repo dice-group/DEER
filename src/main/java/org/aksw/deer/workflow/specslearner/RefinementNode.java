@@ -97,10 +97,9 @@ public class RefinementNode implements Comparable<RefinementNode> {
 	 * @param outputDatasets
 	 *@author sherif
 	 */
-	public RefinementNode(DeerOperator operator, List<Model> inputModels, List<Model> outputModels, 
+	public RefinementNode(DeerOperator operator, double fitness, List<Model> inputModels, List<Model> outputModels, 
 			Model configModel, List<Resource> inputDatasets, List<Resource> outputDatasets) {
-		//use fitness of -1 as a special value for operator's fitness
-		this(null, operator, -1, inputModels, outputModels, configModel, inputDatasets, outputDatasets);
+		this(null, operator, fitness, inputModels, outputModels, configModel, inputDatasets, outputDatasets);
 	}
 
 	
@@ -196,11 +195,11 @@ public class RefinementNode implements Comparable<RefinementNode> {
 	 */
 	@Override
 	public String toString() {
+		String format = new DecimalFormat("#.###").format(fitness);
 		if(module != null){
-			String format = new DecimalFormat("#.###").format(fitness);
 			return module.getClass().getSimpleName().replace("Module", "") + "(" + format +")"; 
 		}else if(operator != null){
-			return operator.getClass().getSimpleName().toUpperCase().replace("OPERATOR", ""); 
+			return operator.getClass().getSimpleName().toUpperCase().replace("OPERATOR", "") + "(" + format +")"; 
 		}else{
 			return "invalid node"; 
 		}

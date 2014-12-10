@@ -138,7 +138,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 					fitness = computeFMeasure(currentMdl, targetModel);
 				}
 				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
-				configMdl = configWriter.addModule(root.getValue().configModel, module, parameters, inputDataset, outputDataset);
+				configMdl = configWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
 				node = new RefinementNodeOld(module, fitness, root.getValue().outputModel, currentMdl, inputDataset, outputDataset, configMdl);
 			}
 			root.addChild(new Tree<RefinementNodeOld>(node));

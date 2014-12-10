@@ -24,13 +24,13 @@ public class CloneOperator implements DeerOperator {
 	 * @see org.aksw.geolift.operators.ModelOperator#run(java.util.List)
 	 */
 	@Override
-	public List<Model> process(List<Model> models, Map<String, String> parameters) {
+	public List<Model> process(final List<Model> models,final Map<String, String> parameters) {
 		logger.info("--------------- Clone Operator ---------------");
-		if(parameters.containsKey("cloneCount")){
+		if(parameters != null && parameters.containsKey("cloneCount")){
 			clonesCount = Integer.parseInt(parameters.get("cloneCount"));
 		}
 		List<Model> result = new ArrayList<Model>();
-		for (int i=0; i<clonesCount ; i++) {
+		for (int i=0; i < clonesCount ; i++) {
 			Model clone = ModelFactory.createDefaultModel();
 			clone.add(models.get(0));
 			result.add(clone);

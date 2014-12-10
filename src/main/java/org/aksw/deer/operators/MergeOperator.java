@@ -24,7 +24,7 @@ public class MergeOperator implements DeerOperator {
 	 * @see org.aksw.geolift.operators.ModelOperator#run(java.util.List)
 	 */
 	@Override
-	public List<Model> process(List<Model> models, Map<String, String> parameters) {
+	public List<Model> process(final List<Model> models, final Map<String, String> parameters) {
 		logger.info("--------------- Merge Operator ---------------");
 		List<Model> result = new ArrayList<Model>();
 		Model merge = ModelFactory.createDefaultModel();
