@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.aksw.geolift.nlp</groupId>
-	<artifactId>GeoLift</artifactId>
+	<artifactId>DEER</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<properties>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -131,8 +131,7 @@
 		                            <goal>jdeb</goal>
 			                    </goals>
 		            	        <configuration>
-		                            <deb>${basedir}/target/${project.build.finalName}_${project.version}.deb</deb>
-	            	                <controlDir>${basedir}/debian</controlDir>
+		                            <controlDir>${basedir}/debian</controlDir>
 	        	                    <dataSet>
     	                                <data>
                                             <src>${basedir}/jars/deer.jar</src>
@@ -154,7 +153,6 @@
                                     </dataSet>
                                     <changesIn>${basedir}/debian/CHANGES.txt</changesIn>
                                     <changesSave>${basedir}/debian/CHANGES.txt</changesSave>
-                                    <changesOut>${project.build.directory}/${project.build.finalName}_${project.version}.changes</changesOut>
                                 </configuration>
                             </execution>
                         </executions>
