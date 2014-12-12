@@ -88,36 +88,57 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 
 	public RefinementNode runComplex(){
 		refinementTreeRoot = createRefinementTreeRoot();
-		TreeX<RefinementNode> root = refinementTreeRoot;
-		TreeX<RefinementNode> mostPromisingNode;
-		do{
-			TreeX<RefinementNode> tmp = root;
-			List<TreeX<RefinementNode>> leftRightNodes = getLeftRightNode(tmp);
-			if(leftRightNodes.size() == 1){
-				root = tmp;
-			}else{
-				Model leftOutputModel = leftRightNodes.get(0).getValue().outputModels.get(0);
-				Model rightOutputModel = leftRightNodes.get(1).getValue().outputModels.get(0);
-				Model mergeModel = leftOutputModel.add(rightOutputModel);
-				double mergeFitness = computeFMeasure(mergeModel, targetModel);
-				double leftFitness = leftRightNodes.get(0).getValue().fitness;
-				if(mergeFitness > leftFitness){
-					// TODO find away not to compute lr again ?????
-					TreeX<RefinementNode> cloneNode = createCloneNode(root);
-					List<TreeX<RefinementNode>> lr = getLeftRightNode(cloneNode);
-					root = createMergeNode(lr);
-				}else{
-					root = tmp;
-				}
-			}
-			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
-			root = mostPromisingNode;
-			refinementTreeRoot.print();
-			mostPromisingNode.getValue().outputModels.get(0).write(System.out,"TTL");
-		}while((mostPromisingNode.getValue().fitness) < MAX_FITNESS_THRESHOLD	 
-				&& refinementTreeRoot.size() <= MAX_TREE_SIZE);
+		TreeX<RefinementNode> mostPromisingNode = null;
 
-			return null;
+		refinementTreeRoot = expand(refinementTreeRoot, null);
+		refinementTreeRoot.print();
+		do{
+			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
+			List<TreeX<RefinementNode>> oldChildren = mostPromisingNode.getchildren();
+			mostPromisingNode = expand(mostPromisingNode, oldChildren);
+			//TODO connect leaves
+			refinementTreeRoot.print();
+//			System.out.println("mostPromisingNode: " + mostPromisingNode.getValue().toString());
+//			mostPromisingNode.getValue().outputModels.get(0).write(System.out,"TTL");
+//			System.out.println("-----------------------");
+//			mostPromisingNode.getValue().configModel.write(System.out,"TTL");
+		}while(mostPromisingNode.equals(null) &&
+			(mostPromisingNode.getValue().fitness) < MAX_FITNESS_THRESHOLD	 &&
+			refinementTreeRoot.size() <= MAX_TREE_SIZE) ;
+
+		return null;
+	}
+
+	/**
+	 * @param root
+	 * @author sherif
+	 * @param oldChildren 
+	 */
+	private TreeX<RefinementNode> expand(TreeX<RefinementNode> root, List<TreeX<RefinementNode>> children) {
+		List<TreeX<RefinementNode>> leftRightNodes = getLeftRightNode(root);
+		if(leftRightNodes.size() == 1){
+			// generate only one branch
+			leftRightNodes.get(0).setChildren(children);
+			return leftRightNodes.get(0);
+		}else{
+			// Generate clone - merge
+			Model leftOutputModel = leftRightNodes.get(0).getValue().outputModels.get(0);
+			Model rightOutputModel = leftRightNodes.get(1).getValue().outputModels.get(0);
+			Model mergeModel = leftOutputModel.add(rightOutputModel);
+			double mergeFitness = computeFMeasure(mergeModel, targetModel);
+			double leftFitness = leftRightNodes.get(0).getValue().fitness;
+			if(mergeFitness > leftFitness){
+				// TODO find away not to compute lr again ?????
+				TreeX<RefinementNode> cloneNode = createCloneNode(refinementTreeRoot);
+				List<TreeX<RefinementNode>> lr = getLeftRightNode(cloneNode);
+				TreeX<RefinementNode> mergeNode = createMergeNode(lr);
+				mergeNode.setChildren(children);
+				return cloneNode;
+			}else{
+				leftRightNodes.get(0).setChildren(children);
+				return leftRightNodes.get(0);
+			}
+		}
 	}
 
 
@@ -136,59 +157,59 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		return mergeNode;
 	}
 
-//	/**
-//	 * @param root
-//	 * @return
-//	 * @author sherif
-//	 */
-//	private TreeX<RefinementNode> createCloneMergeNodes(TreeX<RefinementNode> root) {
-//		// create clone node
-//		TreeX<RefinementNode> cloneNode = createCloneNode(root);
-//
-//		// create left and right branches
-//		List<TreeX<RefinementNode>> leftRightNodes = getLeftRightNode(cloneNode);
-//		//		TreeX<RefinementNode> leftNode 	= createLeftBranch(cloneNode);
-//		//		TreeX<RefinementNode> rightNode = createRightBranch(cloneNode);
-//		//		
-//		//		if(leftNode == null){
-//		//			return rightNode;
-//		//		}else if(rightNode == null){
-//		//			return leftNode;
-//		//		}
-//
-//		// create merge node
-//		//		TreeX<RefinementNode> mergeNode = createMergeNode(leftNode, rightNode);
-//		TreeX<RefinementNode> mergeNode = createMergeNode(leftRightNodes);
-//		return mergeNode;
-//	}
+	//	/**
+	//	 * @param root
+	//	 * @return
+	//	 * @author sherif
+	//	 */
+	//	private TreeX<RefinementNode> createCloneMergeNodes(TreeX<RefinementNode> root) {
+	//		// create clone node
+	//		TreeX<RefinementNode> cloneNode = createCloneNode(root);
+	//
+	//		// create left and right branches
+	//		List<TreeX<RefinementNode>> leftRightNodes = getLeftRightNode(cloneNode);
+	//		//		TreeX<RefinementNode> leftNode 	= createLeftBranch(cloneNode);
+	//		//		TreeX<RefinementNode> rightNode = createRightBranch(cloneNode);
+	//		//		
+	//		//		if(leftNode == null){
+	//		//			return rightNode;
+	//		//		}else if(rightNode == null){
+	//		//			return leftNode;
+	//		//		}
+	//
+	//		// create merge node
+	//		//		TreeX<RefinementNode> mergeNode = createMergeNode(leftNode, rightNode);
+	//		TreeX<RefinementNode> mergeNode = createMergeNode(leftRightNodes);
+	//		return mergeNode;
+	//	}
 
-//	/**
-//	 * @param root
-//	 * @return
-//	 * @author sherif
-//	 */
-//	private TreeX<RefinementNode> createRightBranch(TreeX<RefinementNode> root) {
-//		RefinementNode rightNodeValue = getRightNode(root);
-//		TreeX<RefinementNode> rightNode = null;
-//		if(rightNodeValue != null) {
-//			rightNode = new TreeX<RefinementNode>(root, rightNodeValue, null);
-//		}
-//		return rightNode;
-//	}
+	//	/**
+	//	 * @param root
+	//	 * @return
+	//	 * @author sherif
+	//	 */
+	//	private TreeX<RefinementNode> createRightBranch(TreeX<RefinementNode> root) {
+	//		RefinementNode rightNodeValue = getRightNode(root);
+	//		TreeX<RefinementNode> rightNode = null;
+	//		if(rightNodeValue != null) {
+	//			rightNode = new TreeX<RefinementNode>(root, rightNodeValue, null);
+	//		}
+	//		return rightNode;
+	//	}
 
-//	/**
-//	 * @param root
-//	 * @return
-//	 * @author sherif
-//	 */
-//	private TreeX<RefinementNode> createLeftBranch(TreeX<RefinementNode> root) {
-//		RefinementNode leftNodeValue = getLeftNode(root);
-//		TreeX<RefinementNode> leftNode = null;
-//		if(leftNodeValue != null) {
-//			leftNode = new TreeX<RefinementNode>(root, leftNodeValue, null);
-//		}
-//		return leftNode;
-//	}
+	//	/**
+	//	 * @param root
+	//	 * @return
+	//	 * @author sherif
+	//	 */
+	//	private TreeX<RefinementNode> createLeftBranch(TreeX<RefinementNode> root) {
+	//		RefinementNode leftNodeValue = getLeftNode(root);
+	//		TreeX<RefinementNode> leftNode = null;
+	//		if(leftNodeValue != null) {
+	//			leftNode = new TreeX<RefinementNode>(root, leftNodeValue, null);
+	//		}
+	//		return leftNode;
+	//	}
 
 	/**
 	 * @param leftNodeValue
@@ -218,12 +239,6 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	}
 
 	private TreeX<RefinementNode> createMergeNode(List<TreeX<RefinementNode>> leftrightNodes) {
-//		if(leftrightNodes.size() == 0){
-//			return null;
-//		}
-//		if(leftrightNodes.size() == 1){
-//			return leftrightNodes.get(0);
-//		}
 		DeerOperator 	mergeOperator = OperatorFactory.createOperator(OperatorFactory.MERGE_OPERATOR);
 		RefinementNode 	rightNodeValue = leftrightNodes.get(1).getValue();
 		RefinementNode 	leftNodeValue = leftrightNodes.get(0).getValue();
@@ -428,10 +443,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 				}
 			}
 		}
-		if(leftNodeValue == null){
-			return new ArrayList<TreeX<RefinementNode>>(
-					Arrays.asList(new TreeX<RefinementNode>(root, rightNodeValue, null)));
-		}else if(rightNodeValue == null){
+		if(rightNodeValue == null){
 			return new ArrayList<TreeX<RefinementNode>>(
 					Arrays.asList(new TreeX<RefinementNode>(root, leftNodeValue, null)));
 		}
@@ -481,7 +493,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		// get mostPromesyChild of children
 		TreeX<RefinementNode> mostPromesyChild = new TreeX<RefinementNode>(new RefinementNode());
 		for(TreeX<RefinementNode> child : root.getchildren()){
-			if(child.getValue().fitness >= 0){
+			if(child.getValue().fitness != -2){ // not a dead node
 				TreeX<RefinementNode> promesyChild = getMostPromisingNode(child, penaltyWeight);
 				double newFitness;
 				newFitness = promesyChild.getValue().fitness - penaltyWeight * computePenality(promesyChild);
@@ -583,7 +595,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 
 
 	private Resource generateDatasetURI() {
-		return ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+		return ResourceFactory.createResource(SPECS.uri + "dataset_" + datasetCounter++);
 	}
 
 	public static void main(String args[]) throws IOException{

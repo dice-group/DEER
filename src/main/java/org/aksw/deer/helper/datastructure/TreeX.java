@@ -34,14 +34,39 @@ public class TreeX<T> {
 	public TreeX(List<TreeX<T>> parents, T value, List<TreeX<T>> childrenlist) {
 		//		this.parents = parents;
 		this.value = value;
-		for(TreeX<T> parent : parents){
-			this.addParent(parent);
+		if (parents != null) {
+			for(TreeX<T> parent : parents){
+				this.addParent(parent);
+			}
 		}
 		if (childrenlist != null) {
 			for (TreeX<T> child : childrenlist) {
 				this.addChild(child);
 			}
 		}
+	}
+
+	/**
+	 * @return the children
+	 */
+	public List<TreeX<T>> getChildren() {
+		return children;
+	}
+
+	/**
+	 * @param children the children to set
+	 */
+	public void setChildren(List<TreeX<T>> children) {
+		this.children = children;
+	}
+
+	/**
+	 * Copy constructor
+	 * @param root
+	 *@author sherif
+	 */
+	public TreeX(TreeX<T> root){
+		this(root.parents, root.value, root.children);
 	}
 
 	/**
