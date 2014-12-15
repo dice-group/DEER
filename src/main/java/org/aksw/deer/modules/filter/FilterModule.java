@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
@@ -275,6 +276,11 @@ public class FilterModule implements DeerModule{
 		parameters.add(new ParameterType(ParameterType.STRING, TRIPLES_PATTERN, TRIPLES_PATTERN_DESC, true));
 
 		return parameters;
+	}
+	
+    @Override
+	public Resource getType(){
+		return SPECS.FilterModule;
 	}
 
 }

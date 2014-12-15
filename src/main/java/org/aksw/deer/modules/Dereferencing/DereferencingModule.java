@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
@@ -777,5 +778,10 @@ public class DereferencingModule implements DeerModule{
         parameters.add(new ParameterType(ParameterType.BOOLEAN, USE_BLANK_NODES, USE_BLANK_NODES_DESC, false));
         return parameters;
     }
+    
+    @Override
+	public Resource getType(){
+		return SPECS.DereferencingModule;
+	}
 
 }

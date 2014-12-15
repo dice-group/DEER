@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
@@ -200,11 +201,16 @@ public class PredicateConformationModule implements DeerModule{
 		return parameters;
 	}
 
-        @Override
-        public List<ParameterType> getParameterWithTypes() {
-            List<ParameterType> parameters = new ArrayList<ParameterType>();
-            parameters.add(new ParameterType(ParameterType.STRING, SOURCE_PROPERTY , SOURCE_PROPERTY_DESC, true));
-            parameters.add(new ParameterType(ParameterType.STRING, TARGET_PROPERTY , TARGET_PROPERTY_DESC, true));
-            return parameters;
-        }
+	@Override
+	public List<ParameterType> getParameterWithTypes() {
+		List<ParameterType> parameters = new ArrayList<ParameterType>();
+		parameters.add(new ParameterType(ParameterType.STRING, SOURCE_PROPERTY , SOURCE_PROPERTY_DESC, true));
+		parameters.add(new ParameterType(ParameterType.STRING, TARGET_PROPERTY , TARGET_PROPERTY_DESC, true));
+		return parameters;
+	}
+
+	@Override
+	public Resource getType(){
+		return SPECS.PredicateConformationModule;
+	}
 }

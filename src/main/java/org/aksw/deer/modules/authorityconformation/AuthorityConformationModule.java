@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
@@ -51,7 +52,7 @@ public class AuthorityConformationModule implements DeerModule{
 		super();
 		model = m;
 	}
-	
+
 	/**
 	 * 
 	 *@author sherif
@@ -186,11 +187,16 @@ public class AuthorityConformationModule implements DeerModule{
 		return parameters;
 	}
 
-        @Override
-        public List<ParameterType> getParameterWithTypes() {
-            List<ParameterType> parameters = new ArrayList<ParameterType>();
-            parameters.add(new ParameterType(ParameterType.STRING, SOURCE_SUBJET_AUTHORITY, SOURCE_SUBJECT_AUTHORITY_DESC, true));
-            parameters.add(new ParameterType(ParameterType.STRING, TARGET_SUBJET_AUTHORITY, TARGET_SUBJECT_AUTHORITY_DESC, true));
-            return parameters;
-        }
+	
+	public List<ParameterType> getParameterWithTypes() {
+		List<ParameterType> parameters = new ArrayList<ParameterType>();
+		parameters.add(new ParameterType(ParameterType.STRING, SOURCE_SUBJET_AUTHORITY, SOURCE_SUBJECT_AUTHORITY_DESC, true));
+		parameters.add(new ParameterType(ParameterType.STRING, TARGET_SUBJET_AUTHORITY, TARGET_SUBJECT_AUTHORITY_DESC, true));
+		return parameters;
+	}
+	
+	@Override
+	public Resource getType(){
+		return SPECS.AuthorityConformationModule;
+	}
 }

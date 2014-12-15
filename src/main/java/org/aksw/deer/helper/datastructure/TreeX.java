@@ -54,10 +54,31 @@ public class TreeX<T> {
 	}
 
 	/**
-	 * @param children the children to set
+	 * @param children 
 	 */
 	public void setChildren(List<TreeX<T>> children) {
 		this.children = children;
+	}
+	
+	/**
+	 * @param parents 
+	 */
+	public void setParents(List<TreeX<T>> parents) {
+		this.parents = parents;
+	}
+	
+	/**
+	 * @param parent 
+	 */
+	public void setParent(TreeX<T> parent) {
+		if(this.parents == null){
+			this.parents = new ArrayList<TreeX<T>>();
+		}
+		this.parents.set(0, parent);
+		if(parent.children == null){
+			parent.children = new ArrayList<TreeX<T>>();
+		}
+		parent.children.add(this);
 	}
 
 	/**

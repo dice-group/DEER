@@ -39,6 +39,7 @@ import java.net.URLEncoder;
 
 import org.aksw.deer.helper.vacabularies.DBpedia;
 import org.aksw.deer.helper.vacabularies.SCMSANN;
+import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
@@ -664,5 +665,10 @@ public class NLPModule implements DeerModule{
 		parameters.add(new ParameterType(ParameterType.BOOLEAN, ASK_END_POINT, ASK_END_POINT_DESC, false));
 		parameters.add(new ParameterType(ParameterType.STRING, NER_TYPE, NER_TYPE_VALUES, NER_TYPE_DESC, false));
 		return parameters;
+	}
+	
+    @Override
+	public Resource getType(){
+		return SPECS.NLPModule;
 	}
 }
