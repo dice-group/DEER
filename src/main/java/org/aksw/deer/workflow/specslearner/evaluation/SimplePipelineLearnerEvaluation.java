@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.aksw.deer.workflow.specslearner;
+package org.aksw.deer.workflow.specslearner.evaluation;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,6 +16,8 @@ import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
+import org.aksw.deer.workflow.specslearner.RefinementNodeOld;
+import org.aksw.deer.workflow.specslearner.SimplePipeLineLearner;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.QueryExecution;
@@ -33,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  * @author sherif
  *
  */
-public class Evaluation {
+public class SimplePipelineLearnerEvaluation {
 	private static final Logger logger = Logger.getLogger(SimplePipeLineLearner.class.getName());
 
 	public Model manualConfig = ModelFactory.createDefaultModel();
@@ -45,7 +47,7 @@ public class Evaluation {
 	 * 
 	 *@author sherif
 	 */
-	public Evaluation() {
+	public SimplePipelineLearnerEvaluation() {
 	}
 
 	static String resultStr = 
@@ -362,7 +364,7 @@ public class Evaluation {
 		String kbFile = folder +"1000_resources_cbds.ttl";
 		String kbSampleFile = folder +"100_resources_cbd.ttl";
 		for(int i = 4 ; i <= 4 ; i++){
-			Evaluation e = new Evaluation();
+			SimplePipelineLearnerEvaluation e = new SimplePipelineLearnerEvaluation();
 			String manualConfigFile = folder + "m" + i +".ttl";
 			String authority = "http://dbpedia.org/resource/Berlin";
 			resultStr += "-----------------------------------------------------------\n" + 

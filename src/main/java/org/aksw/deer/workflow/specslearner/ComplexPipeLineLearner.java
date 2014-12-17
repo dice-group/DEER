@@ -7,25 +7,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.aksw.deer.helper.datastructure.TreeX;
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
 import org.aksw.deer.modules.DeerModule;
-import org.aksw.deer.modules.Dereferencing.DereferencingModule;
-import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
-import org.aksw.deer.modules.filter.FilterModule;
-import org.aksw.deer.modules.linking.LinkingModule;
-import org.aksw.deer.modules.nlp.NLPModule;
-import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
-import org.aksw.deer.operators.CloneOperator;
 import org.aksw.deer.operators.DeerOperator;
 import org.aksw.deer.operators.OperatorFactory;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
@@ -39,7 +28,6 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -90,11 +78,12 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	public RefinementNode runComplex(){
 		refinementTreeRoot = createRefinementTreeRoot();
 		TreeX<RefinementNode> mostPromisingNode = null;
-
-		refinementTreeRoot = expand(refinementTreeRoot, null);
+		expand(refinementTreeRoot, null);
 		refinementTreeRoot.print();
 		do{
 			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
+			logger.info("Most Promising Node: " + mostPromisingNode.getValue());
+			mostPromisingNode.getValue().configModel.write(System.out,"TTL");
 			List<TreeX<RefinementNode>> oldChildren = mostPromisingNode.getchildren();
 			expand(mostPromisingNode, oldChildren);
 			refinementTreeRoot.print();
@@ -132,14 +121,15 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 			Model mergeModel = leftOutputModel.union(rightOutputModel);
 			double mergeFitness = computeFMeasure(mergeModel, targetModel);
 			double leftFitness = leftRightNodesValues.get(0).fitness;
-			if(mergeFitness != leftFitness){
+			if(mergeFitness > leftFitness){
 				// generate only one branch
 				return new TreeX<RefinementNode>(root, leftRightNodesValues.get(0), children);
 			}else{
 				// Generate clone - merge
-				// TODO find a way not to compute leftRightNodes again ?????
 				TreeX<RefinementNode> cloneNode = createCloneNode(root);
 				leftRightNodesValues = getLeftRightNodesValues(cloneNode.getValue());
+				//				leftRightNodesValues = getLeftRightNodesValues(leftRightNodesValues, cloneNode.getValue());
+				System.out.println(leftRightNodesValues.get(1).outputDatasets);
 				TreeX<RefinementNode> leftNode  = new TreeX<RefinementNode>(cloneNode, leftRightNodesValues.get(0), children);
 				TreeX<RefinementNode> rightNode = new TreeX<RefinementNode>(cloneNode, leftRightNodesValues.get(1), children);
 				List<TreeX<RefinementNode>> leftRightNodes = new ArrayList<TreeX<RefinementNode>>(Arrays.asList(leftNode, rightNode));
@@ -151,116 +141,6 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		}
 	}
 
-
-
-
-	/**
-	 * @param leftRightNodes
-	 * @param cloneNode
-	 * @return
-	 * @author sherif
-	 */
-	@SuppressWarnings("unchecked")
-	private List<TreeX<RefinementNode>> reSetLeftRightNode(
-			List<TreeX<RefinementNode>> leftRightNodes,	TreeX<RefinementNode> root) {
-		// input datasets
-		Resource leftInputDatasetUri = root.getValue().outputDatasets.get(0);
-		leftRightNodes.get(0).getValue().inputDatasets = new ArrayList<Resource>(Arrays.asList(leftInputDatasetUri));
-		Resource rightInputDatasetUri = root.getValue().outputDatasets.get(1);
-		leftRightNodes.get(1).getValue().inputDatasets = new ArrayList<Resource>(Arrays.asList(rightInputDatasetUri));
-
-		// output datasets
-		leftRightNodes.get(0).getValue().outputDatasets = new ArrayList<Resource>(Arrays.asList(generateDatasetURI()));
-		leftRightNodes.get(1).getValue().outputDatasets = new ArrayList<Resource>(Arrays.asList(generateDatasetURI()));
-
-		// config models
-		RefinementNode leftValue = leftRightNodes.get(0).getValue();
-		Resource leftModuleUri = RDFConfigAnalyzer.getLastModuleUriOftype(leftValue.module.getType(), leftValue.configModel);
-		Resource leftOutputDatasetUri = leftValue.outputDatasets.get(0);
-		Model leftConfig = RDFConfigWriter.changeModuleInputOutput(leftValue.configModel, leftModuleUri, leftInputDatasetUri, leftOutputDatasetUri);
-		leftValue.configModel = leftConfig.add(root.getValue().configModel);
-		System.out.println("------------- leftConfig -----------------");
-		leftValue.configModel.write(System.out, "TTL");
-		
-		RefinementNode rightValue = leftRightNodes.get(1).getValue();
-		Resource rightModuleUri = RDFConfigAnalyzer.getLastModuleUriOftype(rightValue.module.getType(), rightValue.configModel);
-		Resource rightOutputDatasetUri = rightValue.outputDatasets.get(0);
-		Model rightConfig = RDFConfigWriter.changeModuleInputOutput(rightValue.configModel, rightModuleUri, rightInputDatasetUri, rightOutputDatasetUri);
-		leftValue.configModel = rightConfig.add(root.getValue().configModel);
-		System.out.println("------------- leftConfig -----------------");
-		leftValue.configModel.write(System.out, "TTL");
-
-		return new ArrayList<TreeX<RefinementNode>>(
-				Arrays.asList(	new TreeX<RefinementNode>(root, leftValue, null), 
-								new TreeX<RefinementNode>(root, rightValue, null)));
-	}
-
-	private TreeX<RefinementNode> createCloneMergeNodes(TreeX<RefinementNode> root, RefinementNode leftNodeValue, RefinementNode rightNodeValue) {
-		// create clone node
-		TreeX<RefinementNode> cloneNode = createCloneNode(root);
-
-		// create left and right branches
-		TreeX<RefinementNode> leftNode  = new TreeX<RefinementNode>(cloneNode, leftNodeValue, null);
-		TreeX<RefinementNode> rightNode = new TreeX<RefinementNode>(cloneNode, rightNodeValue, null);
-
-		// create merge node
-		TreeX<RefinementNode> mergeNode = createMergeNode(leftNode, rightNode);
-		return mergeNode;
-	}
-
-	//	/**
-	//	 * @param root
-	//	 * @return
-	//	 * @author sherif
-	//	 */
-	//	private TreeX<RefinementNode> createCloneMergeNodes(TreeX<RefinementNode> root) {
-	//		// create clone node
-	//		TreeX<RefinementNode> cloneNode = createCloneNode(root);
-	//
-	//		// create left and right branches
-	//		List<TreeX<RefinementNode>> leftRightNodes = getLeftRightNode(cloneNode);
-	//		//		TreeX<RefinementNode> leftNode 	= createLeftBranch(cloneNode);
-	//		//		TreeX<RefinementNode> rightNode = createRightBranch(cloneNode);
-	//		//		
-	//		//		if(leftNode == null){
-	//		//			return rightNode;
-	//		//		}else if(rightNode == null){
-	//		//			return leftNode;
-	//		//		}
-	//
-	//		// create merge node
-	//		//		TreeX<RefinementNode> mergeNode = createMergeNode(leftNode, rightNode);
-	//		TreeX<RefinementNode> mergeNode = createMergeNode(leftRightNodes);
-	//		return mergeNode;
-	//	}
-
-	//	/**
-	//	 * @param root
-	//	 * @return
-	//	 * @author sherif
-	//	 */
-	//	private TreeX<RefinementNode> createRightBranch(TreeX<RefinementNode> root) {
-	//		RefinementNode rightNodeValue = getRightNode(root);
-	//		TreeX<RefinementNode> rightNode = null;
-	//		if(rightNodeValue != null) {
-	//			rightNode = new TreeX<RefinementNode>(root, rightNodeValue, null);
-	//		}
-	//		return rightNode;
-	//	}
-
-	//	/**
-	//	 * @param root
-	//	 * @return
-	//	 * @author sherif
-	//	 */
-	//	private TreeX<RefinementNode> createLeftBranch(TreeX<RefinementNode> root) {
-	//		RefinementNode leftNodeValue = getLeftNode(root);
-	//		TreeX<RefinementNode> leftNode = null;
-	//		if(leftNodeValue != null) {
-	//			leftNode = new TreeX<RefinementNode>(root, leftNodeValue, null);
-	//		}
-	//		return leftNode;
-	//	}
 
 	/**
 	 * @param leftNodeValue
@@ -398,71 +278,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		return root;
 	}
 
-	private RefinementNode getLeftNode(TreeX<RefinementNode> root) {
-		RefinementNode promisingNode = null; 
-		for( DeerModule module : MODULES){
-			Model inputModel = root.getValue().getOutputModel();
-			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
-			logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
-			if(parameters == null || parameters.size() == 0){
-				continue; // Dead node
-			}else{
-				Model currentMdl = module.process(inputModel, parameters);
-				if(currentMdl == null || currentMdl.size() == 0 || currentMdl.isIsomorphicWith(inputModel)){
-					continue; // Dead node
-				}else{
-					double fitness = computeFMeasure(currentMdl, targetModel);
-					Resource outputDataset = generateDatasetURI();
-					Resource inputDataset  = root.getValue().outputDatasets.get(0);
-					Model configModel = RDFConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
-					RefinementNode node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
-					if(promisingNode == null || promisingNode.fitness < fitness){
-						promisingNode = node;
-						leftModule = module;
-					}
-				}
-			}
-		}
-		//		root.addChild(new TreeX<RefinementNode>(promisingNode));
-		System.err.println("getLeftNode: " + promisingNode);
-		return promisingNode;
-	}
 
-
-
-
-	private RefinementNode getRightNode(TreeX<RefinementNode> root) {
-		RefinementNode promisingNode = null; 
-		for( DeerModule module : MODULES){
-			if(module.getClass().equals(leftModule.getClass())){
-				continue;
-			}
-			Model inputModel = root.getValue().getOutputModel();
-			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
-			RefinementNode node = new RefinementNode();
-			logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
-			if(parameters == null || parameters.size() == 0){
-				continue; // Dead node
-			}else{
-				Model currentMdl = module.process(inputModel, parameters);
-				if(currentMdl == null || currentMdl.size() == 0 || currentMdl.isIsomorphicWith(inputModel)){
-					continue; // Dead node
-				}else{
-					double fitness = computeFMeasure(currentMdl, targetModel);
-					Resource outputDataset = generateDatasetURI();
-					Resource inputDataset  = root.getValue().outputDatasets.get(0);
-					Model configModel = RDFConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
-					node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
-					if(promisingNode == null || promisingNode.fitness < fitness){
-						promisingNode = node;
-					}
-				}
-			}
-		}
-		//		root.addChild(new TreeX<RefinementNode>(promisingNode));
-		System.err.println("getRightNode: " + promisingNode);
-		return promisingNode;
-	}
 
 	@SuppressWarnings("unchecked")
 	private List<RefinementNode> getLeftRightNodesValues(RefinementNode rootValue) {
@@ -481,19 +297,27 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 				}else{
 					double fitness = computeFMeasure(currentMdl, targetModel);
 					Resource outputDataset = generateDatasetURI();
+					// set dataset and config for the left node 
 					Resource inputDataset  = rootValue.outputDatasets.get(0);
-					Model configModel = RDFConfigWriter.addModule(module, parameters, rootValue.configModel, inputDataset, outputDataset);
-					RefinementNode node = new RefinementNode(module, fitness, rootValue.getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
+					Model configMdl = RDFConfigWriter.addModule(module, parameters, rootValue.configModel, inputDataset, outputDataset);
+					RefinementNode node = new RefinementNode(module, fitness, rootValue.getOutputModel(), currentMdl, configMdl, inputDataset, outputDataset);
 					if(left == null || left.fitness < fitness){
 						right = left;
 						left = node;
 					}else if(right == null || right.fitness < fitness){
 						right = node;
+						// set dataset and config for the right node 
+						if(rootValue.outputDatasets.size() > 1){
+							inputDataset  = rootValue.outputDatasets.get(1);
+							right.inputDatasets = new ArrayList<Resource>(Arrays.asList(inputDataset));
+							right.configModel = RDFConfigWriter.addModule(module, parameters, rootValue.configModel, inputDataset, outputDataset);
+						}
+
 					}
 				}
 			}
 		}
-		if(right == null){
+		if(right == null || right.equals(left)){
 			return new ArrayList<RefinementNode>(Arrays.asList(left));
 		}
 		return new ArrayList<RefinementNode>(Arrays.asList(left, right));
@@ -577,8 +401,8 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		String sourceUri = args[0];
 		String targetUri = args[1];
 		ComplexPipeLineLearner learner = new ComplexPipeLineLearner();
-		learner.sourceModel  = Reader.readModel(sourceUri);
-		learner.targetModel = Reader.readModel(targetUri);
+		sourceModel  = Reader.readModel(sourceUri);
+		targetModel = Reader.readModel(targetUri);
 		long start = System.currentTimeMillis();
 		learner.runComplex();
 		long end = System.currentTimeMillis();
@@ -662,5 +486,122 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		//evaluation(args, false, 1);
 	}
 
+
+
+
+	// -------------------- old code -----------------------------
+
+
+	private RefinementNode getRightNode(TreeX<RefinementNode> root) {
+		RefinementNode promisingNode = null; 
+		for( DeerModule module : MODULES){
+			if(module.getClass().equals(leftModule.getClass())){
+				continue;
+			}
+			Model inputModel = root.getValue().getOutputModel();
+			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
+			RefinementNode node = new RefinementNode();
+			logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
+			if(parameters == null || parameters.size() == 0){
+				continue; // Dead node
+			}else{
+				Model currentMdl = module.process(inputModel, parameters);
+				if(currentMdl == null || currentMdl.size() == 0 || currentMdl.isIsomorphicWith(inputModel)){
+					continue; // Dead node
+				}else{
+					double fitness = computeFMeasure(currentMdl, targetModel);
+					Resource outputDataset = generateDatasetURI();
+					Resource inputDataset  = root.getValue().outputDatasets.get(0);
+					Model configModel = RDFConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
+					node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
+					if(promisingNode == null || promisingNode.fitness < fitness){
+						promisingNode = node;
+					}
+				}
+			}
+		}
+		//		root.addChild(new TreeX<RefinementNode>(promisingNode));
+		System.err.println("getRightNode: " + promisingNode);
+		return promisingNode;
+	}
+
+	private RefinementNode getLeftNode(TreeX<RefinementNode> root) {
+		RefinementNode promisingNode = null; 
+		for( DeerModule module : MODULES){
+			Model inputModel = root.getValue().getOutputModel();
+			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
+			logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
+			if(parameters == null || parameters.size() == 0){
+				continue; // Dead node
+			}else{
+				Model currentMdl = module.process(inputModel, parameters);
+				if(currentMdl == null || currentMdl.size() == 0 || currentMdl.isIsomorphicWith(inputModel)){
+					continue; // Dead node
+				}else{
+					double fitness = computeFMeasure(currentMdl, targetModel);
+					Resource outputDataset = generateDatasetURI();
+					Resource inputDataset  = root.getValue().outputDatasets.get(0);
+					Model configModel = RDFConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
+					RefinementNode node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
+					if(promisingNode == null || promisingNode.fitness < fitness){
+						promisingNode = node;
+						leftModule = module;
+					}
+				}
+			}
+		}
+		//		root.addChild(new TreeX<RefinementNode>(promisingNode));
+		System.err.println("getLeftNode: " + promisingNode);
+		return promisingNode;
+	}
+
+	/**
+	 * Get lift and right nodes without re-evaluating the modules, 
+	 * i.e, just fix the left and right node to the input root 
+	 * @param leftRightNodesValues
+	 * @param root
+	 * @return
+	 * @author sherif
+	 */
+	@SuppressWarnings("unchecked")
+	private List<RefinementNode> getLeftRightNodesValues(List<RefinementNode> leftRightNodesValues, RefinementNode root) {
+		// input datasets
+		Resource leftInputDatasetUri = root.outputDatasets.get(0);
+		leftRightNodesValues.get(0).inputDatasets = new ArrayList<Resource>(Arrays.asList(leftInputDatasetUri));
+		Resource rightInputDatasetUri = root.outputDatasets.get(1);
+		leftRightNodesValues.get(1).inputDatasets = new ArrayList<Resource>(Arrays.asList(rightInputDatasetUri));
+
+		// output datasets
+		leftRightNodesValues.get(0).outputDatasets = new ArrayList<Resource>(Arrays.asList(generateDatasetURI()));
+		leftRightNodesValues.get(1).outputDatasets = new ArrayList<Resource>(Arrays.asList(generateDatasetURI()));
+
+		// config models
+		RefinementNode leftValue = leftRightNodesValues.get(0);
+		Resource leftModuleUri = RDFConfigAnalyzer.getLastModuleUriOftype(leftValue.module.getType(), leftValue.configModel);
+		Resource leftOutputDatasetUri = leftValue.outputDatasets.get(0);
+		Model leftConfig = RDFConfigWriter.changeModuleInputOutput(leftValue.configModel, leftModuleUri, leftInputDatasetUri, leftOutputDatasetUri);
+		leftValue.configModel = leftConfig.add(root.configModel);
+
+		RefinementNode rightValue = leftRightNodesValues.get(1);
+		Resource rightModuleUri = RDFConfigAnalyzer.getLastModuleUriOftype(rightValue.module.getType(), rightValue.configModel);
+		Resource rightOutputDatasetUri = rightValue.outputDatasets.get(0);
+		Model rightConfig = RDFConfigWriter.changeModuleInputOutput(rightValue.configModel, rightModuleUri, rightInputDatasetUri, rightOutputDatasetUri);
+		leftValue.configModel = rightConfig.add(root.configModel);
+
+		return new ArrayList<RefinementNode>(Arrays.asList(leftValue, rightValue));
+	}
+	
+	private TreeX<RefinementNode> createCloneMergeNodes(TreeX<RefinementNode> root, RefinementNode leftNodeValue, RefinementNode rightNodeValue) {
+		// create clone node
+		TreeX<RefinementNode> cloneNode = createCloneNode(root);
+
+		// create left and right branches
+		TreeX<RefinementNode> leftNode  = new TreeX<RefinementNode>(cloneNode, leftNodeValue, null);
+		TreeX<RefinementNode> rightNode = new TreeX<RefinementNode>(cloneNode, rightNodeValue, null);
+
+		// create merge node
+		TreeX<RefinementNode> mergeNode = createMergeNode(leftNode, rightNode);
+		return mergeNode;
+	}
 
 }

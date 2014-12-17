@@ -59,12 +59,12 @@ public class SimplePipeLineLearner implements PipelineLearner{
 		targetModel = ModelFactory.createDefaultModel();
 	}
 	
-	SimplePipeLineLearner(Model source, Model target){
+	public SimplePipeLineLearner(Model source, Model target){
 		sourceModel  = source;
 		targetModel  = target;
 	}
 	
-	SimplePipeLineLearner(Model source, Model target, double penaltyWeight){
+	public SimplePipeLineLearner(Model source, Model target, double penaltyWeight){
 		this(source, target);
 		this.penaltyWeight = penaltyWeight;
 	}
@@ -152,7 +152,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 	 * @return
 	 * @author sherif
 	 */
-	double computeFitness(Model currentModel, Model targetModel){
+	public double computeFitness(Model currentModel, Model targetModel){
 		long t_c = targetModel.difference(currentModel).size();
 		long c_t = currentModel.difference(targetModel).size();
 		System.out.println("targetModel.difference(currentModel).size() = " + t_c);
@@ -160,7 +160,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 		return 1- ((double)(t_c + c_t) / (double)(currentModel.size() + targetModel.size()));
 	}
 	
-	double computeFMeasure(Model currentModel, Model targetModel){
+	public double computeFMeasure(Model currentModel, Model targetModel){
 		double p = computePrecision(currentModel, targetModel);
 		double r = computeRecall(currentModel, targetModel);
 		if(p == 0 && r == 0){
@@ -170,11 +170,11 @@ public class SimplePipeLineLearner implements PipelineLearner{
 		
 	}
 	
-	double computePrecision (Model currentModel, Model targetModel){
+	public double computePrecision (Model currentModel, Model targetModel){
 		return (double) currentModel.intersection(targetModel).size() / (double) currentModel.size();
 	}
 	
-	double computeRecall(Model currentModel, Model targetModel){
+	public double computeRecall(Model currentModel, Model targetModel){
 		return (double) currentModel.intersection(targetModel).size() / (double) targetModel.size();
 	}
 	

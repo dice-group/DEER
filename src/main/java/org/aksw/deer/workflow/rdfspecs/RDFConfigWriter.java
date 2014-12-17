@@ -178,6 +178,7 @@ public class RDFConfigWriter{
 			}
 		}
 		for(Model inputConfig : inputConfigs){
+			inputConfig.write(System.out,"TTL");
 			config = config.union(inputConfig);
 		}
 		config.setNsPrefix(SPECS.prefix, SPECS.getURI());
