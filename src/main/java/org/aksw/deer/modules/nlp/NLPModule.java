@@ -58,45 +58,46 @@ import org.apache.log4j.Logger;
 public class NLPModule implements DeerModule{
 	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
 
-	private static final String ORGANIZATION 	= "organization";
-	private static final String LOCATION 		= "location";
-	private static final String PERSON 		= "person";
+	public static final String ORGANIZATION 	= "organization";
+	public static final String LOCATION 		= "location";
+	public static final String PERSON 		= "person";
+	public static final String ALL 			= "all";
 
-	private static final String LITERAL_PROPERTY_DESC = 
+	public static final String LITERAL_PROPERTY_DESC = 
 			"Literal property used by FOX for NER. " +
 					"If not set, the top ranked literal property will be pecked";
-	private static final String ADDED_PROPERTY_DESC = 
+	public static final String ADDED_PROPERTY_DESC = 
 			"Property added to the input model with additional Geospatial " +
 					"knowledge through NLP. By default, " +
 					"this parameter is set to 'gn:relatedTo'";
-	private static final String USE_FOX_LIGHT_DESC =
+	public static final String USE_FOX_LIGHT_DESC =
 			"An implemented NER class name. " +
 					"By default this parameter is set to 'OFF' " +
 					"in which all NER classes run in parallel " +
 					"and a combined result will be returned. " +
 					"If this parameter is given with a wrong value, " +
 					"'NERStanford' will be used";
-	private static final String USE_FOX_LIGHT_VALUES =
+	public static final String USE_FOX_LIGHT_VALUES =
 			"OFF, org.aksw.fox.nertools.NEROpenNLP," +
 					"org.aksw.fox.nertools.NERIllinoisExtended," +
 					"org.aksw.fox.nertools.NERIllinoisExtended," +
 					"org.aksw.fox.nertools.NERBalie," +
 					"org.aksw.fox.nertools.NERStanford";
-	private static final String ASK_END_POINT_DESC = 
+	public static final String ASK_END_POINT_DESC = 
 			"Ask the DBpedia endpoint for each location returned by FOX " +
 					"(setting it generates slower execution time but more accurate results). " +
 					"By default this parameter is set to 'false'";
-	private static final String NER_TYPE_DESC = 
+	public static final String NER_TYPE_DESC = 
 			"Force FOX to look for a specific NE’s types only. ";
-	private static final String NER_TYPE_VALUES =
-			LOCATION + "," + ORGANIZATION + "," + PERSON;
+	public static final String NER_TYPE_VALUES =
+			LOCATION + "," + ORGANIZATION + "," + PERSON + "," + ALL;
 
-	private static final String ASK_END_POINT 	= "askEndPoint";
-	private static final String ADDED_PROPERTY 	= "addedProperty";
-	private static final String NER_TYPE 			= "NERType";
-	private static final String USE_FOX_LIGHT 	= "useFoxLight";
-	private static final String LITERAL_PROPERTY 	= "literalProperty";
-	private static final String FOX_API_URL 		= "http://139.18.2.164:4444/api";
+	public static final String ASK_END_POINT 	= "askEndPoint";
+	public static final String ADDED_PROPERTY 	= "addedProperty";
+	public static final String NER_TYPE 			= "NERType";
+	public static final String USE_FOX_LIGHT 	= "useFoxLight";
+	public static final String LITERAL_PROPERTY 	= "literalProperty";
+	public static final String FOX_API_URL 		= "http://139.18.2.164:4444/api";
 	private Model model;
 
 	// parameters list
@@ -572,7 +573,7 @@ public class NLPModule implements DeerModule{
 		//		Set<Resource> uriObjects = getDiffUriObjects(source, target);
 
 		Map<String, String> p = new HashMap<String, String>();
-		p.put(NER_TYPE, "all");
+		p.put(NER_TYPE, ALL);
 		return p;
 	}
 

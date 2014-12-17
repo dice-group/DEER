@@ -52,13 +52,13 @@ public class DereferencingModule implements DeerModule{
 	
 	public	 static final Property defaultOutputProperty = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
 	
-	private static final String INPUT_PROPERTY  = "inputproperty";
-	private static final String OUTPUT_PROPERTY = "outputproperty";
-	private static final String USE_BLANK_NODES = "useBlankNodes";
+	public static final String INPUT_PROPERTY  = "inputproperty";
+	public static final String OUTPUT_PROPERTY = "outputproperty";
+	public static final String USE_BLANK_NODES = "useBlankNodes";
 
-	private static final String INPUT_PROPERTY_DESC = "Interesting predicate to enrich the model, e.g. 'predicate1'";
-	private static final String OUTPUT_PROPERTY_DESC = "The output property. By default this parameter is set to " + defaultOutputProperty;
-	private static final String USE_BLANK_NODES_DESC = "Use blank node in output dataset. By default, this parameter is set to false";
+	public static final String INPUT_PROPERTY_DESC = "Interesting predicate to enrich the model, e.g. 'predicate1'";
+	public static final String OUTPUT_PROPERTY_DESC = "The output property. By default this parameter is set to " + defaultOutputProperty;
+	public static final String USE_BLANK_NODES_DESC = "Use blank node in output dataset. By default, this parameter is set to false";
 	
 	//list of parameters passed to the module
 	List<String> parametersList= new ArrayList<String>();
@@ -558,13 +558,13 @@ public class DereferencingModule implements DeerModule{
 		urisObjects= getURIObjects();
 		//Get information for each single distinct objectURI according to interesting predicates
 		logger.info("Number of unique URI object to find extension: "+ urisObjects.size());
-		if(urisObjects.size()>0) 
+		if(urisObjects.size() > 0) 
 		{
 			int count=1; 
 			//For each unique URI object, its predicate-value pairs are retrieved then add them attached to their object in a map 
 			for (RDFNode uriObject : urisObjects)  
 			{
-				//				logger.info("Enriching " + uriObject + "(" + count++ + "/" + urisObjects.size()+")");
+				//logger.info("Enriching " + uriObject + "(" + count++ + "/" + urisObjects.size()+")");
 				//Retrieve all interesting <predicate,object> info. for current URI object
 				resourceInterestingInfoExtension = getURIInfo(uriObject);
 				//Add retrieved predicate-value pair attached to the object in the map 

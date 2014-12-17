@@ -105,7 +105,7 @@ public class ModuleFactory {
 	 * @return list of names of all implemented modules
 	 * @author sherif
 	 */
-	public List<String> getNames(){
+	public static List<String> getNames(){
 		List<String> result = new ArrayList<String>();
 		result.add(DEREFERENCING_MODULE);
 		result.add(LINKING_MODULE);
@@ -121,7 +121,7 @@ public class ModuleFactory {
 	 * @return list of instances of all implemented modules
 	 * @author sherif
 	 */
-	List<DeerModule> getImplementations(){
+	public static List<DeerModule> getImplementations(){
 		List<DeerModule> result = new ArrayList<DeerModule>();
 		result.add(new DereferencingModule());
 		result.add(new LinkingModule());

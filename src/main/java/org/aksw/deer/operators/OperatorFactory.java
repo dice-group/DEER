@@ -65,7 +65,7 @@ public class OperatorFactory {
 	 * @return list of names of all implemented operators
 	 * @author sherif
 	 */
-	public List<String> getNames(){
+	public static List<String> getNames(){
 		List<String> result = new ArrayList<String>();
 		result.add(CLONE_OPERATOR);
 		result.add(MERGE_OPERATOR);
@@ -77,7 +77,7 @@ public class OperatorFactory {
 	 * @return list of instances of all implemented operators
 	 * @author sherif
 	 */
-	List<DeerOperator> getImplementations(){
+	public static List<DeerOperator> getImplementations(){
 		List<DeerOperator> result = new ArrayList<DeerOperator>();
 		result.add(new CloneOperator());
 		result.add(new MergeOperator());

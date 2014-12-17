@@ -37,7 +37,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 public class SimplePipeLineLearner implements PipelineLearner{
 	private static final Logger logger = Logger.getLogger(SimplePipeLineLearner.class.getName());
 	public double penaltyWeight = 0.5;// [0, 1]
-	private int datasetCounter = 1;
+	private int datasetIndex = 1;
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
 	public Tree<RefinementNodeOld> refinementTreeRoot = new Tree<RefinementNodeOld>(new RefinementNodeOld());
@@ -109,7 +109,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 	}
 	
 	private Tree<RefinementNodeOld> createRefinementTreeRoot(){
-		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetIndex++);
 		Model config = ModelFactory.createDefaultModel();
 		double f = -Double.MAX_VALUE;
 		RefinementNodeOld initialNode = new RefinementNodeOld(null,f,sourceModel,sourceModel,outputDataset,outputDataset,config);
@@ -137,7 +137,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 //					fitness = computeFitness(currentMdl, targetModel);
 					fitness = computeFMeasure(currentMdl, targetModel);
 				}
-				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetIndex++);
 				configMdl = configWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
 				node = new RefinementNodeOld(module, fitness, root.getValue().outputModel, currentMdl, inputDataset, outputDataset, configMdl);
 			}
