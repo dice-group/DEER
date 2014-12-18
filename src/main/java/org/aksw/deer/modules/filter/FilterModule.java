@@ -38,8 +38,8 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 public class FilterModule implements DeerModule{
 	private static final Logger logger = Logger.getLogger(FilterModule.class.getName());
 
-	private static final String TRIPLES_PATTERN = "triplesPattern";
-	private static final String TRIPLES_PATTERN_DESC = 
+	public static final String TRIPLES_PATTERN = "triplesPattern";
+	public static final String TRIPLES_PATTERN_DESC = 
 			"Set of triple pattern to run against the input model of the filter module. " +
 					"By default, this parameter is set to ?s ?p ?o. which generates the whole " +
 					"input model as output, changing the values of " +

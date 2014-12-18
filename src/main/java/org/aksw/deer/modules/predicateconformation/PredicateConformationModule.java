@@ -39,10 +39,10 @@ public class PredicateConformationModule implements DeerModule{
 	private Map<Property, Property> propertyMap = new HashMap<Property, Property>();
 
 	// parameters keys
-	private static final String SOURCE_PROPERTY 		= "sourceProperty";
-	private static final String SOURCE_PROPERTY_DESC	= "Source property to be replaced by target property";
-	private static final String TARGET_PROPERTY 		= "targetProperty";
-	private static final String TARGET_PROPERTY_DESC	= "targetProperty to replace source property";
+	public static final String SOURCE_PROPERTY 		= "sourceProperty";
+	public static final String SOURCE_PROPERTY_DESC	= "Source property to be replaced by target property";
+	public static final String TARGET_PROPERTY 		= "targetProperty";
+	public static final String TARGET_PROPERTY_DESC	= "targetProperty to replace source property";
 
 	/**
 	 * 

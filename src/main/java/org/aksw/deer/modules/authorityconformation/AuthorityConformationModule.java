@@ -39,10 +39,10 @@ public class AuthorityConformationModule implements DeerModule{
 	private String 	targetSubjectAuthority = "";
 
 	// parameters keys
-	private static final String SOURCE_SUBJET_AUTHORITY 		= "sourceSubjectAuthority";
-	private static final String SOURCE_SUBJECT_AUTHORITY_DESC	= "Source subject authority to be replaced by Target subject authority.";
-	private static final String TARGET_SUBJET_AUTHORITY 		= "targetSubjectAuthority";
-	private static final String TARGET_SUBJECT_AUTHORITY_DESC	= "Target subject authority to replace the source subject authority.";
+	public static final String SOURCE_SUBJET_AUTHORITY 		= "sourceSubjectAuthority";
+	public static final String SOURCE_SUBJECT_AUTHORITY_DESC	= "Source subject authority to be replaced by Target subject authority.";
+	public static final String TARGET_SUBJET_AUTHORITY 		= "targetSubjectAuthority";
+	public static final String TARGET_SUBJECT_AUTHORITY_DESC	= "Target subject authority to replace the source subject authority.";
 
 	/**
 	 * 
@@ -88,7 +88,7 @@ public class AuthorityConformationModule implements DeerModule{
 	 * @return Most redundant source URI in the input model
 	 * @author sherif
 	 */
-	private String getMostRedundantUri(Model m) {
+	public String getMostRedundantUri(Model m) {
 		Multiset<Resource> subjectsMultiset = HashMultiset.create();
 		ResIterator listSubjects = m.listSubjects();
 		while(listSubjects.hasNext()){
