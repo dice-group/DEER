@@ -209,6 +209,21 @@ public class RDFConfigWriter{
 	
 	/**
 	 * @param config
+	 * @param dataset
+	 * @param uri
+	 * @param datasetFile
+	 * @return
+	 * @author sherif
+	 */
+	public static Model addDataset(Model config, Resource dataset, String datasetFile){
+		addDataset(config, dataset);
+		config.add(dataset, SPECS.inputFile, datasetFile);
+		return config;
+	}
+	
+	
+	/**
+	 * @param config
 	 * @param moduleUri
 	 * @param inputDatasetUri
 	 * @param outputDatasetUri

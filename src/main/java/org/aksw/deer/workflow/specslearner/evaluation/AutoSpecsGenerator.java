@@ -49,10 +49,25 @@ public class AutoSpecsGenerator {
 
 
 	/**
+	 * @param inputDataFile
+	 * @param size (number of modules included in the resulted configuration)
+	 * @param complexity [0,1], 0 means only modules, 1 means only operators 
+	 * @return a random configuration file 
+	 * @author sherif
+	 */
+	public Model generateSpecs(String inputDataFile, int size, double complexity){	
+		Model inputDataModel = Reader.readModel(inputDataFile);
+		Model specsModel = generateSpecs(inputDataModel, size, complexity);
+		Resource firstDataset = ResourceFactory.createResource(SPECS.uri + "dataset_1");
+		RDFConfigWriter.addDataset(specsModel, firstDataset, inputDataFile);
+		return specsModel;	
+	}
+	
+	/**
 	 * @param inputDataModel
 	 * @param size (number of modules included in the resulted configuration)
 	 * @param complexity [0,1], 0 means only modules, 1 means only operators 
-	 * @return a random configuration file with complexity ≤ complexity 
+	 * @return a random configuration file with complexity 
 	 * @author sherif
 	 */
 	public Model generateSpecs(Model inputDataModel, int size, double complexity){	
@@ -311,6 +326,7 @@ public class AutoSpecsGenerator {
 	private static Resource generateDatasetURI() {
 		return ResourceFactory.createResource(SPECS.uri + "dataset_" + datasetIndex++);
 	}
+	
 
 	/**
 	 * @param args
@@ -319,7 +335,8 @@ public class AutoSpecsGenerator {
 	public static void main(String[] args) {
 		AutoSpecsGenerator g = new AutoSpecsGenerator();
 		Model kb = Reader.readModel(args[0]);
-		Model m = g.generateSpecs(kb, 5, 0.5);
+//		Model m = g.generateSpecs(kb, 5, 0.5);
+		Model m = g.generateSpecs(args[0], 3, 0.5);
 		m.write(System.out, "TTL");
 
 	}

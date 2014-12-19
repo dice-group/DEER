@@ -64,7 +64,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		targetModel = ModelFactory.createDefaultModel();
 	}
 
-	ComplexPipeLineLearner(Model source, Model target){
+	public ComplexPipeLineLearner(Model source, Model target){
 		sourceModel  = source;
 		targetModel  = target;
 	}
