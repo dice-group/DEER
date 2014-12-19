@@ -151,7 +151,7 @@ public class RDFConfigWriter{
 		}
 		else if(operator instanceof MergeOperator){
 			s = ResourceFactory.createResource(SPECS.uri +"merge_operator_" + parameterNr++);
-			config.add(s, RDF.type, SPECS.Module);
+			config.add(s, RDF.type, SPECS.Operator);
 			config.add(s, RDF.type, SPECS.MergeOperator);
 			parameterType = SPECS.MergeOperatorParameter;
 		}else{
@@ -178,7 +178,6 @@ public class RDFConfigWriter{
 			}
 		}
 		for(Model inputConfig : inputConfigs){
-			inputConfig.write(System.out,"TTL");
 			config = config.union(inputConfig);
 		}
 		config.setNsPrefix(SPECS.prefix, SPECS.getURI());
@@ -223,6 +222,22 @@ public class RDFConfigWriter{
 		config.add(moduleUri, SPECS.hasOutput, outputDatasetUri);
 		return config;
 	}
+	
+
+	/**
+	 * @param config
+	 * @param moduleOrOperatorUri
+	 * @param newInputDatasetUri
+	 * @return
+	 * @author sherif
+	 */
+	public static Model changeInputDatasetUri(Model config, Resource moduleOrOperatorUri, Resource oldInputDatasetUri, Resource newInputDatasetUri){
+		config.removeAll(moduleOrOperatorUri, SPECS.hasInput, oldInputDatasetUri);
+		config.add(moduleOrOperatorUri, SPECS.hasInput, newInputDatasetUri);
+		return config;
+	}
+	
+
 	
 	/**
 	 * @param args

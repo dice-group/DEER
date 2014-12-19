@@ -4,6 +4,7 @@
 package org.aksw.deer.workflow.rdfspecs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
+import org.aksw.deer.operators.CloneOperator;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -79,23 +81,17 @@ public class RDFConfigAnalyzer {
 	public static long size(Model configModel){
 		long count = 0;
 		String sparqlQueryString = 
-				"SELECT (COUNT(DISTINCT ?m) AS ?c)  {?m <" + RDF.type + "> <" + SPECS.Module + "> . }";
+				"SELECT (COUNT(DISTINCT ?m) AS ?c) " +
+				"{{?m <" + RDF.type + "> <" + SPECS.Module + "> . } " +
+				"UNION" +
+				"{?m <" + RDF.type + "> <" + SPECS.Operator + "> . }}";
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 		ResultSet queryResults = qexec.execSelect();
 		while(queryResults.hasNext()){
 			QuerySolution qs = queryResults.nextSolution();
-			count = Long.parseLong(qs.getResource("?c").toString());
-		}
-		qexec.close() ;
-		sparqlQueryString =
-				"SELECT (COUNT(DISTINCT ?m) AS ?c)  {?m <" + RDF.type + "> <" + SPECS.Module + "> . }";
-		QueryFactory.create(sparqlQueryString);
-		qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
-		queryResults = qexec.execSelect();
-		while(queryResults.hasNext()){
-			QuerySolution qs = queryResults.nextSolution();
-			count += Long.parseLong(qs.getResource("?c").toString());
+			String s = qs.getLiteral("?c").toString();
+			count = Long.parseLong(s.substring(0, s.indexOf("^^")));
 		}
 		qexec.close() ;
 		return count;
@@ -119,7 +115,11 @@ public class RDFConfigAnalyzer {
 	}
 	
 	public static void main(String args[]){
-		System.out.println(getModules(Reader.readModel(args[0])));
+		Model m = Reader.readModel(args[0]);
+		Set<Resource> modules = getModules(m);
+		System.out.println("modules: " + modules);
+		System.out.println("modules.size(): " +modules.size());
+		System.out.println("size(): " +size(m));
 		
 	}
 

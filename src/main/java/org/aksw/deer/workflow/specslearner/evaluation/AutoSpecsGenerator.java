@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
@@ -20,7 +19,6 @@ import org.aksw.deer.modules.filter.FilterModule;
 import org.aksw.deer.modules.linking.LinkingModule;
 import org.aksw.deer.modules.nlp.NLPModule;
 import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
-import org.aksw.deer.operators.CloneOperator;
 import org.aksw.deer.operators.DeerOperator;
 import org.aksw.deer.operators.OperatorFactory;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
@@ -34,9 +32,9 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * @author sherif
@@ -51,32 +49,43 @@ public class AutoSpecsGenerator {
 
 
 	/**
-	 * @param inputDataset
-	 * @param size (number of modules/operators included in the resulted configuration)
+	 * @param inputDataModel
+	 * @param size (number of modules included in the resulted configuration)
 	 * @param complexity [0,1], 0 means only modules, 1 means only operators 
 	 * @return a random configuration file with complexity ≤ complexity 
 	 * @author sherif
 	 */
-	public Model generateSpecs(Model inputDataset, int size, int complexity){	
+	public Model generateSpecs(Model inputDataModel, int size, double complexity){	
+		Resource inputDatasetUri  = generateDatasetURI();
 		do{
-			Resource inputDatasetUri = generateDatasetURI();
+			Resource outputDatasetUri = generateDatasetURI();
+			// fix specs file for in/out datasets URIs
+			ResIterator moduleToChangeInput = specsModel.listSubjectsWithProperty(SPECS.hasInput, inputDatasetUri);
+			if(moduleToChangeInput.hasNext()) {
+				Resource r = moduleToChangeInput.next();
+				RDFConfigWriter.changeInputDatasetUri(specsModel, r, inputDatasetUri, outputDatasetUri);
+//				specsModel.write(System.out,"TTL");
+			}
 			if(Math.random() >= complexity){
 				// Create module  
 				DeerModule module = getRandomModule();
 				logger.info("Generating Module: " + module.getType());
-				Map<String, String> parameters = generateRandomParameters(module, inputDataset);
+				Map<String, String> parameters = generateRandomParameters(module, inputDataModel);
 				logger.info("With parameters: " + parameters);
-				Resource outputDatasetUri = generateDatasetURI();
 				if(parameters != null){
 					specsModel = RDFConfigWriter.addModule(module, parameters, specsModel, inputDatasetUri, outputDatasetUri);
+					specsModel.write(System.out,"TTL");
 				}
+				inputDatasetUri = getRandomDataset();
 			}else{ // Create clone - merge sequence
 				List<Resource> outputDatasetstUris = addCloneOperator(inputDatasetUri);
-				addMergeOperator(outputDatasetstUris);
+				addMergeOperator(outputDatasetstUris,outputDatasetUri);
+				specsModel.write(System.out,"TTL");
+				// in order not to create an empty clone merge sequence
+				inputDatasetUri = outputDatasetstUris.get(0);
 			}
-			inputDatasetUri = getRandomDataset();
-			
-		}while(RDFConfigAnalyzer.size(specsModel) < size);
+			System.out.println("---------------------------" +RDFConfigAnalyzer.getModules(specsModel).size());
+		}while(RDFConfigAnalyzer.getModules(specsModel).size() < size);
 		return specsModel;
 	}
 
@@ -85,7 +94,7 @@ public class AutoSpecsGenerator {
 	 * @return
 	 * @author sherif
 	 */
-	private Resource getRandomDataset() {
+	private static Resource getRandomDataset() {
 		List<Resource> datasets = new ArrayList<Resource>(RDFConfigAnalyzer.getDatasets(specsModel));
 		if(datasets.size() == 0){
 			return null;
@@ -113,12 +122,12 @@ public class AutoSpecsGenerator {
 	 * @author sherif
 	 * @return 
 	 */
-	private List<Resource> addMergeOperator(List<Resource> inputDatasetUris) {
+	private Resource addMergeOperator(List<Resource> inputDatasetUris, Resource outputDatasetUri) {
+		List<Resource> outputDatasetsUris = new ArrayList<Resource>(Arrays.asList(outputDatasetUri));
 		DeerOperator merge = OperatorFactory.createOperator(OperatorFactory.MERGE_OPERATOR);
 		List<Model> confModels = new ArrayList<Model>(Arrays.asList(specsModel));
-		List<Resource> outputDatasetsUris = new ArrayList<Resource>(Arrays.asList(generateDatasetURI()));
 		specsModel = RDFConfigWriter.addOperator(merge, null, confModels, inputDatasetUris, outputDatasetsUris);
-		return outputDatasetsUris;
+		return outputDatasetUri;
 	}
 
 	/**
@@ -254,9 +263,9 @@ public class AutoSpecsGenerator {
 		double r = Math.random();
 		if(r > 0.75){
 			parameters.put(NLPModule.NER_TYPE, NLPModule.LOCATION);
-		}if(r > 0.5){
+		}else if(r > 0.5){
 			parameters.put(NLPModule.NER_TYPE, NLPModule.PERSON);
-		}if(r > 0.25){
+		}else if(r > 0.25){
 			parameters.put(NLPModule.NER_TYPE, NLPModule.ORGANIZATION);
 		}else{
 			parameters.put(NLPModule.NER_TYPE, NLPModule.ALL);
@@ -310,7 +319,7 @@ public class AutoSpecsGenerator {
 	public static void main(String[] args) {
 		AutoSpecsGenerator g = new AutoSpecsGenerator();
 		Model kb = Reader.readModel(args[0]);
-		Model m = g.generateSpecs(kb, 2, false);
+		Model m = g.generateSpecs(kb, 5, 0.5);
 		m.write(System.out, "TTL");
 
 	}
