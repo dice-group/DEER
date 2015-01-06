@@ -21,6 +21,7 @@ public class TreeX<T> {
 
 	private List<TreeX<T>> parents;
 	private T value;
+	private boolean isPrinted = false;
 
 
 	/**
@@ -33,14 +34,60 @@ public class TreeX<T> {
 	public TreeX(List<TreeX<T>> parents, T value, List<TreeX<T>> childrenlist) {
 		//		this.parents = parents;
 		this.value = value;
-		for(TreeX<T> parent : parents){
-			this.addParent(parent);
+		if (parents != null) {
+			for(TreeX<T> parent : parents){
+				this.addParent(parent);
+			}
 		}
 		if (childrenlist != null) {
 			for (TreeX<T> child : childrenlist) {
 				this.addChild(child);
 			}
 		}
+	}
+
+	/**
+	 * @return the children
+	 */
+	public List<TreeX<T>> getChildren() {
+		return children;
+	}
+
+	/**
+	 * @param children 
+	 */
+	public void setChildren(List<TreeX<T>> children) {
+		this.children = children;
+	}
+	
+	/**
+	 * @param parents 
+	 */
+	public void setParents(List<TreeX<T>> parents) {
+		this.parents = parents;
+	}
+	
+	/**
+	 * @param parent 
+	 */
+	public void setParent(TreeX<T> parent) {
+		if(this.parents == null){
+			this.parents = new ArrayList<TreeX<T>>();
+		}
+		this.parents.set(0, parent);
+		if(parent.children == null){
+			parent.children = new ArrayList<TreeX<T>>();
+		}
+		parent.children.add(this);
+	}
+
+	/**
+	 * Copy constructor
+	 * @param root
+	 *@author sherif
+	 */
+	public TreeX(TreeX<T> root){
+		this(root.parents, root.value, root.children);
 	}
 
 	/**
@@ -229,13 +276,22 @@ public class TreeX<T> {
 	 * @author sherif
 	 */
 	public void print() {
+		unsetPrintFlag();
 		print("", true);
 	}
 
-	Set<TreeX<T>> PrintedNodes = new HashSet<TreeX<T>>();
+	private void unsetPrintFlag(){
+		isPrinted = false;
+		if(children != null){
+			for(TreeX<T> child : children){
+				child.unsetPrintFlag();
+			}
+		}
+	}
+
 
 	private void print(String prefix, boolean isTail) {
-		if(!PrintedNodes.contains(this)){
+		if(!isPrinted){
 			Object value = (this.parents == null || this.parents.isEmpty()) ? "ROOT(⟂)" : this.value;
 			boolean isMerge = false;
 			String branch = "";
@@ -250,7 +306,7 @@ public class TreeX<T> {
 				branch = "├── ";
 			}
 			System.out.println(prefix + branch + value);
-			PrintedNodes.add((TreeX<T>) this);
+			isPrinted = true;
 			if(children != null){
 				for (int i = 0; i < children.size() - 1; i++) {
 					children.get(i).print(prefix + (isTail ? ((isMerge)? "║   " :"    ") : "│   "), false);
@@ -260,7 +316,6 @@ public class TreeX<T> {
 				}
 			}
 		}
-		new HashSet<TreeX<Object>>();new HashSet<Object>();
 	}
 
 
@@ -315,15 +370,21 @@ public class TreeX<T> {
 	public static void main(String args[]){
 		TreeX<String> t = new TreeX<String>("root");
 		TreeX<String> c = new TreeX<String>(t,"clone",null);
-		//		TreeX<String> l = new TreeX<String>(c,"left",null);
 		TreeX<String> l = c.addChild(new TreeX<String>("left"));
-		//		TreeX<String> r = new TreeX<String>(c,"right",null);
 		TreeX<String> r = c.addChild(new TreeX<String>("right"));
 		ArrayList<TreeX<String>> p = new ArrayList<TreeX<String>>(Arrays.asList(l, r));
 		TreeX<String> m  = new TreeX<String>(p,"merge", (TreeX<String>)null);
 		TreeX<String> l1 = new TreeX<String>(m,"leaf1",null);
 		TreeX<String> l2 = new TreeX<String>(m,"leaf2",null);
 		TreeX<String> l3 = new TreeX<String>(m,"leaf3",null);
+
+		TreeX<String> c2 = new TreeX<String>(l1,"clone",null);
+		TreeX<String> c2l1 = c2.addChild(new TreeX<String>("left"));
+		TreeX<String> c2l2 = c2.addChild(new TreeX<String>("right"));
+		ArrayList<TreeX<String>> p2 = new ArrayList<TreeX<String>>(Arrays.asList(c2l1, c2l2));
+		TreeX<String> m2 = new TreeX<String>(p2,"merge", (TreeX<String>)null);
+
+		t.print();
 		t.print();
 	}
 

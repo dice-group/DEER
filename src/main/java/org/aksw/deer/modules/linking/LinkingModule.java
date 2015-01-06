@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
@@ -252,4 +253,9 @@ public class LinkingModule implements DeerModule{
 
         return parameters;
     }
+    
+    @Override
+	public Resource getType(){
+		return SPECS.LinkingModule;
+	}
 }

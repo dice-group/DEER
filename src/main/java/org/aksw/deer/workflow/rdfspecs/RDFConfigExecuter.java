@@ -74,8 +74,8 @@ public class RDFConfigExecuter {
 	}
 	
 	/**
-	 * execute the input RDF config file and return only the first enriched dataset
-	 * sutable for simple liner config file 
+	 * execute the input RDF configuration file and return only the first enriched dataset
+	 * Suitable for simple liner configuration file 
 	 * @param config
 	 * @return
 	 * @throws IOException

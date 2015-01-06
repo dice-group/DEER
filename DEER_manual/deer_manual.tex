@@ -116,20 +116,20 @@ Finally, we present the detailed developers' manual of \geolift.
 %in which we introduce how to deal with different modules of \geolift and integrate it with other tool.
 
 \section{Assumptions}
-Geographical information can be mentioned in three different ways within Linked Data:
+ Enriched information can be mentioned in three different ways within Linked Data:
 \begin{enumerate}
-\item \emph{Through dereferencing}: Several datasets contain links to datasets with explicit geographical information such as \emph{DBpedia} or \emph{LinkedGeoData}. 
+\item \emph{Through dereferencing}: Several datasets contain links to datasets with explicit information such as \emph{DBpedia} or \emph{LinkedGeoData}. 
 For example, in a music dataset, one might find information such as\\ 
 \texttt{http://example.org/Leipzig \\
 owl:sameAs \\ 
 http://dbpedia.org/resource/Leipzig}.
 
 We call this type of reference \emph{explicit}. 
-We can now use the semantics of RDF to fetch geographical information from DBpedia and attach it to the resource in the other ontology as \texttt{http://example.org/Leipzig} and \texttt{http://dbpedia.org/resource/Leipzig} refer to the same real-world object.
+We can now use the semantics of RDF to fetch additional information from DBpedia and attach it to the resource in the other ontology as \texttt{http://example.org/Leipzig} and \texttt{http://dbpedia.org/resource/Leipzig} refer to the same real-world object.
 
 \item \emph{Through linking}: It is known that the Web of Data contains an insufficient number of links. 
 The latest approximations suggest that the Linked Open Data Cloud alone consists of 31+ billion triples but only contains approximately 0.5 billion links (i.e., less than 2\% of the triples are links between knowledge bases). 
-The second intuition behind our approach is thus to use link discovery to map resources in an input knowledge base to resources in a knowledge that contains explicit geographical information. 
+The second intuition behind our approach is thus to use link discovery to map resources in an input knowledge base to resources in a knowledge that contains explicit enrichment information. 
 For example, given a resource \texttt{http://example.org/Athen}, \geolift should aim to find a resource such as \texttt{http://dbpedia.org/resource/Athen} to map it with. 
 Once having established the link between the two resources, \geolift can then resolve to the approach defined above.
 
@@ -138,7 +138,7 @@ For example, some datasets contain biographies, textual abstracts describing res
 The idea here is to use this information by extracting Named Entities and keywords using automated Information Extraction techniques.
 Semantic Web Frameworks such as FOX\footnote{\url{http://fox.aksw.org}} have the main advantage of providing URIs for the keywords and entities that they detect.
 These URIs can finally be linked with the resources to which the datatype properties were attached.
-Finally, the geographical information can be dereferenced and attached to the resources whose datatype properties were analyzed.
+Finally, the additional information can be dereferenced and attached to the resources whose datatype properties were analyzed.
 \end{enumerate}
 
 The idea behind \geolift is to provide a generic architecture that contains means to exploit these three characteristics of Linked Data. 
@@ -149,10 +149,10 @@ In the following, we present the technical approach underlying \geolift.
 \geolift was designed to be a modular tool which can be easily extended and re-purposed.
 In its first version, it provides two main types of artifacts:
 \begin{enumerate}
-\item \emph{Modules}: These artifacts are in charge of generating geographical data based on RDF data. 
+\item \emph{Modules}: These artifacts are in charge of generating enrichment data based on RDF data. 
 To this aim, they implement the three intuitions presented above.
 The input for such a module is an RDF dataset (in Java, a \emph{Jena Model}).
-The output is also an RDF dataset enriched with geographical information (in Java, an enriched \emph{Jena Model}).
+The output is also an RDF dataset enriched with additional information (in Java, an enriched \emph{Jena Model}).
 Formally, a module can thus be regarded as a function $\mu: \mathcal{R} \rightarrow \mathcal{R}$, where $\mathcal{R}$ is the set of all RDF datasets.
 \item \emph{Operators}: The idea behind operators is to enable users to define a workflow for processing their input dataset. 
 Thus, in case a user knows the type of enrichment that is to be carried out (using linking and then links for example), he can define the sequence of modules that must be used to process his dataset.
@@ -161,7 +161,7 @@ Thus, the user is empowered to create workflows of arbitrary complexity by simpl
 Formally, an operator can be regarded as a function $\varphi: \mathcal{R} \cup \mathcal{R}^2 \rightarrow \mathcal{R} \cup \mathcal{R}^2$.
 \end{enumerate}
 The corresponding architecture is shown in Figure~\ref{fig:architecture}. The input layer allows reading RDF in different serializations.
-The enrichment modules are in the second layer and allow adding geographical information to RDF datasets by different means.
+The enrichment modules are in the second layer and allow adding information to RDF datasets by different means.
 The operators (which will be implemented in the future version of \geolift) will combine the enrichment modules and allow defining a workflow for processing information.
 The output layer serializes the results in different format.
 The enrichment procedure will be monitored by implementing a controller, which will be added in the future version of \geolift.
@@ -177,8 +177,8 @@ The enrichment procedure will be monitored by implementing a controller, which w
 In the following, we present the implementation of the three intuitions presented above in \geolift.
 \subsection{Using Dereferencing}
 For datasets which contain \texttt{owl:sameAs} links, we dereference all links from the dataset to other datasets by using a content negotiation on HTTP as shown in Figure~\ref{fig:contentNegotiation}.
-This returns a set of triples that needs to be filtered for relevant geographical information.
-Here, we use a predefined list of attributes that links to geographical information.
+This returns a set of triples that needs to be filtered for relevant information.
+Here, we use a predefined list of attributes that links to requested information.
 Amongst others, we look for \texttt{geo:lat}, \texttt{geo:long}, \texttt{geo:lat\_long}, \texttt{geo:line} and \texttt{geo:polygon}.
 The list of retrieved property values can be configured.
 
@@ -190,8 +190,8 @@ The list of retrieved property values can be configured.
 \end{figure}
 
 \subsection{Using Linking}
-As pointed out before, links to geographical resources do not occur in several knowledge bases.
-Here, we rely on the metrics implemented in the \limes framework\footnote{\url{http://\limes.sf.net}}~\cite{NGAU11,NGON12c,NGO+13c} to link the resources in the input dataset with geographical datasets.
+As pointed out before, links to resources do not occur in several knowledge bases.
+Here, we rely on the metrics implemented in the \limes framework\footnote{\url{http://\limes.sf.net}}~\cite{NGAU11,NGON12c,NGO+13c} to link the resources in the input dataset with other datasets.
 \limes, the \textbf{Li}nk Discovery Framework for \textbf{Me}tric \textbf{S}paces, is a framework for discovering links between entities contained in Linked Data sources. \limes is a hybrid framework~\cite{NGON12c} that combines the mathematical characteristics of metric spaces as well prefix-, suffix- and position filtering to compute pessimistic approximations of the similarity of instances. These approximations are then used to filter out a large amount of those instance pairs that do not suffice the mapping conditions. By these means, \limes can reduce the number of comparisons needed during the mapping process by several orders of magnitude and complexity without loosing a single link.
 The architecture of \limes is shown in Figure~\ref{fig:limesArchitecture}
 
@@ -222,7 +222,7 @@ The techniques implemented by \limes can be accessed via the SAIM user interface
 \end{figure}
 
 \subsection{Using Named Entity Recognition}
-The geographical information hidden in datatype properties is retrieved by using Named Entity Recognition.
+The enrichment information hidden in datatype properties is retrieved by using Named Entity Recognition.
 In the first version of \geolift, we rely on the FOX framework.
 The FOX framework is a stateless and extensible framework that encompasses keyword extraction and named entity recognition. 
 Its architecture consists of three layers as shown in Figure \ref{fig:foxArchitecture}.
@@ -292,8 +292,8 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
       Also, the \texttt{getImplementations()} method returns all implemented modules.
       Currently, five modules are implemented:
       \begin{itemize}
-	\item \texttt{DereferencingModule} class which handles dereferencing  geographical information extending process. 
-	\item \texttt{LinkingModule} class which handles linking geographical information extending processes. 
+	\item \texttt{DereferencingModule} class which handles dereferencing  additional information extending process. 
+	\item \texttt{LinkingModule} class which handles linking information extending processes. 
 	\item \texttt{NLPModule} class which handles named entity extraction process.
 	\item \texttt{AuthorityConformationModule} class which handles the subject authority conformation process.
 	\item \texttt{PredicateConformationModule} class which handles the predicates conformation process.
@@ -315,10 +315,10 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
 
 
 \subsection{\geolift Modules}
-    By \emph{Modules} we mean these artifacts in charge of generating geographical data based on RDF data. 
+    By \emph{Modules} we mean these artifacts in charge of generating enrichment data based on RDF data. 
     % To this aim, they implement the three intuitions presented above.
     The input for such a module is an RDF dataset.
-    The output is also an RDF dataset enriched with geographical information.
+    The output is also an RDF dataset enriched with enriched information.
     Formally, a module can thus be regarded as a function $\mu: \mathcal{R} \rightarrow \mathcal{R}$, where $\mathcal{R}$ is the set of all RDF datasets.
     Currently, \geolift implements six modules: dereferencing, linking, NLP, authority conformation, predicate conformation and filter.
 
@@ -335,8 +335,8 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     \subsubsection{Dereferencing Module}
 
     For datasets which contain similarity proprieties links (e.g. \texttt{owl:sameAs}), we deference all links from the dataset to other datasets by using a content negotiation on HTTP as shown in Figure~\ref{fig:contentNegotiation}.
-    This returns a set of triples that needs to be filtered for relevant geographical information.
-    Here, we use a predefined list of attributes that links to geographical information.
+    This returns a set of triples that needs to be filtered for relevant information.
+    Here, we use a predefined list of attributes that links to additional information.
     Amongst others, we look for \texttt{geo:lat}, \texttt{geo:long}, \texttt{geo:lat\_long}, \texttt{geo:line} and \texttt{geo:polygon}.
     The list of retrieved property values can be configured.
 
@@ -398,8 +398,8 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     \end{lstlisting}
 
     \subsubsection{Linking Module}
-    Links to geographical resources do not occur in several knowledge bases.
-    Here, we rely on the metrics implemented in the \limes framework\footnote{\url{http://limes.sf.net}}~\cite{NGAU11,NGON12c,NGO+13c} to link the resources in the input dataset with geographical datasets.
+    Links to other resources do not occur in several knowledge bases.
+    Here, we rely on the metrics implemented in the \limes framework\footnote{\url{http://limes.sf.net}}~\cite{NGAU11,NGON12c,NGO+13c} to link the resources in the input dataset with other datasets.
   
     \texttt{LinkingModule} have two inputs: an input model and list of parameters (see table~\ref{tbl:linkingPram} for parameters details).
     The linking process starts by generating links between the input dataset model and another dataset as second partner. 
@@ -453,7 +453,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     \endgroup
 
     \subsubsection{NLP Module}
-	The geographical information hidden in datatype properties is retrieved by using Named Entity Recognition (NER).
+	The enrichment information hidden in datatype properties is retrieved by using Named Entity Recognition (NER).
 	\geolift - as an expandable modeller framework - can inject any NER framework to implement the \emph{NLP module}.
 	In the current version of \geolift, we rely on the FOX framework. 
 

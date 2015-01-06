@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
@@ -38,10 +39,10 @@ public class AuthorityConformationModule implements DeerModule{
 	private String 	targetSubjectAuthority = "";
 
 	// parameters keys
-	private static final String SOURCE_SUBJET_AUTHORITY 		= "sourceSubjectAuthority";
-	private static final String SOURCE_SUBJECT_AUTHORITY_DESC	= "Source subject authority to be replaced by Target subject authority.";
-	private static final String TARGET_SUBJET_AUTHORITY 		= "targetSubjectAuthority";
-	private static final String TARGET_SUBJECT_AUTHORITY_DESC	= "Target subject authority to replace the source subject authority.";
+	public static final String SOURCE_SUBJET_AUTHORITY 		= "sourceSubjectAuthority";
+	public static final String SOURCE_SUBJECT_AUTHORITY_DESC	= "Source subject authority to be replaced by Target subject authority.";
+	public static final String TARGET_SUBJET_AUTHORITY 		= "targetSubjectAuthority";
+	public static final String TARGET_SUBJECT_AUTHORITY_DESC	= "Target subject authority to replace the source subject authority.";
 
 	/**
 	 * 
@@ -51,7 +52,7 @@ public class AuthorityConformationModule implements DeerModule{
 		super();
 		model = m;
 	}
-	
+
 	/**
 	 * 
 	 *@author sherif
@@ -87,7 +88,7 @@ public class AuthorityConformationModule implements DeerModule{
 	 * @return Most redundant source URI in the input model
 	 * @author sherif
 	 */
-	private String getMostRedundantUri(Model m) {
+	public String getMostRedundantUri(Model m) {
 		Multiset<Resource> subjectsMultiset = HashMultiset.create();
 		ResIterator listSubjects = m.listSubjects();
 		while(listSubjects.hasNext()){
@@ -186,11 +187,16 @@ public class AuthorityConformationModule implements DeerModule{
 		return parameters;
 	}
 
-        @Override
-        public List<ParameterType> getParameterWithTypes() {
-            List<ParameterType> parameters = new ArrayList<ParameterType>();
-            parameters.add(new ParameterType(ParameterType.STRING, SOURCE_SUBJET_AUTHORITY, SOURCE_SUBJECT_AUTHORITY_DESC, true));
-            parameters.add(new ParameterType(ParameterType.STRING, TARGET_SUBJET_AUTHORITY, TARGET_SUBJECT_AUTHORITY_DESC, true));
-            return parameters;
-        }
+	
+	public List<ParameterType> getParameterWithTypes() {
+		List<ParameterType> parameters = new ArrayList<ParameterType>();
+		parameters.add(new ParameterType(ParameterType.STRING, SOURCE_SUBJET_AUTHORITY, SOURCE_SUBJECT_AUTHORITY_DESC, true));
+		parameters.add(new ParameterType(ParameterType.STRING, TARGET_SUBJET_AUTHORITY, TARGET_SUBJECT_AUTHORITY_DESC, true));
+		return parameters;
+	}
+	
+	@Override
+	public Resource getType(){
+		return SPECS.AuthorityConformationModule;
+	}
 }

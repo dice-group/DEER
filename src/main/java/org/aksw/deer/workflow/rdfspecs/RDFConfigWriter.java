@@ -31,30 +31,30 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *
  */
 public class RDFConfigWriter{
-	private final Logger logger 	= Logger.getLogger(RDFConfigWriter.class.getName());
+	private final static Logger logger 	= Logger.getLogger(RDFConfigWriter.class.getName());
 	private static long moduleNr 			= 1;
 	private static long parameterNr 		= 1;
-	public Model config = ModelFactory.createDefaultModel();
+//	public static Model config = ModelFactory.createDefaultModel();
 	
-	Model getConfModel(){
-		return config;
-	}
+//	Model getConfModel(){
+//		return config;
+//	}
 	
-	/**
-	 * 
-	 *@author sherif
-	 */
-	public RDFConfigWriter(Model config) {
-		this.config = config;
-	}
+//	/**
+//	 * 
+//	 *@author sherif
+//	 */
+//	public RDFConfigWriter(Model config) {
+//		this.config = config;
+//	}
 
-	/**
-	 * 
-	 *@author sherif
-	 */
-	public RDFConfigWriter() {
-		// TODO Auto-generated constructor stub
-	}
+//	/**
+//	 * 
+//	 *@author sherif
+//	 */
+//	public RDFConfigWriter() {
+//		// TODO Auto-generated constructor stub
+//	}
 
 	/**
 	 * @param module
@@ -66,8 +66,8 @@ public class RDFConfigWriter{
 	 * 			the returned configuration model  is independent of the input configuration model
 	 * @author sherif
 	 */
-	public  Model addModule(DeerModule module, Map<String, String> parameters, final Model inputConfig, Resource inputDataset, Resource outputDataset){
-		config = ModelFactory.createDefaultModel(); 
+	public static Model addModule(DeerModule module, Map<String, String> parameters, final Model inputConfig, Resource inputDataset, Resource outputDataset){
+		Model config = ModelFactory.createDefaultModel(); 
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
 		if(module instanceof AuthorityConformationModule){
@@ -109,8 +109,8 @@ public class RDFConfigWriter{
 			logger.error("Module " + module.getClass().getName() + " NOT implemented yet!, Exit with error.");
 			System.exit(1);
 		}
-		addDataset(inputDataset);
-		addDataset(outputDataset);
+		addDataset(config, inputDataset);
+		addDataset(config, outputDataset);
 		config.add(s, SPECS.hasInput, inputDataset);
 		config.add(s, SPECS.hasOutput, outputDataset);
 		for(String key : parameters.keySet()){
@@ -139,8 +139,8 @@ public class RDFConfigWriter{
 	 * 			the returned configuration model  is independent of the input configuration model
 	 * @author sherif
 	 */
-	public Model addOperator(DeerOperator operator, Map<String, String> parameters, final List<Model> inputConfigs, List<Resource> inputDatasets, List<Resource> outputDatasets){
-		config = ModelFactory.createDefaultModel(); 
+	public static Model addOperator(DeerOperator operator, Map<String, String> parameters, final List<Model> inputConfigs, List<Resource> inputDatasets, List<Resource> outputDatasets){
+		Model config = ModelFactory.createDefaultModel(); 
 		Resource s = ResourceFactory.createResource();
 		Resource parameterType = ResourceFactory.createResource();
 		if(operator instanceof CloneOperator){
@@ -151,7 +151,7 @@ public class RDFConfigWriter{
 		}
 		else if(operator instanceof MergeOperator){
 			s = ResourceFactory.createResource(SPECS.uri +"merge_operator_" + parameterNr++);
-			config.add(s, RDF.type, SPECS.Module);
+			config.add(s, RDF.type, SPECS.Operator);
 			config.add(s, RDF.type, SPECS.MergeOperator);
 			parameterType = SPECS.MergeOperatorParameter;
 		}else{
@@ -159,11 +159,11 @@ public class RDFConfigWriter{
 			System.exit(1);
 		}
 		for(Resource inputDataset : inputDatasets){
-			addDataset(inputDataset);
+			addDataset(config, inputDataset);
 			config.add(s, SPECS.hasInput, inputDataset);
 		}
 		for(Resource outputDataset : outputDatasets){
-			addDataset(outputDataset);
+			addDataset(config, outputDataset);
 			config.add(s, SPECS.hasOutput, outputDataset);
 		}
 		if(parameters!= null){
@@ -189,8 +189,8 @@ public class RDFConfigWriter{
 	 * @param dataset
 	 * @author sherif
 	 */
-	public void addDataset(Resource dataset){
-		config.add(dataset, RDF.type, SPECS.Dataset);
+	public static Model addDataset(Model config, Resource dataset){
+		return config.add(dataset, RDF.type, SPECS.Dataset);
 	}
 	
 	/**
@@ -199,12 +199,60 @@ public class RDFConfigWriter{
 	 * @param endpoint
 	 * @author sherif
 	 */
-	public void addDataset(Resource dataset, Resource uri, Resource endpoint){
-		addDataset(dataset);
+	public static Model addDataset(Model config, Resource dataset, Resource uri, Resource endpoint){
+		addDataset(config, dataset);
 		config.add(dataset, SPECS.FromEndPoint, endpoint);
 		config.add(dataset, SPECS.hasUri, uri);
+		return config;
 	}
 	
+	
+	/**
+	 * @param config
+	 * @param dataset
+	 * @param uri
+	 * @param datasetFile
+	 * @return
+	 * @author sherif
+	 */
+	public static Model addDataset(Model config, Resource dataset, String datasetFile){
+		addDataset(config, dataset);
+		config.add(dataset, SPECS.inputFile, datasetFile);
+		return config;
+	}
+	
+	
+	/**
+	 * @param config
+	 * @param moduleUri
+	 * @param inputDatasetUri
+	 * @param outputDatasetUri
+	 * @return
+	 * @author sherif
+	 */
+	public static Model changeModuleInputOutput(Model config, Resource moduleUri, Resource inputDatasetUri, Resource outputDatasetUri){
+		config.removeAll(moduleUri, SPECS.hasInput, null);
+		config.add(moduleUri, SPECS.hasInput, inputDatasetUri);
+		config.removeAll(moduleUri, SPECS.hasOutput, null);
+		config.add(moduleUri, SPECS.hasOutput, outputDatasetUri);
+		return config;
+	}
+	
+
+	/**
+	 * @param config
+	 * @param moduleOrOperatorUri
+	 * @param newInputDatasetUri
+	 * @return
+	 * @author sherif
+	 */
+	public static Model changeInputDatasetUri(Model config, Resource moduleOrOperatorUri, Resource oldInputDatasetUri, Resource newInputDatasetUri){
+		config.removeAll(moduleOrOperatorUri, SPECS.hasInput, oldInputDatasetUri);
+		config.add(moduleOrOperatorUri, SPECS.hasInput, newInputDatasetUri);
+		return config;
+	}
+	
+
 	
 	/**
 	 * @param args

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
@@ -37,8 +38,8 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 public class FilterModule implements DeerModule{
 	private static final Logger logger = Logger.getLogger(FilterModule.class.getName());
 
-	private static final String TRIPLES_PATTERN = "triplesPattern";
-	private static final String TRIPLES_PATTERN_DESC = 
+	public static final String TRIPLES_PATTERN = "triplesPattern";
+	public static final String TRIPLES_PATTERN_DESC = 
 			"Set of triple pattern to run against the input model of the filter module. " +
 					"By default, this parameter is set to ?s ?p ?o. which generates the whole " +
 					"input model as output, changing the values of " +
@@ -275,6 +276,11 @@ public class FilterModule implements DeerModule{
 		parameters.add(new ParameterType(ParameterType.STRING, TRIPLES_PATTERN, TRIPLES_PATTERN_DESC, true));
 
 		return parameters;
+	}
+	
+    @Override
+	public Resource getType(){
+		return SPECS.FilterModule;
 	}
 
 }

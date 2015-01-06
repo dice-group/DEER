@@ -37,7 +37,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 public class SimplePipeLineLearner implements PipelineLearner{
 	private static final Logger logger = Logger.getLogger(SimplePipeLineLearner.class.getName());
 	public double penaltyWeight = 0.5;// [0, 1]
-	private int datasetCounter = 1;
+	private int datasetIndex = 1;
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
 	public Tree<RefinementNodeOld> refinementTreeRoot = new Tree<RefinementNodeOld>(new RefinementNodeOld());
@@ -59,12 +59,12 @@ public class SimplePipeLineLearner implements PipelineLearner{
 		targetModel = ModelFactory.createDefaultModel();
 	}
 	
-	SimplePipeLineLearner(Model source, Model target){
+	public SimplePipeLineLearner(Model source, Model target){
 		sourceModel  = source;
 		targetModel  = target;
 	}
 	
-	SimplePipeLineLearner(Model source, Model target, double penaltyWeight){
+	public SimplePipeLineLearner(Model source, Model target, double penaltyWeight){
 		this(source, target);
 		this.penaltyWeight = penaltyWeight;
 	}
@@ -109,7 +109,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 	}
 	
 	private Tree<RefinementNodeOld> createRefinementTreeRoot(){
-		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+		Resource outputDataset  = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetIndex++);
 		Model config = ModelFactory.createDefaultModel();
 		double f = -Double.MAX_VALUE;
 		RefinementNodeOld initialNode = new RefinementNodeOld(null,f,sourceModel,sourceModel,outputDataset,outputDataset,config);
@@ -137,7 +137,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 //					fitness = computeFitness(currentMdl, targetModel);
 					fitness = computeFMeasure(currentMdl, targetModel);
 				}
-				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetCounter++);
+				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetIndex++);
 				configMdl = configWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
 				node = new RefinementNodeOld(module, fitness, root.getValue().outputModel, currentMdl, inputDataset, outputDataset, configMdl);
 			}
@@ -152,7 +152,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 	 * @return
 	 * @author sherif
 	 */
-	double computeFitness(Model currentModel, Model targetModel){
+	public double computeFitness(Model currentModel, Model targetModel){
 		long t_c = targetModel.difference(currentModel).size();
 		long c_t = currentModel.difference(targetModel).size();
 		System.out.println("targetModel.difference(currentModel).size() = " + t_c);
@@ -160,7 +160,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 		return 1- ((double)(t_c + c_t) / (double)(currentModel.size() + targetModel.size()));
 	}
 	
-	double computeFMeasure(Model currentModel, Model targetModel){
+	public double computeFMeasure(Model currentModel, Model targetModel){
 		double p = computePrecision(currentModel, targetModel);
 		double r = computeRecall(currentModel, targetModel);
 		if(p == 0 && r == 0){
@@ -170,11 +170,11 @@ public class SimplePipeLineLearner implements PipelineLearner{
 		
 	}
 	
-	double computePrecision (Model currentModel, Model targetModel){
+	public double computePrecision (Model currentModel, Model targetModel){
 		return (double) currentModel.intersection(targetModel).size() / (double) currentModel.size();
 	}
 	
-	double computeRecall(Model currentModel, Model targetModel){
+	public double computeRecall(Model currentModel, Model targetModel){
 		return (double) currentModel.intersection(targetModel).size() / (double) targetModel.size();
 	}
 	
