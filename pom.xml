@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.aksw.geolift.nlp</groupId>
-	<artifactId>DEER</artifactId>
+	<artifactId>deer</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<properties>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -132,7 +132,10 @@
 			                    </goals>
 		            	        <configuration>
 		                            <controlDir>${basedir}/debian</controlDir>
-	        	                    <dataSet>
+                                    <verbose>true</verbose>
+                                    <snapshotExpand>true</snapshotExpand>
+                                    <snapshotEnv>${maven.build.timestamp}</snapshotEnv>
+                                    <dataSet>
     	                                <data>
                                             <src>${basedir}/jars/deer.jar</src>
                                             <type>file</type>
