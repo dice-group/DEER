@@ -90,7 +90,7 @@ public class Deer {
 			org.aksw.deer.json.JSONConfigWriter.write();
 			System.exit(0);
 		}
-		//program didn't terminate until here so run TSV config mode
+		//program didn't terminate until here so run RDF config mode
 		long startTime = System.currentTimeMillis();
 		RDFConfigExecuter.main(args);
 		Long totalTime = System.currentTimeMillis() - startTime;

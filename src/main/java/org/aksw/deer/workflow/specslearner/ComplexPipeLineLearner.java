@@ -69,23 +69,35 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		targetModel  = target;
 	}
 
-	ComplexPipeLineLearner(Model source, Model target, double penaltyWeight){
+	public ComplexPipeLineLearner(Model source, Model target, double penaltyWeight){
 		this(source, target);
 		this.penaltyWeight = penaltyWeight;
 	}
 
 
-	public RefinementNode runComplex(){
+	/**
+	 * Learn specification with both modules (enrichment functions) and operators
+	 * @return the RefinementNode containing the best found solution of the refinement tree
+	 * @author sherif
+	 */
+	public RefinementNode learnComplexSpecs(){
 		refinementTreeRoot = createRefinementTreeRoot();
 		TreeX<RefinementNode> mostPromisingNode = null;
-		expand(refinementTreeRoot, null);
+		if(refinementTreeRoot == expand(refinementTreeRoot, null)){
+			logger.error("Learner can not learn any Specs! Stop here.");
+			refinementTreeRoot.print();
+			System.exit(1);
+		}
 		refinementTreeRoot.print();
 		do{
 			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
 			logger.info("Most Promising Node: " + mostPromisingNode.getValue());
 			mostPromisingNode.getValue().configModel.write(System.out,"TTL");
 			List<TreeX<RefinementNode>> oldChildren = mostPromisingNode.getchildren();
-			expand(mostPromisingNode, oldChildren);
+			if(mostPromisingNode == expand(mostPromisingNode, oldChildren)){
+				logger.error("Learner can not learn any more Specs! Stop here.");
+				break;
+			}
 			refinementTreeRoot.print();
 		}while(mostPromisingNode.equals(null) &&
 				(mostPromisingNode.getValue().fitness) < MAX_FITNESS_THRESHOLD	 &&
@@ -112,6 +124,10 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	@SuppressWarnings("unchecked")
 	private TreeX<RefinementNode> expand(TreeX<RefinementNode> root, List<TreeX<RefinementNode>> children) {
 		List<RefinementNode> leftRightNodesValues = getLeftRightNodesValues(root.getValue());
+		if(leftRightNodesValues.size() == 0){
+			logger.warn(root.getValue() + "is not expandable! exit");
+			return root;
+		}
 		if(leftRightNodesValues.size() == 1){
 			// generate only one branch
 			return new TreeX<RefinementNode>(root, leftRightNodesValues.get(0), children);
@@ -205,7 +221,12 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	}
 
 
-	public RefinementNode run(){
+	/**
+	 * Learn specification with only modules (enrichment functions)
+	 * @return the RefinementNode containing the best found solution of the refinement tree
+	 * @author sherif
+	 */
+	public RefinementNode learnSimpleSpecs(){
 		refinementTreeRoot = createRefinementTreeRoot();
 		refinementTreeRoot = expandNode(refinementTreeRoot);
 		TreeX<RefinementNode> mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
@@ -227,15 +248,6 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		}
 		logger.info("----------------------------------------------");
 		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, 0).getValue();
-		//		logger.info("Best Solution: " + bestSolution.toString());
-		//		System.out.println("===== Output Config =====");
-		//		bestSolution.configModel.write(System.out,"TTL");
-		//		System.out.println("===== Output Dataset =====");
-		//		bestSolution.outputModel.write(System.out,"TTL");
-		//		System.out.println("===== Output Config =====");
-		//		mostPromisingNode.getValue().configModel.write(System.out,"TTL");
-		//		System.out.println("===== Output Dataset =====");
-		//		mostPromisingNode.getValue().outputModel.write(System.out,"TTL");
 		bestSolution.configModel = setIOFiles(bestSolution.configModel, "inputFile.ttl", "outputFile.ttl"); 
 		return bestSolution;
 	}
@@ -357,6 +369,9 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	}
 
 	private TreeX<RefinementNode> getMostPromisingNode(TreeX<RefinementNode> root, double penaltyWeight){
+		if(root.equals(null)){
+			return null;
+		}
 		// trivial case
 		if(root.getchildren() == null || root.getchildren().size() == 0){
 			return root;
@@ -404,7 +419,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		sourceModel  = Reader.readModel(sourceUri);
 		targetModel = Reader.readModel(targetUri);
 		long start = System.currentTimeMillis();
-		learner.runComplex();
+		learner.learnComplexSpecs();
 		long end = System.currentTimeMillis();
 		logger.info("Done in " + (end - start) + "ms");
 	}
@@ -420,7 +435,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 			learner.sourceModel  = Reader.readModel(folder + "/input.ttl");
 			learner.targetModel  = Reader.readModel(folder + "/output.ttl");
 			long start = System.currentTimeMillis();
-			RefinementNode bestSolution = learner.run();
+			RefinementNode bestSolution = learner.learnSimpleSpecs();
 			long end = System.currentTimeMillis();
 			long time = end - start;
 			results += i + "\t" + time + "\t" + 

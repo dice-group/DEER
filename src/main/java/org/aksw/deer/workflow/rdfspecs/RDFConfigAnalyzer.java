@@ -123,4 +123,25 @@ public class RDFConfigAnalyzer {
 		
 	}
 
+	/**
+	 * @param configModel
+	 * @return The total number of  operators included in the configModel
+	 * @author sherif
+	 */
+	public static Set<Resource> getOperators(Model configModel) {
+		Set<Resource> result = new HashSet<Resource>();
+		String sparqlQueryString = 
+				"SELECT DISTINCT ?o {?o <" + RDF.type + "> <" + SPECS.Operator + "> . }";
+		QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
+		ResultSet queryResults = qexec.execSelect();
+		while(queryResults.hasNext()){
+			QuerySolution qs = queryResults.nextSolution();
+			Resource module = qs.getResource("?o");
+			result.add(module);
+		}
+		qexec.close() ;
+		return result;
+	}
+
 }

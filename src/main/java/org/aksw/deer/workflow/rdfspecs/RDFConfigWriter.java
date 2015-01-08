@@ -34,27 +34,7 @@ public class RDFConfigWriter{
 	private final static Logger logger 	= Logger.getLogger(RDFConfigWriter.class.getName());
 	private static long moduleNr 			= 1;
 	private static long parameterNr 		= 1;
-//	public static Model config = ModelFactory.createDefaultModel();
-	
-//	Model getConfModel(){
-//		return config;
-//	}
-	
-//	/**
-//	 * 
-//	 *@author sherif
-//	 */
-//	public RDFConfigWriter(Model config) {
-//		this.config = config;
-//	}
 
-//	/**
-//	 * 
-//	 *@author sherif
-//	 */
-//	public RDFConfigWriter() {
-//		// TODO Auto-generated constructor stub
-//	}
 
 	/**
 	 * @param module
@@ -242,13 +222,13 @@ public class RDFConfigWriter{
 	/**
 	 * @param config
 	 * @param moduleOrOperatorUri
-	 * @param newInputDatasetUri
+	 * @param outputDatasetUri
 	 * @return
 	 * @author sherif
 	 */
-	public static Model changeInputDatasetUri(Model config, Resource moduleOrOperatorUri, Resource oldInputDatasetUri, Resource newInputDatasetUri){
+	public static Model changeInputDatasetUri(Model config, Resource moduleOrOperatorUri, Resource oldInputDatasetUri, Resource outputDatasetUri){
 		config.removeAll(moduleOrOperatorUri, SPECS.hasInput, oldInputDatasetUri);
-		config.add(moduleOrOperatorUri, SPECS.hasInput, newInputDatasetUri);
+		config.add(moduleOrOperatorUri, SPECS.hasInput, outputDatasetUri);
 		return config;
 	}
 	

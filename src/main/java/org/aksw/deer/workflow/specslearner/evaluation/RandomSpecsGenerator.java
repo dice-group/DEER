@@ -3,14 +3,17 @@
  */
 package org.aksw.deer.workflow.specslearner.evaluation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aksw.deer.helper.datastructure.FMeasure;
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
+import org.aksw.deer.io.Writer;
 import org.aksw.deer.modules.DeerModule;
 import org.aksw.deer.modules.ModuleFactory;
 import org.aksw.deer.modules.Dereferencing.DereferencingModule;
@@ -22,7 +25,10 @@ import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
 import org.aksw.deer.operators.DeerOperator;
 import org.aksw.deer.operators.OperatorFactory;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
+import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigWriter;
+import org.aksw.deer.workflow.specslearner.RefinementNodeOld;
+import org.aksw.deer.workflow.specslearner.SimplePipeLineLearner;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.QueryExecution;
@@ -40,8 +46,8 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
  * @author sherif
  *
  */
-public class AutoSpecsGenerator {
-	private static final Logger logger = Logger.getLogger(AutoSpecsGenerator.class.getName());
+public class RandomSpecsGenerator {
+	private static final Logger logger = Logger.getLogger(RandomSpecsGenerator.class.getName());
 	private static int datasetIndex = 1;
 	public 	 static Model specsModel = ModelFactory.createDefaultModel();
 	private static List<DeerModule> deerModules = ModuleFactory.getImplementations();
@@ -55,7 +61,7 @@ public class AutoSpecsGenerator {
 	 * @return a random configuration file 
 	 * @author sherif
 	 */
-	public Model generateSpecs(String inputDataFile, int size, double complexity){	
+	public static Model generateSpecs(String inputDataFile, int size, double complexity){	
 		Model inputDataModel = Reader.readModel(inputDataFile);
 		Model specsModel = generateSpecs(inputDataModel, size, complexity);
 		Resource firstDataset = ResourceFactory.createResource(SPECS.uri + "dataset_1");
@@ -70,7 +76,7 @@ public class AutoSpecsGenerator {
 	 * @return a random configuration file with complexity 
 	 * @author sherif
 	 */
-	public Model generateSpecs(Model inputDataModel, int size, double complexity){	
+	public static Model generateSpecs(Model inputDataModel, int size, double complexity){	
 		Resource inputDatasetUri  = generateDatasetURI();
 		do{
 			Resource outputDatasetUri = generateDatasetURI();
@@ -99,10 +105,10 @@ public class AutoSpecsGenerator {
 				// in order not to create an empty clone merge sequence
 				inputDatasetUri = outputDatasetstUris.get(0);
 			}
-			System.out.println("---------------------------" +RDFConfigAnalyzer.getModules(specsModel).size());
 		}while(RDFConfigAnalyzer.getModules(specsModel).size() < size);
 		return specsModel;
 	}
+	
 
 	/**
 	 * @param specsModel2
@@ -123,7 +129,7 @@ public class AutoSpecsGenerator {
 	 * @author sherif
 	 * @return 
 	 */
-	private List<Resource> addCloneOperator(Resource inputDatasetUri) {
+	private static List<Resource> addCloneOperator(final Resource inputDatasetUri) {
 		DeerOperator clone = OperatorFactory.createOperator(OperatorFactory.CLONE_OPERATOR);
 		List<Model> confModels = new ArrayList<Model>(Arrays.asList(specsModel));
 		List<Resource> inputDatasets = new ArrayList<Resource>(Arrays.asList(inputDatasetUri));
@@ -137,7 +143,7 @@ public class AutoSpecsGenerator {
 	 * @author sherif
 	 * @return 
 	 */
-	private Resource addMergeOperator(List<Resource> inputDatasetUris, Resource outputDatasetUri) {
+	private static Resource addMergeOperator(final List<Resource> inputDatasetUris, final Resource outputDatasetUri) {
 		List<Resource> outputDatasetsUris = new ArrayList<Resource>(Arrays.asList(outputDatasetUri));
 		DeerOperator merge = OperatorFactory.createOperator(OperatorFactory.MERGE_OPERATOR);
 		List<Model> confModels = new ArrayList<Model>(Arrays.asList(specsModel));
@@ -150,7 +156,7 @@ public class AutoSpecsGenerator {
 	 * @return
 	 * @author sherif
 	 */
-	private Map<String, String> generateRandomParameters(DeerModule module, Model inputDataset) {
+	private static Map<String, String> generateRandomParameters(final DeerModule module, final Model inputDataset) {
 		if(module instanceof DereferencingModule){
 			return DereferencingModuleRandomParameter(inputDataset);
 		}else if(module instanceof NLPModule){
@@ -172,7 +178,7 @@ public class AutoSpecsGenerator {
 	 * @return
 	 * @author sherif
 	 */
-	private Map<String, String> filterModuleRandomParameter(Model inputDataset) {
+	private static Map<String, String> filterModuleRandomParameter(final Model inputDataset) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		int l = (int) (1 + Math.random() * 5);
 		List<String> predicates = getPredicates(inputDataset, l);
@@ -192,7 +198,7 @@ public class AutoSpecsGenerator {
 	 * @author sherif
 	 * @param inputDataset 
 	 */
-	private Map<String, String> predicateConformationModuleRandomParameter(Model inputDataset) {
+	private static Map<String, String> predicateConformationModuleRandomParameter(final Model inputDataset) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		int l = (int) (1 + Math.random() * 5);
 		List<String> predicates = getPredicates(inputDataset, l);
@@ -213,7 +219,7 @@ public class AutoSpecsGenerator {
 	 * @return List of predicates in inputDataset
 	 * @author sherif
 	 */
-	public List<String> getPredicates(Model inputDataset, int limit){
+	public static List<String> getPredicates(final Model inputDataset, int limit){
 		String sparqlQueryString= "SELECT DISTINCT ?p {?s ?p ?o} " +
 				((limit == -1) ? "" : "LIMIT " + limit);
 		QueryFactory.create(sparqlQueryString);
@@ -233,7 +239,7 @@ public class AutoSpecsGenerator {
 	 * @author sherif
 	 * @param inputDataset 
 	 */
-	private Map<String, String> authorityConformationModuleRandomParameter(Model inputDataset) {
+	private static Map<String, String> authorityConformationModuleRandomParameter(final Model inputDataset) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		String authority = "";
 		long offset = (long) (Math.random() * (inputDataset.size() -1));
@@ -264,7 +270,7 @@ public class AutoSpecsGenerator {
 	 * @author sherif
 	 * @param inputDataset 
 	 */
-	private static Map<String, String> linkingModuleRandomParameter(Model inputDataset) {
+	private static Map<String, String> linkingModuleRandomParameter(final Model inputDataset) {
 		return null;
 	}
 
@@ -273,7 +279,7 @@ public class AutoSpecsGenerator {
 	 * @author sherif
 	 * @param inputDataset 
 	 */
-	private Map<String, String> nlpModuleRandomParameter() {
+	private static Map<String, String> nlpModuleRandomParameter() {
 		Map<String, String> parameters = new HashMap<String, String>();
 		double r = Math.random();
 		if(r > 0.75){
@@ -293,7 +299,7 @@ public class AutoSpecsGenerator {
 	 * @return
 	 * @author sherif
 	 */
-	private Map<String, String> DereferencingModuleRandomParameter(Model inputDataset) {
+	private static Map<String, String> DereferencingModuleRandomParameter(final Model inputDataset) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		int l = (int) (1 + Math.random() * 5);
 		List<String> predicates = getPredicates(inputDataset, l);
@@ -333,7 +339,7 @@ public class AutoSpecsGenerator {
 	 * @author sherif
 	 */
 	public static void main(String[] args) {
-		AutoSpecsGenerator g = new AutoSpecsGenerator();
+		RandomSpecsGenerator g = new RandomSpecsGenerator();
 		Model kb = Reader.readModel(args[0]);
 //		Model m = g.generateSpecs(kb, 5, 0.5);
 		Model m = g.generateSpecs(args[0], 3, 0.5);

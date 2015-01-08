@@ -63,6 +63,8 @@ public class SimplePipelineLearnerEvaluation {
 					"P" + "\t" +
 					"R" + "\t" +
 					"F\n";
+	
+
 
 	public static RefinementNodeOld run(String args[], boolean isBatch, int max) throws IOException{
 		String folder = args[0];
@@ -104,29 +106,10 @@ public class SimplePipelineLearnerEvaluation {
 		RDFConfigExecuter configExe = new RDFConfigExecuter();
 		Model manualKB = configExe.execute(manualConfig).iterator().next();
 		Model selfConfigKB = configExe.execute(selfConfig).iterator().next();
-		return getFMeasure(selfConfigKB, manualKB);
+		return FMeasure.computePRF(selfConfigKB, manualKB);
 	}
 
-	static FMeasure getFMeasure(Model current, Model target){
-		double p = computePrecision(current, target);
-		double r = computeRecall(current, target);
-		double f = 2 * p * r / (p + r);
-		return new FMeasure(p, r, f);
-	}
 
-	static double computeFMeasure(Model current, Model target){
-		double p = computePrecision(current, target);
-		double r = computeRecall(current, target);
-		return 2 * p * r / (p + r);
-	}
-
-	static double computePrecision (Model current, Model target){
-		return (double) current.intersection(target).size() / (double) current.size();
-	}
-
-	static double computeRecall(Model current, Model target){
-		return (double) current.intersection(target).size() / (double) target.size();
-	}
 
 	public List<Resource> getNResources(String authority, Model kb, int n){
 		List<Resource> results = new ArrayList<Resource>();
@@ -143,7 +126,7 @@ public class SimplePipelineLearnerEvaluation {
 		return results;
 	}
 
-	public List<Resource> getAllResources(String authority, Model kb){
+	public static List<Resource> getAllResources(String authority, final Model kb){
 		List<Resource> results = new ArrayList<Resource>();
 		String sparqlQueryString = 
 				"SELECT DISTINCT ?s { ?s ?p ?o. FILTER (STRSTARTS(STR(?s), \'" + authority + "\')) }";
@@ -158,7 +141,7 @@ public class SimplePipelineLearnerEvaluation {
 		return results;
 	}
 
-	public Model getCBD(Resource r, Model m){
+	public static Model getCBD(Resource r, Model m){
 		logger.info("Generating CBD of Resource " + r);
 		String sparqlQueryString = 
 				"DESCRIBE <" + r + ">";
@@ -267,7 +250,7 @@ public class SimplePipelineLearnerEvaluation {
 		System.out.println("+++++++++++++++++++");
 		System.out.println("selfConfigEnrichedKB:" +selfConfigEnrichedKB.size());
 		System.out.println("manuallyEnrichedKB:" + manuallyEnrichedKB.size());
-		FMeasure fMeasure = getFMeasure(selfConfigEnrichedKB, manuallyEnrichedKB);
+		FMeasure fMeasure = FMeasure.computePRF(selfConfigEnrichedKB, manuallyEnrichedKB);
 
 		// add results
 		//			"ExampleCount" + "\t" +
@@ -302,7 +285,7 @@ public class SimplePipelineLearnerEvaluation {
 	}
 
 
-	public static Model changeInputDataset(Model configModel, String oldLocation, String newLocation){
+	public static Model changeInputDataset(final Model configModel, String oldLocation, String newLocation){
 		Model result = ModelFactory.createDefaultModel();
 		result = result.union(configModel);
 		StmtIterator list = result.listStatements(null, SPECS.inputFile, oldLocation);
@@ -322,7 +305,7 @@ public class SimplePipelineLearnerEvaluation {
 		return result;
 	}
 
-	public static Model changeOutputDataset(Model configModel, String oldLocation, String newLocation){
+	public static Model changeOutputDataset(final Model configModel, String oldLocation, String newLocation){
 		Model result = ModelFactory.createDefaultModel();
 		result = result.union(configModel);
 		StmtIterator list = result.listStatements(null, SPECS.outputFile, oldLocation);
@@ -342,22 +325,6 @@ public class SimplePipelineLearnerEvaluation {
 		return result;
 	}
 
-//	String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/";
-//	String kbFile = folder +"1000_resources_cbds.ttl";
-//	String kbSampleFile = folder +"100_resources_cbd.ttl";
-//	for(int i = 1 ; i <= 2 ; i++){
-//		Evaluation e = new Evaluation();
-//		String manualConfigFile = folder + "m" + i +".ttl";
-//		String authority = "http://dbpedia.org/resource/_Berlin";
-	
-//	String resultStr = new String();
-//	String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/pipeline_learner/drugbank/";
-//	String kbFile = folder +"drugbank_dump.ttl";
-//	String kbSampleFile = "";
-//	for(int i = 2 ; i <= 2 ; i++){
-//		Evaluation e = new Evaluation();
-//		String manualConfigFile = folder + "m" + i +".ttl";
-//		String authority = "http://wifo5-03.informatik.uni-mannheim.de/drugbank/page/drugs/DB00001";
 
 	public static void main(String args[]) throws IOException{
 		String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/";
