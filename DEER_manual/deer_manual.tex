@@ -360,6 +360,8 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     \midrule
     \texttt{outputProperty<n>} 	& The enriched output property. By default this parameter is set to \url{http://geoknow.org/ontology/relatedTo}\\
     \midrule
+    \texttt{resourcePrefix} 	& Resource prefix used for dereferencing resources, by default is set to \url{http://dbpedia.org/resource}\\
+    \midrule
     \texttt{useBlankNodes}		& Use blank node in output dataset. By default, this parameter is set to \texttt{false}.\\
     \bottomrule
     % \end{tabular}
@@ -493,7 +495,9 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     % \midrule
     \texttt{literalProperty}	& Literal property used by FOX for NER. If not set, the top ranked literal property will be pecked automatically by \texttt{LiteralPropertyRanker} sub-module, which ranks the  lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.\\
     \midrule
-    \texttt{addedGeoProperty}& property added to the input model with additional knowledge through NLP. By default, this parameter is set to \emph{gn:relatedTo\footnotemark[11]}\\
+    \texttt{addedProperty} & property added to the input model with additional knowledge through NLP. By default, this parameter is set to \texttt{gn:relatedTo\footnotemark[11]}\\
+    \midrule
+    \texttt{DbpediaEndPoint} & DBpedia SPARQL end point used by the NLP module. By default, this parameter is set to \texttt{http://dbpedia.org/sparql}\\
     \midrule
     \texttt{useFoxLight} 	& An implemented NER class name, either: 
 			      \begin{itemize}

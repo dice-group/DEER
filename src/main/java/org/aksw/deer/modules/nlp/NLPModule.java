@@ -58,6 +58,8 @@ import org.apache.log4j.Logger;
 public class NLPModule implements DeerModule{
 	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
 
+	private static String dbpediaEndPoint = "http://dbpedia.org/sparql";
+	
 	public static final String ORGANIZATION 	= "organization";
 	public static final String LOCATION 		= "location";
 	public static final String PERSON 		= "person";
@@ -93,11 +95,12 @@ public class NLPModule implements DeerModule{
 			LOCATION + "," + ORGANIZATION + "," + PERSON + "," + ALL;
 
 	public static final String ASK_END_POINT 	= "askEndPoint";
-	public static final String ADDED_PROPERTY 	= "addedProperty";
-	public static final String NER_TYPE 			= "NERType";
+	public static final String ADDED_PROPERTY	= "addedProperty";
+	public static final String NER_TYPE 		= "NERType";
 	public static final String USE_FOX_LIGHT 	= "useFoxLight";
 	public static final String LITERAL_PROPERTY 	= "literalProperty";
-	public static final String FOX_API_URL 		= "http://139.18.2.164:4444/api";
+	public static final String FOX_API_URL		= "http://139.18.2.164:4444/api";
+	public static final String DBPEDIA_END_POINT = "dbpediaendpoint";
 	private Model model;
 
 	// parameters list
@@ -212,41 +215,6 @@ public class NLPModule implements DeerModule{
 		return outputString;
 	}
 
-
-	private String getNamedEntity_old_FOX(String type, String task, String output, String text){
-		String buffer = "", line; 
-		boolean error = true;
-		while (error) {
-			try {
-				text=refineString(text);
-				// Construct data
-				String data = URLEncoder.encode("type",	 	"UTF-8") 	+ "=" + URLEncoder.encode(type, 	"UTF-8");
-				data += "&" + URLEncoder.encode("task",		"UTF-8") 	+ "=" + URLEncoder.encode(task,	 	"UTF-8");
-				data += "&" + URLEncoder.encode("output", 	"UTF-8") 	+ "=" + URLEncoder.encode(output, 	"UTF-8");
-				data += "&" + URLEncoder.encode("text", 	"UTF-8") 	+ "=" + URLEncoder.encode(text, 	"UTF-8");
-				// Send data
-				URL url = new URL(FOX_API_URL);
-				URLConnection conn = url.openConnection();
-				conn.setDoOutput(true);
-				OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-				wr.write(data);
-				wr.flush();
-
-				// Get the response
-				BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-				while ((line = rd.readLine()) != null) {
-					buffer = buffer + line + "\n";
-				}
-				wr.close();
-				rd.close();
-				error = false;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return buffer;
-	}
 
 	/**
 	 * @param type: text or an url (e.g.: `G. W. Leibniz was born in Leipzig`, `http://en.wikipedia.org/wiki/Leipzig_University`)
@@ -407,7 +375,7 @@ public class NLPModule implements DeerModule{
 				"?s a <http://dbpedia.org/ontology/Place>." +
 				"?s <http://dbpedia.org/ontology/abstract> ?o } LIMIT " + limit.toString();
 		Query query = QueryFactory.create(queryString);
-		QueryExecution qexec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(dbpediaEndPoint, query);
 		ResultSet queryResults = qexec.execSelect();  
 		while(queryResults.hasNext()){
 			QuerySolution qs=queryResults.nextSolution();
@@ -431,11 +399,16 @@ public class NLPModule implements DeerModule{
 			Statement st = stItr.nextStatement();
 			RDFNode object = st.getObject();
 			RDFNode subject = st.getSubject();
-			if(object.isLiteral()){
-				IFoxApi fox = new FoxApi();
-				FoxResponse foxRes = fox.setInput(object.toString()).setOutputFormat(OUTPUT.TURTLE).send();
-				namedEntityModel.read(new StringReader(foxRes.getOutput().trim()), null, "TTL");
-		
+			try{
+				if(object.isLiteral()){
+					IFoxApi fox = new FoxApi();
+					FoxResponse foxRes = fox.setInput(object.toString()).setOutputFormat(OUTPUT.TURTLE).send();
+					namedEntityModel.read(new StringReader(foxRes.getOutput().trim()), null, "TTL");
+
+				}
+			}catch (Exception e) {
+				logger.error(e);
+				logger.error(object.toString());
 			}
 			//				if(!object.asLiteral().toString().contains("^^")){ //-------------
 			//					Model namedEntityModel = ModelFactory.createDefaultModel();
@@ -512,6 +485,8 @@ public class NLPModule implements DeerModule{
 		//			foxReturnHtml = parameters.get("extractAllNE").toLowerCase().equals("true")? true : false;
 		if( parameters.containsKey(NER_TYPE))
 			NEType = parameters.get(NER_TYPE).toLowerCase();
+		if( parameters.containsKey(DBPEDIA_END_POINT))
+			dbpediaEndPoint = parameters.get(DBPEDIA_END_POINT).toLowerCase();
 
 		Model enrichedModel = getEnrichrdTriples();
 		enrichedModel.add(inputModel);
@@ -667,8 +642,8 @@ public class NLPModule implements DeerModule{
 		parameters.add(new ParameterType(ParameterType.STRING, NER_TYPE, NER_TYPE_VALUES, NER_TYPE_DESC, false));
 		return parameters;
 	}
-	
-    @Override
+
+	@Override
 	public Resource getType(){
 		return SPECS.NLPModule;
 	}

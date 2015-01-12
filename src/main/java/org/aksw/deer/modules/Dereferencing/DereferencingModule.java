@@ -55,10 +55,12 @@ public class DereferencingModule implements DeerModule{
 	public static final String INPUT_PROPERTY  = "inputproperty";
 	public static final String OUTPUT_PROPERTY = "outputproperty";
 	public static final String USE_BLANK_NODES = "useBlankNodes";
+	public static final String RESOURCE_PREFIX = "dbpediaresource";
 
 	public static final String INPUT_PROPERTY_DESC = "Interesting predicate to enrich the model, e.g. 'predicate1'";
 	public static final String OUTPUT_PROPERTY_DESC = "The output property. By default this parameter is set to " + defaultOutputProperty;
 	public static final String USE_BLANK_NODES_DESC = "Use blank node in output dataset. By default, this parameter is set to false";
+	public static final String RESOURCE_PREFIX_Desc = "Resource prefix used for dereferencing resources, by default is set to http://dbpedia.org/resource";
 	
 	//list of parameters passed to the module
 	List<String> parametersList= new ArrayList<String>();
@@ -68,6 +70,7 @@ public class DereferencingModule implements DeerModule{
 	public static List<Property> inputProperties = new ArrayList<Property>();
 	public static List<Property> outputProperties = new ArrayList<Property>();
 	private static Model localModel = ModelFactory.createDefaultModel();
+	public static String resourcePrefix = "http://dbpedia.org/resource";
 
 	/**
 	 * @param parameters
@@ -75,14 +78,17 @@ public class DereferencingModule implements DeerModule{
 	 */
 	private void readParameters(Map<String, String> parameters) {
 		for(String key : parameters.keySet()){
-			if(key.toLowerCase().equals("useblanknodes")){
+			if(key.equalsIgnoreCase("useblanknodes")){
 				useBlankNodes = Boolean.parseBoolean(parameters.get(key));
-			}if(key.toLowerCase().equals("usecache")){
+			}
+			if(key.equalsIgnoreCase("usecache")){
 				useCache = Boolean.parseBoolean(parameters.get(key));
 			}else if(key.toLowerCase().startsWith(INPUT_PROPERTY)){
 				inputProperties.add(ResourceFactory.createProperty(parameters.get(key)));
 			}else if(key.toLowerCase().startsWith(OUTPUT_PROPERTY)){
 				outputProperties.add(ResourceFactory.createProperty(parameters.get(key)));
+			}else if(key.equalsIgnoreCase(RESOURCE_PREFIX)){
+				resourcePrefix = parameters.get(key).toString();
 			}else{
 				logger.error("Invalid parameter key: " + key + ", allowed parameters for the dereferencing module are: " + getParameters());
 				logger.error("Exit GeoLift");
@@ -154,7 +160,7 @@ public class DereferencingModule implements DeerModule{
 		}
 		Set<Property> diffProperties = new HashSet<Property>();
 		Sets.difference(tProperties, sProperties).copyInto(diffProperties);
-		diffProperties = removeUnwantedProperties(diffProperties);
+		diffProperties = removeUnwantedProperties(diffProperties);http://dbpedia.org/resource
 		//		logger.info("Self configured Properties:" + diffProperties);
 		return diffProperties;
 	}
@@ -642,9 +648,9 @@ public class DereferencingModule implements DeerModule{
 		//			}
 
 		//		}
-
 		//create a query to retrieve URIs objects
-		String queryString =  "SELECT * WHERE { ?s ?p ?o . FILTER (isURI(?o)) . FILTER (STRSTARTS(STR(?o), \"http://dbpedia.org/resource\"))}";
+		String queryString =  "SELECT * WHERE { ?s ?p ?o . FILTER (isURI(?o)) . " +
+				"FILTER (STRSTARTS(STR(?o), \"" + resourcePrefix + "\"))}";
 		Query query = QueryFactory.create(queryString);
 		QueryExecution exec = QueryExecutionFactory.create(query, localModel);
 		ResultSet rs = exec.execSelect();

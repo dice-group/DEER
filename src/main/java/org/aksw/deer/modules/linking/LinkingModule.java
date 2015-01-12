@@ -55,11 +55,11 @@ public class LinkingModule implements DeerModule{
 //		String datasetSource = parameters.get("datasetSource"); 
 		
 		for(String key : parameters.keySet()){
-			if(key.toLowerCase().equals(SPEC_FILE)){
+			if(key.equalsIgnoreCase(SPEC_FILE)){
 				specFilePath = parameters.get(SPEC_FILE);
-			}if(key.toLowerCase().equals(LINKS_FILE)){
+			}else if(key.equalsIgnoreCase(LINKS_FILE)){
 				linksFilePath = parameters.get(LINKS_FILE);
-			}else if(key.toLowerCase().startsWith(LINKS_PART)){
+			}else if(key.equalsIgnoreCase(LINKS_PART)){
 				linksPart = parameters.get(LINKS_PART);
 			}else{
 				logger.error("Invalid parameter key: " + key + ", allowed parameters for the linking module are: " + getParameters());

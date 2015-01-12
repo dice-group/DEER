@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.11.8)  17 DEC 2014 15:34
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.11.8)  12 JAN 2015 11:53
 entering extended mode
  %&-line parsing enabled.
 **deer_manual.tex
@@ -916,60 +916,57 @@ is pos-si-ble by im-ple-ment-ing the \OT1/cmtt/m/n/12 GeoLiftModule\OT1/cmr/m/n
 /12 . 
  []
 
-[12] [13] [14] [15] [16] [17]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+[12] [13] [14] [15] [16] [17] [18] [19] [20]
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 714.
 
- [18]
-[19] [20]
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 710.
 
- (/usr/share/texmf-texlive/tex/latex/base/omlcmr.fd
+(/usr/share/texmf-texlive/tex/latex/base/omlcmr.fd
 File: omlcmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <8> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 710.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 714.
 
 
-LaTeX Warning: Float too large for page by 28.52063pt on input line 771.
+LaTeX Warning: Float too large for page by 28.52063pt on input line 775.
 
 
-Overfull \hbox (28.28009pt too wide) in paragraph at lines 775--779
+Overfull \hbox (28.28009pt too wide) in paragraph at lines 779--783
 \OT1/cmtt/m/n/12 org / resource / Berlin$ \OT1/cmr/m/n/12 and end-point $\OT1/c
 mtt/m/n/12 http : / / dbpedia . org / sparql$\OT1/cmr/m/n/12 . \OT1/cmr/m/sc/12
  DEER
  []
 
-
-Overfull \hbox (3.05249pt too wide) in paragraph at lines 797--798
+[21] [22]
+Overfull \hbox (3.05249pt too wide) in paragraph at lines 801--802
 []\OT1/cmtt/m/n/12 :hasInput \OT1/cmr/m/n/12 set-ting in-put datasets for the m
 od-ule \OT1/cmr/m/it/12 (e.g. list-ing 7[] (line
  []
 
 
-Overfull \hbox (16.40797pt too wide) in paragraph at lines 798--799
+Overfull \hbox (16.40797pt too wide) in paragraph at lines 802--803
 []\OT1/cmtt/m/n/12 :hasOutput \OT1/cmr/m/n/12 set-ting out-put datasets for the
  mod-ule \OT1/cmr/m/it/12 (e.g. list-ing 7[] (line
  []
 
-[21] [22]
-Overfull \hbox (3.50772pt too wide) in paragraph at lines 802--805
+
+Overfull \hbox (3.50772pt too wide) in paragraph at lines 806--809
 []\OT1/cmr/bx/sc/12 Operator Re-source \OT1/cmr/m/n/12 Be-side defin-ing a re-s
 ource as an op-er-a-tor \OT1/cmr/m/it/12 (e.g. list-
  []
 
 
-Overfull \hbox (8.92743pt too wide) in paragraph at lines 807--808
+Overfull \hbox (8.92743pt too wide) in paragraph at lines 811--812
 []\OT1/cmtt/m/n/12 :hasInput \OT1/cmr/m/n/12 set-ting in-put datasets for the o
 p-er-a-tor \OT1/cmr/m/it/12 (e.g. list-ing 7[] (line
  []
 
 
-Overfull \hbox (13.84799pt too wide) in paragraph at lines 812--815
+Overfull \hbox (13.84799pt too wide) in paragraph at lines 816--819
 []\OT1/cmr/bx/sc/12 Parameter Re-source \OT1/cmr/m/n/12 Be-side defin-ing a re-
 source as a pa-ram-e-ter \OT1/cmr/m/it/12 (e.g. list-
  []
 
-[23] [24] (./deer_manual.bbl
+[23] (./deer_manual.bbl
 
 ! Package inputenc Error: Keyboard character used is undefined
 (inputenc)                in inputencoding `utf8'.
@@ -983,7 +980,7 @@ l.26 Axel-Cyrille {Ngonga Ngomo} and Sö
 You need to provide a definition with \DeclareInputText 
 or \DeclareInputMath before using this key.
 
-[25]) [26] (./deer_manual.aux)
+[24] [25]) [26] (./deer_manual.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -1012,7 +1009,7 @@ usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/t
 exmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texliv
 e/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-texlive/fonts/typ
 e1/public/amsfonts/cm/cmtt12.pfb>
-Output written on deer_manual.pdf (26 pages, 1176754 bytes).
+Output written on deer_manual.pdf (26 pages, 1175745 bytes).
 PDF statistics:
  272 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
