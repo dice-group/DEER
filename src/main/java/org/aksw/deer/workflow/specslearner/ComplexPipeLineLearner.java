@@ -86,10 +86,14 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		if(refinementTreeRoot == expand(refinementTreeRoot, null)){
 			logger.error("Learner can not learn any Specs! Stop here.");
 			refinementTreeRoot.print();
-			System.exit(1);
+			return null;
 		}
 		refinementTreeRoot.print();
-		do{
+		mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
+		while(mostPromisingNode.equals(null) &&
+			  (mostPromisingNode.getValue().fitness) < MAX_FITNESS_THRESHOLD &&
+			   refinementTreeRoot.size() <= MAX_TREE_SIZE)
+		{
 			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
 			logger.info("Most Promising Node: " + mostPromisingNode.getValue());
 			mostPromisingNode.getValue().configModel.write(System.out,"TTL");
@@ -99,9 +103,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 				break;
 			}
 			refinementTreeRoot.print();
-		}while(mostPromisingNode.equals(null) &&
-				(mostPromisingNode.getValue().fitness) < MAX_FITNESS_THRESHOLD	 &&
-				refinementTreeRoot.size() <= MAX_TREE_SIZE) ;
+		}
 
 		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, 0).getValue();
 		bestSolution.configModel = setIOFiles(bestSolution.configModel, "inputFile.ttl", "outputFile.ttl");

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.aksw.deer.helper.datastructure.FMeasure;
@@ -126,7 +127,7 @@ public class SimplePipelineLearnerEvaluation {
 		return results;
 	}
 
-	public static List<Resource> getAllResources(String authority, final Model kb){
+	public static List<Resource> getAllResourcesWithAuthority(String authority, final Model kb){
 		List<Resource> results = new ArrayList<Resource>();
 		String sparqlQueryString = 
 				"SELECT DISTINCT ?s { ?s ?p ?o. FILTER (STRSTARTS(STR(?s), \'" + authority + "\')) }";
@@ -157,7 +158,7 @@ public class SimplePipelineLearnerEvaluation {
 		Model kb = Reader.readModel(kbFile);
 		Model manualConfig = Reader.readModel(manualConfigFile);
 		//		List<Resource> resources = getNResources(authority, kb, exampleCount);
-		List<Resource> resources = getAllResources(authority, kb);
+		List<Resource> resources = getAllResourcesWithAuthority(authority, kb);
 		Model cbd = ModelFactory.createDefaultModel();
 		String cbdOutputFile = new String(), cbdMOutputFile = new String(), kbMOutputFile = new String();
 		Model manuallyEnrichedCBD = ModelFactory.createDefaultModel();
@@ -174,10 +175,10 @@ public class SimplePipelineLearnerEvaluation {
 			Writer.writeModel(cbd, "TTL", cbdOutputFile);
 
 			// (2) Generate a manual-config file to the generated CBD in(1) and save it
-			cbdManualConfig = changeInputDataset(manualConfig, kbFile , cbdOutputFile);
+			cbdManualConfig = changeInputFile(manualConfig, kbFile , cbdOutputFile);
 			cbdMOutputFile = folder + "cbd" + exampleCount + "m.ttl";
 			kbMOutputFile = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_manual_enrichmed.ttl";
-			cbdManualConfig = changeOutputDataset(cbdManualConfig, kbMOutputFile , cbdMOutputFile);
+			cbdManualConfig = changeOutputFile(cbdManualConfig, kbMOutputFile , cbdMOutputFile);
 			cbdManualConfig.setNsPrefixes(manualConfig);
 			String cbdManualConfigOutputFile =  folder + "m_config" + exampleCount +".ttl";
 			Writer.writeModel(cbdManualConfig, "TTL", cbdManualConfigOutputFile);
@@ -208,11 +209,11 @@ public class SimplePipelineLearnerEvaluation {
 		// I. Generate KBManualConfig and save it
 		Model KBManualConfig = ModelFactory.createDefaultModel();
 		if(!kbSampleFile.isEmpty()){
-			KBManualConfig = changeInputDataset(cbdManualConfig, cbdOutputFile, kbFile);
+			KBManualConfig = changeInputFile(cbdManualConfig, cbdOutputFile, kbFile);
 		}else{
-			KBManualConfig = changeInputDataset(cbdManualConfig, cbdOutputFile, kbSampleFile);
+			KBManualConfig = changeInputFile(cbdManualConfig, cbdOutputFile, kbSampleFile);
 		}
-		KBManualConfig = changeOutputDataset(KBManualConfig, cbdMOutputFile , kbMOutputFile);
+		KBManualConfig = changeOutputFile(KBManualConfig, cbdMOutputFile , kbMOutputFile);
 		KBManualConfig.setNsPrefixes(manualConfig);
 		String KBManualConfigOutputFile =  folder + "kb_m_config" + exampleCount + ".ttl";
 		Writer.writeModel(KBManualConfig, "TTL", KBManualConfigOutputFile);
@@ -228,13 +229,13 @@ public class SimplePipelineLearnerEvaluation {
 		String inputFile = "inputFile.ttl";
 		Model KBSelfConfig = ModelFactory.createDefaultModel();
 		if(!kbSampleFile.isEmpty()){
-			KBSelfConfig = changeInputDataset(cbdSelfConfig, inputFile, kbFile);
+			KBSelfConfig = changeInputFile(cbdSelfConfig, inputFile, kbFile);
 		}else{
-			KBSelfConfig = changeInputDataset(cbdSelfConfig, inputFile, kbSampleFile);
+			KBSelfConfig = changeInputFile(cbdSelfConfig, inputFile, kbSampleFile);
 		}
 		String outputFile = "outputFile.ttl";
 		String kbSOutputFile = kbFile.substring(0,kbFile.lastIndexOf(".")) + "_self_enrichmed.ttl";
-		KBSelfConfig = changeOutputDataset(KBSelfConfig, outputFile , kbSOutputFile);
+		KBSelfConfig = changeOutputFile(KBSelfConfig, outputFile , kbSOutputFile);
 		KBSelfConfig.setNsPrefixes(manualConfig);
 		String KBSelfConfigOutputFile =  folder + "kb_s_config" + exampleCount + ".ttl";
 		Writer.writeModel(KBSelfConfig, "TTL", KBSelfConfigOutputFile);
@@ -285,43 +286,43 @@ public class SimplePipelineLearnerEvaluation {
 	}
 
 
-	public static Model changeInputDataset(final Model configModel, String oldLocation, String newLocation){
+	public static Model changeInputFile(final Model configModel, String oldLocation, String newLocation){
 		Model result = ModelFactory.createDefaultModel();
 		result = result.union(configModel);
 		StmtIterator list = result.listStatements(null, SPECS.inputFile, oldLocation);
-		Model remove = ModelFactory.createDefaultModel();
+		Model removeModel = ModelFactory.createDefaultModel();
 		while(list.hasNext()){
 			Statement s = list.next();
-			remove.add(s);
+			removeModel.add(s);
 		}
-		result = result.remove(remove);
-		Model add = ModelFactory.createDefaultModel();
-		list = remove.listStatements();
+		result = result.remove(removeModel);
+		Model addModel = ModelFactory.createDefaultModel();
+		list = removeModel.listStatements();
 		while(list.hasNext()){
 			Statement s = list.next();
-			add.add(s.getSubject(), s.getPredicate(), newLocation);
+			addModel.add(s.getSubject(), s.getPredicate(), newLocation);
 		}
-		result.add(add);
+		result.add(addModel);
 		return result;
 	}
 
-	public static Model changeOutputDataset(final Model configModel, String oldLocation, String newLocation){
+	public static Model changeOutputFile(final Model configModel, String oldLocation, String newLocation){
 		Model result = ModelFactory.createDefaultModel();
 		result = result.union(configModel);
 		StmtIterator list = result.listStatements(null, SPECS.outputFile, oldLocation);
-		Model remove = ModelFactory.createDefaultModel();
+		Model removeModel = ModelFactory.createDefaultModel();
 		while(list.hasNext()){
 			Statement s = list.next();
-			remove.add(s);
+			removeModel.add(s);
 		}
-		result = result.remove(remove);
-		Model add = ModelFactory.createDefaultModel();
-		list = remove.listStatements();
+		result = result.remove(removeModel);
+		Model addModel = ModelFactory.createDefaultModel();
+		list = removeModel.listStatements();
 		while(list.hasNext()){
 			Statement s = list.next();
-			add.add(s.getSubject(), s.getPredicate(), newLocation);
+			addModel.add(s.getSubject(), s.getPredicate(), newLocation);
 		}
-		result.add(add);
+		result.add(addModel);
 		return result;
 	}
 
@@ -359,6 +360,7 @@ public class SimplePipelineLearnerEvaluation {
 		return kbSample;
 
 	}
+	
 
 
 }

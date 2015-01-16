@@ -310,7 +310,7 @@ public class RDFConfigExecuter {
 	 * 			of some operators/models and not as input to any operator/model
 	 * @author sherif
 	 */
-	private static List<Resource> getFinalDatasets(){
+	public static List<Resource> getFinalDatasets(){
 		List<Resource> result = new ArrayList<Resource>();
 		String sparqlQueryString = 
 				"SELECT DISTINCT ?d {?s1 <" + SPECS.hasOutput + "> ?d. " +
@@ -336,6 +336,7 @@ public class RDFConfigExecuter {
 		String s = "<" + moduleOrOperator + ">";
 		String sparqlQueryString = 
 				"SELECT DISTINCT ?d {"+ s + " <" + SPECS.hasInput + "> ?d. }";
+		System.out.println("sparqlQueryString: " + sparqlQueryString);
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 		ResultSet queryResults = qexec.execSelect();

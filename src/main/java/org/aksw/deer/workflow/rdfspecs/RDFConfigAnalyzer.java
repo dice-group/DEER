@@ -144,4 +144,25 @@ public class RDFConfigAnalyzer {
 		return result;
 	}
 
+	/**
+	 * @return
+	 * @author sherif
+	 */
+	public static List<Resource> getFinalDatasets(Model configModel) {
+		List<Resource> result = new ArrayList<Resource>();
+		String sparqlQueryString = 
+				"SELECT DISTINCT ?d {?s1 <" + SPECS.hasOutput + "> ?d. " +
+						"FILTER (NOT EXISTS {?s2 <" + SPECS.hasInput + "> ?d . } )}";
+		QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
+		ResultSet queryResults = qexec.execSelect();
+		while(queryResults.hasNext()){
+			QuerySolution qs = queryResults.nextSolution();
+			Resource dataset = qs.getResource("?d");
+			result.add(dataset);
+		}
+		qexec.close() ;
+		return result;
+	}
+
 }

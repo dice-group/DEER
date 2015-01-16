@@ -56,6 +56,21 @@ public class RandomSpecsGenerator {
 
 	/**
 	 * @param inputDataFile
+	 * @param outputDataFile
+	 * @param size (number of modules included in the resulted configuration)
+	 * @param complexity [0,1], 0 means only modules, 1 means only operators 
+	 * @return a random configuration file 
+	 * @author sherif
+	 */
+	public static Model generateSpecs(String inputDataFile, String outputDataFile, int size, double complexity){	
+		Model specsModel = generateSpecs(inputDataFile, size, complexity);
+		Resource finalDataset = RDFConfigAnalyzer.getFinalDatasets(specsModel).get(0);
+		specsModel.add(finalDataset, SPECS.outputFile, outputDataFile);
+		return specsModel;	
+	}
+	
+	/**
+	 * @param inputDataFile
 	 * @param size (number of modules included in the resulted configuration)
 	 * @param complexity [0,1], 0 means only modules, 1 means only operators 
 	 * @return a random configuration file 
@@ -76,7 +91,9 @@ public class RandomSpecsGenerator {
 	 * @return a random configuration file with complexity 
 	 * @author sherif
 	 */
-	public static Model generateSpecs(Model inputDataModel, int size, double complexity){	
+	public static Model generateSpecs(Model inputDataModel, int size, double complexity){
+		datasetIndex = 1;
+		specsModel = ModelFactory.createDefaultModel();
 		Resource inputDatasetUri  = generateDatasetURI();
 		do{
 			Resource outputDatasetUri = generateDatasetURI();
@@ -95,13 +112,13 @@ public class RandomSpecsGenerator {
 				logger.info("With parameters: " + parameters);
 				if(parameters != null){
 					specsModel = RDFConfigWriter.addModule(module, parameters, specsModel, inputDatasetUri, outputDatasetUri);
-					specsModel.write(System.out,"TTL");
+//					specsModel.write(System.out,"TTL");
 				}
 				inputDatasetUri = getRandomDataset();
 			}else{ // Create clone - merge sequence
 				List<Resource> outputDatasetstUris = addCloneOperator(inputDatasetUri);
 				addMergeOperator(outputDatasetstUris,outputDatasetUri);
-				specsModel.write(System.out,"TTL");
+//				specsModel.write(System.out,"TTL");
 				// in order not to create an empty clone merge sequence
 				inputDatasetUri = outputDatasetstUris.get(0);
 			}
