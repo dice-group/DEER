@@ -336,7 +336,7 @@ public class RDFConfigExecuter {
 		String s = "<" + moduleOrOperator + ">";
 		String sparqlQueryString = 
 				"SELECT DISTINCT ?d {"+ s + " <" + SPECS.hasInput + "> ?d. }";
-		System.out.println("sparqlQueryString: " + sparqlQueryString);
+//		System.out.println("sparqlQueryString: " + sparqlQueryString);
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 		ResultSet queryResults = qexec.execSelect();

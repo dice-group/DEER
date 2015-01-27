@@ -12,7 +12,7 @@
 :d6		a				:Dataset .
 :d7		a				:Dataset .
 :d8		a				:Dataset ;
-		:outputFile		"GeoLiftBerlin.ttl" ;
+		:outputFile		"enrichedBerlin.ttl" ;
 		:outputFormat	"Turtle" .
 
 :deref		a				:Module, :DereferencingModule  ;
@@ -25,8 +25,8 @@
 		:hasKey			"inputProperty1" ;
 		:hasValue		geo:lat .
 
-:split		a				:Operator, :SplitOperator  ;
-		rdfs:label		"Split operator" ;
+:clone		a				:Operator, :CloneOperator  ;
+		rdfs:label		"Clone operator" ;
 		:hasInput		:d2 ;
 		:hasOutput		:d3, :d4 .
 
@@ -36,39 +36,39 @@
 		:hasOutput		:d5 ;
 		:hasParameter	:nlpPram1, :nlpPram2 .
 
-:nlpPram1	a				:ModuleParameter, :NLPModuleParameter ;
+:nlpPram1	a			:ModuleParameter, :NLPModuleParameter ;
 		:hasKey			"useFoxLight" ;
 		:hasValue		"OFF" .
 
-:nlpPram2 	a				:ModuleParameter, :NLPModuleParameter ;
+:nlpPram2 	a			:ModuleParameter, :NLPModuleParameter ;
 		:hasKey			"askEndPoint" ;
 		:hasValue		false .
 
-:filter		a				:Module, :FilterModule  ;
+:filter		a			:Module, :FilterModule  ;
 		rdfs:label		"Filter module" ;
 		:hasInput		:d4 ;
 		:hasOutput		:d6 ;
 		:hasParameter	:FilterPram1 .
 
-:FilterPram1 	a				:ModuleParameter, :NLPModuleParameter ;
+:FilterPram1 	a		:ModuleParameter, :NLPModuleParameter ;
 		:hasKey			"triplesPattern" ;
-		:hasValue		"?s <http://dbpedia.org/ontology/abstract> ?o" .
+		:hasValue		"http://dbpedia.org/ontology/abstract" .
 
-:merge		a				:Operator, :MergeOperator  ;
+:merge		a			:Operator, :MergeOperator  ;
 		rdfs:label		"Merge operator" ;
 		:hasInput		:d6, :d5 ;
 		:hasOutput		:d7 .
 
-:conform	a				:Module, :ConformationModule  ;
+:conform	a			:Module, :AuthorityConformationModule  ;
 		rdfs:label		"Conformation module" ;
 		:hasInput		:d7 ;
 		:hasOutput		:d8 ;
 		:hasParameter	:conformPram1, :conformPram2 .
 
-:conformPram1	a				:ModuleParameter, :NLPModuleParameter ;
+:conformPram1	a		:ModuleParameter, :AuthorityConformationModuleParameter ;
 		:hasKey			"sourceSubjectAuthority" ;
 		:hasValue		"http://dbpedia.org" .
 
-:conformPram2	a				:ModuleParameter, :NLPModuleParameter ;
+:conformPram2	a	      :ModuleParameter, :AuthorityConformationModuleParameter ;
 		:hasKey			"targetSubjectAuthority" ;
 		:hasValue		"http://geolift.org" .

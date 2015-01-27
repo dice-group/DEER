@@ -248,9 +248,9 @@ public class SimplePipelineLearnerEvaluation {
 		Writer.writeModel(selfConfigEnrichedKB, "TTL", selfConfigEnrichedKBoutputFile);
 
 		// V. compare manuallyEnrichedKB vs selfConfigEnrichedKB
-		System.out.println("+++++++++++++++++++");
-		System.out.println("selfConfigEnrichedKB:" +selfConfigEnrichedKB.size());
-		System.out.println("manuallyEnrichedKB:" + manuallyEnrichedKB.size());
+//		System.out.println("+++++++++++++++++++");
+//		System.out.println("selfConfigEnrichedKB:" +selfConfigEnrichedKB.size());
+//		System.out.println("manuallyEnrichedKB:" + manuallyEnrichedKB.size());
 		FMeasure fMeasure = FMeasure.computePRF(selfConfigEnrichedKB, manuallyEnrichedKB);
 
 		// add results
@@ -338,7 +338,7 @@ public class SimplePipelineLearnerEvaluation {
 			resultStr += "-----------------------------------------------------------\n" + 
 					e.testExampleCount(kbFile, kbSampleFile, manualConfigFile, authority, 2, 0.75);
 		}
-		System.out.println("resultStr");
+//		System.out.println("resultStr");
 		File file = new File(folder + "result.txt");
 		if (!file.exists()) {
 			file.createNewFile();

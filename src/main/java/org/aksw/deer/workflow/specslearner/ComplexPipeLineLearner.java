@@ -96,7 +96,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		{
 			mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
 			logger.info("Most Promising Node: " + mostPromisingNode.getValue());
-			mostPromisingNode.getValue().configModel.write(System.out,"TTL");
+//			mostPromisingNode.getValue().configModel.write(System.out,"TTL");
 			List<TreeX<RefinementNode>> oldChildren = mostPromisingNode.getchildren();
 			if(mostPromisingNode == expand(mostPromisingNode, oldChildren)){
 				logger.error("Learner can not learn any more Specs! Stop here.");
@@ -108,7 +108,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, 0).getValue();
 		bestSolution.configModel = setIOFiles(bestSolution.configModel, "inputFile.ttl", "outputFile.ttl");
 		logger.info("Best solution: " + bestSolution);
-		bestSolution.configModel.write(System.out,"TTL");
+//		bestSolution.configModel.write(System.out,"TTL");
 		return bestSolution;
 	}
 
@@ -147,7 +147,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 				TreeX<RefinementNode> cloneNode = createCloneNode(root);
 				leftRightNodesValues = getLeftRightNodesValues(cloneNode.getValue());
 				//				leftRightNodesValues = getLeftRightNodesValues(leftRightNodesValues, cloneNode.getValue());
-				System.out.println(leftRightNodesValues.get(1).outputDatasets);
+//				System.out.println(leftRightNodesValues.get(1).outputDatasets);
 				TreeX<RefinementNode> leftNode  = new TreeX<RefinementNode>(cloneNode, leftRightNodesValues.get(0), children);
 				TreeX<RefinementNode> rightNode = new TreeX<RefinementNode>(cloneNode, leftRightNodesValues.get(1), children);
 				List<TreeX<RefinementNode>> leftRightNodes = new ArrayList<TreeX<RefinementNode>>(Arrays.asList(leftNode, rightNode));
@@ -347,8 +347,8 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	double computeFitness(Model currentModel, Model targetModel){
 		long t_c = targetModel.difference(currentModel).size();
 		long c_t = currentModel.difference(targetModel).size();
-		System.out.println("targetModel.difference(currentModel).size() = " + t_c);
-		System.out.println("currentModel.difference(targetModel).size() = " + c_t);
+//		System.out.println("targetModel.difference(currentModel).size() = " + t_c);
+//		System.out.println("currentModel.difference(targetModel).size() = " + c_t);
 		return 1- ((double)(t_c + c_t) / (double)(currentModel.size() + targetModel.size()));
 	}
 
@@ -449,7 +449,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 					learner.computeFMeasure(bestSolution.getOutputModel(), targetModel);
 			Writer.writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
 			//			bestSolution.outputModel.write(System.out,"TTL");
-			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+//			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 			System.out.println(results);
 			//			break;
 		}
