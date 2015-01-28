@@ -181,7 +181,7 @@ public class RDFConfigWriter{
 	 */
 	public static Model addDataset(Model config, Resource dataset, Resource uri, Resource endpoint){
 		addDataset(config, dataset);
-		config.add(dataset, SPECS.FromEndPoint, endpoint);
+		config.add(dataset, SPECS.fromEndPoint, endpoint);
 		config.add(dataset, SPECS.hasUri, uri);
 		return config;
 	}

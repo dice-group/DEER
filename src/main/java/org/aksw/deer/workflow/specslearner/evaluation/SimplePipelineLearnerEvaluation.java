@@ -204,7 +204,7 @@ public class SimplePipelineLearnerEvaluation {
 		cbdSelfConfig = bestSolution.configModel;
 		String cbdSelfConfigOutputFile =  folder + "s_config" + exampleCount + ".ttl";
 		Writer.writeModel(cbdSelfConfig, "TTL", cbdSelfConfigOutputFile);
-
+/*
 		// (5) Compare manual and self-config in the entire KB
 		// I. Generate KBManualConfig and save it
 		Model KBManualConfig = ModelFactory.createDefaultModel();
@@ -282,6 +282,7 @@ public class SimplePipelineLearnerEvaluation {
 		System.out.println("**********************************");
 		System.out.println(resultStr);
 		System.out.println("**********************************");		
+*/
 		return resultStr;
 	}
 
@@ -328,15 +329,44 @@ public class SimplePipelineLearnerEvaluation {
 
 
 	public static void main(String args[]) throws IOException{
-		String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/";
+//		testDBpedia();
+		testDrugBank();
+	}
+	
+	private static void testDrugBank() throws IOException {
+		String folder = "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/pipeline_learner/drugbank/";
+		String kbFile = folder +"drugbank_dump.ttl";
+		String kbSampleFile = folder + "sample_resource.ttl";
+		for(int i = 1 ; i <= 2 ; i++){
+			SimplePipelineLearnerEvaluation e = new SimplePipelineLearnerEvaluation();
+			String manualConfigFile = folder + "m" + i +".ttl";
+			String authority = "http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs";
+			resultStr += "-----------------------------------------------------------\n" + 
+					e.testExampleCount(kbFile, kbSampleFile, manualConfigFile, authority, 1, 0.75);
+			Writer.writeModel(e.cbdSelfConfig, "TTL", folder + "s" + i +".ttl");
+		}
+//		System.out.println("resultStr");
+		File file = new File(folder + "result.txt");
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(resultStr);
+		bw.close();
+	}
+
+	private static void testDBpedia() throws IOException {
+		String folder = "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/";
 		String kbFile = folder +"1000_resources_cbds.ttl";
 		String kbSampleFile = folder +"100_resources_cbd.ttl";
-		for(int i = 4 ; i <= 4 ; i++){
+		for(int i = 1 ; i <= 5 ; i++){
 			SimplePipelineLearnerEvaluation e = new SimplePipelineLearnerEvaluation();
 			String manualConfigFile = folder + "m" + i +".ttl";
 			String authority = "http://dbpedia.org/resource/Berlin";
 			resultStr += "-----------------------------------------------------------\n" + 
 					e.testExampleCount(kbFile, kbSampleFile, manualConfigFile, authority, 2, 0.75);
+			Writer.writeModel(e.cbdSelfConfig, "TTL", folder + "s" + i +".ttl");
 		}
 //		System.out.println("resultStr");
 		File file = new File(folder + "result.txt");

@@ -190,7 +190,7 @@ public class SpecsModel {
 	 */
 	public void add(Resource dataset, Resource uri, Resource endpoint){
 		add(dataset);
-		specs.add(dataset, SPECS.FromEndPoint, endpoint);
+		specs.add(dataset, SPECS.fromEndPoint, endpoint);
 		specs.add(dataset, SPECS.hasUri, uri);
 	}
 	

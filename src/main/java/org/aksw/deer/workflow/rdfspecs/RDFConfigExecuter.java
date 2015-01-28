@@ -72,7 +72,7 @@ public class RDFConfigExecuter {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * execute the input RDF configuration file and return only the first enriched dataset
 	 * Suitable for simple liner configuration file 
@@ -139,7 +139,7 @@ public class RDFConfigExecuter {
 		System.exit(1);
 		return null;
 	}
-	
+
 
 	/**
 	 * @param moduleOrOperator
@@ -206,9 +206,10 @@ public class RDFConfigExecuter {
 	 */
 	private static Model readDataset(Resource dataset) throws IOException {
 		// trivial case: read dataset from file/uri/endpoint
-		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.FromEndPoint);
+		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.fromEndPoint);
 		if(uriItr.hasNext()){
-			Model cbd = readCBD(dataset, uriItr.next().toString());
+			//			Model cbd = readCBD(dataset, uriItr.next().toString());
+			Model cbd = readDatasetFromEndPoint(dataset, uriItr.next().toString());
 			writeDataset(dataset,cbd);
 			return cbd;
 		}
@@ -224,14 +225,61 @@ public class RDFConfigExecuter {
 			writeDataset(dataset,cbd);
 			return cbd;
 		}
-		
+
 		// recursive case: read dataset from previous module/operator output
 		Resource moduleOrOperator = getModuleOrOperator(null, dataset);
 		Model outputModel = executeModuleOrOperator(moduleOrOperator);
 		writeDataset(dataset,outputModel);
 		return outputModel;
 	}
-	
+
+	/**
+	 * @return
+	 * @author sherif
+	 * @param string 
+	 * @param dataset 
+	 */
+	private static Model readDatasetFromEndPoint(Resource dataset, String endpointUri) {
+		long startTime = System.currentTimeMillis();
+		Model result = ModelFactory.createDefaultModel();
+		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.fromGraph);
+		if(uriItr.hasNext()){
+			String graphUri = uriItr.next().toString();
+			uriItr = configModel.listObjectsOfProperty(dataset, SPECS.graphTriplePattern);
+			String triplePattern = "?s ?p ?o";
+			if(uriItr.hasNext()){
+				triplePattern = uriItr.next().toString();
+			}
+			String sparqlQueryString = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + graphUri +"> { " + triplePattern + " } . }";
+			logger.info("Reading dataset  " + dataset + " from " + endpointUri + " using SPARQL: " + sparqlQueryString);
+			QueryFactory.create(sparqlQueryString);
+			QueryExecution qexec = QueryExecutionFactory.sparqlService(endpointUri, sparqlQueryString);
+			result = qexec.execConstruct();
+			qexec.close() ;
+			logger.info("Dataset reading is done in " + (System.currentTimeMillis() - startTime) + "ms, " + 
+					result.size() + " triples found.");
+		}else{
+			uriItr = configModel.listObjectsOfProperty(dataset, SPECS.hasUri);
+			if(uriItr.hasNext()){
+				String uri = uriItr.next().toString();
+				logger.info("Generating CBD for " + uri + " from " + endpointUri+ "...");
+				String sparqlQueryString = "DESCRIBE <" + uri + ">";
+				QueryFactory.create(sparqlQueryString);
+				QueryExecution qexec = QueryExecutionFactory.sparqlService(endpointUri, sparqlQueryString);
+				result = qexec.execDescribe();
+				qexec.close() ;
+				logger.info("Generating CBD is done in " + (System.currentTimeMillis() - startTime) + "ms, " + 
+						result.size() + " triples found.");
+			}else{
+				logger.error("Neither " + SPECS.hasUri + " nor " + SPECS.fromGraph + 
+						" defined to generate dataset " + dataset +" from " + endpointUri 
+						+ ", exit with error." );
+				System.exit(1);
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * @param datasetUri
 	 * @param dataSetModel
@@ -265,7 +313,6 @@ public class RDFConfigExecuter {
 		if(uriItr.hasNext()){
 			String uri = uriItr.next().toString();
 			logger.info("Generating CBD for " + uri + " from " + endpointUri+ "...");
-//			String sparqlQueryString = "CONSTRUCT {<" + uri + "> ?p ?o} WHERE { <" + uri + "> ?p ?o.}";
 			String sparqlQueryString = "DESCRIBE <" + uri + ">";
 			QueryFactory.create(sparqlQueryString);
 			QueryExecution qexec = QueryExecutionFactory.sparqlService(endpointUri, sparqlQueryString);
@@ -304,7 +351,7 @@ public class RDFConfigExecuter {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @return 	a list of all final output datasets, which are included as output 
 	 * 			of some operators/models and not as input to any operator/model
@@ -336,7 +383,7 @@ public class RDFConfigExecuter {
 		String s = "<" + moduleOrOperator + ">";
 		String sparqlQueryString = 
 				"SELECT DISTINCT ?d {"+ s + " <" + SPECS.hasInput + "> ?d. }";
-//		System.out.println("sparqlQueryString: " + sparqlQueryString);
+		//		System.out.println("sparqlQueryString: " + sparqlQueryString);
 		QueryFactory.create(sparqlQueryString);
 		QueryExecution qexec = QueryExecutionFactory.create(sparqlQueryString, configModel);
 		ResultSet queryResults = qexec.execSelect();
@@ -421,10 +468,10 @@ public class RDFConfigExecuter {
 		}
 		return result;
 	}
-	
-//	public static DeerModule getLastModule(){
-//		List<Resource> finalDatasets = getFinalDatasets();
-//		return (DeerModule) getModuleOrOperator(null, finalDatasets.get(0));
-//	}
+
+	//	public static DeerModule getLastModule(){
+	//		List<Resource> finalDatasets = getFinalDatasets();
+	//		return (DeerModule) getModuleOrOperator(null, finalDatasets.get(0));
+	//	}
 
 }

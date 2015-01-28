@@ -3,10 +3,10 @@
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 
 :d1		a				:Dataset ;
-		:inputFile		"/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/1000_resources_cbds.ttl".
+		:inputFile		"/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/1000_resources_cbds.ttl".
 
 :d2		a				:Dataset ;
-		:outputFile		"/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/1000_resources_cbds_manual_enrichmed.ttl" ;
+		:outputFile		"/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/1000_resources_cbds_manual_enrichmed.ttl" ;
 		:outputFormat	"Turtle" .
 
 :conform	a			:Module, :AuthorityConformationModule  ;
