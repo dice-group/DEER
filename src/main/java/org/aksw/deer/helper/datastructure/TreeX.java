@@ -4,7 +4,6 @@
 package org.aksw.deer.helper.datastructure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -368,24 +367,24 @@ public class TreeX<T> {
 	}
 
 	public static void main(String args[]){
-		TreeX<String> t = new TreeX<String>("root");
-		TreeX<String> c = new TreeX<String>(t,"clone",null);
-		TreeX<String> l = c.addChild(new TreeX<String>("left"));
-		TreeX<String> r = c.addChild(new TreeX<String>("right"));
-		ArrayList<TreeX<String>> p = new ArrayList<TreeX<String>>(Arrays.asList(l, r));
-		TreeX<String> m  = new TreeX<String>(p,"merge", (TreeX<String>)null);
-		TreeX<String> l1 = new TreeX<String>(m,"leaf1",null);
-		TreeX<String> l2 = new TreeX<String>(m,"leaf2",null);
-		TreeX<String> l3 = new TreeX<String>(m,"leaf3",null);
-
-		TreeX<String> c2 = new TreeX<String>(l1,"clone",null);
-		TreeX<String> c2l1 = c2.addChild(new TreeX<String>("left"));
-		TreeX<String> c2l2 = c2.addChild(new TreeX<String>("right"));
-		ArrayList<TreeX<String>> p2 = new ArrayList<TreeX<String>>(Arrays.asList(c2l1, c2l2));
-		TreeX<String> m2 = new TreeX<String>(p2,"merge", (TreeX<String>)null);
-
-		t.print();
-		t.print();
+//		TreeX<String> t = new TreeX<String>("root");
+//		TreeX<String> c = new TreeX<String>(t,"clone",null);
+//		TreeX<String> l = c.addChild(new TreeX<String>("left"));
+//		TreeX<String> r = c.addChild(new TreeX<String>("right"));
+//		ArrayList<TreeX<String>> p = new ArrayList<TreeX<String>>(Arrays.asList(l, r));
+//		TreeX<String> m  = new TreeX<String>(p,"merge", (TreeX<String>)null);
+//		TreeX<String> l1 = new TreeX<String>(m,"leaf1",null);
+//		TreeX<String> l2 = new TreeX<String>(m,"leaf2",null);
+//		TreeX<String> l3 = new TreeX<String>(m,"leaf3",null);
+//
+//		TreeX<String> c2 = new TreeX<String>(l1,"clone",null);
+//		TreeX<String> c2l1 = c2.addChild(new TreeX<String>("left"));
+//		TreeX<String> c2l2 = c2.addChild(new TreeX<String>("right"));
+//		ArrayList<TreeX<String>> p2 = new ArrayList<TreeX<String>>(Arrays.asList(c2l1, c2l2));
+//		TreeX<String> m2 = new TreeX<String>(p2,"merge", (TreeX<String>)null);
+//
+//		t.print();
+//		t.print();
 	}
 
 

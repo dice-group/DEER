@@ -8,14 +8,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.aksw.deer.helper.datastructure.FMeasure;
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
-import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
 import org.aksw.deer.workflow.specslearner.RefinementNodeOld;
 import org.aksw.deer.workflow.specslearner.SimplePipeLineLearner;
@@ -77,8 +75,8 @@ public class SimplePipelineLearnerEvaluation {
 			if(isBatch){
 				folder = folder + i;
 			}
-			learner.sourceModel  = Reader.readModel(folder + "/input.ttl");
-			learner.targetModel  = Reader.readModel(folder + "/output.ttl");
+			SimplePipeLineLearner.sourceModel  = Reader.readModel(folder + "/input.ttl");
+			SimplePipeLineLearner.targetModel  = Reader.readModel(folder + "/output.ttl");
 			long start = System.currentTimeMillis();
 			bestSolution = learner.run();
 			long end = System.currentTimeMillis();
@@ -87,10 +85,10 @@ public class SimplePipelineLearnerEvaluation {
 					learner.refinementTreeRoot.size() + "\t" + 
 					learner.iterationNr + "\t" + 
 					//					bestSolution.fitness + "\t" +
-					learner.computePrecision(bestSolution.outputModel, learner.targetModel) + "\t" + 
-					learner.computeRecall(bestSolution.outputModel, learner.targetModel) + "\t" +
+					learner.computePrecision(bestSolution.outputModel, SimplePipeLineLearner.targetModel) + "\t" + 
+					learner.computeRecall(bestSolution.outputModel, SimplePipeLineLearner.targetModel) + "\t" +
 					learner.computeFMeasure
-					(bestSolution.outputModel, learner.targetModel);
+					(bestSolution.outputModel, SimplePipeLineLearner.targetModel);
 			Writer.writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
 			//			bestSolution.outputModel.write(System.out,"TTL");
 			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
@@ -104,9 +102,8 @@ public class SimplePipelineLearnerEvaluation {
 	//	resultStr += RDFConfigAnalyzer.getModules(selfConfig).size() + "\t"; // 	ModuleComplexity 
 
 	public static FMeasure evaluateSelfConfig(Model manualConfig, Model selfConfig) throws IOException {
-		RDFConfigExecuter configExe = new RDFConfigExecuter();
-		Model manualKB = configExe.execute(manualConfig).iterator().next();
-		Model selfConfigKB = configExe.execute(selfConfig).iterator().next();
+		Model manualKB = RDFConfigExecuter.execute(manualConfig).iterator().next();
+		Model selfConfigKB = RDFConfigExecuter.execute(selfConfig).iterator().next();
 		return FMeasure.computePRF(selfConfigKB, manualKB);
 	}
 
@@ -153,6 +150,7 @@ public class SimplePipelineLearnerEvaluation {
 		return cbd;
 	}
 
+	@SuppressWarnings("unused")
 	public String testExampleCount(String kbFile, String kbSampleFile, String manualConfigFile, String authority, int exampleCount, double penaltyWeight) throws IOException{
 		String folder = kbFile.substring(0, kbFile.lastIndexOf("/")+1);
 		Model kb = Reader.readModel(kbFile);
@@ -356,6 +354,7 @@ public class SimplePipelineLearnerEvaluation {
 		bw.close();
 	}
 
+	@SuppressWarnings("unused")
 	private static void testDBpedia() throws IOException {
 		String folder = "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/pipeline_learner/dbpedia_AdministrativeRegion/";
 		String kbFile = folder +"1000_resources_cbds.ttl";

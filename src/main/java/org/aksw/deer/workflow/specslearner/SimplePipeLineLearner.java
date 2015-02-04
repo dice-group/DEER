@@ -41,7 +41,6 @@ public class SimplePipeLineLearner implements PipelineLearner{
 	public static Model sourceModel = ModelFactory.createDefaultModel();
 	public static Model targetModel = ModelFactory.createDefaultModel();
 	public Tree<RefinementNodeOld> refinementTreeRoot = new Tree<RefinementNodeOld>(new RefinementNodeOld());
-	RDFConfigWriter configWriter = new RDFConfigWriter();
 	public int iterationNr = 0;
 
 	private final double 	MAX_FITNESS_THRESHOLD = 1; 
@@ -138,7 +137,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 					fitness = computeFMeasure(currentMdl, targetModel);
 				}
 				Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetIndex++);
-				configMdl = configWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
+				configMdl = RDFConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
 				node = new RefinementNodeOld(module, fitness, root.getValue().outputModel, currentMdl, inputDataset, outputDataset, configMdl);
 			}
 			root.addChild(new Tree<RefinementNodeOld>(node));
@@ -227,8 +226,8 @@ public class SimplePipeLineLearner implements PipelineLearner{
 		String sourceUri = args[0];
 		String targetUri = args[1];
 		SimplePipeLineLearner learner = new SimplePipeLineLearner();
-		learner.sourceModel  = Reader.readModel(sourceUri);
-		learner.targetModel = Reader.readModel(targetUri);
+		SimplePipeLineLearner.sourceModel  = Reader.readModel(sourceUri);
+		SimplePipeLineLearner.targetModel = Reader.readModel(targetUri);
 		long start = System.currentTimeMillis();
 		learner.run();
 		long end = System.currentTimeMillis();
@@ -243,8 +242,8 @@ public class SimplePipeLineLearner implements PipelineLearner{
 			if(isBatch){
 				folder = folder + i;
 			}
-			learner.sourceModel  = Reader.readModel(folder + "/input.ttl");
-			learner.targetModel  = Reader.readModel(folder + "/output.ttl");
+			SimplePipeLineLearner.sourceModel  = Reader.readModel(folder + "/input.ttl");
+			SimplePipeLineLearner.targetModel  = Reader.readModel(folder + "/output.ttl");
 			long start = System.currentTimeMillis();
 			RefinementNodeOld bestSolution = learner.run();
 			long end = System.currentTimeMillis();

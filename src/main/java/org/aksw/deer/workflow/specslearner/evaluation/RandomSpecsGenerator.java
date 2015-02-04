@@ -3,17 +3,14 @@
  */
 package org.aksw.deer.workflow.specslearner.evaluation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.deer.helper.datastructure.FMeasure;
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
-import org.aksw.deer.io.Writer;
 import org.aksw.deer.modules.DeerModule;
 import org.aksw.deer.modules.ModuleFactory;
 import org.aksw.deer.modules.Dereferencing.DereferencingModule;
@@ -25,10 +22,7 @@ import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
 import org.aksw.deer.operators.DeerOperator;
 import org.aksw.deer.operators.OperatorFactory;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
-import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigWriter;
-import org.aksw.deer.workflow.specslearner.RefinementNodeOld;
-import org.aksw.deer.workflow.specslearner.SimplePipeLineLearner;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.QueryExecution;
@@ -337,6 +331,7 @@ public class RandomSpecsGenerator {
 		return deerModules.get(i);
 	}
 
+	@SuppressWarnings("unused")
 	private static Object getRandomModuleOrOperator(Model inputDataset) {
 		if(Math.random()> 0.5){
 			return  getRandomModule();
@@ -356,10 +351,9 @@ public class RandomSpecsGenerator {
 	 * @author sherif
 	 */
 	public static void main(String[] args) {
-		RandomSpecsGenerator g = new RandomSpecsGenerator();
-		Model kb = Reader.readModel(args[0]);
+//		Model kb = Reader.readModel(args[0]);
 //		Model m = g.generateSpecs(kb, 5, 0.5);
-		Model m = g.generateSpecs(args[0], 3, 0.5);
+		Model m = RandomSpecsGenerator.generateSpecs(args[0], 3, 0.5);
 		m.write(System.out, "TTL");
 
 	}

@@ -99,8 +99,7 @@ public class LinkingModule implements DeerModule{
 	 */
 	private void linkingProcess(String specFilePath)
 	{
-		PPJoinController controller = new PPJoinController();
-		controller.run(specFilePath); 
+		PPJoinController.run(specFilePath); 
 	}
 	/**
 	 * @param model: the model of the dataset to be enriched
@@ -120,7 +119,7 @@ public class LinkingModule implements DeerModule{
 		{
 			Statement stmt      = iter.nextStatement();  // get next statement
 			Resource  subject   = stmt.getSubject();     // get the subject
-			Property  predicate = model.createProperty(stmt.getPredicate().toString()) ;//model.createProperty(model.expandPrefix(stmt.getPredicate().toString())) ;// get the predicate
+			Property  predicate = model.createProperty(stmt.getPredicate().toString()) ;
 			RDFNode   object    = stmt.getObject();      // get the object
 			Resource resource;
 			//model.expandPrefix(predicate.toString())
@@ -155,6 +154,7 @@ public class LinkingModule implements DeerModule{
 	 * @return Map representing the three parts of the link source,relation, and target
 	 * This function separates each link into its three parts source,relation,target and they are encapsulated in HashMap
 	 */
+	@SuppressWarnings("unused")
 	private Map<String, String> linkInfoExtraction(String link)
 	{
 		Map<String, String> linkInfo= null;

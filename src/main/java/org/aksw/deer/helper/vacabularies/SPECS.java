@@ -6,7 +6,6 @@ package org.aksw.deer.helper.vacabularies;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * @author sherif
@@ -41,9 +40,6 @@ public class SPECS {
 	public static final Property hasOperator 			= property("hasOperator");
 	public static final Property hasInput 				= property("hasInput");
 	public static final Property hasOutput 				= property("hasOutput");
-	public static final Property nextStep 				= property("nextStep");
-	public static final Property isFirstStep 			= property("isFirstStep");
-	public static final Property isLastStep 			= property("isLastStep");
 	
 	public static final Resource Dataset 						= resource( "Dataset" );
 	public static final Resource Module 						= resource( "Module" );

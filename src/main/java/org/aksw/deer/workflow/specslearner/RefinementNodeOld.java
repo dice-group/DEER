@@ -72,8 +72,6 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
 	public RefinementNodeOld(DeerOperator operator, Model inputModel, Model outputModel, 
 			Resource inputDataset, Resource outputDataset, Model configModel) {
 		super();
-		this.module = module;
-		this.fitness = fitness;
 		if(fitness == -2){
 			status = NodeStatus.DEAD;
 		}

@@ -111,8 +111,7 @@ public class JSONConfigWriter {
     
     private static String buildJSONString() {
         //get modules
-        ModuleFactory moduleFactory = new ModuleFactory();        
-        List<String> moduleNames = moduleFactory.getNames();
+        List<String> moduleNames = ModuleFactory.getNames();
         
         //get operators
         ModelOperatorFactory modelOperatorFactory = new ModelOperatorFactory();
@@ -142,7 +141,7 @@ public class JSONConfigWriter {
 
             int i = 0;
             for (String operatorName: operatorNames) {
-                DeerOperator operator = ModelOperatorFactory.createOperator(operatorName);
+//                DeerOperator operator = ModelOperatorFactory.createOperator(operatorName);
                 jsonConfig.append(buildOperatorJSONString(operatorName));
 
                 if (i < operatorNames.size() -1) {

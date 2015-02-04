@@ -5,18 +5,15 @@ package org.aksw.deer.workflow.rdfspecs;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
-import org.aksw.deer.modules.DeerModule;
 import org.aksw.deer.modules.Dereferencing.DereferencingModule;
 import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.deer.modules.filter.FilterModule;
@@ -39,7 +36,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.sparql.pfunction.library.container;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
@@ -306,6 +302,7 @@ public class RDFConfigExecuter {
 	 * @return
 	 * @author sherif
 	 */
+	@SuppressWarnings("unused")
 	private static Model readCBD(Resource dataset, String endpointUri) {
 		long startTime = System.currentTimeMillis();
 		Model result = ModelFactory.createDefaultModel();
@@ -400,6 +397,7 @@ public class RDFConfigExecuter {
 	 * @return 	a list of all output datasets to a certain module/operator
 	 * @author sherif
 	 */
+	@SuppressWarnings("unused")
 	private List<Resource> getOutputDatasets(Resource moduleOrOperator){
 		List<Resource> result = new ArrayList<Resource>();
 		String s = "<" + moduleOrOperator + ">";

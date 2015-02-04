@@ -104,13 +104,11 @@ public class NLPModule implements DeerModule{
 	private Model model;
 
 	// parameters list
-	private boolean 	extractAllNE = false;
 	private Property 	literalProperty;
 	private String 		useFoxLight		= "OFF"; //"org.aksw.fox.nertools.NERStanford"; ;
 	private boolean 	askEndPoint 	= false;
 	private String 		foxType 		= "TEXT";
 	private String 		foxTask 		= "NER";
-	private String 		foxInput 		= "";
 	private String 		foxOutput		= "Turtle";
 	private boolean 	foxUseNif		= false;
 	private boolean 	foxReturnHtml 	= false;
@@ -231,6 +229,7 @@ public class NLPModule implements DeerModule{
 	 * @return Named entity buffer containing annotation of the input text
 	 * @author sherif
 	 */
+	@SuppressWarnings("deprecation")
 	private String getNamedEntity(String type, String task, String output, String input, String foxlight, boolean nif, boolean returnHtml){
 		String buffer = "", line; 
 		boolean error = true;
@@ -410,14 +409,6 @@ public class NLPModule implements DeerModule{
 				logger.error(e);
 				logger.error(object.toString());
 			}
-			//				if(!object.asLiteral().toString().contains("^^")){ //-------------
-			//					Model namedEntityModel = ModelFactory.createDefaultModel();
-			//					if(object.toString().contains("@")){
-			//						String substring = object.toString().substring(0,object.toString().lastIndexOf("@")).replaceAll("@", "");
-			//						namedEntityModel = getNamedEntityModel(substring);
-			//					}else{
-			//						namedEntityModel = getNamedEntityModel(object.toString().replaceAll("@", ""));
-			//					}
 			if(!namedEntityModel.isEmpty()){
 				if(NEType.equalsIgnoreCase("all")){ // Extract all NE (Generalization of GeoLift)
 					resultModel.add(getNE(namedEntityModel, subject));
@@ -430,8 +421,6 @@ public class NLPModule implements DeerModule{
 				}
 			}				
 		}
-		//			}
-		//		}//-------------
 		resultModel.add(model);
 		return resultModel;
 	}

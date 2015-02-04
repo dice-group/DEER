@@ -5,24 +5,14 @@ package org.aksw.deer.modules.filter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
 
-import com.github.jsonldjava.core.RDFDataset.Literal;
-import com.google.common.base.Predicate;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -44,12 +34,12 @@ public class FilterModule implements DeerModule{
 					"By default, this parameter is set to ?s ?p ?o. which generates the whole " +
 					"input model as output, changing the values of " +
 					"?s, ?p and/or ?o will restrict the output model";
-	private static final int MAX_TRIPLE_PATTERN_SIZE = 50;
+//	private static final int MAX_TRIPLE_PATTERN_SIZE = 50;
 	private Model model = ModelFactory.createDefaultModel();
 
 	// parameters list
 	private String 	triplesPattern = "?s ?p ?o .";
-	private Set<String> blackList = null;
+//	private Set<String> blackList = null;
 
 
 

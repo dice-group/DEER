@@ -15,6 +15,7 @@ import org.aksw.deer.helper.datastructure.Tree;
 public class RefinementTree extends Tree<RefinementNodeOld> {
 	public static final double CHILDREN_MULTIPLIER = 1;
 	
+	@SuppressWarnings("unused")
 	private void setFitness(Tree<RefinementNodeOld> root, double fitness){
 		long rootChildrenCount = root.size() - 1;
 		root.getValue().fitness += fitness + CHILDREN_MULTIPLIER * rootChildrenCount;

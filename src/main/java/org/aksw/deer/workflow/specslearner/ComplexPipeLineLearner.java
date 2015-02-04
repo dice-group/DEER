@@ -123,7 +123,6 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	 * @return the root node after expanding it
 	 * @author sherif
 	 */
-	@SuppressWarnings("unchecked")
 	private TreeX<RefinementNode> expand(TreeX<RefinementNode> root, List<TreeX<RefinementNode>> children) {
 		List<RefinementNode> leftRightNodesValues = getLeftRightNodesValues(root.getValue());
 		if(leftRightNodesValues.size() == 0){
@@ -169,7 +168,6 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	 * @return
 	 * @author sherif
 	 */
-	@SuppressWarnings("unchecked")
 	private TreeX<RefinementNode> createMergeNode(TreeX<RefinementNode> leftNode, TreeX<RefinementNode> rightNode) {
 		DeerOperator 	mergeOperator = OperatorFactory.createOperator(OperatorFactory.MERGE_OPERATOR);
 		RefinementNode 	rightNodeValue = rightNode.getValue();
@@ -294,7 +292,6 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 
 
 
-	@SuppressWarnings("unchecked")
 	private List<RefinementNode> getLeftRightNodesValues(RefinementNode rootValue) {
 		RefinementNode left = null;
 		RefinementNode right = null;
@@ -434,8 +431,8 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 			if(isBatch){
 				folder = folder + i;
 			}
-			learner.sourceModel  = Reader.readModel(folder + "/input.ttl");
-			learner.targetModel  = Reader.readModel(folder + "/output.ttl");
+			ComplexPipeLineLearner.sourceModel  = Reader.readModel(folder + "/input.ttl");
+			ComplexPipeLineLearner.targetModel  = Reader.readModel(folder + "/output.ttl");
 			long start = System.currentTimeMillis();
 			RefinementNode bestSolution = learner.learnSimpleSpecs();
 			long end = System.currentTimeMillis();
@@ -509,6 +506,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	// -------------------- old code -----------------------------
 
 
+	@SuppressWarnings("unused")
 	private RefinementNode getRightNode(TreeX<RefinementNode> root) {
 		RefinementNode promisingNode = null; 
 		for( DeerModule module : MODULES){
@@ -542,6 +540,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		return promisingNode;
 	}
 
+	@SuppressWarnings("unused")
 	private RefinementNode getLeftNode(TreeX<RefinementNode> root) {
 		RefinementNode promisingNode = null; 
 		for( DeerModule module : MODULES){
@@ -580,7 +579,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 	 * @return
 	 * @author sherif
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unused")
 	private List<RefinementNode> getLeftRightNodesValues(List<RefinementNode> leftRightNodesValues, RefinementNode root) {
 		// input datasets
 		Resource leftInputDatasetUri = root.outputDatasets.get(0);
@@ -608,6 +607,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		return new ArrayList<RefinementNode>(Arrays.asList(leftValue, rightValue));
 	}
 	
+	@SuppressWarnings("unused")
 	private TreeX<RefinementNode> createCloneMergeNodes(TreeX<RefinementNode> root, RefinementNode leftNodeValue, RefinementNode rightNodeValue) {
 		// create clone node
 		TreeX<RefinementNode> cloneNode = createCloneNode(root);

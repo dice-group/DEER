@@ -65,7 +65,6 @@ public class DereferencingTest
     	BufferedReader br=null;
 		try {
 			br = new BufferedReader(new FileReader(file));
-            StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
             while (line != null) 

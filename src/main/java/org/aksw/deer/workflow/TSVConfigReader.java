@@ -67,6 +67,7 @@ public class TSVConfigReader {
 			param.put(parameterKey, parameterValue);
 			parameters.put(moduleId + "_" + moduleName, param);
 		}
+		reader.close();
 		return parameters;
 	}
 	

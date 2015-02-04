@@ -7,21 +7,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.aksw.deer.helper.datastructure.FMeasure;
-import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.io.Reader;
-import org.aksw.deer.io.Writer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
-import org.aksw.deer.workflow.rdfspecs.RDFConfigWriter;
 import org.aksw.deer.workflow.specslearner.ComplexPipeLineLearner;
 import org.aksw.deer.workflow.specslearner.RefinementNode;
-import org.aksw.deer.workflow.specslearner.RefinementNodeOld;
-import org.aksw.deer.workflow.specslearner.SimplePipeLineLearner;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.query.QueryExecution;
@@ -32,9 +26,6 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 /**
  * @author sherif
@@ -287,7 +278,7 @@ public class ComplexPipeLineLearnerEvaluation{
 		String kbSampleFile = ""; //folder +"100_resources_cbd.ttl";
 		for(int i = 1 ; i <= 1 ; i++){
 			ComplexPipeLineLearnerEvaluation e = new ComplexPipeLineLearnerEvaluation();
-			String manualConfigFile = folder + "m" + i +".ttl";
+//			String manualConfigFile = folder + "m" + i +".ttl";
 			String authority = "http://dbpedia.org/resource/";
 			resultStr += "-----------------------------------------------------------\n" + 
 					e.testExampleCount(kbFile, kbSampleFile, 2, 0.5, authority, 2, 0.75);
