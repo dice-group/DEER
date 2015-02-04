@@ -6,7 +6,6 @@ package org.aksw.deer.modules;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.deer.helper.vacabularies.SPECS;
 import org.aksw.deer.json.ParameterType;
 
 import com.hp.hpl.jena.rdf.model.Model;

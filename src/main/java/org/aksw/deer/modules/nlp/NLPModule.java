@@ -3,10 +3,8 @@ package org.aksw.deer.modules.nlp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -541,26 +539,6 @@ public class NLPModule implements DeerModule{
 		return p;
 	}
 
-
-	/**
-	 * @param source
-	 * @param target
-	 * @return
-	 * @author sherif
-	 */
-	private Set<Resource> getDiffUriObjects(Model source, Model target) {
-		Set<Resource> uriObjects = new HashSet<Resource>();
-		Model diff = target.remove(source);
-		NodeIterator objects = diff.listObjects();
-		while(objects.hasNext()){
-			RDFNode o = objects.next();
-			if(o.isURIResource()){
-				uriObjects.add(o.asResource());
-			}
-		}
-		return uriObjects;
-	}
-
 	public static void main(String args[]) throws IOException {
 		NLPModule geoEnricher= new NLPModule();
 
@@ -636,4 +614,24 @@ public class NLPModule implements DeerModule{
 	public Resource getType(){
 		return SPECS.NLPModule;
 	}
+	
+//	/**
+//	 * @param source
+//	 * @param target
+//	 * @return
+//	 * @author sherif
+//	 */
+//	private Set<Resource> getDiffUriObjects(Model source, Model target) {
+//		Set<Resource> uriObjects = new HashSet<Resource>();
+//		Model diff = target.remove(source);
+//		NodeIterator objects = diff.listObjects();
+//		while(objects.hasNext()){
+//			RDFNode o = objects.next();
+//			if(o.isURIResource()){
+//				uriObjects.add(o.asResource());
+//			}
+//		}
+//		return uriObjects;
+//	}
+
 }

@@ -10,8 +10,7 @@ public class Triple
 	}
 	@Override public String toString() 
 	{
-		String triple ="";
-		return triple="<"+subject+">"+"\t"+"<"+predicate+">"+"\t"+"<"+Object+">"+"\n";
+		return "<"+subject+">"+"\t"+"<"+predicate+">"+"\t"+"<"+Object+">"+"\n";
 	};
 public String subject;
 public String predicate;
