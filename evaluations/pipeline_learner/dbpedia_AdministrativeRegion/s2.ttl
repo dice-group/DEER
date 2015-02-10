@@ -1,0 +1,46 @@
+@prefix RDFS:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix DEER:  <http://geoknow.org/specsontology/> .
+
+DEER:parameter_8  a    DEER:ModuleParameter , DEER:DereferencingModuleParameter ;
+        DEER:hasKey    "outputproperty2" ;
+        DEER:hasValue  "http://dbpedia.org/property/location" .
+
+DEER:Dataset_1  a       DEER:Dataset ;
+        DEER:inputFile  "inputFile.ttl" .
+
+DEER:parameter_6  a    DEER:ModuleParameter , DEER:DereferencingModuleParameter ;
+        DEER:hasKey    "inputproperty1" ;
+        DEER:hasValue  "http://dbpedia.org/ontology/location" .
+
+DEER:authority_conformation_module_12
+        a                  DEER:AuthorityConformationModule , DEER:Module ;
+        DEER:hasInput      DEER:Dataset_3 ;
+        DEER:hasOutput     DEER:Dataset_11 ;
+        DEER:hasParameter  DEER:parameter_23 , DEER:parameter_22 .
+
+DEER:parameter_22  a   DEER:AuthorityConformationModuleParameter , DEER:ModuleParameter ;
+        DEER:hasKey    "targetSubjectAuthority" ;
+        DEER:hasValue  "http://geolift.org/resource" .
+
+DEER:Dataset_11  a  DEER:Dataset .
+
+DEER:parameter_7  a    DEER:ModuleParameter , DEER:DereferencingModuleParameter ;
+        DEER:hasKey    "outputproperty1" ;
+        DEER:hasValue  "http://dbpedia.org/ontology/location" .
+
+DEER:parameter_23  a   DEER:AuthorityConformationModuleParameter , DEER:ModuleParameter ;
+        DEER:hasKey    "sourceSubjectAuthority" ;
+        DEER:hasValue  "http://dbpedia.org/resource" .
+
+DEER:parameter_5  a    DEER:ModuleParameter , DEER:DereferencingModuleParameter ;
+        DEER:hasKey    "inputproperty2" ;
+        DEER:hasValue  "http://dbpedia.org/property/location" .
+
+DEER:Dataset_3  a        DEER:Dataset ;
+        DEER:outputFile  "outputFile.ttl" .
+
+DEER:dereferencing_module_4
+        a                  DEER:Module , DEER:DereferencingModule ;
+        DEER:hasInput      DEER:Dataset_1 ;
+        DEER:hasOutput     DEER:Dataset_3 ;
+        DEER:hasParameter  DEER:parameter_5 , DEER:parameter_6 , DEER:parameter_7 , DEER:parameter_8 .
