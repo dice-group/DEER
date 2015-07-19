@@ -1,0 +1,114 @@
+<http://geoknow.org/specsontology/parameter_52>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetProperty10" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://purl.org/ontology/mo/published_as11" .
+
+<http://geoknow.org/specsontology/parameter_46>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceProperty5" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://purl.org/dc/elements/1.1/format" .
+
+<http://geoknow.org/specsontology/dataset_1>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/inputFile>
+                "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/complex_pipeline_learner/jamendo/cbd_1_examples.ttl" .
+
+<http://geoknow.org/specsontology/parameter_50>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceProperty1" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" .
+
+<http://geoknow.org/specsontology/parameter_55>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetProperty2" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type3" .
+
+<http://geoknow.org/specsontology/parameter_44>
+        a       <http://geoknow.org/specsontology/AuthorityConformationModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetSubjectAuthority" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://example.com/resource/" .
+
+<http://geoknow.org/specsontology/parameter_49>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetProperty6" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://purl.org/dc/elements/1.1/format7" .
+
+<http://geoknow.org/specsontology/parameter_53>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceProperty9" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://purl.org/ontology/mo/published_as" .
+
+<http://geoknow.org/specsontology/authority_conformation_module_10>
+        a       <http://geoknow.org/specsontology/AuthorityConformationModule> , <http://geoknow.org/specsontology/Module> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_1> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_2> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_45> , <http://geoknow.org/specsontology/parameter_44> .
+
+<http://geoknow.org/specsontology/parameter_47>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetProperty8" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://purl.org/ontology/mo/time9" .
+
+<http://geoknow.org/specsontology/predicate_conformation_module_11>
+        a       <http://geoknow.org/specsontology/PredicateConformationModule> , <http://geoknow.org/specsontology/Module> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_2> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_3> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_48> , <http://geoknow.org/specsontology/parameter_54> , <http://geoknow.org/specsontology/parameter_50> , <http://geoknow.org/specsontology/parameter_53> , <http://geoknow.org/specsontology/parameter_55> , <http://geoknow.org/specsontology/parameter_52> , <http://geoknow.org/specsontology/parameter_47> , <http://geoknow.org/specsontology/parameter_51> , <http://geoknow.org/specsontology/parameter_46> , <http://geoknow.org/specsontology/parameter_49> .
+
+<http://geoknow.org/specsontology/dataset_2>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/parameter_51>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceProperty3" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://purl.org/NET/c4dm/timeline.owl#onTimeLine" .
+
+<http://geoknow.org/specsontology/parameter_45>
+        a       <http://geoknow.org/specsontology/AuthorityConformationModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceSubjectAuthority" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://dbtune.org/jamendo/artist" .
+
+<http://geoknow.org/specsontology/parameter_54>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetProperty4" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://purl.org/NET/c4dm/timeline.owl#onTimeLine5" .
+
+<http://geoknow.org/specsontology/parameter_48>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceProperty7" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://purl.org/ontology/mo/time" .
+
+<http://geoknow.org/specsontology/dataset_3>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/outputFile>
+                "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/complex_pipeline_learner/jamendo/cbd_1_examples_manually_enriched.ttl" .

@@ -1,0 +1,11 @@
+<http://example.com/resource//R1>
+        a       <http://dbpedia.org/class/yago/GeographicalArea108574314> , <http://dbpedia.org/class/yago/Town108665504> , <http://dbpedia.org/class/yago/UrbanArea108675967> , <http://dbpedia.org/class/yago/YagoGeoEntity> , <http://dbpedia.org/class/yago/YagoLegalActorGeo> , <http://dbpedia.org/class/yago/Region108630985> , <http://dbpedia.org/class/yago/Object100002684> .
+
+<http://example.com/resource//R4>
+        a       <http://dbpedia.org/ontology/Wikidata:Q532> , <http://dbpedia.org/class/yago/AdministrativeDistrict108491826> , <http://dbpedia.org/class/yago/Municipality108626283> , <http://dbpedia.org/ontology/AdministrativeRegion> .
+
+<http://example.com/resource//R3>
+        a       <http://dbpedia.org/ontology/Region> , <http://dbpedia.org/ontology/Place> , <http://dbpedia.org/ontology/PopulatedPlace> .
+
+<http://example.com/resource//R2>
+        a       <http://www.opengis.net/gml/_Feature> , <http://dbpedia.org/class/yago/CoastalTownsInSouthAustralia> , <http://dbpedia.org/class/yago/Location100027167> , <http://dbpedia.org/class/yago/YagoPermanentlyLocatedEntity> , <http://dbpedia.org/class/yago/TownsInSouthAustralia> , <http://dbpedia.org/class/yago/District108552138> .

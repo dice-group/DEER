@@ -1,0 +1,5 @@
+<http://example.com/resource//R3>
+        a       <http://dbpedia.org/ontology/PopulatedPlace> , <http://dbpedia.org/ontology/Place> , <http://dbpedia.org/ontology/Region> .
+
+<http://example.com/resource//R2>
+        a       <http://dbpedia.org/class/yago/District108552138> , <http://dbpedia.org/class/yago/TownsInSouthAustralia> , <http://dbpedia.org/class/yago/YagoPermanentlyLocatedEntity> , <http://dbpedia.org/class/yago/Location100027167> , <http://dbpedia.org/class/yago/CoastalTownsInSouthAustralia> , <http://www.opengis.net/gml/_Feature> .

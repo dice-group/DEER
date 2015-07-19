@@ -1,0 +1,74 @@
+<http://geoknow.org/specsontology/dataset_1>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/inputFile>
+                "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/complex_pipeline_learner/jamendo/cbd_5_examples.ttl" .
+
+<http://geoknow.org/specsontology/dataset_6>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/parameter_97>
+        a       <http://geoknow.org/specsontology/PredicateConformationModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetProperty2" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type3" .
+
+<http://geoknow.org/specsontology/dataset_4>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/nlp_module_26>
+        a       <http://geoknow.org/specsontology/Module> , <http://geoknow.org/specsontology/NLPModule> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_4> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_6> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_100> .
+
+<http://geoknow.org/specsontology/parameter_100>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/NLPModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "NERType" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "all" .
+
+<http://geoknow.org/specsontology/merge_operator_99>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/MergeOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_5> , <http://geoknow.org/specsontology/dataset_6> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_3> .
+
+<http://geoknow.org/specsontology/dataset_2>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/clone_operator_98>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/CloneOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_2> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_4> , <http://geoknow.org/specsontology/dataset_5> .
+
+<http://geoknow.org/specsontology/predicate_conformation_module_25>
+        a       <http://geoknow.org/specsontology/PredicateConformationModule> , <http://geoknow.org/specsontology/Module> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_1> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_2> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_97> , <http://geoknow.org/specsontology/parameter_96> .
+
+<http://geoknow.org/specsontology/dataset_5>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/parameter_96>
+        a       <http://geoknow.org/specsontology/PredicateConformationModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceProperty1" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" .
+
+<http://geoknow.org/specsontology/dataset_3>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/outputFile>
+                "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/complex_pipeline_learner/jamendo/cbd_5_examples_manually_enriched.ttl" .

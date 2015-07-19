@@ -1,0 +1,32 @@
+<http://geoknow.org/specsontology/dataset_1>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/inputFile>
+                "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/complex_pipeline_learner/test/4_resources_cbds.ttl" .
+
+<http://geoknow.org/specsontology/parameter_13>
+        a       <http://geoknow.org/specsontology/AuthorityConformationModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetSubjectAuthority" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://example.com/resource/" .
+
+<http://geoknow.org/specsontology/dataset_2>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/outputFile>
+                "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/complex_pipeline_learner/test/4_resources_cbds_self_enrichmed.ttl" .
+
+<http://geoknow.org/specsontology/parameter_14>
+        a       <http://geoknow.org/specsontology/AuthorityConformationModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceSubjectAuthority" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://dbpedia.org/resource" .
+
+<http://geoknow.org/specsontology/authority_conformation_module_5>
+        a       <http://geoknow.org/specsontology/AuthorityConformationModule> , <http://geoknow.org/specsontology/Module> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_1> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_2> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_14> , <http://geoknow.org/specsontology/parameter_13> .

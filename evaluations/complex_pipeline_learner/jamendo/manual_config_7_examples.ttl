@@ -1,0 +1,44 @@
+<http://geoknow.org/specsontology/dataset_1>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/inputFile>
+                "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/complex_pipeline_learner/jamendo/cbd_7_examples.ttl" .
+
+<http://geoknow.org/specsontology/parameter_113>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/NLPModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "NERType" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "location" .
+
+<http://geoknow.org/specsontology/dataset_2>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/nlp_module_35>
+        a       <http://geoknow.org/specsontology/NLPModule> , <http://geoknow.org/specsontology/Module> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_1> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_2> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_112> .
+
+<http://geoknow.org/specsontology/parameter_112>
+        a       <http://geoknow.org/specsontology/NLPModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "NERType" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "all" .
+
+<http://geoknow.org/specsontology/nlp_module_36>
+        a       <http://geoknow.org/specsontology/Module> , <http://geoknow.org/specsontology/NLPModule> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_2> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_3> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_113> .
+
+<http://geoknow.org/specsontology/dataset_3>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/outputFile>
+                "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/complex_pipeline_learner/jamendo/cbd_7_examples_manually_enriched.ttl" .

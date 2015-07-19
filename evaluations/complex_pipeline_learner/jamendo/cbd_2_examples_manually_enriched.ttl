@@ -1,0 +1,27 @@
+<http://dbtune.org/jamendo/artist/1396>
+        a       <http://purl.org/ontology/mo/MusicArtist> ;
+        <http://xmlns.com/foaf/0.1/based_near>
+                <http://sws.geonames.org/2968815/> ;
+        <http://xmlns.com/foaf/0.1/homepage>
+                <http://www.myspace.com/bluedazed> ;
+        <http://xmlns.com/foaf/0.1/img>
+                <http://img.jamendo.com/artists/k/kea182.jpg> ;
+        <http://xmlns.com/foaf/0.1/made>
+                <http://dbtune.org/jamendo/record/1388> ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Kea182"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://dbtune.org/jamendo/artist/4180>
+        a       <http://purl.org/ontology/mo/MusicArtist> ;
+        <http://geoknow.org/ontology/relatedTo>
+                <http://scms.eu/Adam_Certamen_Bownik> ;
+        <http://xmlns.com/foaf/0.1/based_near>
+                <http://sws.geonames.org/798544/> ;
+        <http://xmlns.com/foaf/0.1/homepage>
+                <http://bownik.w.interia.pl> ;
+        <http://xmlns.com/foaf/0.1/img>
+                <http://img.jamendo.com/artists/a/adam.certamen.bownik.jpg> ;
+        <http://xmlns.com/foaf/0.1/made>
+                <http://dbtune.org/jamendo/record/7354> , <http://dbtune.org/jamendo/record/4477> , <http://dbtune.org/jamendo/record/4431> , <http://dbtune.org/jamendo/record/3772> , <http://dbtune.org/jamendo/record/5831> , <http://dbtune.org/jamendo/record/5352> , <http://dbtune.org/jamendo/record/5711> , <http://dbtune.org/jamendo/record/4346> , <http://dbtune.org/jamendo/record/4961> , <http://dbtune.org/jamendo/record/5528> , <http://dbtune.org/jamendo/record/5606> , <http://dbtune.org/jamendo/record/5587> , <http://dbtune.org/jamendo/record/4476> , <http://dbtune.org/jamendo/record/5535> , <http://dbtune.org/jamendo/record/5695> , <http://dbtune.org/jamendo/record/4494> , <http://dbtune.org/jamendo/record/5461> , <http://dbtune.org/jamendo/record/5236> , <http://dbtune.org/jamendo/record/4344> , <http://dbtune.org/jamendo/record/5246> , <http://dbtune.org/jamendo/record/4044> , <http://dbtune.org/jamendo/record/4434> , <http://dbtune.org/jamendo/record/5590> , <http://dbtune.org/jamendo/record/6281> , <http://dbtune.org/jamendo/record/4345> , <http://dbtune.org/jamendo/record/5465> , <http://dbtune.org/jamendo/record/6031> , <http://dbtune.org/jamendo/record/5233> ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Adam Certamen Bownik"^^<http://www.w3.org/2001/XMLSchema#string> .

@@ -1,0 +1,136 @@
+<http://geoknow.org/specsontology/dataset_7>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/dataset_10>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/merge_operator_230>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/MergeOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_14> , <http://geoknow.org/specsontology/dataset_15> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_12> .
+
+<http://geoknow.org/specsontology/clone_operator_222>
+        a       <http://geoknow.org/specsontology/CloneOperator> , <http://geoknow.org/specsontology/Operator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_1> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_4> , <http://geoknow.org/specsontology/dataset_3> .
+
+<http://geoknow.org/specsontology/merge_operator_226>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/MergeOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_8> , <http://geoknow.org/specsontology/dataset_9> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_6> .
+
+<http://geoknow.org/specsontology/dataset_6>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/dataset_15>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/parameter_231>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/NLPModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "NERType" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "organization" .
+
+<http://geoknow.org/specsontology/clone_operator_227>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/CloneOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_7> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_10> , <http://geoknow.org/specsontology/dataset_11> .
+
+<http://geoknow.org/specsontology/dataset_5>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/dataset_14>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/dataset_4>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/dataset_13>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/clone_operator_225>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/CloneOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_4> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_7> , <http://geoknow.org/specsontology/dataset_8> .
+
+<http://geoknow.org/specsontology/merge_operator_223>
+        a       <http://geoknow.org/specsontology/MergeOperator> , <http://geoknow.org/specsontology/Operator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_5> , <http://geoknow.org/specsontology/dataset_6> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_2> .
+
+<http://geoknow.org/specsontology/dataset_3>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/dataset_9>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/dataset_12>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/nlp_module_67>
+        a       <http://geoknow.org/specsontology/Module> , <http://geoknow.org/specsontology/NLPModule> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_13> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_15> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_231> .
+
+<http://geoknow.org/specsontology/dataset_11>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/merge_operator_228>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/MergeOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_11> , <http://geoknow.org/specsontology/dataset_12> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_9> .
+
+<http://geoknow.org/specsontology/dataset_2>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/outputFile>
+                "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/complex_pipeline_learner/jamendo/cbd_10_examples_manually_enriched.ttl" .
+
+<http://geoknow.org/specsontology/dataset_8>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/parameter_224>
+        a       <http://geoknow.org/specsontology/NLPModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "NERType" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "person" .
+
+<http://geoknow.org/specsontology/nlp_module_66>
+        a       <http://geoknow.org/specsontology/NLPModule> , <http://geoknow.org/specsontology/Module> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_3> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_5> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_224> .
+
+<http://geoknow.org/specsontology/clone_operator_229>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/CloneOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_10> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_13> , <http://geoknow.org/specsontology/dataset_14> .
+
+<http://geoknow.org/specsontology/dataset_1>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/inputFile>
+                "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/complex_pipeline_learner/jamendo/cbd_10_examples.ttl" .

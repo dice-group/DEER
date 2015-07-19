@@ -1,0 +1,4 @@
+mSpecsMdlNr	mSpecsOprNr	lSpecsMdlNr	lSpecsOprNr	P_0	R_0	F_0	ExampleCount	penaltyWeight	kbManualConfigTime	kbSelfConfigTime	LearningTime	TreeSize	IterationNr	P	R	F
+-----------------------------------------------------------
+mSpecsMdlNr	mSpecsOprNr	lSpecsMdlNr	lSpecsOprNr	P_0	R_0	F_0	ExampleCount	penaltyWeight	kbManualConfigTime	kbSelfConfigTime	LearningTime	TreeSize	IterationNr	P	R	F
+2	0	1	1	0.39719356839543873	0.8201640568504474	0.5351983372089361	2	0.75	0.3118166666666667	0.5822	0.03861666666666667	6	0	0.39719356839543873	0.8201640568504474	0.5351983372089361

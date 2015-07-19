@@ -1,0 +1,32 @@
+<http://geoknow.org/specsontology/dataset_1>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/inputFile>
+                "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/complex_pipeline_learner/test/cbd_2_examples.ttl" .
+
+<http://geoknow.org/specsontology/parameter_1>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceProperty1" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" .
+
+<http://geoknow.org/specsontology/dataset_2>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/outputFile>
+                "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/complex_pipeline_learner/test/cbd_2_examples_manual_enrichmed.ttl" .
+
+<http://geoknow.org/specsontology/parameter_2>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/PredicateConformationModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetProperty2" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type3" .
+
+<http://geoknow.org/specsontology/predicate_conformation_module_1>
+        a       <http://geoknow.org/specsontology/Module> , <http://geoknow.org/specsontology/PredicateConformationModule> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_1> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_2> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_1> , <http://geoknow.org/specsontology/parameter_2> .

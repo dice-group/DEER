@@ -1,0 +1,2 @@
+<http://dbpedia.org/resource/R3>
+        a       <http://dbpedia.org/ontology/PopulatedPlace> , <http://dbpedia.org/ontology/Place> , <http://dbpedia.org/ontology/Region> .

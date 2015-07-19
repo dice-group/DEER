@@ -1,0 +1,12 @@
+<http://example.com/resource//1396>
+        a       <http://purl.org/ontology/mo/MusicArtist> ;
+        <http://xmlns.com/foaf/0.1/based_near>
+                <http://sws.geonames.org/2968815/> ;
+        <http://xmlns.com/foaf/0.1/homepage>
+                <http://www.myspace.com/bluedazed> ;
+        <http://xmlns.com/foaf/0.1/img>
+                <http://img.jamendo.com/artists/k/kea182.jpg> ;
+        <http://xmlns.com/foaf/0.1/made>
+                <http://dbtune.org/jamendo/record/1388> ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Kea182"^^<http://www.w3.org/2001/XMLSchema#string> .

@@ -1,0 +1,97 @@
+<http://geoknow.org/specsontology/dataset_7>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/filter_module_4>
+        a       <http://geoknow.org/specsontology/Module> , <http://geoknow.org/specsontology/FilterModule> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_7> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_9> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_12> .
+
+<http://geoknow.org/specsontology/clone_operator_10>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/CloneOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_5> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_7> , <http://geoknow.org/specsontology/dataset_8> .
+
+<http://geoknow.org/specsontology/dataset_6>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/parameter_9>
+        a       <http://geoknow.org/specsontology/AuthorityConformationModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "sourceSubjectAuthority" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://dbpedia.org/resource" .
+
+<http://geoknow.org/specsontology/authority_conformation_module_3>
+        a       <http://geoknow.org/specsontology/AuthorityConformationModule> , <http://geoknow.org/specsontology/Module> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_3> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_5> ;
+        <http://geoknow.org/specsontology/hasParameter>
+                <http://geoknow.org/specsontology/parameter_9> , <http://geoknow.org/specsontology/parameter_8> .
+
+<http://geoknow.org/specsontology/parameter_12>
+        a       <http://geoknow.org/specsontology/ModuleParameter> , <http://geoknow.org/specsontology/FilterModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "triplesPattern" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type " .
+
+<http://geoknow.org/specsontology/dataset_5>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/parameter_8>
+        a       <http://geoknow.org/specsontology/AuthorityConformationModuleParameter> , <http://geoknow.org/specsontology/ModuleParameter> ;
+        <http://geoknow.org/specsontology/hasKey>
+                "targetSubjectAuthority" ;
+        <http://geoknow.org/specsontology/hasValue>
+                "http://example.com/resource/" .
+
+<http://geoknow.org/specsontology/merge_operator_11>
+        a       <http://geoknow.org/specsontology/Operator> , <http://geoknow.org/specsontology/MergeOperator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_8> , <http://geoknow.org/specsontology/dataset_9> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_6> .
+
+<http://geoknow.org/specsontology/dataset_4>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/merge_operator_7>
+        a       <http://geoknow.org/specsontology/MergeOperator> , <http://geoknow.org/specsontology/Operator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_4> , <http://geoknow.org/specsontology/dataset_6> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_2> .
+
+<http://geoknow.org/specsontology/dataset_3>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/clone_operator_6>
+        a       <http://geoknow.org/specsontology/CloneOperator> , <http://geoknow.org/specsontology/Operator> ;
+        <http://geoknow.org/specsontology/hasInput>
+                <http://geoknow.org/specsontology/dataset_1> ;
+        <http://geoknow.org/specsontology/hasOutput>
+                <http://geoknow.org/specsontology/dataset_4> , <http://geoknow.org/specsontology/dataset_3> .
+
+<http://geoknow.org/specsontology/dataset_9>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/dataset_2>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/outputFile>
+                "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/complex_pipeline_learner/test/4_resources_cbds_manually_enriched.ttl" .
+
+<http://geoknow.org/specsontology/dataset_8>
+        a       <http://geoknow.org/specsontology/Dataset> .
+
+<http://geoknow.org/specsontology/dataset_1>
+        a       <http://geoknow.org/specsontology/Dataset> ;
+        <http://geoknow.org/specsontology/inputFile>
+                "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/complex_pipeline_learner/test/4_resources_cbds.ttl" .
