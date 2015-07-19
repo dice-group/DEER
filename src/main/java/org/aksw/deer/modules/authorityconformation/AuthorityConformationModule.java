@@ -39,9 +39,9 @@ public class AuthorityConformationModule implements DeerModule{
 	private String 	targetSubjectAuthority = "";
 
 	// parameters keys
-	public static final String SOURCE_SUBJET_AUTHORITY 		= "sourceSubjectAuthority";
+	public static final String SOURCE_SUBJET_AUTHORITY 			= "sourceSubjectAuthority";
 	public static final String SOURCE_SUBJECT_AUTHORITY_DESC	= "Source subject authority to be replaced by Target subject authority.";
-	public static final String TARGET_SUBJET_AUTHORITY 		= "targetSubjectAuthority";
+	public static final String TARGET_SUBJET_AUTHORITY 			= "targetSubjectAuthority";
 	public static final String TARGET_SUBJECT_AUTHORITY_DESC	= "Target subject authority to replace the source subject authority.";
 
 	/**

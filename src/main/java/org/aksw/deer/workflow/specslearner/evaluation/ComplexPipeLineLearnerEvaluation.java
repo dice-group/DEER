@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.aksw.deer.helper.datastructure.FMeasure;
 import org.aksw.deer.io.Reader;
+import org.aksw.deer.io.Writer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
 import org.aksw.deer.workflow.specslearner.ComplexPipeLineLearner;
@@ -33,9 +34,10 @@ import com.hp.hpl.jena.rdf.model.Resource;
  */
 public class ComplexPipeLineLearnerEvaluation{
 	private static final Logger logger = Logger.getLogger(ComplexPipeLineLearnerEvaluation.class.getName());
-	static String resultStr =
+	static String resultStr = new String();
+	static final String RESULT_HEADER=
 			"mSpecsMdlNr"  + "\t" +
-			"mSpecsOprNr"  + "\t" +
+					"mSpecsOprNr"  + "\t" +
 
 			"lSpecsMdlNr" + "\t" +
 			"lSpecsOprNr" + "\t" +
@@ -54,7 +56,7 @@ public class ComplexPipeLineLearnerEvaluation{
 			"P" + "\t" +
 			"R" + "\t" +
 			"F\n";
-	public double TIME_DEV = 60000d; // minutes
+	public final double TIME_DEV = 60000d; // minutes
 
 	public void test(String inputKBFile, int maxSpecSize, double maxSpecComplexity) throws IOException {
 		Model s = Reader.readModel(inputKBFile);
@@ -92,123 +94,124 @@ public class ComplexPipeLineLearnerEvaluation{
 			int specsSize,
 			double specsComplexity,
 			String authority, 
-			int examplesCount, 
+			int exCount, 
 			double penaltyWeight) throws IOException
-			{
+	{
 		String folder = kbInputFile.substring(0, kbInputFile.lastIndexOf("/")+1);
-		Model kb = Reader.readModel(kbInputFile);
+		Model kbMdl = Reader.readModel(kbInputFile);
 		String kbManuallyEnrichedOutputFile = kbInputFile.substring(0,kbInputFile.lastIndexOf(".")) + "_manually_enriched.ttl";
-		Model mSpecs = ModelFactory.createDefaultModel();
+		Model manualSpecsMdl = ModelFactory.createDefaultModel();
 		//		mSpecs.write(System.out,"TTL");
 		//		List<Resource> resources = getNResources(authority, kb, exampleCount);
-		List<Resource> resources = SimplePipelineLearnerEvaluation.getAllResourcesWithAuthority(authority, kb);
-		Model cbd;
-		String cbdOutputFile = new String(), cbdMSpecsOutputFile = new String();
-		Model manuallyEnrichedCBD = ModelFactory.createDefaultModel();
+		List<Resource> resources = SimplePipelineLearnerEvaluation.getAllResourcesWithAuthority(authority, kbMdl);
+		Model cbdMdl;
+		String cbdOutFile = new String(), cbdMSpecsOutputFile = new String();
+		Model manuallyEnrichedCBDMdl = ModelFactory.createDefaultModel();
 		do{
-//			System.out.println("----------------------- mSpecs OLD --------------------------");
-//			mSpecs.write(System.out,"TTL");
-			mSpecs = RandomSpecsGenerator.generateSpecs(kbInputFile, kbManuallyEnrichedOutputFile, specsSize, specsComplexity);
-//			System.out.println("----------------------- mSpecs NEW --------------------------");
-//			mSpecs.write(System.out,"TTL");
+			//			System.out.println("----------------------- mSpecs OLD --------------------------");
+			//			mSpecs.write(System.out,"TTL");
+			manualSpecsMdl = RandomSpecsGenerator.generateSpecs(kbInputFile, kbManuallyEnrichedOutputFile, specsSize, specsComplexity);
+
+			//			System.out.println("----------------------- mSpecs NEW --------------------------");
+			//			manualSpecsMdl.write(System.out,"TTL");
 			// (1) Generate CBDs for all positive examples and save it
-			cbd = generateCBDsModel(kb, examplesCount, resources);
-			cbdOutputFile = folder + "cbd_" + examplesCount + "_examples.ttl";
-//			Writer.writeModel(cbd, "TTL", cbdOutputFile);
+			cbdMdl = generateCBDsModel(kbMdl, exCount, resources);
+			cbdOutFile = folder + "cbd_" + exCount + "_examples.ttl";
+			Writer.writeModel(cbdMdl, "TTL", cbdOutFile);
 
 			// (2) Generate a manual-config file to the generated CBDs in (1) and save it
-			mSpecs = SimplePipelineLearnerEvaluation.changeInputFile(mSpecs, null, cbdOutputFile);
-			//			mSpecs.write(System.out,"TTL");
-			cbdMSpecsOutputFile = folder + "cbd_" + examplesCount + "_examples_manually_enriched.ttl";
+			manualSpecsMdl = SimplePipelineLearnerEvaluation.changeInputFile(manualSpecsMdl, null, cbdOutFile);
+			//			manualSpecsMdl.write(System.out,"TTL");
+			cbdMSpecsOutputFile = folder + "cbd_" + exCount + "_examples_manually_enriched.ttl";
 
-			//			mSpecs = SimplePipelineLearnerEvaluation.changeOutputFile(mSpecs, kbMOutputFile , cbdMSpecsOutputFile);
-			mSpecs = SimplePipelineLearnerEvaluation.changeOutputFile(mSpecs, kbManuallyEnrichedOutputFile , cbdMSpecsOutputFile);
-			//			mSpecs.write(System.out,"TTL");
-//			String cbdManualConfigOutputFile =  folder + "manual_config_" + examplesCount +"_examples.ttl";
-//			Writer.writeModel(mSpecs, "TTL", cbdManualConfigOutputFile);
+			//			manualSpecsMdl = SimplePipelineLearnerEvaluation.changeOutputFile(mSpecs, kbMOutputFile , cbdMSpecsOutputFile);
+			manualSpecsMdl = SimplePipelineLearnerEvaluation.changeOutputFile(manualSpecsMdl, kbManuallyEnrichedOutputFile , cbdMSpecsOutputFile);
+			//			manualSpecsMdl.write(System.out,"TTL");
+			String cbdManualSpecOutputFile =  folder + "manual_config_" + exCount +"_examples.ttl";
+			Writer.writeModel(manualSpecsMdl, "TTL", cbdManualSpecOutputFile);
 
 			// (3) run the config generated in(2) and save result
-//			System.out.println("----------------------- mSpecs --------------------------");
-//			mSpecs.write(System.out,"TTL");
-//			System.out.println("----------------------- CBDs --------------------------");
-//			cbd.write(System.out,"TTL");
-			manuallyEnrichedCBD = RDFConfigExecuter.simpleExecute(mSpecs);
-//			System.out.println("----------------------- manuallyEnrichedCBD --------------------------");
-//			manuallyEnrichedCBD.write(System.out,"TTL");
-		}while(manuallyEnrichedCBD.isIsomorphicWith(cbd));
+			//			System.out.println("----------------------- mSpecs --------------------------");
+			//			mSpecs.write(System.out,"TTL");
+			//			System.out.println("----------------------- CBDs --------------------------");
+			//			cbd.write(System.out,"TTL");
+			manuallyEnrichedCBDMdl = RDFConfigExecuter.simpleExecute(manualSpecsMdl);
+			//			System.out.println("----------------------- manuallyEnrichedCBD --------------------------");
+			//			manuallyEnrichedCBD.write(System.out,"TTL");
+		}while(manuallyEnrichedCBDMdl.isIsomorphicWith(cbdMdl));
 
 		// (4) Generate self-config and save it
-		ComplexPipeLineLearner learner = new ComplexPipeLineLearner(cbd, manuallyEnrichedCBD, penaltyWeight);
+		ComplexPipeLineLearner learner = new ComplexPipeLineLearner(cbdMdl, manuallyEnrichedCBDMdl, penaltyWeight);
 		long start = System.currentTimeMillis();
 		RefinementNode bestSolution = learner.learnComplexSpecs();
 		if(bestSolution.configModel.equals(null)){
 			logger.error("NO Specs learned");
 		}
 		long learningTime = System.currentTimeMillis() - start;
-//		Model selfConfEnrichedCBD = bestSolution.getOutputModel();
-//		String selfConfEnrichedCbdOutputFile =  folder + "cbd" + examplesCount + "s.ttl";
-//		Writer.writeModel(selfConfEnrichedCBD, "TTL",  selfConfEnrichedCbdOutputFile);
+		//		Model selfConfEnrichedCBD = bestSolution.getOutputModel();
+		//		String selfConfEnrichedCbdOutputFile =  folder + "cbd" + examplesCount + "s.ttl";
+		//		Writer.writeModel(selfConfEnrichedCBD, "TTL",  selfConfEnrichedCbdOutputFile);
 		Model lSpecs = bestSolution.configModel;
-//		String cbdSelfConfigOutputFile =  folder + "s_config" + examplesCount + ".ttl";
-//		Writer.writeModel(lSpecs, "TTL", cbdSelfConfigOutputFile);
+		//		String cbdSelfConfigOutputFile =  folder + "s_config" + examplesCount + ".ttl";
+		//		Writer.writeModel(lSpecs, "TTL", cbdSelfConfigOutputFile);
 
 		// (5) Compare manual and self-config in the entire KB
 		// I. Generate KBManualConfig and save it
-		Model KBManualConfig = ModelFactory.createDefaultModel();
+		Model kbManualSpecMdl = ModelFactory.createDefaultModel();
 		if(kbSampleFile.isEmpty()){
-			KBManualConfig = SimplePipelineLearnerEvaluation.changeInputFile(mSpecs, cbdOutputFile, kbInputFile);
+			kbManualSpecMdl = SimplePipelineLearnerEvaluation.changeInputFile(manualSpecsMdl, cbdOutFile, kbInputFile);
 		}else{
-			KBManualConfig = SimplePipelineLearnerEvaluation.changeInputFile(mSpecs, cbdOutputFile, kbSampleFile);
+			kbManualSpecMdl = SimplePipelineLearnerEvaluation.changeInputFile(manualSpecsMdl, cbdOutFile, kbSampleFile);
 		}
-		KBManualConfig = SimplePipelineLearnerEvaluation.changeOutputFile(KBManualConfig, cbdMSpecsOutputFile , kbManuallyEnrichedOutputFile);
-		KBManualConfig.setNsPrefixes(mSpecs);
-//		String KBManualConfigOutputFile =  folder + "kb_m_config" + examplesCount + ".ttl";
-//		Writer.writeModel(KBManualConfig, "TTL", KBManualConfigOutputFile);
+		kbManualSpecMdl = SimplePipelineLearnerEvaluation.changeOutputFile(kbManualSpecMdl, cbdMSpecsOutputFile , kbManuallyEnrichedOutputFile);
+		kbManualSpecMdl.setNsPrefixes(manualSpecsMdl);
+		//		String KBManualConfigOutputFile =  folder + "kb_m_config" + examplesCount + ".ttl";
+		//		Writer.writeModel(KBManualConfig, "TTL", KBManualConfigOutputFile);
 
 		// II. Generate manuallyEnrichedKB by applying KBManualConfig to the entire KB and save it
 		start = System.currentTimeMillis();
-		Model manuallyEnrichedKB = RDFConfigExecuter.simpleExecute(KBManualConfig);
+		Model manuallyEnrichedKB = RDFConfigExecuter.simpleExecute(kbManualSpecMdl);
 		long manualConfigKBTime = System.currentTimeMillis() - start;
 
 		// III. Generate KBSelfConfig and save it
 		String inputFile = "inputFile.ttl";
-		Model KBSelfConfig = ModelFactory.createDefaultModel();
+		Model kbSelfConfigMdl = ModelFactory.createDefaultModel();
 		if(kbSampleFile.isEmpty()){
-			KBSelfConfig = SimplePipelineLearnerEvaluation.changeInputFile(lSpecs, inputFile, kbInputFile);
+			kbSelfConfigMdl = SimplePipelineLearnerEvaluation.changeInputFile(lSpecs, inputFile, kbInputFile);
 		}else{
-			KBSelfConfig = SimplePipelineLearnerEvaluation.changeInputFile(lSpecs, inputFile, kbSampleFile);
+			kbSelfConfigMdl = SimplePipelineLearnerEvaluation.changeInputFile(lSpecs, inputFile, kbSampleFile);
 		}
-		String outputFile = "outputFile.ttl";
-		String kbSOutputFile = kbInputFile.substring(0,kbInputFile.lastIndexOf(".")) + "_self_enrichmed.ttl";
-		KBSelfConfig = SimplePipelineLearnerEvaluation.changeOutputFile(KBSelfConfig, outputFile , kbSOutputFile);
-		KBSelfConfig.setNsPrefixes(mSpecs);
-//		String KBSelfConfigOutputFile =  folder + "kb_s_config" + examplesCount + ".ttl";
-//		Writer.writeModel(KBSelfConfig, "TTL", KBSelfConfigOutputFile);
+		String outFile = "outputFile.ttl";
+		String kbSOutFile = kbInputFile.substring(0,kbInputFile.lastIndexOf(".")) + "_self_enrichmed.ttl";
+		kbSelfConfigMdl = SimplePipelineLearnerEvaluation.changeOutputFile(kbSelfConfigMdl, outFile , kbSOutFile);
+		kbSelfConfigMdl.setNsPrefixes(manualSpecsMdl);
+		//		String KBSelfConfigOutputFile =  folder + "kb_s_config" + examplesCount + ".ttl";
+		//		Writer.writeModel(KBSelfConfig, "TTL", KBSelfConfigOutputFile);
 
 		// IV. Generate selfConfigEnrichedKB by applying the self config to the entire KB 
 		start = System.currentTimeMillis();
-		Model selfConfigEnrichedKB = RDFConfigExecuter.simpleExecute(KBSelfConfig);
+		Model selfConfigEnrichedKB = RDFConfigExecuter.simpleExecute(kbSelfConfigMdl);
 		long selfConfigKBTime = System.currentTimeMillis() - start;
-//		String selfConfigEnrichedKBoutputFile =  folder + "kb" + examplesCount + "s.ttl";
-//		Writer.writeModel(selfConfigEnrichedKB, "TTL", selfConfigEnrichedKBoutputFile);
+		//		String selfConfigEnrichedKBoutputFile =  folder + "kb" + examplesCount + "s.ttl";
+		//		Writer.writeModel(selfConfigEnrichedKB, "TTL", selfConfigEnrichedKBoutputFile);
 
 		// V. compare manuallyEnrichedKB vs selfConfigEnrichedKB
 		FMeasure fMeasure = FMeasure.computePRF(selfConfigEnrichedKB, manuallyEnrichedKB);
-//		System.out.println("----------------------- KB --------------------------");
-//		kb.write(System.out,"TTL");
-//		System.out.println("----------------------- manuallyEnrichedKB --------------------------");
-//		manuallyEnrichedKB.write(System.out,"TTL");
-		FMeasure f0 = FMeasure.computePRF(kb, manuallyEnrichedKB);
+		//		System.out.println("----------------------- KB --------------------------");
+		//		kb.write(System.out,"TTL");
+		//		System.out.println("----------------------- manuallyEnrichedKB --------------------------");
+		//		manuallyEnrichedKB.write(System.out,"TTL");
+		FMeasure f0 = FMeasure.computePRF(kbMdl, manuallyEnrichedKB);
 
 		// add results
-		resultStr += RDFConfigAnalyzer.getModules(mSpecs).size()+ "\t";
-		resultStr += RDFConfigAnalyzer.getOperators(mSpecs).size()+ "\t";
+		resultStr += RDFConfigAnalyzer.getModules(manualSpecsMdl).size()+ "\t";
+		resultStr += RDFConfigAnalyzer.getOperators(manualSpecsMdl).size()+ "\t";
 		resultStr += RDFConfigAnalyzer.getModules(lSpecs).size()+ "\t";
 		resultStr += RDFConfigAnalyzer.getOperators(lSpecs).size()+ "\t";
 		resultStr += f0.P + "\t";
 		resultStr += f0.R+ "\t";
 		resultStr += f0.F + "\t";
-		resultStr += examplesCount + "\t";
+		resultStr += exCount + "\t";
 		resultStr += penaltyWeight + "\t";
 		resultStr += (manualConfigKBTime/ TIME_DEV) + "\t";
 		resultStr += (selfConfigKBTime/ TIME_DEV) + "\t";
@@ -220,8 +223,9 @@ public class ComplexPipeLineLearnerEvaluation{
 		resultStr += fMeasure.F + "\n";
 
 		System.out.println("**********************************");
-		System.out.println(resultStr);
-		System.out.println("**********************************");		
+		System.out.println(RESULT_HEADER + resultStr);
+		System.out.println("**********************************");	
+		learner.refinementTreeRoot.print();
 		return resultStr;
 	}
 
@@ -270,18 +274,27 @@ public class ComplexPipeLineLearnerEvaluation{
 	}
 
 
-
 	public static void main(String args[]) throws IOException{
-		String folder = "/home/sherif/JavaProjects/GeoKnow/GeoLift/evaluations/complex_pipeline_learner/test/";
-		//		String kbFile = folder +"1000_resources_cbds.ttl";
-		String kbFile = folder +"4_resources_cbds.ttl";
-		String kbSampleFile = ""; //folder +"100_resources_cbd.ttl";
-		for(int i = 1 ; i <= 1 ; i++){
-			ComplexPipeLineLearnerEvaluation e = new ComplexPipeLineLearnerEvaluation();
-//			String manualConfigFile = folder + "m" + i +".ttl";
-			String authority = "http://dbpedia.org/resource/";
-			resultStr += "-----------------------------------------------------------\n" + 
-					e.testExampleCount(kbFile, kbSampleFile, 2, 0.5, authority, 2, 0.75);
+		if(args.length < 6){
+			logger.error("Parameters: kbFile kbSampleFile authority specComplexity Min_MaxSpecSize Min_MaxExampleNr" );
+			System.exit(1);
+		}
+		int i = 0;
+		String kbFile 			= args[i]; i++;
+		String kbSampleFile 	= args[i]; i++;
+		String authority 		= args[i]; i++;
+		double specComplexity 	= Double.parseDouble(args[i]); i++;
+		int minSpecSize			= Integer.parseInt(args[i].substring(0, args[i].lastIndexOf("_")));
+		int maxSpecSize 		= Integer.parseInt(args[i].substring(args[i].lastIndexOf("_")+1,args[i].length())); i++;
+		int minExampleNr			= Integer.parseInt(args[i].substring(0, args[i].lastIndexOf("_"))); 
+		int maxExampleNr 		= Integer.parseInt(args[i].substring(args[i].lastIndexOf("_")+1,args[i].length())); i++;
+		String folder = kbFile.substring(0, kbFile.lastIndexOf("/")+1); i++;
+		for(int exampleNr = minExampleNr ; exampleNr <= maxExampleNr ; exampleNr++){
+			for(int specsize = minSpecSize ; specsize <= maxSpecSize ; specsize++){
+				logger.info("=============================================== Testing for specs size " + specsize +", with complexity " + specComplexity + "==========================================");
+				ComplexPipeLineLearnerEvaluation e = new ComplexPipeLineLearnerEvaluation();
+				resultStr += e.testExampleCount(kbFile, kbSampleFile, specsize, specComplexity, authority, exampleNr, 0.75);
+			}
 		}
 		System.out.println("resultStr");
 		File file = new File(folder + "result.txt");
@@ -290,8 +303,32 @@ public class ComplexPipeLineLearnerEvaluation{
 		}
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(resultStr);
+		bw.write(RESULT_HEADER + resultStr);
 		bw.close();
 	}
+	//	public static void main(String args[]) throws IOException{
+	//		String folder = "/home/sherif/JavaProjects/GeoKnow/DEER/evaluations/complex_pipeline_learner/jamendo/";
+	//		//		String kbFile = folder +"1000_resources_cbds.ttl";
+	//		String kbFile = folder + "jamendo.ttl"; //"4_resources_cbds.ttl";
+	//		String kbSampleFile = ""; //folder +"100_resources_cbd.ttl";
+	//		double specComplexity = 0.4;
+	//		for(int specsize = 1 ; specsize <= 5 ; specsize++){
+	//			logger.info("=============================================== Testing for spec size " + specsize +", with complexity " + specComplexity + "==========================================");
+	//			ComplexPipeLineLearnerEvaluation e = new ComplexPipeLineLearnerEvaluation();
+	//			//			String manualConfigFile = folder + "m" + i +".ttl";
+	//			//			String authority = "http://dbpedia.org/resource/";
+	//			String authority = "http://dbtune.org/jamendo/artist/";
+	//			resultStr += e.testExampleCount(kbFile, kbSampleFile, specsize, specComplexity, authority, 2, 0.75);
+	//		}
+	//		//		System.out.println("resultStr");
+	//		File file = new File(folder + "result.txt");
+	//		if (!file.exists()) {
+	//			file.createNewFile();
+	//		}
+	//		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+	//		BufferedWriter bw = new BufferedWriter(fw);
+	//		bw.write(RESULT_HEADER + resultStr);
+	//		bw.close();
+	//	}
 
 }

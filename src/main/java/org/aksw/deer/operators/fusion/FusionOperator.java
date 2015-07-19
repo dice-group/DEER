@@ -89,7 +89,6 @@ public class FusionOperator implements DeerOperator {
 	 */
 	public List<String> getParameters() {
 		List<String> parameters = new ArrayList<String>();
-		parameters.add("cloneCount");
 		return parameters;
 	}
 	

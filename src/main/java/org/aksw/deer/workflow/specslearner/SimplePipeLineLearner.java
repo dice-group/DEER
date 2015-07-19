@@ -44,7 +44,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
 	public int iterationNr = 0;
 
 	private final double 	MAX_FITNESS_THRESHOLD = 1; 
-	private final long 	MAX_TREE_SIZE = 50;
+	private final long 		MAX_TREE_SIZE = 50;
 	public final double 	CHILDREN_PENALTY_WEIGHT   = 1; 
 	public final double 	COMPLEXITY_PENALTY_WEIGHT = 1;
 

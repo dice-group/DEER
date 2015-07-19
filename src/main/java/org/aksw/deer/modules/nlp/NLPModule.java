@@ -46,6 +46,17 @@ import org.aksw.fox.binding.java.FoxResponse;
 import org.aksw.fox.binding.java.IFoxApi;
 import org.aksw.fox.binding.java.FoxParameter.OUTPUT;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 //import org.junit.Test;
 import org.apache.log4j.Logger;
 
@@ -57,7 +68,9 @@ public class NLPModule implements DeerModule{
 	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
 
 	private static String dbpediaEndPoint = "http://dbpedia.org/sparql";
-	
+//	private static String FOX_SERVICE_URI = "http://fox-demo.aksw.org/call/ner/entities";
+	private static String FOX_SERVICE_URI = "http://sake.informatik.uni-leipzig.de:4444/call/ner/entities";
+
 	public static final String ORGANIZATION 	= "organization";
 	public static final String LOCATION 		= "location";
 	public static final String PERSON 		= "person";
@@ -387,7 +400,6 @@ public class NLPModule implements DeerModule{
 	 * @author sherif
 	 */
 	public Model getEnrichrdTriples(){
-
 		Model resultModel = ModelFactory.createDefaultModel();
 		StmtIterator stItr = model.listStatements(null, literalProperty, (RDFNode) null);
 		logger.info("--------------- Added triples through  NLP ---------------");
@@ -396,16 +408,8 @@ public class NLPModule implements DeerModule{
 			Statement st = stItr.nextStatement();
 			RDFNode object = st.getObject();
 			RDFNode subject = st.getSubject();
-			try{
-				if(object.isLiteral()){
-					IFoxApi fox = new FoxApi();
-					FoxResponse foxRes = fox.setInput(object.toString()).setOutputFormat(OUTPUT.TURTLE).send();
-					namedEntityModel.read(new StringReader(foxRes.getOutput().trim()), null, "TTL");
-
-				}
-			}catch (Exception e) {
-				logger.error(e);
-				logger.error(object.toString());
+			if(object.isLiteral()){
+				namedEntityModel = runFOX(object);
 			}
 			if(!namedEntityModel.isEmpty()){
 				if(NEType.equalsIgnoreCase("all")){ // Extract all NE (Generalization of GeoLift)
@@ -421,6 +425,49 @@ public class NLPModule implements DeerModule{
 		}
 		resultModel.add(model);
 		return resultModel;
+	}
+
+
+	private Model runFOX(RDFNode object) {
+		Model namedEntityModel = ModelFactory.createDefaultModel();
+		try {
+			// request FOX
+			Response response = Request
+					.Post(FOX_SERVICE_URI)
+					.addHeader("Content-type", "application/json")
+					.addHeader("Accept-Charset", "UTF-8")
+					.body(new StringEntity(new JSONObject()
+					.put("input", object.toString())
+					.put("type", "text").put("task", "ner")
+					.put("output", "TTL").toString(),
+					ContentType.APPLICATION_JSON)).execute();
+			HttpResponse httpResponse = response.returnResponse();
+			HttpEntity entry = httpResponse.getEntity();
+			namedEntityModel.read(entry.getContent(), null, "TTL");
+			//				System.out.println(IOUtils.toString(entry.getContent()));
+			EntityUtils.consume(entry);
+		} catch (Exception e) {
+			logger.error( "Got an exception while communicating with the FOX web service.");
+			System.out.println(e);
+		}
+		return namedEntityModel;
+	}
+
+
+	private Model runFOX_old(RDFNode object) {
+		Model namedEntityModel = ModelFactory.createDefaultModel();
+		try{
+			IFoxApi fox = new FoxApi();
+			FoxResponse foxRes = fox
+					.setApiURL(new URL(FOX_SERVICE_URI))
+					.setInput(object.toString())
+					.setOutputFormat(OUTPUT.TURTLE).send();
+			namedEntityModel.read(new StringReader(foxRes.getOutput().trim()), null, "TTL");
+		}catch (Exception e) {
+			logger.error(e);
+			logger.error(object.toString());
+		}
+		return namedEntityModel;
 	}
 
 
@@ -614,24 +661,5 @@ public class NLPModule implements DeerModule{
 	public Resource getType(){
 		return SPECS.NLPModule;
 	}
-	
-//	/**
-//	 * @param source
-//	 * @param target
-//	 * @return
-//	 * @author sherif
-//	 */
-//	private Set<Resource> getDiffUriObjects(Model source, Model target) {
-//		Set<Resource> uriObjects = new HashSet<Resource>();
-//		Model diff = target.remove(source);
-//		NodeIterator objects = diff.listObjects();
-//		while(objects.hasNext()){
-//			RDFNode o = objects.next();
-//			if(o.isURIResource()){
-//				uriObjects.add(o.asResource());
-//			}
-//		}
-//		return uriObjects;
-//	}
 
 }

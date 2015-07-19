@@ -90,7 +90,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 		}
 		refinementTreeRoot.print();
 		mostPromisingNode = getMostPromisingNode(refinementTreeRoot, penaltyWeight);
-		while(mostPromisingNode.equals(null) &&
+		while(!mostPromisingNode.equals(null) &&
 			  (mostPromisingNode.getValue().fitness) < MAX_FITNESS_THRESHOLD &&
 			   refinementTreeRoot.size() <= MAX_TREE_SIZE)
 		{
@@ -98,11 +98,16 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 			logger.info("Most Promising Node: " + mostPromisingNode.getValue());
 //			mostPromisingNode.getValue().configModel.write(System.out,"TTL");
 			List<TreeX<RefinementNode>> oldChildren = mostPromisingNode.getchildren();
-			if(mostPromisingNode == expand(mostPromisingNode, oldChildren)){
+			TreeX<RefinementNode> expandNode = expand(mostPromisingNode, oldChildren);
+			if(expandNode.getValue() == null || mostPromisingNode == expandNode){
 				logger.error("Learner can not learn any more Specs! Stop here.");
+				//remove expandNode
+				expandNode.getParent().removeChild(expandNode);
+				refinementTreeRoot.print();
 				break;
 			}
 			refinementTreeRoot.print();
+			iterationNr++;
 		}
 
 		RefinementNode bestSolution = getMostPromisingNode(refinementTreeRoot, 0).getValue();
@@ -292,6 +297,11 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 
 
 
+	/**
+	 * @param rootValue
+	 * @return
+	 * @author sherif
+	 */
 	private List<RefinementNode> getLeftRightNodesValues(RefinementNode rootValue) {
 		RefinementNode left = null;
 		RefinementNode right = null;
@@ -299,9 +309,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 			Model inputModel = rootValue.getOutputModel();
 			Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
 			logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
-			if(parameters == null || parameters.size() == 0){
-				continue; // Dead node
-			}else{
+			if(parameters != null && parameters.size() > 0){ // if not a dead node
 				Model currentMdl = module.process(inputModel, parameters);
 				if(currentMdl == null || currentMdl.size() == 0 || currentMdl.isIsomorphicWith(inputModel)){
 					continue; // Dead node

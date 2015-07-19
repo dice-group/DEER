@@ -47,7 +47,7 @@ public class RandomSpecsGenerator {
 	private static List<DeerModule> deerModules = ModuleFactory.getImplementations();
 	private static List<DeerOperator> deerOperators = OperatorFactory.getImplementations();
 
-
+	
 	/**
 	 * @param inputDataFile
 	 * @param outputDataFile
@@ -70,7 +70,7 @@ public class RandomSpecsGenerator {
 	 * @return a random configuration file 
 	 * @author sherif
 	 */
-	public static Model generateSpecs(String inputDataFile, int size, double complexity){	
+	public static Model generateSpecs(String inputDataFile, int size, double complexity){
 		Model inputDataModel = Reader.readModel(inputDataFile);
 		Model specsModel = generateSpecs(inputDataModel, size, complexity);
 		Resource firstDataset = ResourceFactory.createResource(SPECS.uri + "dataset_1");
@@ -86,6 +86,10 @@ public class RandomSpecsGenerator {
 	 * @author sherif
 	 */
 	public static Model generateSpecs(Model inputDataModel, int size, double complexity){
+		if(complexity < 0 || complexity >= 1){
+			logger.error("Specs complexity must be in [0,1[");
+			System.exit(1);
+		}
 		datasetIndex = 1;
 		specsModel = ModelFactory.createDefaultModel();
 		Resource inputDatasetUri  = generateDatasetURI();
@@ -100,14 +104,14 @@ public class RandomSpecsGenerator {
 			}
 			if(Math.random() >= complexity){
 				// Create module  
-				DeerModule module = getRandomModule();
-				logger.info("Generating Module: " + module.getType());
-				Map<String, String> parameters = generateRandomParameters(module, inputDataModel);
-				logger.info("With parameters: " + parameters);
-				if(parameters != null){
-					specsModel = RDFConfigWriter.addModule(module, parameters, specsModel, inputDatasetUri, outputDatasetUri);
-//					specsModel.write(System.out,"TTL");
-				}
+				DeerModule module;
+				Map<String, String> parameters = null;
+				do{
+					module = getRandomModule();
+					parameters = generateRandomParameters(module, inputDataModel);
+				}while(parameters == null);
+				logger.info("Generating Module: " + module.getType() + " with parameters: " + parameters);
+				specsModel = RDFConfigWriter.addModule(module, parameters, specsModel, inputDatasetUri, outputDatasetUri);
 				inputDatasetUri = getRandomDataset();
 			}else{ // Create clone - merge sequence
 				List<Resource> outputDatasetstUris = addCloneOperator(inputDatasetUri);
@@ -120,7 +124,8 @@ public class RandomSpecsGenerator {
 		return specsModel;
 	}
 	
-
+	
+	
 	/**
 	 * @param specsModel2
 	 * @return
@@ -353,8 +358,10 @@ public class RandomSpecsGenerator {
 	public static void main(String[] args) {
 //		Model kb = Reader.readModel(args[0]);
 //		Model m = g.generateSpecs(kb, 5, 0.5);
-		Model m = RandomSpecsGenerator.generateSpecs(args[0], 3, 0.5);
+		Model m = RandomSpecsGenerator.generateSpecs(args[0], 2, .2);
 		m.write(System.out, "TTL");
+		System.out.println("Module count: " + RDFConfigAnalyzer.getModules(m).size());
+		System.out.println("Operators count: " + RDFConfigAnalyzer.getOperators(m).size());
 
 	}
 

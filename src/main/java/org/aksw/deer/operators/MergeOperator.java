@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  */
 public class MergeOperator implements DeerOperator {
-	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
+	private static final Logger logger = Logger.getLogger(MergeOperator.class.getName());
 
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.operators.ModelOperator#run(java.util.List)
