@@ -28,7 +28,14 @@
 			<name>University Leipzig, AKSW Maven2 Snapshot Repository</name>
 			<url>http://maven.aksw.org/repository/snapshots/</url>
 		</repository>
+
+		<!-- <repository> -->
+		<!-- <id>snapshot.maven.aksw</id> -->
+		<!-- <url>http://prod1.aksw.org:8081/archiva/repository/snapshots/</url> -->
+		<!-- </repository> -->
+
 	</repositories>
+
 
 	<dependencies>
 		<dependency>
@@ -41,17 +48,23 @@
 			<artifactId>jena-arq</artifactId>
 			<version>2.11.2</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId>
-			<version>1.0</version>
-			<type>jar</type>
-		</dependency>
+		<!-- <dependency> <groupId>com.google.collections</groupId> <artifactId>google-collections</artifactId> 
+			<version>1.0</version> <type>jar</type> </dependency> -->
 		<dependency>
 			<groupId>de.uni_leipzig.simba.limes</groupId>
 			<artifactId>limes-core</artifactId>
-			<version>2013-10-02</version>
+			<version>0.6.4-SNAPSHOT</version>
 			<type>jar</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.collections</groupId>
+					<artifactId>google-collections</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.matheclipse</groupId>
+					<artifactId>matheclipse-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -74,6 +87,12 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.dllearner</groupId>
+			<artifactId>components-core</artifactId>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>
