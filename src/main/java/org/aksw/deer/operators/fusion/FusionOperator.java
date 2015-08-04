@@ -164,14 +164,14 @@ public class FusionOperator implements DeerOperator {
 		//		try (InputStream is = new FileInputStream(new File(kbFilePath))) {
 		//			model.read(is, null, Lang.RDFXML.getName());
 		//		}
-		OWLOntology ontology = getOWLOntology(model);
+		OWLOntology ontology = getOWLOntology(Reader.readModel("src/main/resources/fusion/dbpedia_201504.owl"));
 		KnowledgeSource ks = new OWLAPIOntology(ontology);
 		ks.init();
 		logger.debug("finished initializing knowledge source");
 
 		logger.debug("initializing reasoner...");
 		OWLAPIReasoner baseReasoner = new OWLAPIReasoner(ks);
-		baseReasoner.setReasonerImplementation(ReasonerImplementation.HERMIT);
+//		baseReasoner.setReasonerImplementation(ReasonerImplementation.HERMIT);
 		baseReasoner.init();
 
 		// rc for reasoner component
@@ -311,7 +311,7 @@ public class FusionOperator implements DeerOperator {
 	}
 
 	public static void main(String args[]){
-		test();
+ 		test();
 	}
 
 	public static void test(){
