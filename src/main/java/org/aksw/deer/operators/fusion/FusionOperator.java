@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,6 +32,7 @@ import org.dllearner.core.AbstractLearningProblem;
 import org.dllearner.core.ComponentInitException;
 import org.dllearner.core.KnowledgeSource;
 import org.dllearner.kb.OWLAPIOntology;
+import org.dllearner.kb.sparql.SparqlKnowledgeSource;
 import org.dllearner.learningproblems.PosNegLP;
 import org.dllearner.learningproblems.PosNegLPStandard;
 import org.dllearner.learningproblems.PosOnlyLP;
@@ -61,6 +64,11 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  *
  */
 public class FusionOperator implements DeerOperator {
+	/**
+	 * 
+	 */
+	private static final String DBPEDIA_ONTOLOGY_201504 = "src/main/resources/fusion/dbpedia_201504.owl";
+	private static final String DBPEDIA_ONTOLOGY_3_9 	= "src/main/resources/fusion/dbpedia_3.9.owl";
 	private static final Logger logger = Logger.getLogger(FusionOperator.class.getName());
 	public static final String FUNCTIONAL_PROPERTY ="functionalproperty";
 	private static final String POSITIVE_EXAMPLE = "positiveexample";
@@ -122,7 +130,7 @@ public class FusionOperator implements DeerOperator {
 				while(listStatements.hasNext()){
 					Statement stat = listStatements.next();
 					pos.add(new OWLNamedIndividualImpl(IRI.create(stat.getSubject().getURI().toString())));
-										posEx.add(stat);
+					posEx.add(stat);
 
 				}
 				// Negative examples
@@ -152,47 +160,36 @@ public class FusionOperator implements DeerOperator {
 
 
 	public static void learn(Model kbMdl, Set<OWLIndividual> posExamples, Set<OWLIndividual> negExamples) throws ComponentInitException{
-		logger.debug("starting learning task ...");
-		logger.debug("initializing knowledge source...");
-		/*
-		 * Reads a Jena model and later converts it to an OWLAPI ontology
-		 * object. Just for demonstration, of course. You could also load a
-		 * file into an OWLAPI ontology directly.
-		 */
+		logger.info("starting learning task ...");
+		logger.info("initializing knowledge source...");
 		Model model = ModelFactory.createDefaultModel();
-
-		//		try (InputStream is = new FileInputStream(new File(kbFilePath))) {
-		//			model.read(is, null, Lang.RDFXML.getName());
-		//		}
-		OWLOntology ontology = getOWLOntology(Reader.readModel("src/main/resources/fusion/dbpedia_201504.owl"));
+		OWLOntology ontology = getOWLOntology(Reader.readModel(DBPEDIA_ONTOLOGY_3_9));
 		KnowledgeSource ks = new OWLAPIOntology(ontology);
 		ks.init();
-		logger.debug("finished initializing knowledge source");
+		logger.info("finished initializing knowledge source");
 
-		logger.debug("initializing reasoner...");
+		logger.info("initializing reasoner...");
 		OWLAPIReasoner baseReasoner = new OWLAPIReasoner(ks);
-//		baseReasoner.setReasonerImplementation(ReasonerImplementation.HERMIT);
-		baseReasoner.init();
-
+		//		baseReasoner.setReasonerImplementation(ReasonerImplementation.HERMIT);
+		SparqlKnowledgeSource fragmentExtractor = new SparqlKnowledgeSource();
+		try {
+			fragmentExtractor.setUrl(new URL("http://dbpedia.org/sparql"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		fragmentExtractor.setInstances(getInstanceStrings(posExamples, negExamples));
+		fragmentExtractor.setRecursionDepth(3);
+		fragmentExtractor.setGetAllSuperClasses(true);
+		fragmentExtractor.init();
 		// rc for reasoner component
 		ClosedWorldReasoner rc = new ClosedWorldReasoner(ks);
+		rc.setSources(fragmentExtractor);
+		baseReasoner.init();
 		rc.setReasonerComponent(baseReasoner);
 		rc.init();
-		logger.debug("finished initializing reasoner");
+		logger.info("finished initializing reasoner");
 
-
-		//		logger.debug("setting up positive and negative examples...");
-		//		Set<OWLIndividual> posExamples = Sets.newHashSet(
-		//				new OWLNamedIndividualImpl(IRI.create("http://ex.org/posInidiv01")),
-		//				new OWLNamedIndividualImpl(IRI.create("http://ex.org/posInidiv02")));
-		//
-		//		Set<OWLIndividual> negExamples = Sets.newHashSet(
-		//				new OWLNamedIndividualImpl(IRI.create("http://ex.org/negInidiv01")),
-		//				new OWLNamedIndividualImpl(IRI.create("http://ex.org/negInidiv02")));
-		//		logger.debug("finished setting up examples");
-
-
-		logger.debug("initializing learning problem...");
+		logger.info("initializing learning problem...");
 		// lp for learning problem
 		AbstractClassExpressionLearningProblem lp;
 		if(negExamples.isEmpty()){
@@ -203,15 +200,12 @@ public class FusionOperator implements DeerOperator {
 			((PosNegLP) lp).setPositiveExamples(posExamples);
 			((PosNegLP) lp).setNegativeExamples(negExamples);
 		}
-		
-		
 		lp.init();
-		logger.debug("finished initializing learning problem");
+		logger.info("finished initializing learning problem");
 
-		logger.debug("initializing learning algorithm...");
+		logger.info("initializing learning algorithm...");
 		// la for learning algorithm
 		CELOE la = new CELOE(lp, rc);
-
 		OEHeuristicRuntime heuristic = new OEHeuristicRuntime();
 		heuristic.setExpansionPenaltyFactor(0.1);
 		heuristic.init();
@@ -225,7 +219,7 @@ public class FusionOperator implements DeerOperator {
 		//        		IRI.create("http://dl-learner.org/smallis/Allelic_info"));
 		//        la.setStartClass(startClass);
 		la.init();
-		logger.debug("finished initializing learning algorithm");
+		logger.info("finished initializing learning algorithm");
 
 		// runs the actual learning task and usually prints the results to stdout
 		la.start();
@@ -257,13 +251,21 @@ public class FusionOperator implements DeerOperator {
 			ontology = man.loadOntologyFromOntologyDocument(is);
 			return ontology;
 		} catch (Exception e) {
-			throw new RuntimeException(
-					"Could not convert JENA API model to OWL API ontology.", e);
+			throw new RuntimeException("Could not convert JENA API model to OWL API ontology.", e);
 		}
 	}
 
 
 
+	private static Set<String> getInstanceStrings(Set<OWLIndividual> ... individualSets) {
+		Set<String> result = new HashSet<>();
+		for(Set<OWLIndividual> individualSet : individualSets){
+			for(OWLIndividual i : individualSet){
+				result.add(i.toString().replace("<", "").replace(">", ""));
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * @param pModel
@@ -311,11 +313,11 @@ public class FusionOperator implements DeerOperator {
 	}
 
 	public static void main(String args[]){
- 		test();
+		test();
 	}
 
 	public static void test(){
-		String path = "/home/sherif/JavaProjects/GeoKnow/DEER/src/main/resources/fusion/";
+		URL path = FusionOperator.class.getClassLoader().getResource("fusion/");
 		List<Model> testMdls = new ArrayList<>(); 
 		for(int i = 1 ; i<= 3 ; i++){
 			testMdls.add(Reader.readModel(path + "s" + i +".nt"));
