@@ -3,10 +3,7 @@
  */
 package org.aksw.deer.operators.fusion;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.MalformedURLException;
@@ -21,14 +18,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.aksw.deer.io.Reader;
-import org.aksw.deer.modules.Dereferencing.DereferencingModule;
 import org.aksw.deer.operators.DeerOperator;
-import org.apache.jena.riot.Lang;
 import org.apache.log4j.Logger;
 import org.dllearner.algorithms.celoe.CELOE;
 import org.dllearner.algorithms.celoe.OEHeuristicRuntime;
 import org.dllearner.core.AbstractClassExpressionLearningProblem;
-import org.dllearner.core.AbstractLearningProblem;
 import org.dllearner.core.ComponentInitException;
 import org.dllearner.core.KnowledgeSource;
 import org.dllearner.kb.OWLAPIOntology;
@@ -38,7 +32,6 @@ import org.dllearner.learningproblems.PosNegLPStandard;
 import org.dllearner.learningproblems.PosOnlyLP;
 import org.dllearner.reasoning.ClosedWorldReasoner;
 import org.dllearner.reasoning.OWLAPIReasoner;
-import org.dllearner.reasoning.ReasonerImplementation;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -46,11 +39,9 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLNamedIndividualImpl;
 
 import com.google.common.collect.Sets;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -64,15 +55,16 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  *
  */
 public class FusionOperator implements DeerOperator {
-	/**
-	 * 
-	 */
+	private static final Logger logger = Logger.getLogger(FusionOperator.class.getName());
+	private static final String DBPEDIA_SAKE = "http://sake.informatik.uni-leipzig.de:8890/sparql";
 	private static final String DBPEDIA_ONTOLOGY_201504 = "src/main/resources/fusion/dbpedia_201504.owl";
 	private static final String DBPEDIA_ONTOLOGY_3_9 	= "src/main/resources/fusion/dbpedia_3.9.owl";
-	private static final Logger logger = Logger.getLogger(FusionOperator.class.getName());
+	private static final String DBPEDIA_ONTOLOGY 	= "src/main/resources/fusion/dbpedia.owl";
 	public static final String FUNCTIONAL_PROPERTY ="functionalproperty";
 	private static final String POSITIVE_EXAMPLE = "positiveexample";
 	private static final String KB_NAMES = "kbnames";
+	
+	public static Map<String, OWLClassExpression> langTag2ClsExp = new HashMap<>();
 
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.operators.ModelOperator#run(java.util.List)
@@ -148,7 +140,7 @@ public class FusionOperator implements DeerOperator {
 
 				// Use DL-Learner to learn class expressions
 				try {
-					learn(models.get(i), pos, neg);
+					learn(pos, neg, DBPEDIA_SAKE);
 				} catch (ComponentInitException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -159,11 +151,11 @@ public class FusionOperator implements DeerOperator {
 	}
 
 
-	public static void learn(Model kbMdl, Set<OWLIndividual> posExamples, Set<OWLIndividual> negExamples) throws ComponentInitException{
+	public static OWLClassExpression learn(Set<OWLIndividual> posExamples, Set<OWLIndividual> negExamples,String endPoint) throws ComponentInitException{
 		logger.info("starting learning task ...");
 		logger.info("initializing knowledge source...");
 		Model model = ModelFactory.createDefaultModel();
-		OWLOntology ontology = getOWLOntology(Reader.readModel(DBPEDIA_ONTOLOGY_3_9));
+		OWLOntology ontology = getOWLOntology(Reader.readModel(DBPEDIA_ONTOLOGY));
 		KnowledgeSource ks = new OWLAPIOntology(ontology);
 		ks.init();
 		logger.info("finished initializing knowledge source");
@@ -172,20 +164,25 @@ public class FusionOperator implements DeerOperator {
 		OWLAPIReasoner baseReasoner = new OWLAPIReasoner(ks);
 		//		baseReasoner.setReasonerImplementation(ReasonerImplementation.HERMIT);
 		SparqlKnowledgeSource fragmentExtractor = new SparqlKnowledgeSource();
+		fragmentExtractor.setUseImprovedSparqlTupelAquisitor(false);
 		try {
-			fragmentExtractor.setUrl(new URL("http://dbpedia.org/sparql"));
+			fragmentExtractor.setUrl(new URL(endPoint));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 		fragmentExtractor.setInstances(getInstanceStrings(posExamples, negExamples));
+		System.err.println(getInstanceStrings(posExamples, negExamples));
 		fragmentExtractor.setRecursionDepth(3);
-		fragmentExtractor.setGetAllSuperClasses(true);
+		fragmentExtractor.setPredefinedFilter("YAGO");
+		fragmentExtractor.setDefaultGraphURIs(Sets.newHashSet("http://dbpedia.org"));
+//		fragmentExtractor.setGetAllSuperClasses(true);
 		fragmentExtractor.init();
 		// rc for reasoner component
-		ClosedWorldReasoner rc = new ClosedWorldReasoner(ks);
+		ClosedWorldReasoner rc = new ClosedWorldReasoner();
 		rc.setSources(fragmentExtractor);
-		baseReasoner.init();
-		rc.setReasonerComponent(baseReasoner);
+//		rc.setSources(ks, fragmentExtractor);
+		//baseReasoner.init();
+		//rc.setReasonerComponent(baseReasoner);
 		rc.init();
 		logger.info("finished initializing reasoner");
 
@@ -223,12 +220,13 @@ public class FusionOperator implements DeerOperator {
 
 		// runs the actual learning task and usually prints the results to stdout
 		la.start();
+		return ((CELOE) la).getCurrentlyBestDescriptions(1).get(0);
 
 		// stuff I typed for demonstration when you where in 635:
 		//        List<OWLClassExpression> foo = ((CELOE) la).getCurrentlyBestDescriptions(10);
 		//        OWLClassImpl bar = new OWLClassImpl(IRI.create("http://ex.org/sth"));
 		//        la.getLearningProblem().getAccuracy(bar);
-		//        boolean res = rc.hasType(bar, new OWLNamedIndividualImpl(IRI.create("http://foo.bar/indiv")));
+//		        boolean res = rc.hasType(bar, new OWLNamedIndividualImpl(IRI.create("http://foo.bar/indiv")));
 	}
 
 
@@ -257,6 +255,7 @@ public class FusionOperator implements DeerOperator {
 
 
 
+	@SafeVarargs
 	private static Set<String> getInstanceStrings(Set<OWLIndividual> ... individualSets) {
 		Set<String> result = new HashSet<>();
 		for(Set<OWLIndividual> individualSet : individualSets){
@@ -312,10 +311,50 @@ public class FusionOperator implements DeerOperator {
 		return parameters;
 	}
 
-	public static void main(String args[]){
-		test();
+	public static void main(String args[]) throws IOException, ComponentInitException{
+		//Logger.getLogger("org.dllearner").setLevel(Level.TRACE);
+		learnFromExamples(args[0]);
+	}
+	
+	public static Map<String, OWLClassExpression> learnFromExamples(String inputFile) throws IOException, ComponentInitException{
+		Examples examples = new Examples(inputFile);
+		for(String langTag : examples.getAvailableLanguageTags()){
+			if(getEndPoint(langTag) != null){
+				int ExampleCount = 10;
+				OWLClassExpression bestExpr = learn(examples.getPositiveExamples("en",ExampleCount), examples.getNegativeExamples("en",ExampleCount), langTag);
+				langTag2ClsExp.put(langTag,bestExpr);
+			}
+		}
+		return langTag2ClsExp;
+	}
+	
+	public static String getBestLanguageEdition(){
+		for ( String langTag : langTag2ClsExp.keySet()) {
+			if(true){
+				//TODO to be completed 
+			}
+		}
+//		OWLClassExpression expr : langTag2ClsExp.values()
+		
+		// stuff I typed for demonstration when you where in 635:
+		//        List<OWLClassExpression> foo = ((CELOE) la).getCurrentlyBestDescriptions(10);
+		//        OWLClassImpl bar = new OWLClassImpl(IRI.create("http://ex.org/sth"));
+		//        la.getLearningProblem().getAccuracy(bar);
+		//        boolean res = rc.hasType(bar, new OWLNamedIndividualImpl(IRI.create("http://foo.bar/indiv")));
+		return null;
+		
 	}
 
+	public static String getEndPoint(String langTag){
+		Map<String, String> langTag2Endpoint = new HashMap<>();
+		langTag2Endpoint.put("en", DBPEDIA_SAKE);
+		langTag2Endpoint.put("es", "http://es.dbpedia.org/sparql");
+		langTag2Endpoint.put("eu", "http://eu.dbpedia.org/sparql");
+//		langTag2Endpoint.put("it", "http://it.dbpedia.org/sparql");
+		return langTag2Endpoint.get(langTag);
+		
+	}
+	
 	public static void test(){
 		URL path = FusionOperator.class.getClassLoader().getResource("fusion/");
 		List<Model> testMdls = new ArrayList<>(); 

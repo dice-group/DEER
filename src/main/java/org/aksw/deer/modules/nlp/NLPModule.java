@@ -46,7 +46,7 @@ import org.aksw.fox.binding.java.FoxResponse;
 import org.aksw.fox.binding.java.IFoxApi;
 import org.aksw.fox.binding.java.FoxParameter.OUTPUT;
 
-import org.apache.commons.io.IOUtils;
+//import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;

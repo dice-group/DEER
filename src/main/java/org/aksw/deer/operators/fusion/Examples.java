@@ -54,6 +54,11 @@ public class Examples {
 	}
 	
 	Set<OWLIndividual> getPositiveExamples(String languageTag){
+		return getPositiveExamples(languageTag, -1);
+	}
+	
+	Set<OWLIndividual> getPositiveExamples(String languageTag, int size){
+		int i = 0;
 		Set<OWLIndividual> pos = new HashSet<>();
 		Collection<String> collection = null ;
 		Collection<Multimap<Boolean, String>> langExamples = examples.get(languageTag);
@@ -61,13 +66,21 @@ public class Examples {
 			collection = multimap.get(true);
 			for (String s : collection) {
 				pos.add(new OWLNamedIndividualImpl(IRI.create(s)));
+				if(i++ == size){
+					return pos;
+				}
 			}
 		}
 		logger.info("Found " + pos.size() + " positive example for " + languageTag);
 		return pos;
 	}
 	
-	Set<OWLIndividual> getNrgativeExamples(String languageTag){
+	Set<OWLIndividual> getNegativeExamples(String languageTag){
+		return getNegativeExamples(languageTag, -1);
+	}
+	
+	Set<OWLIndividual> getNegativeExamples(String languageTag, int size){
+		int i = 0;
 		Set<OWLIndividual> neg = new HashSet<>();
 		Collection<String> collection = null ;
 		Collection<Multimap<Boolean, String>> langExamples = examples.get(languageTag);
@@ -75,6 +88,9 @@ public class Examples {
 			collection = multimap.get(false);
 			for (String s : collection) {
 				neg.add(new OWLNamedIndividualImpl(IRI.create(s)));
+				if(i++ == size){
+					return neg;
+				}
 			}
 		}
 		logger.info("Found " + neg.size() + " negative example for " + languageTag);
@@ -84,6 +100,14 @@ public class Examples {
 	public static void main(String args[]){
 		
 		
+	}
+
+	/**
+	 * @return
+	 * @author sherif
+	 */
+	public Set<String> getAvailableLanguageTags() {
+		return examples.asMap().keySet();
 	}
 
 }
