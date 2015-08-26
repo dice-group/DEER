@@ -10,6 +10,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +44,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLNamedIndividualImpl;
 
+import com.clarkparsia.sparqlowl.parser.antlr.SparqlOwlParser.defaultGraphClause_return;
 import com.google.common.collect.Sets;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -59,7 +62,7 @@ public class LearningTask {
 	private static final Logger logger = Logger.getLogger(LearningTask.class.getName());
 	private static final String DBPEDIA_SAKE = "http://sake.informatik.uni-leipzig.de:8890/sparql";
 	
-	public static String KB_PREFIX 			= "http://dbpedia.org";
+	public String graph = new String();
 	public static String PRE_DEFINED_FILTER = "YAGO";
 	protected String langTag = new String();
 	protected String endPoint = new String();
@@ -81,17 +84,28 @@ public class LearningTask {
 		this.langTag = langTag;
 		switch(this.langTag){
 		case "en":
-			endPoint = DBPEDIA_SAKE;
+			this.endPoint = DBPEDIA_SAKE;
+			this.graph = "http://dbpedia.org";
+			break;
+		case "de":
+			this.endPoint = "http://de.dbpedia.org/sparql";
+			this.graph = "http://de.dbpedia.org";
 			break;
 		case "es":
-			endPoint = "http://es.dbpedia.org/sparql";
+			this.endPoint = "http://es.dbpedia.org/sparql";
+			this.graph = "es.http://dbpedia.org";
 			break;
 		case "eu":
-			endPoint = "http://eu.dbpedia.org/sparql";
+			this.endPoint = "http://eu.dbpedia.org/sparql";
+			this.graph = "eu.http://dbpedia.org";
 			break;
-//		case "it":
-//			endPoint = "http://it.dbpedia.org/sparql";
-//			break;
+		case "it":
+			this.endPoint = "http://it.dbpedia.org/sparql";
+			this.graph = "it.http://dbpedia.org";
+			break;
+		default:	
+			logger.error(langTag + "is undefined");
+			System.exit(1);
 		}
 	}
 
@@ -126,7 +140,7 @@ public class LearningTask {
 		System.err.println(getInstanceAsStrings(posExamples, negExamples));
 		fragmentExtractor.setRecursionDepth(3);
 		fragmentExtractor.setPredefinedFilter(PRE_DEFINED_FILTER);
-		fragmentExtractor.setDefaultGraphURIs(Sets.newHashSet(KB_PREFIX));
+		fragmentExtractor.setDefaultGraphURIs(Sets.newHashSet(graph));
 		//		fragmentExtractor.setGetAllSuperClasses(true);
 		fragmentExtractor.init();
 
@@ -144,6 +158,7 @@ public class LearningTask {
 			((PosNegLP) learningProblem).setPositiveExamples(posExamples);
 			((PosNegLP) learningProblem).setNegativeExamples(negExamples);
 		}
+		System.err.println(endPoint);
 		learningProblem.init();
 		logger.info("finished initializing learning problem");
 

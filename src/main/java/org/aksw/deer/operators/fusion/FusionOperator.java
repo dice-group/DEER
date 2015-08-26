@@ -286,10 +286,13 @@ public class FusionOperator implements DeerOperator {
 
 	public static void main(String args[]) throws IOException, ComponentInitException{
 		//Logger.getLogger("org.dllearner").setLevel(Level.TRACE);
-		learnFromExamples(args[0]);
+//		test4En(args[0]);
+		test4AllLangTags(args[0]);
 	}
 	
-	public static void learnFromExamples(String inputFile) throws IOException, ComponentInitException{
+
+
+	public static void test4En(String inputFile) throws IOException, ComponentInitException{
 		Examples examples = new Examples(inputFile);
 		int exCnt = 10;
 		Set<OWLIndividual> positiveExamples = examples.getPositiveExamples("en",exCnt);
@@ -303,6 +306,27 @@ public class FusionOperator implements DeerOperator {
 		System.out.println("------------------ NEG EX ------------------");
 		for(OWLIndividual oi : negativeExamples){
 			System.out.println(oi + " ---> " +lt.isValidIndividual(oi));
+		}
+	}
+	
+	public static void test4AllLangTags(String inputFile) throws IOException, ComponentInitException{
+		String langTags[] = {"de"};
+		Examples examples = new Examples(inputFile);
+		for(String langTag : langTags){
+			System.err.println("********** Working for " + langTag);
+			int exCnt = 10;
+			Set<OWLIndividual> positiveExamples = examples.getPositiveExamples(langTag,exCnt);
+			Set<OWLIndividual> negativeExamples = examples.getNegativeExamples(langTag,exCnt);
+			LearningTask lt = new LearningTask(positiveExamples, negativeExamples, langTag);
+			lt.getCurrentlyBestDescription();
+			System.out.println("------------------ POS EX ------------------");
+			for(OWLIndividual oi : positiveExamples){
+				System.out.println(oi + " ---> " +lt.isValidIndividual(oi));
+			}
+			System.out.println("------------------ NEG EX ------------------");
+			for(OWLIndividual oi : negativeExamples){
+				System.out.println(oi + " ---> " +lt.isValidIndividual(oi));
+			}
 		}
 	}
 	
