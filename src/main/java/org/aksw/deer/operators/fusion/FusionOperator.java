@@ -41,6 +41,8 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import uk.ac.manchester.cs.owl.owlapi.OWLNamedIndividualImpl;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -310,7 +312,10 @@ public class FusionOperator implements DeerOperator {
 	}
 	
 	public static void test4AllLangTags(String inputFile) throws IOException, ComponentInitException{
-		String langTags[] = {"de"};
+		String resutStr = new String();
+		Multimap<String, Map<String, Boolean>> posEx2Langtag2tScore = ArrayListMultimap.create(); 
+		Multimap<String, Map<String, Boolean>> negEx2Langtag2tScore = ArrayListMultimap.create(); 
+		String langTags[] = {"en", "de", "es"};
 		Examples examples = new Examples(inputFile);
 		for(String langTag : langTags){
 			System.err.println("********** Working for " + langTag);
@@ -319,15 +324,25 @@ public class FusionOperator implements DeerOperator {
 			Set<OWLIndividual> negativeExamples = examples.getNegativeExamples(langTag,exCnt);
 			LearningTask lt = new LearningTask(positiveExamples, negativeExamples, langTag);
 			lt.getCurrentlyBestDescription();
-			System.out.println("------------------ POS EX ------------------");
+			
 			for(OWLIndividual oi : positiveExamples){
-				System.out.println(oi + " ---> " +lt.isValidIndividual(oi));
+				boolean isValid = lt.isValidIndividual(oi);
+				Map<String, Boolean> langtag2tScore = new HashMap<>();
+				langtag2tScore.put(langTag, isValid);
+				posEx2Langtag2tScore.put(oi.toString(), langtag2tScore);
 			}
-			System.out.println("------------------ NEG EX ------------------");
+			
 			for(OWLIndividual oi : negativeExamples){
-				System.out.println(oi + " ---> " +lt.isValidIndividual(oi));
+				boolean isValid = lt.isValidIndividual(oi);
+				Map<String, Boolean> langtag2tScore = new HashMap<>();
+				langtag2tScore.put(langTag, isValid);
+				negEx2Langtag2tScore.put(oi.toString(), langtag2tScore);
 			}
 		}
+		System.out.println("------------------ POS EX ------------------");
+		System.out.println(posEx2Langtag2tScore);
+		System.out.println("------------------ NEG EX ------------------");
+		System.out.println(negEx2Langtag2tScore);
 	}
 	
 	public static Map<String, OWLClassExpression> _learnFromExamples(String inputFile) throws IOException, ComponentInitException{

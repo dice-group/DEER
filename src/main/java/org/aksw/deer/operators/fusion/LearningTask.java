@@ -93,15 +93,15 @@ public class LearningTask {
 			break;
 		case "es":
 			this.endPoint = "http://es.dbpedia.org/sparql";
-			this.graph = "es.http://dbpedia.org";
+			this.graph = "http://es.dbpedia.org";
 			break;
 		case "eu":
-			this.endPoint = "http://eu.dbpedia.org/sparql";
-			this.graph = "eu.http://dbpedia.org";
+			this.endPoint = "http://eu.dbpedia.org/sparql"; 
+			this.graph = "http://eu.dbpedia.org";
 			break;
 		case "it":
 			this.endPoint = "http://it.dbpedia.org/sparql";
-			this.graph = "it.http://dbpedia.org";
+			this.graph = "http://it.dbpedia.org";
 			break;
 		default:	
 			logger.error(langTag + "is undefined");
@@ -138,7 +138,7 @@ public class LearningTask {
 		}
 		fragmentExtractor.setInstances(getInstanceAsStrings(posExamples, negExamples));
 		System.err.println(getInstanceAsStrings(posExamples, negExamples));
-		fragmentExtractor.setRecursionDepth(3);
+		fragmentExtractor.setRecursionDepth(1);
 		fragmentExtractor.setPredefinedFilter(PRE_DEFINED_FILTER);
 		fragmentExtractor.setDefaultGraphURIs(Sets.newHashSet(graph));
 		//		fragmentExtractor.setGetAllSuperClasses(true);
