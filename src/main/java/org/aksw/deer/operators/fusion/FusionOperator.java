@@ -56,6 +56,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  */
 public class FusionOperator implements DeerOperator {
 	private static final Logger logger = Logger.getLogger(FusionOperator.class.getName());
+	private static final String DBPEDIA = "http://dbpedia.org/sparql";
 	private static final String DBPEDIA_SAKE = "http://sake.informatik.uni-leipzig.de:8890/sparql";
 	private static final String DBPEDIA_ONTOLOGY_201504 = "src/main/resources/fusion/dbpedia_201504.owl";
 	private static final String DBPEDIA_ONTOLOGY_3_9 	= "src/main/resources/fusion/dbpedia_3.9.owl";
@@ -140,7 +141,7 @@ public class FusionOperator implements DeerOperator {
 
 				// Use DL-Learner to learn class expressions
 				try {
-					learn(pos, neg, DBPEDIA_SAKE);
+					learnOWLClassExpression(pos, neg, DBPEDIA_SAKE);
 				} catch (ComponentInitException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -151,7 +152,7 @@ public class FusionOperator implements DeerOperator {
 	}
 
 
-	public static OWLClassExpression learn(Set<OWLIndividual> posExamples, Set<OWLIndividual> negExamples,String endPoint) throws ComponentInitException{
+	public static OWLClassExpression learnOWLClassExpression(Set<OWLIndividual> posExamples, Set<OWLIndividual> negExamples,String endPoint) throws ComponentInitException{
 		logger.info("starting learning task ...");
 		logger.info("initializing knowledge source...");
 		Model model = ModelFactory.createDefaultModel();
@@ -170,8 +171,8 @@ public class FusionOperator implements DeerOperator {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		fragmentExtractor.setInstances(getInstanceStrings(posExamples, negExamples));
-		System.err.println(getInstanceStrings(posExamples, negExamples));
+		fragmentExtractor.setInstances(getInstanceAsStrings(posExamples, negExamples));
+		System.err.println(getInstanceAsStrings(posExamples, negExamples));
 		fragmentExtractor.setRecursionDepth(3);
 		fragmentExtractor.setPredefinedFilter("YAGO");
 		fragmentExtractor.setDefaultGraphURIs(Sets.newHashSet("http://dbpedia.org"));
@@ -207,7 +208,7 @@ public class FusionOperator implements DeerOperator {
 		heuristic.setExpansionPenaltyFactor(0.1);
 		heuristic.init();
 		la.setHeuristic(heuristic);
-		la.setMaxExecutionTimeInSeconds(1800);
+		la.setMaxExecutionTimeInSeconds(3);
 		la.setNoisePercentage(80);
 		la.setMaxNrOfResults(50);
 		la.setExpandAccuracy100Nodes(true);
@@ -224,7 +225,7 @@ public class FusionOperator implements DeerOperator {
 
 		// stuff I typed for demonstration when you where in 635:
 		//        List<OWLClassExpression> foo = ((CELOE) la).getCurrentlyBestDescriptions(10);
-		//        OWLClassImpl bar = new OWLClassImpl(IRI.create("http://ex.org/sth"));
+//		        OWLClassImpl bar = new OWLClassImpl(IRI.create("http://ex.org/sth"));
 		//        la.getLearningProblem().getAccuracy(bar);
 //		        boolean res = rc.hasType(bar, new OWLNamedIndividualImpl(IRI.create("http://foo.bar/indiv")));
 	}
@@ -256,7 +257,7 @@ public class FusionOperator implements DeerOperator {
 
 
 	@SafeVarargs
-	private static Set<String> getInstanceStrings(Set<OWLIndividual> ... individualSets) {
+	private static Set<String> getInstanceAsStrings(Set<OWLIndividual> ... individualSets) {
 		Set<String> result = new HashSet<>();
 		for(Set<OWLIndividual> individualSet : individualSets){
 			for(OWLIndividual i : individualSet){
@@ -265,34 +266,6 @@ public class FusionOperator implements DeerOperator {
 		}
 		return result;
 	}
-
-	/**
-	 * @param pModel
-	 * @return
-	 * @author sherif
-	 */
-	private Model addAdditionalTriples(Model pModel) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/**
-	 * @param m
-	 * @param fp
-	 * @return
-	 * @author sherif
-	 */
-	private Model getAssociatedTriples(Model m, Property fp) {
-		Model result = ModelFactory.createDefaultModel();
-		StmtIterator listStatements = m.listStatements(null, fp, (RDFNode) null);
-		while(listStatements.hasNext()) {
-			Statement s = listStatements.next();
-			result.createReifiedStatement(s);
-		}
-		return result;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.aksw.geolift.modules.GeoLiftModule#getParameters()
@@ -316,12 +289,29 @@ public class FusionOperator implements DeerOperator {
 		learnFromExamples(args[0]);
 	}
 	
-	public static Map<String, OWLClassExpression> learnFromExamples(String inputFile) throws IOException, ComponentInitException{
+	public static void learnFromExamples(String inputFile) throws IOException, ComponentInitException{
+		Examples examples = new Examples(inputFile);
+		int exCnt = 10;
+		Set<OWLIndividual> positiveExamples = examples.getPositiveExamples("en",exCnt);
+		Set<OWLIndividual> negativeExamples = examples.getNegativeExamples("en",exCnt);
+		LearningTask lt = new LearningTask(positiveExamples, negativeExamples, "en");
+		lt.getCurrentlyBestDescription();
+		System.out.println("------------------ POS EX ------------------");
+		for(OWLIndividual oi : positiveExamples){
+			System.out.println(oi + " ---> " +lt.isValidIndividual(oi));
+		}
+		System.out.println("------------------ NEG EX ------------------");
+		for(OWLIndividual oi : negativeExamples){
+			System.out.println(oi + " ---> " +lt.isValidIndividual(oi));
+		}
+	}
+	
+	public static Map<String, OWLClassExpression> _learnFromExamples(String inputFile) throws IOException, ComponentInitException{
 		Examples examples = new Examples(inputFile);
 		for(String langTag : examples.getAvailableLanguageTags()){
 			if(getEndPoint(langTag) != null){
 				int ExampleCount = 10;
-				OWLClassExpression bestExpr = learn(examples.getPositiveExamples("en",ExampleCount), examples.getNegativeExamples("en",ExampleCount), langTag);
+				OWLClassExpression bestExpr = learnOWLClassExpression(examples.getPositiveExamples("en",ExampleCount), examples.getNegativeExamples("en",ExampleCount), getEndPoint(langTag));
 				langTag2ClsExp.put(langTag,bestExpr);
 			}
 		}

@@ -66,7 +66,8 @@ public class Examples {
 			collection = multimap.get(true);
 			for (String s : collection) {
 				pos.add(new OWLNamedIndividualImpl(IRI.create(s)));
-				if(i++ == size){
+				if(i != -1 && i++ == size){
+					logger.info("Found " + pos.size() + " positive example for " + languageTag);
 					return pos;
 				}
 			}
@@ -89,6 +90,7 @@ public class Examples {
 			for (String s : collection) {
 				neg.add(new OWLNamedIndividualImpl(IRI.create(s)));
 				if(i++ == size){
+					logger.info("Found " + neg.size() + " negative example for " + languageTag);
 					return neg;
 				}
 			}
