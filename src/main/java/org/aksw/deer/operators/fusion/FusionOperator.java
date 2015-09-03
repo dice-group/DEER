@@ -66,7 +66,7 @@ public class FusionOperator implements DeerOperator {
 	public static final String FUNCTIONAL_PROPERTY ="functionalproperty";
 	private static final String POSITIVE_EXAMPLE = "positiveexample";
 	private static final String KB_NAMES = "kbnames";
-	
+
 	public static Map<String, OWLClassExpression> langTag2ClsExp = new HashMap<>();
 
 	/* (non-Javadoc)
@@ -178,12 +178,12 @@ public class FusionOperator implements DeerOperator {
 		fragmentExtractor.setRecursionDepth(3);
 		fragmentExtractor.setPredefinedFilter("YAGO");
 		fragmentExtractor.setDefaultGraphURIs(Sets.newHashSet("http://dbpedia.org"));
-//		fragmentExtractor.setGetAllSuperClasses(true);
+		//		fragmentExtractor.setGetAllSuperClasses(true);
 		fragmentExtractor.init();
 		// rc for reasoner component
 		ClosedWorldReasoner rc = new ClosedWorldReasoner();
 		rc.setSources(fragmentExtractor);
-//		rc.setSources(ks, fragmentExtractor);
+		//		rc.setSources(ks, fragmentExtractor);
 		//baseReasoner.init();
 		//rc.setReasonerComponent(baseReasoner);
 		rc.init();
@@ -227,9 +227,9 @@ public class FusionOperator implements DeerOperator {
 
 		// stuff I typed for demonstration when you where in 635:
 		//        List<OWLClassExpression> foo = ((CELOE) la).getCurrentlyBestDescriptions(10);
-//		        OWLClassImpl bar = new OWLClassImpl(IRI.create("http://ex.org/sth"));
+		//		        OWLClassImpl bar = new OWLClassImpl(IRI.create("http://ex.org/sth"));
 		//        la.getLearningProblem().getAccuracy(bar);
-//		        boolean res = rc.hasType(bar, new OWLNamedIndividualImpl(IRI.create("http://foo.bar/indiv")));
+		//		        boolean res = rc.hasType(bar, new OWLNamedIndividualImpl(IRI.create("http://foo.bar/indiv")));
 	}
 
 
@@ -288,10 +288,10 @@ public class FusionOperator implements DeerOperator {
 
 	public static void main(String args[]) throws IOException, ComponentInitException{
 		//Logger.getLogger("org.dllearner").setLevel(Level.TRACE);
-//		test4En(args[0]);
+		//		test4En(args[0]);
 		test4AllLangTags(args[0]);
 	}
-	
+
 
 
 	public static void test4En(String inputFile) throws IOException, ComponentInitException{
@@ -310,7 +310,40 @@ public class FusionOperator implements DeerOperator {
 			System.out.println(oi + " ---> " +lt.isValidIndividual(oi));
 		}
 	}
-	
+
+	public static void getBestOfAllLangTags(String trainingFile, String testingFile) throws IOException, ComponentInitException{
+		String resutStr = new String();
+		Multimap<OWLIndividual, Map<String, Double>> testEx2Langtag2Score = ArrayListMultimap.create(); 
+		String langTags[] = {"en", "de", "es"};
+		Examples examples = new Examples(trainingFile);
+		for(String langTag : langTags){
+			System.err.println("********** Working for " + langTag);
+			int exCnt = 10;
+			Set<OWLIndividual> positiveExamples = examples.getPositiveExamples(langTag,exCnt);
+			Set<OWLIndividual> negativeExamples = examples.getNegativeExamples(langTag,exCnt);
+			LearningTask lt = new LearningTask(positiveExamples, negativeExamples, langTag);
+			lt.getCurrentlyBestDescription();
+
+			Double score = 0.0; // TODO find a way to get the score
+			for(OWLIndividual oi : positiveExamples){ //TODO change to training sample
+				if(lt.isValidIndividual(oi)){
+					if(!testEx2Langtag2Score.containsKey(oi) || !testEx2Langtag2Score.get(oi).contains(langTag)){
+						Map<String, Double> langTag2Score = new HashMap<>();
+						langTag2Score.put(langTag, score);
+						testEx2Langtag2Score.put(oi, langTag2Score);
+					}else{
+						for ( Map<String, Double> langTag2Score : testEx2Langtag2Score.get(oi)) {
+							if(langTag2Score.containsKey(langTag) && langTag2Score.get(langTag) < score){
+								langTag2Score.put(langTag, score);
+							}
+						} 
+					}
+
+				}
+			}
+		}
+	}
+
 	public static void test4AllLangTags(String inputFile) throws IOException, ComponentInitException{
 		String resutStr = new String();
 		Multimap<String, Map<String, Boolean>> posEx2Langtag2tScore = ArrayListMultimap.create(); 
@@ -324,14 +357,14 @@ public class FusionOperator implements DeerOperator {
 			Set<OWLIndividual> negativeExamples = examples.getNegativeExamples(langTag,exCnt);
 			LearningTask lt = new LearningTask(positiveExamples, negativeExamples, langTag);
 			lt.getCurrentlyBestDescription();
-			
+
 			for(OWLIndividual oi : positiveExamples){
 				boolean isValid = lt.isValidIndividual(oi);
 				Map<String, Boolean> langtag2tScore = new HashMap<>();
 				langtag2tScore.put(langTag, isValid);
 				posEx2Langtag2tScore.put(oi.toString(), langtag2tScore);
 			}
-			
+
 			for(OWLIndividual oi : negativeExamples){
 				boolean isValid = lt.isValidIndividual(oi);
 				Map<String, Boolean> langtag2tScore = new HashMap<>();
@@ -344,7 +377,7 @@ public class FusionOperator implements DeerOperator {
 		System.out.println("------------------ NEG EX ------------------");
 		System.out.println(negEx2Langtag2tScore);
 	}
-	
+
 	public static Map<String, OWLClassExpression> _learnFromExamples(String inputFile) throws IOException, ComponentInitException{
 		Examples examples = new Examples(inputFile);
 		for(String langTag : examples.getAvailableLanguageTags()){
@@ -356,22 +389,22 @@ public class FusionOperator implements DeerOperator {
 		}
 		return langTag2ClsExp;
 	}
-	
+
 	public static String getBestLanguageEdition(){
 		for ( String langTag : langTag2ClsExp.keySet()) {
 			if(true){
 				//TODO to be completed 
 			}
 		}
-//		OWLClassExpression expr : langTag2ClsExp.values()
-		
+		//		OWLClassExpression expr : langTag2ClsExp.values()
+
 		// stuff I typed for demonstration when you where in 635:
 		//        List<OWLClassExpression> foo = ((CELOE) la).getCurrentlyBestDescriptions(10);
 		//        OWLClassImpl bar = new OWLClassImpl(IRI.create("http://ex.org/sth"));
 		//        la.getLearningProblem().getAccuracy(bar);
 		//        boolean res = rc.hasType(bar, new OWLNamedIndividualImpl(IRI.create("http://foo.bar/indiv")));
 		return null;
-		
+
 	}
 
 	public static String getEndPoint(String langTag){
@@ -379,11 +412,11 @@ public class FusionOperator implements DeerOperator {
 		langTag2Endpoint.put("en", DBPEDIA_SAKE);
 		langTag2Endpoint.put("es", "http://es.dbpedia.org/sparql");
 		langTag2Endpoint.put("eu", "http://eu.dbpedia.org/sparql");
-//		langTag2Endpoint.put("it", "http://it.dbpedia.org/sparql");
+		//		langTag2Endpoint.put("it", "http://it.dbpedia.org/sparql");
 		return langTag2Endpoint.get(langTag);
-		
+
 	}
-	
+
 	public static void test(){
 		URL path = FusionOperator.class.getClassLoader().getResource("fusion/");
 		List<Model> testMdls = new ArrayList<>(); 
