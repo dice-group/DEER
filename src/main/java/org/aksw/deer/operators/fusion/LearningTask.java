@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -26,7 +27,9 @@ import org.dllearner.algorithms.celoe.CELOE;
 import org.dllearner.algorithms.celoe.OEHeuristicRuntime;
 import org.dllearner.core.AbstractClassExpressionLearningProblem;
 import org.dllearner.core.ComponentInitException;
+import org.dllearner.core.EvaluatedDescription;
 import org.dllearner.core.KnowledgeSource;
+import org.dllearner.core.Score;
 import org.dllearner.kb.OWLAPIOntology;
 import org.dllearner.kb.sparql.SparqlKnowledgeSource;
 import org.dllearner.learningproblems.PosNegLP;
@@ -61,7 +64,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 public class LearningTask {		
 	private static final Logger logger = Logger.getLogger(LearningTask.class.getName());
 	private static final String DBPEDIA_SAKE = "http://sake.informatik.uni-leipzig.de:8890/sparql";
-	
+
 	public String graph = new String();
 	public static String PRE_DEFINED_FILTER = "YAGO";
 	protected String langTag = new String();
@@ -71,13 +74,13 @@ public class LearningTask {
 	protected Set<OWLIndividual> posExamples = new HashSet<>();
 	protected Set<OWLIndividual> negExamples = new HashSet<>();
 
-	
+
 	ClosedWorldReasoner reasoner = new ClosedWorldReasoner();
 	SparqlKnowledgeSource fragmentExtractor = new SparqlKnowledgeSource();
 	AbstractClassExpressionLearningProblem learningProblem;
 	CELOE learningAlgorithm;
-	
-	
+
+
 	LearningTask(Set<OWLIndividual> posExamples, Set<OWLIndividual> negExamples, String langTag){
 		this.posExamples = posExamples;
 		this.negExamples = negExamples;
@@ -112,12 +115,9 @@ public class LearningTask {
 	public boolean isValidIndividual(OWLIndividual owlIndividual){
 		return reasoner.hasType(currentlyBestDescription, owlIndividual);
 	}
-	
-	public OWLClassExpression getCurrentlyBestDescription() throws ComponentInitException{
-		return getCurrentlyBestDescriptions(1).get(0);
-	}
 
-	public List<OWLClassExpression> getCurrentlyBestDescriptions(int clsExprNr) throws ComponentInitException{
+
+	public EvaluatedDescription<? extends Score> getBestDescription() throws ComponentInitException{
 		logger.info("starting learning task ...");
 		logger.info("initializing knowledge source...");
 		Model model = ModelFactory.createDefaultModel();
@@ -178,9 +178,11 @@ public class LearningTask {
 
 		// runs the actual learning task and usually prints the results to stdout
 		learningAlgorithm.start();
-		List<OWLClassExpression> currentlyBestDescriptions = learningAlgorithm.getCurrentlyBestDescriptions(clsExprNr);
-		currentlyBestDescription = currentlyBestDescriptions.get(0);
-		return currentlyBestDescriptions;
+
+		EvaluatedDescription<? extends Score> desc = learningAlgorithm.getCurrentlyBestEvaluatedDescription();
+		//		double accuricy = desc.getAccuracy();
+		currentlyBestDescription = desc.getDescription();
+		return desc;
 	}
 
 

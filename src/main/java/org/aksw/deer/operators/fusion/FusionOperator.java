@@ -24,7 +24,9 @@ import org.dllearner.algorithms.celoe.CELOE;
 import org.dllearner.algorithms.celoe.OEHeuristicRuntime;
 import org.dllearner.core.AbstractClassExpressionLearningProblem;
 import org.dllearner.core.ComponentInitException;
+import org.dllearner.core.EvaluatedDescription;
 import org.dllearner.core.KnowledgeSource;
+import org.dllearner.core.Score;
 import org.dllearner.kb.OWLAPIOntology;
 import org.dllearner.kb.sparql.SparqlKnowledgeSource;
 import org.dllearner.learningproblems.PosNegLP;
@@ -289,7 +291,8 @@ public class FusionOperator implements DeerOperator {
 	public static void main(String args[]) throws IOException, ComponentInitException{
 		//Logger.getLogger("org.dllearner").setLevel(Level.TRACE);
 		//		test4En(args[0]);
-		test4AllLangTags(args[0]);
+//		test4AllLangTags(args[0]);
+		getBestOfAllLangTags(args[0], args[0]);
 	}
 
 
@@ -300,7 +303,7 @@ public class FusionOperator implements DeerOperator {
 		Set<OWLIndividual> positiveExamples = examples.getPositiveExamples("en",exCnt);
 		Set<OWLIndividual> negativeExamples = examples.getNegativeExamples("en",exCnt);
 		LearningTask lt = new LearningTask(positiveExamples, negativeExamples, "en");
-		lt.getCurrentlyBestDescription();
+		lt.getBestDescription();
 		System.out.println("------------------ POS EX ------------------");
 		for(OWLIndividual oi : positiveExamples){
 			System.out.println(oi + " ---> " +lt.isValidIndividual(oi));
@@ -311,37 +314,45 @@ public class FusionOperator implements DeerOperator {
 		}
 	}
 
-	public static void getBestOfAllLangTags(String trainingFile, String testingFile) throws IOException, ComponentInitException{
+	public static Map<OWLIndividual, Map<String, Double>>  getBestOfAllLangTags(String trainingFile, String testingFile) throws IOException, ComponentInitException{
 		String resutStr = new String();
-		Multimap<OWLIndividual, Map<String, Double>> testEx2Langtag2Score = ArrayListMultimap.create(); 
+		Map<OWLIndividual, Map<String, Double>> testEx2Langtag2Score = new HashMap<>(); 
 		String langTags[] = {"en", "de", "es"};
 		Examples examples = new Examples(trainingFile);
+		Examples testExamples = new Examples(testingFile);
+		
 		for(String langTag : langTags){
 			System.err.println("********** Working for " + langTag);
 			int exCnt = 10;
 			Set<OWLIndividual> positiveExamples = examples.getPositiveExamples(langTag,exCnt);
 			Set<OWLIndividual> negativeExamples = examples.getNegativeExamples(langTag,exCnt);
+			Set<OWLIndividual> posTestExamples = testExamples.getPositiveExamples(langTag,exCnt);
+			
 			LearningTask lt = new LearningTask(positiveExamples, negativeExamples, langTag);
-			lt.getCurrentlyBestDescription();
+			EvaluatedDescription<? extends Score> bestDesc = lt.getBestDescription();
 
-			Double score = 0.0; // TODO find a way to get the score
-			for(OWLIndividual oi : positiveExamples){ //TODO change to training sample
+			double bestAccuracy = bestDesc.getAccuracy();
+//			OWLClassExpression BestClsExp = bestDesc.getDescription();
+			for(OWLIndividual oi : posTestExamples){ 
 				if(lt.isValidIndividual(oi)){
-					if(!testEx2Langtag2Score.containsKey(oi) || !testEx2Langtag2Score.get(oi).contains(langTag)){
+					if(!testEx2Langtag2Score.containsKey(oi)){
 						Map<String, Double> langTag2Score = new HashMap<>();
-						langTag2Score.put(langTag, score);
+						langTag2Score.put(langTag, bestAccuracy);
 						testEx2Langtag2Score.put(oi, langTag2Score);
 					}else{
-						for ( Map<String, Double> langTag2Score : testEx2Langtag2Score.get(oi)) {
-							if(langTag2Score.containsKey(langTag) && langTag2Score.get(langTag) < score){
-								langTag2Score.put(langTag, score);
-							}
+						double oldAccuracy = testEx2Langtag2Score.get(oi).values().iterator().next();
+						if(bestAccuracy > oldAccuracy){
+							Map<String, Double> langTag2Score = new HashMap<>();
+							langTag2Score.put(langTag, bestAccuracy);
+							testEx2Langtag2Score.put(oi, langTag2Score);
 						} 
 					}
 
 				}
 			}
 		}
+		System.out.println("Results:\n" + testEx2Langtag2Score);
+		return testEx2Langtag2Score;
 	}
 
 	public static void test4AllLangTags(String inputFile) throws IOException, ComponentInitException{
@@ -356,7 +367,7 @@ public class FusionOperator implements DeerOperator {
 			Set<OWLIndividual> positiveExamples = examples.getPositiveExamples(langTag,exCnt);
 			Set<OWLIndividual> negativeExamples = examples.getNegativeExamples(langTag,exCnt);
 			LearningTask lt = new LearningTask(positiveExamples, negativeExamples, langTag);
-			lt.getCurrentlyBestDescription();
+			lt.getBestDescription();
 
 			for(OWLIndividual oi : positiveExamples){
 				boolean isValid = lt.isValidIndividual(oi);
