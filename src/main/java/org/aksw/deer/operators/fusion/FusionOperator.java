@@ -315,15 +315,16 @@ public class FusionOperator implements DeerOperator {
 	}
 
 	public static Map<OWLIndividual, Map<String, Double>>  getBestOfAllLangTags(String trainingFile, String testingFile) throws IOException, ComponentInitException{
-		String resutStr = new String();
+		int exCnt = 10;
 		Map<OWLIndividual, Map<String, Double>> testEx2Langtag2Score = new HashMap<>(); 
 		String langTags[] = {"en", "de", "es"};
 		Examples examples = new Examples(trainingFile);
 		Examples testExamples = new Examples(testingFile);
 		
+		
 		for(String langTag : langTags){
 			System.err.println("********** Working for " + langTag);
-			int exCnt = 10;
+			
 			Set<OWLIndividual> positiveExamples = examples.getPositiveExamples(langTag,exCnt);
 			Set<OWLIndividual> negativeExamples = examples.getNegativeExamples(langTag,exCnt);
 			Set<OWLIndividual> posTestExamples = testExamples.getPositiveExamples(langTag,exCnt);
@@ -351,7 +352,29 @@ public class FusionOperator implements DeerOperator {
 				}
 			}
 		}
+		
+		// Result output
 		System.out.println("Results:\n" + testEx2Langtag2Score);
+		Set<OWLIndividual>
+			enRefInd = testExamples.getPositiveExamples("en", exCnt),
+			deRefInd = testExamples.getPositiveExamples("de", exCnt),
+			esRefInd = testExamples.getPositiveExamples("ed", exCnt),
+			enInd = new HashSet<>(),
+			deInd = new HashSet<>(),
+			esInd = new HashSet<>();
+		for(OWLIndividual ind :testEx2Langtag2Score.keySet()){
+			switch(testEx2Langtag2Score.get(ind).keySet().iterator().next()){
+				case "en":
+					enInd.add(ind);
+				case "de":
+					deInd.add(ind);
+				case "es":
+					esInd.add(ind);
+			}
+		}
+		System.out.println("en\t" + PRFComputer.computeFScore(enInd, enRefInd));
+		System.out.println("de\t" + PRFComputer.computeFScore(deInd, deRefInd));
+		System.out.println("es\t" + PRFComputer.computeFScore(esInd, esRefInd));
 		return testEx2Langtag2Score;
 	}
 
