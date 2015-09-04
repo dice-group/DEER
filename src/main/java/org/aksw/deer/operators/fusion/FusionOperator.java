@@ -359,9 +359,11 @@ public class FusionOperator implements DeerOperator {
 			enRefInd = testExamples.getPositiveExamples("en", exCnt),
 			deRefInd = testExamples.getPositiveExamples("de", exCnt),
 			esRefInd = testExamples.getPositiveExamples("ed", exCnt),
+			allRefInd = new HashSet<>(),
 			enInd = new HashSet<>(),
 			deInd = new HashSet<>(),
-			esInd = new HashSet<>();
+			esInd = new HashSet<>(),
+			allInd = new HashSet<>();
 		for(OWLIndividual ind :testEx2Langtag2Score.keySet()){
 			switch(testEx2Langtag2Score.get(ind).keySet().iterator().next()){
 				case "en":
@@ -375,6 +377,14 @@ public class FusionOperator implements DeerOperator {
 		System.out.println("en\t" + PRFComputer.computeFScore(enInd, enRefInd));
 		System.out.println("de\t" + PRFComputer.computeFScore(deInd, deRefInd));
 		System.out.println("es\t" + PRFComputer.computeFScore(esInd, esRefInd));
+		
+		allRefInd.addAll(enRefInd);
+		allRefInd.addAll(deRefInd);
+		allRefInd.addAll(esRefInd);
+		allInd.addAll(enInd);
+		allInd.addAll(deInd);
+		allInd.addAll(esInd);
+		System.out.println("Overall\t" + PRFComputer.computeFScore(allInd, allRefInd));
 		return testEx2Langtag2Score;
 	}
 
