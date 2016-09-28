@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class DeerController {
-	private static final Logger logger = Logger.getLogger(DeerController.class.getName());
+	private static final Logger logger = Logger.getLogger(DeerController.class);
 	private static final String HELP_MESSAGE = 
 			"To run DEER from command-line, provide the RDf configuration file as " +
 					"the only one parameter for the DEER jar file. \n" +

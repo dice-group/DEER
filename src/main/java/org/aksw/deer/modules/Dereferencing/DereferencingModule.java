@@ -43,7 +43,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  * objects in the model and query for such information in the dereferenced target
  */
 public class DereferencingModule implements DeerModule{
-	private static final Logger logger = Logger.getLogger(DereferencingModule.class.getName());
+	private static final Logger logger = Logger.getLogger(DereferencingModule.class);
 
 	public static final Property defaultOutputProperty = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
 	public static String resourcePrefix = "http://dbpedia.org/resource";
