@@ -150,7 +150,7 @@
 									<transformers>
 										<transformer
 											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-											<mainClass>org.aksw.geolift.workflow.GeoLift</mainClass>
+											<mainClass>org.aksw.deer.workflow.DeerController</mainClass>
 										</transformer>
 									</transformers>
 								</configuration>

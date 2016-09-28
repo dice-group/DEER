@@ -13,8 +13,8 @@ import org.apache.log4j.Logger;
  * @author sherif
  *
  */
-public class Deer {
-	private static final Logger logger = Logger.getLogger(Deer.class.getName());
+public class DeerController {
+	private static final Logger logger = Logger.getLogger(DeerController.class.getName());
 	private static final String HELP_MESSAGE = 
 			"To run DEER from command-line, provide the RDf configuration file as " +
 					"the only one parameter for the DEER jar file. \n" +
@@ -27,7 +27,7 @@ public class Deer {
 	 * 
 	 *@author sherif
 	 */
-	public Deer() {
+	public DeerController() {
 	}
 
 
@@ -76,7 +76,7 @@ public class Deer {
 	public static void run(String args[]) throws IOException {            
 		if(args.length == 0 || args[0].equals("-?") || args[0].toLowerCase().equals("--help")) {
 			//show help message
-			logger.info(Deer.HELP_MESSAGE);
+			logger.info(DeerController.HELP_MESSAGE);
 			System.exit(0);
 		}
 		if(args[0].equals("-l") || args[0].toLowerCase().equals("--list")) {
