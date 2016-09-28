@@ -14,7 +14,7 @@ import com.hp.hpl.jena.util.FileManager;
  *
  */
 public class Reader {
-	private static final Logger logger = Logger.getLogger(Reader.class.getName());
+	private static final Logger logger = Logger.getLogger(Reader.class);
 
 	public static Model readModel(String fileNameOrUri)
 	{

@@ -3,8 +3,7 @@
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 
 :d1		a				:Dataset ;
-		:hasUri			<http://dbpedia.org/resource/Berlin> ;
-		:FromEndPoint	<http://dbpedia.org/sparql> .
+		:hasUri			<http://dbpedia.org/data/Berlin>.
 :d2		a				:Dataset .
 :d3		a				:Dataset .
 :d4		a				:Dataset .
