@@ -116,7 +116,7 @@
 					<configuration>
 						<archive>
 							<manifest>
-								<mainClass>org.aksw.geolift.workflow.GeoLift</mainClass>
+								<mainClass>org.aksw.deer.workflow.DeerController</mainClass>
 							</manifest>
 						</archive>
 						<descriptorRefs>

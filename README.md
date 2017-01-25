@@ -9,3 +9,10 @@ particular property). Thus, they take a dataset as input and return a dataset as
 Operators work at a higher level of granularity and combine datasets. Thus, they take sets of datasets as input and return sets of datasets.
 
 DEER implemented in Java as an open-source project. Please see /DEER_Manual/DEER_manual.pdf for all the technical details
+
+## Building DEER using Maven
+
+To build DEER using Maven, simply do
+```
+mvn clean compile assembly:assembly
+```
