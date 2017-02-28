@@ -12,14 +12,14 @@ import java.util.Map;
 import org.aksw.deer.modules.Dereferencing.DereferencingModule;
 import org.aksw.deer.modules.linking.LinkingModule;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 
 
 public class LinkingTest {
@@ -31,13 +31,12 @@ public class LinkingTest {
 		// TODO Auto-generated method stub
 		Map<String, String> parameters=new HashMap<String, String>();
 		System.out.println("Start processing......");
-		parameters.put("datasetFilePath",args[0]);// The path to the dataset file to be loaded
-		parameters.put("specFilePath",args[1]);//The path to the spec.xml file contains the linking specifications
-		parameters.put("linksFilePath",args[2]);// The path to the file contains the resulted links
-		parameters.put("linksPart",args[3]);//The position of the Original URI to be enriched in the links generated (right side or left side), so the otherside is the link partner to be added to it
-		
-		Model model=org.aksw.deer.io.Reader.readModel(parameters.get("datasetFilePath"));
-		LinkingModule l= new LinkingModule();
+//		parameters.put("datasetFilePath",args[0]);// The path to the dataset file to be loaded
+		parameters.put("specfile",args[1]);//The path to the spec.xml file contains the linking specifications
+		parameters.put("linksfile",args[2]);// The path to the file contains the resulted links
+		parameters.put("linkspart",args[3]);//The position of the Original URI to be enriched in the links generated (right side or left side), so the otherside is the link partner to be added to it
+		Model model=org.aksw.deer.io.Reader.readModel(args[0]);
+        LinkingModule l= new LinkingModule();
 		l.process(model, parameters);
 		try {
 			org.aksw.deer.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetUpdated.nt");
@@ -54,7 +53,7 @@ public class LinkingTest {
 		parameters2.put("http://www.w3.org/2003/01/geo/wgs84_pos#lat_long", "http://www.w3.org/2003/01/geo/wgs84_pos#lat_long");
 		parameters2.put("http://www.w3.org/2003/01/geo/wgs84_pos#line", "http://www.w3.org/2003/01/geo/wgs84_pos#line");
 		parameters2.put("http://www.w3.org/2003/01/geo/wgs84_pos#polygon", "http://www.w3.org/2003/01/geo/wgs84_pos#polygon");
-			
+
 		model=d.process(model, parameters2);
 		try {
 			org.aksw.deer.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetLinkingDereferenced.nt");
@@ -69,15 +68,15 @@ public class LinkingTest {
 	{
 		Model model= ModelFactory.createDefaultModel();
 		List<String> uris= getURIs(filepath);
-		for (String uri : uris) 
+		for (String uri : uris)
 		{
 			try
         	{
             	String sparqlQuery="select distinct * where { "+uri+" ?p  ?o .}";
     	        Query query = QueryFactory.create(sparqlQuery);
     			QueryExecution qexec = QueryExecutionFactory.sparqlService("http://linkedgeodata.org/sparql/", query);
-    			com.hp.hpl.jena.query.ResultSet results = qexec.execSelect();
-    			com.hp.hpl.jena.query.QuerySolution binding=null;
+    			org.apache.jena.query.ResultSet results = qexec.execSelect();
+    			org.apache.jena.query.QuerySolution binding=null;
     		    while (results.hasNext()) 
     		    {
     		    	binding = results.next();
@@ -85,7 +84,7 @@ public class LinkingTest {
     		    	String value= binding.get("?o").toString() ;
     		    	System.out.println(value);
     		    	//create property
-    		    	com.hp.hpl.jena.rdf.model.Property property = ResourceFactory.createProperty(propertyString);
+    		    	org.apache.jena.rdf.model.Property property = ResourceFactory.createProperty(propertyString);
     	    		Resource resource = model.createResource(uri);
     	    		model.add(resource, property, value);
     		    }

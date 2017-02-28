@@ -13,13 +13,13 @@ import org.aksw.deer.json.ParameterType;
 import org.aksw.deer.modules.DeerModule;
 import org.apache.log4j.Logger;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 
 /**
  * @author sherif
@@ -71,7 +71,7 @@ public class FilterModule implements DeerModule{
 	}
 
 	/* (non-Javadoc)
-	 * @see org.aksw.geolift.modules.GeoLiftModule#process(com.hp.hpl.jena.rdf.model.Model, java.util.Map)
+	 * @see org.aksw.geolift.modules.GeoLiftModule#process(org.apache.jena.rdf.model.Model, java.util.Map)
 	 */
 	@Override
 	public Model process(Model model, Map<String, String> parameters) {
@@ -115,7 +115,7 @@ public class FilterModule implements DeerModule{
 		//				Resource o = ResourceFactory.createResource(str.split(">")[2].replaceAll("<", "").replaceAll(">", "").trim());
 		//				accepted.add(s, p, o);
 		//			}else if(str.split(">")[2].trim().startsWith("\"")){
-		//				com.hp.hpl.jena.rdf.model.Literal o = ResourceFactory.createPlainLiteral(str.split(">")[2]);
+		//				org.apache.jena.rdf.model.Literal o = ResourceFactory.createPlainLiteral(str.split(">")[2]);
 		//				accepted.add(s, p, o);
 		//			}
 		//		}
@@ -166,7 +166,7 @@ public class FilterModule implements DeerModule{
 	}
 
 	/* (non-Javadoc)
-	 * @see org.aksw.geolift.modules.GeoLiftModule#selfConfig(com.hp.hpl.jena.rdf.model.Model, com.hp.hpl.jena.rdf.model.Model)
+	 * @see org.aksw.geolift.modules.GeoLiftModule#selfConfig(org.apache.jena.rdf.model.Model, org.apache.jena.rdf.model.Model)
 	 */
 	@Override
 	public Map<String, String> selfConfig(Model source, Model target) {

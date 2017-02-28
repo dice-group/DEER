@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.aksw.deer.modules.nlp.NLPModule;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Model;
 
 /**
  * Unit test for simple App.
