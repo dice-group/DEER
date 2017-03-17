@@ -12,7 +12,7 @@ import java.util.Map;
 
 import org.aksw.deer.modules.Dereferencing.DereferencingModule;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Model;
 
 
 /**
