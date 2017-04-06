@@ -68,7 +68,8 @@ public class NLPModule implements DeerModule{
 	private static final Logger logger = Logger.getLogger(NLPModule.class.getName());
 
 	private static String dbpediaEndPoint = "http://dbpedia.org/sparql";
-	private static String FOX_SERVICE_URI = "http://fox-demo.aksw.org/call/ner/entities";
+    private static String FOX_SERVICE_URI = "http://fox:4444/call/ner/entities";
+//    private static String FOX_SERVICE_URI = "http://fox-demo.aksw.org/call/ner/entities";
 //	private static String FOX_SERVICE_URI = "http://sake.informatik.uni-leipzig.de:4444/call/ner/entities";
 
 	public static final String ORGANIZATION 	= "organization";
