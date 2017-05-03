@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.aksw.deer.workflow.specslearner;
 
@@ -8,7 +8,7 @@ package org.aksw.deer.workflow.specslearner;
  *
  */
 public enum NodeStatus {
-	NORMAL, 
-	DEAD, 
-	LEAF
+    NORMAL,
+    DEAD,
+    LEAF
 }

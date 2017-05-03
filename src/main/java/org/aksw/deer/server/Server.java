@@ -1,8 +1,10 @@
 package org.aksw.deer.server;
 
 import eu.medsea.mimeutil.MimeUtil;
+import org.aksw.deer.helper.datastructure.RunContext;
 import org.aksw.deer.io.Writer;
 import org.aksw.deer.workflow.DeerController;
+import org.aksw.deer.workflow.rdfspecs.RDFConfigExecutor;
 import spark.Request;
 
 import javax.servlet.MultipartConfigElement;
@@ -50,8 +52,8 @@ public class Server {
                 logInfo(req, tempFile);
                 String id = tempFile.toString();
                 id = id.substring(id.indexOf(CONFIG_FILE_PREFIX) + CONFIG_FILE_PREFIX.length(), id.lastIndexOf(CONFIG_FILE_SUFFIX));
-                Writer.setSubDir(id + "/");
-                DeerController.run((String[]) Arrays.asList(tempFile.toString(), id).toArray());
+                RDFConfigExecutor executor = new RDFConfigExecutor(tempFile.toString(), new RunContext(Long.parseLong(id), id));
+                executor.execute();
                 busy.set(false);
                 return id;
             } catch (Exception e) {

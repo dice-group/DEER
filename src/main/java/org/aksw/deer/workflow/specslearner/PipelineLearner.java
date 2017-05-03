@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.aksw.deer.workflow.specslearner;
 
@@ -20,15 +20,15 @@ import org.aksw.deer.modules.predicateconformation.PredicateConformationModule;
  *
  */
 public interface PipelineLearner {
-	static final Set<DeerModule> MODULES = 
-			new HashSet<DeerModule>(Arrays.asList(
-					new LinkingModule(),
-					new NLPModule(),
-					new FilterModule(),
-					new AuthorityConformationModule(), 
-					new PredicateConformationModule(), 
-					new DereferencingModule()
-					));
+    static final Set<DeerModule> MODULES =
+            new HashSet<DeerModule>(Arrays.asList(
+                    new LinkingModule(),
+                    new NLPModule(),
+                    new FilterModule(),
+                    new AuthorityConformationModule(),
+                    new PredicateConformationModule(),
+                    new DereferencingModule()
+            ));
 
 //	public RefinementNodeOld run();
 }
