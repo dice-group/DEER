@@ -5,6 +5,7 @@ package org.aksw.deer.workflow;
 
 import java.io.IOException;
 
+import org.aksw.deer.server.Server;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
 import org.apache.log4j.Logger;
 
@@ -83,6 +84,10 @@ public class DeerController {
 			org.aksw.deer.json.JSONConfigWriter.write();
 			System.exit(0);
 		}
+        if(args[0].equals("-s") || args[0].toLowerCase().equals("--server")) {
+            Server.main(args);
+            System.exit(0);
+        }
 		//program didn't terminate until here so run RDF config mode
 		long startTime = System.currentTimeMillis();
 		RDFConfigExecuter.main(args);

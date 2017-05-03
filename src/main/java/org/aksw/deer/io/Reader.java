@@ -16,7 +16,11 @@ import org.apache.jena.util.FileManager;
 public class Reader {
 	private static final Logger logger = Logger.getLogger(Reader.class);
 
-	public static Model readModel(String fileNameOrUri)
+    public static Model readModel(String fileNameOrUri) {
+        return readModel(fileNameOrUri, "");
+    }
+
+	public static Model readModel(String fileNameOrUri, String subDir)
 	{
 		long startTime = System.currentTimeMillis();
 		Model model=ModelFactory.createDefaultModel();
@@ -35,6 +39,7 @@ public class Reader {
 			model.read(in, null, "N-TRIPLE");
 		}else{
 			logger.info("Content negotiation to get RDFXML from " + fileNameOrUri);
+
 			model.read(fileNameOrUri);
 		}
 		logger.info("Loading " + fileNameOrUri + " is done in " + (System.currentTimeMillis()-startTime) + "ms.");
