@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.aksw.deer.io;
 
@@ -14,49 +14,49 @@ import org.apache.jena.util.FileManager;
  *
  */
 public class Reader {
-	private static final Logger logger = Logger.getLogger(Reader.class);
+    private static final Logger logger = Logger.getLogger(Reader.class);
 
-	private String subDir = "";
+    private String subDir = "";
 
     public Reader() {
 
     }
 
-	public Reader(String subDir) {
-	    this.subDir = subDir;
+    public Reader(String subDir) {
+        this.subDir = subDir;
     }
 
-	public Model readModel(String fileNameOrUri)
-	{
-	    if (!subDir.isEmpty()) {
-	        try {
+    public Model readModel(String fileNameOrUri)
+    {
+        if (!subDir.isEmpty()) {
+            try {
                 return readModel("./" + subDir + "/" + fileNameOrUri);
             } catch (Exception e) {
-	            logger.debug("Ignoring subdirectory setting for input file: " + fileNameOrUri);
+                logger.debug("Ignoring subdirectory setting for input file: " + fileNameOrUri);
             }
         }
-		long startTime = System.currentTimeMillis();
-		Model model=ModelFactory.createDefaultModel();
-		java.io.InputStream in = FileManager.get().open( fileNameOrUri );
-		if (in == null) {
-			throw new IllegalArgumentException(fileNameOrUri + " not found");
-		}
-		if(fileNameOrUri.contains(".ttl") || fileNameOrUri.contains(".n3")){
-			logger.info("Opening Turtle file");
-			model.read(in, null, "TTL");
-		}else if(fileNameOrUri.contains(".rdf")){
-			logger.info("Opening RDFXML file");
-			model.read(in, null);
-		}else if(fileNameOrUri.contains(".nt")){
-			logger.info("Opening N-Triples file");
-			model.read(in, null, "N-TRIPLE");
-		}else{
-			logger.info("Content negotiation to get RDFXML from " + fileNameOrUri);
+        long startTime = System.currentTimeMillis();
+        Model model=ModelFactory.createDefaultModel();
+        java.io.InputStream in = FileManager.get().open( fileNameOrUri );
+        if (in == null) {
+            throw new IllegalArgumentException(fileNameOrUri + " not found");
+        }
+        if(fileNameOrUri.contains(".ttl") || fileNameOrUri.contains(".n3")){
+            logger.info("Opening Turtle file");
+            model.read(in, null, "TTL");
+        }else if(fileNameOrUri.contains(".rdf")){
+            logger.info("Opening RDFXML file");
+            model.read(in, null);
+        }else if(fileNameOrUri.contains(".nt")){
+            logger.info("Opening N-Triples file");
+            model.read(in, null, "N-TRIPLE");
+        }else{
+            logger.info("Content negotiation to get RDFXML from " + fileNameOrUri);
 
-			model.read(fileNameOrUri);
-		}
-		logger.info("Loading " + fileNameOrUri + " is done in " + (System.currentTimeMillis()-startTime) + "ms.");
-		return model;
-	}
+            model.read(fileNameOrUri);
+        }
+        logger.info("Loading " + fileNameOrUri + " is done in " + (System.currentTimeMillis()-startTime) + "ms.");
+        return model;
+    }
 
 }
