@@ -57,6 +57,12 @@ public class RDFConfigExecutor {
         this.configModel = reader.readModel(modelUrl);
     }
 
+    public RDFConfigExecutor(Model model) throws IOException{
+        this.context = new RunContext(0, "");
+        this.reader = new Reader(context.getSubDir());
+        this.configModel = model;
+    }
+
     /**
      * execute the input RDF config file and return set of all enriched dataset
      * @param inputFile

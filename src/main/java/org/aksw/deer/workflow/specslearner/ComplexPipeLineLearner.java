@@ -42,6 +42,8 @@ public class ComplexPipeLineLearner implements PipelineLearner{
     private static final Logger logger = Logger.getLogger(ComplexPipeLineLearner.class.getName());
     public double penaltyWeight = 0.5;// [0, 1]
     private int datasetCounter = 1;
+    private RDFConfigWriter rdfConfigWriter = new RDFConfigWriter();
+    private Reader reader = new Reader();
     public static Model sourceModel = ModelFactory.createDefaultModel();
     public static Model targetModel = ModelFactory.createDefaultModel();
     public TreeX<RefinementNode> refinementTreeRoot = new TreeX<RefinementNode>(new RefinementNode());
@@ -165,11 +167,8 @@ public class ComplexPipeLineLearner implements PipelineLearner{
 
 
     /**
-     * @param leftNodeValue
-     * @param rightNodeValue
      * @param leftNode
      * @param rightNode
-     * @param leftRightNodes
      * @return
      * @author sherif
      */
@@ -182,7 +181,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
         List<Model> 	mergeOutputModels = mergeOperator.process(mergeInputModels, null);
         List<Model> 	mergeInputConfig = new ArrayList<Model>(Arrays.asList(leftNodeValue.configModel, rightNodeValue.configModel));
         List<Resource> 	mergeOutputDatasets = new ArrayList<Resource>(Arrays.asList(generateDatasetURI()));
-        Model 			mergeConfigModel = RDFConfigWriter.addOperator(mergeOperator, null, mergeInputConfig , mergeInputDatasets, mergeOutputDatasets);
+        Model 			mergeConfigModel = rdfConfigWriter.addOperator(mergeOperator, null, mergeInputConfig , mergeInputDatasets, mergeOutputDatasets);
         double 			fitness = computeFMeasure(mergeOutputModels.get(0), targetModel);
         RefinementNode mergeNodeValue = new RefinementNode(mergeOperator, fitness, mergeInputModels, mergeOutputModels, mergeConfigModel, mergeInputDatasets, mergeOutputDatasets);
         List<TreeX<RefinementNode>> leftRightNodes = new ArrayList<TreeX<RefinementNode>>(Arrays.asList(leftNode, rightNode));
@@ -199,7 +198,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
         List<Model> 	mergeOutputModels = mergeOperator.process(mergeInputModels, null);
         List<Model> 	mergeInputConfig = new ArrayList<Model>(Arrays.asList(leftNodeValue.configModel, rightNodeValue.configModel));
         List<Resource> 	mergeOutputDatasets = new ArrayList<Resource>(Arrays.asList(generateDatasetURI()));
-        Model 			mergeConfigModel = RDFConfigWriter.addOperator(mergeOperator, null, mergeInputConfig , mergeInputDatasets, mergeOutputDatasets);
+        Model 			mergeConfigModel = rdfConfigWriter.addOperator(mergeOperator, null, mergeInputConfig , mergeInputDatasets, mergeOutputDatasets);
         double 			fitness = computeFMeasure(mergeOutputModels.get(0), targetModel);
         RefinementNode mergeNodeValue = new RefinementNode(mergeOperator, fitness, mergeInputModels, mergeOutputModels, mergeConfigModel, mergeInputDatasets, mergeOutputDatasets);
         List<TreeX<RefinementNode>> leftRightNodes = new ArrayList<TreeX<RefinementNode>>(Arrays.asList(leftrightNodes.get(0), leftrightNodes.get(1)));
@@ -219,7 +218,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
         List<Resource> cloneInputDatasets  = root.getValue().outputDatasets;
         List<Resource> cloneOutputDatasets = new ArrayList<Resource>(Arrays.asList(generateDatasetURI(), generateDatasetURI()));
         List<Model> cloneInputConfig 	   = new ArrayList<Model>(Arrays.asList(root.getValue().configModel));
-        Model cloneConfigModel = RDFConfigWriter.addOperator(cloneOperator, null, cloneInputConfig , cloneInputDatasets, cloneOutputDatasets);
+        Model cloneConfigModel = rdfConfigWriter.addOperator(cloneOperator, null, cloneInputConfig , cloneInputDatasets, cloneOutputDatasets);
         RefinementNode cloneNodeValue = new RefinementNode(cloneOperator, -1, cloneInputModels, cloneOutputModels, cloneConfigModel, cloneInputDatasets, cloneOutputDatasets);
         TreeX<RefinementNode> cloneNode = new TreeX<RefinementNode>(root ,cloneNodeValue, null);
         return cloneNode;
@@ -287,7 +286,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
                     fitness = computeFMeasure(currentMdl, targetModel);
                 }
                 Resource outputDataset = generateDatasetURI();
-                configModel = RDFConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
+                configModel = rdfConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
                 node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
             }
             root.addChild(new TreeX<RefinementNode>(node));
@@ -318,7 +317,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
                     Resource outputDataset = generateDatasetURI();
                     // set dataset and config for the left node
                     Resource inputDataset  = rootValue.outputDatasets.get(0);
-                    Model configMdl = RDFConfigWriter.addModule(module, parameters, rootValue.configModel, inputDataset, outputDataset);
+                    Model configMdl = rdfConfigWriter.addModule(module, parameters, rootValue.configModel, inputDataset, outputDataset);
                     RefinementNode node = new RefinementNode(module, fitness, rootValue.getOutputModel(), currentMdl, configMdl, inputDataset, outputDataset);
                     if(left == null || left.fitness < fitness){
                         right = left;
@@ -329,7 +328,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
                         if(rootValue.outputDatasets.size() > 1){
                             inputDataset  = rootValue.outputDatasets.get(1);
                             right.inputDatasets = new ArrayList<Resource>(Arrays.asList(inputDataset));
-                            right.configModel = RDFConfigWriter.addModule(module, parameters, rootValue.configModel, inputDataset, outputDataset);
+                            right.configModel = rdfConfigWriter.addModule(module, parameters, rootValue.configModel, inputDataset, outputDataset);
                         }
 
                     }
@@ -419,19 +418,19 @@ public class ComplexPipeLineLearner implements PipelineLearner{
     }
 
 
-    public static void trivialRun(String args[]){
+    public void trivialRun(String args[]){
         String sourceUri = args[0];
         String targetUri = args[1];
         ComplexPipeLineLearner learner = new ComplexPipeLineLearner();
-        sourceModel  = Reader.readModel(sourceUri);
-        targetModel = Reader.readModel(targetUri);
+        sourceModel  = reader.readModel(sourceUri);
+        targetModel = reader.readModel(targetUri);
         long start = System.currentTimeMillis();
         learner.learnComplexSpecs();
         long end = System.currentTimeMillis();
         logger.info("Done in " + (end - start) + "ms");
     }
 
-    public static void evaluation(String args[], boolean isBatch, int max) throws IOException{
+    public void evaluation(String args[], boolean isBatch, int max) throws IOException{
         String folder = args[0];
         String results = "ModuleCount\tTime\tTreeSize\tIterationNr\tP\tR\tF\n";
         for(int i = 1 ; i <= max; i++){
@@ -439,8 +438,8 @@ public class ComplexPipeLineLearner implements PipelineLearner{
             if(isBatch){
                 folder = folder + i;
             }
-            ComplexPipeLineLearner.sourceModel  = Reader.readModel(folder + "/input.ttl");
-            ComplexPipeLineLearner.targetModel  = Reader.readModel(folder + "/output.ttl");
+            ComplexPipeLineLearner.sourceModel  = reader.readModel(folder + "/input.ttl");
+            ComplexPipeLineLearner.targetModel  = reader.readModel(folder + "/output.ttl");
             long start = System.currentTimeMillis();
             RefinementNode bestSolution = learner.learnSimpleSpecs();
             long end = System.currentTimeMillis();
@@ -452,7 +451,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
                     learner.computePrecision(bestSolution.getOutputModel(), targetModel) + "\t" +
                     learner.computeRecall(bestSolution.getOutputModel(), targetModel) + "\t" +
                     learner.computeFMeasure(bestSolution.getOutputModel(), targetModel);
-            Writer.writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
+            (new Writer()).writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
             //			bestSolution.outputModel.write(System.out,"TTL");
 //			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
             System.out.println(results);
@@ -504,7 +503,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
     }
 
     public static void main(String args[]) throws IOException{
-        trivialRun(args);
+        new ComplexPipeLineLearner().trivialRun(args);
         //evaluation(args, false, 1);
     }
 
@@ -535,7 +534,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
                     double fitness = computeFMeasure(currentMdl, targetModel);
                     Resource outputDataset = generateDatasetURI();
                     Resource inputDataset  = root.getValue().outputDatasets.get(0);
-                    Model configModel = RDFConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
+                    Model configModel = rdfConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
                     node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
                     if(promisingNode == null || promisingNode.fitness < fitness){
                         promisingNode = node;
@@ -565,7 +564,7 @@ public class ComplexPipeLineLearner implements PipelineLearner{
                     double fitness = computeFMeasure(currentMdl, targetModel);
                     Resource outputDataset = generateDatasetURI();
                     Resource inputDataset  = root.getValue().outputDatasets.get(0);
-                    Model configModel = RDFConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
+                    Model configModel = rdfConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
                     RefinementNode node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl, configModel, inputDataset, outputDataset);
                     if(promisingNode == null || promisingNode.fitness < fitness){
                         promisingNode = node;
@@ -603,13 +602,13 @@ public class ComplexPipeLineLearner implements PipelineLearner{
         RefinementNode leftValue = leftRightNodesValues.get(0);
         Resource leftModuleUri = RDFConfigAnalyzer.getLastModuleUriOftype(leftValue.module.getType(), leftValue.configModel);
         Resource leftOutputDatasetUri = leftValue.outputDatasets.get(0);
-        Model leftConfig = RDFConfigWriter.changeModuleInputOutput(leftValue.configModel, leftModuleUri, leftInputDatasetUri, leftOutputDatasetUri);
+        Model leftConfig = rdfConfigWriter.changeModuleInputOutput(leftValue.configModel, leftModuleUri, leftInputDatasetUri, leftOutputDatasetUri);
         leftValue.configModel = leftConfig.add(root.configModel);
 
         RefinementNode rightValue = leftRightNodesValues.get(1);
         Resource rightModuleUri = RDFConfigAnalyzer.getLastModuleUriOftype(rightValue.module.getType(), rightValue.configModel);
         Resource rightOutputDatasetUri = rightValue.outputDatasets.get(0);
-        Model rightConfig = RDFConfigWriter.changeModuleInputOutput(rightValue.configModel, rightModuleUri, rightInputDatasetUri, rightOutputDatasetUri);
+        Model rightConfig = rdfConfigWriter.changeModuleInputOutput(rightValue.configModel, rightModuleUri, rightInputDatasetUri, rightOutputDatasetUri);
         leftValue.configModel = rightConfig.add(root.configModel);
 
         return new ArrayList<RefinementNode>(Arrays.asList(leftValue, rightValue));

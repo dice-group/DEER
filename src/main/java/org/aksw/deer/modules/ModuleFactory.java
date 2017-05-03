@@ -123,8 +123,8 @@ public class ModuleFactory {
      */
     public static List<DeerModule> getImplementations(){
         List<DeerModule> result = new ArrayList<DeerModule>();
-//		result.add(new DereferencingModule());
-//		result.add(new LinkingModule());
+		result.add(new DereferencingModule());
+		result.add(new LinkingModule());
         result.add(new NLPModule());
         result.add(new AuthorityConformationModule());
         result.add(new PredicateConformationModule());

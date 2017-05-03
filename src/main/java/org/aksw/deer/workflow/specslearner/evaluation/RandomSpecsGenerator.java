@@ -43,6 +43,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
 public class RandomSpecsGenerator {
     private static final Logger logger = Logger.getLogger(RandomSpecsGenerator.class.getName());
     private static int datasetIndex = 1;
+    private static RDFConfigWriter rdfConfigWriter = new RDFConfigWriter();
     public 	 static Model specsModel = ModelFactory.createDefaultModel();
     private static List<DeerModule> deerModules = ModuleFactory.getImplementations();
     private static List<DeerOperator> deerOperators = OperatorFactory.getImplementations();
@@ -71,10 +72,10 @@ public class RandomSpecsGenerator {
      * @author sherif
      */
     public static Model generateSpecs(String inputDataFile, int size, double complexity){
-        Model inputDataModel = Reader.readModel(inputDataFile);
+        Model inputDataModel = new Reader().readModel(inputDataFile);
         Model specsModel = generateSpecs(inputDataModel, size, complexity);
         Resource firstDataset = ResourceFactory.createResource(SPECS.uri + "dataset_1");
-        RDFConfigWriter.addDataset(specsModel, firstDataset, inputDataFile);
+        rdfConfigWriter.addDataset(specsModel, firstDataset, inputDataFile);
         return specsModel;
     }
 
@@ -99,7 +100,7 @@ public class RandomSpecsGenerator {
             ResIterator moduleToChangeInput = specsModel.listSubjectsWithProperty(SPECS.hasInput, inputDatasetUri);
             if(moduleToChangeInput.hasNext()) {
                 Resource r = moduleToChangeInput.next();
-                RDFConfigWriter.changeInputDatasetUri(specsModel, r, inputDatasetUri, outputDatasetUri);
+                rdfConfigWriter.changeInputDatasetUri(specsModel, r, inputDatasetUri, outputDatasetUri);
 //				specsModel.write(System.out,"TTL");
             }
             if(Math.random() >= complexity){
@@ -111,7 +112,7 @@ public class RandomSpecsGenerator {
                     parameters = generateRandomParameters(module, inputDataModel);
                 }while(parameters == null);
                 logger.info("Generating Module: " + module.getType() + " with parameters: " + parameters);
-                specsModel = RDFConfigWriter.addModule(module, parameters, specsModel, inputDatasetUri, outputDatasetUri);
+                specsModel = rdfConfigWriter.addModule(module, parameters, specsModel, inputDatasetUri, outputDatasetUri);
                 inputDatasetUri = getRandomDataset();
             }else{ // Create clone - merge sequence
                 List<Resource> outputDatasetstUris = addCloneOperator(inputDatasetUri);
@@ -127,7 +128,6 @@ public class RandomSpecsGenerator {
 
 
     /**
-     * @param specsModel2
      * @return
      * @author sherif
      */
@@ -150,12 +150,11 @@ public class RandomSpecsGenerator {
         List<Model> confModels = new ArrayList<Model>(Arrays.asList(specsModel));
         List<Resource> inputDatasets = new ArrayList<Resource>(Arrays.asList(inputDatasetUri));
         List<Resource> outputDatasets = new ArrayList<Resource>(Arrays.asList(generateDatasetURI(),generateDatasetURI()));
-        specsModel = RDFConfigWriter.addOperator(clone, null, confModels, inputDatasets, outputDatasets);
+        specsModel = rdfConfigWriter.addOperator(clone, null, confModels, inputDatasets, outputDatasets);
         return outputDatasets;
     }
 
     /**
-     * @param inputDatasetUri
      * @author sherif
      * @return
      */
@@ -163,7 +162,7 @@ public class RandomSpecsGenerator {
         List<Resource> outputDatasetsUris = new ArrayList<Resource>(Arrays.asList(outputDatasetUri));
         DeerOperator merge = OperatorFactory.createOperator(OperatorFactory.MERGE_OPERATOR);
         List<Model> confModels = new ArrayList<Model>(Arrays.asList(specsModel));
-        specsModel = RDFConfigWriter.addOperator(merge, null, confModels, inputDatasetUris, outputDatasetsUris);
+        specsModel = rdfConfigWriter.addOperator(merge, null, confModels, inputDatasetUris, outputDatasetsUris);
         return outputDatasetUri;
     }
 
@@ -293,7 +292,6 @@ public class RandomSpecsGenerator {
     /**
      * @return
      * @author sherif
-     * @param inputDataset
      */
     private static Map<String, String> nlpModuleRandomParameter() {
         Map<String, String> parameters = new HashMap<String, String>();
@@ -356,7 +354,7 @@ public class RandomSpecsGenerator {
      * @author sherif
      */
     public static void main(String[] args) {
-//		Model kb = Reader.readModel(args[0]);
+//		Model kb = new Reader().readModel(args[0]);
 //		Model m = g.generateSpecs(kb, 5, 0.5);
         Model m = RandomSpecsGenerator.generateSpecs(args[0], 2, .2);
         m.write(System.out, "TTL");

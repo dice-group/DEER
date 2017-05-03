@@ -38,6 +38,8 @@ public class SimplePipeLineLearner implements PipelineLearner{
     private static final Logger logger = Logger.getLogger(SimplePipeLineLearner.class.getName());
     public double penaltyWeight = 0.5;// [0, 1]
     private int datasetIndex = 1;
+    private RDFConfigWriter rdfConfigWriter = new RDFConfigWriter();
+    private Reader reader = new Reader();
     public static Model sourceModel = ModelFactory.createDefaultModel();
     public static Model targetModel = ModelFactory.createDefaultModel();
     public Tree<RefinementNodeOld> refinementTreeRoot = new Tree<RefinementNodeOld>(new RefinementNodeOld());
@@ -137,7 +139,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
                     fitness = computeFMeasure(currentMdl, targetModel);
                 }
                 Resource outputDataset = ResourceFactory.createResource(SPECS.uri + "Dataset_" + datasetIndex++);
-                configMdl = RDFConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
+                configMdl = rdfConfigWriter.addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
                 node = new RefinementNodeOld(module, fitness, root.getValue().outputModel, currentMdl, inputDataset, outputDataset, configMdl);
             }
             root.addChild(new Tree<RefinementNodeOld>(node));
@@ -219,22 +221,22 @@ public class SimplePipeLineLearner implements PipelineLearner{
 
     public static void main(String args[]) throws IOException{
 //		trivialRun(args);
-        evaluation(args, false, 1);
+        new SimplePipeLineLearner().evaluation(args, false, 1);
     }
 
-    public static void trivialRun(String args[]){
+    public void trivialRun(String args[]){
         String sourceUri = args[0];
         String targetUri = args[1];
         SimplePipeLineLearner learner = new SimplePipeLineLearner();
-        SimplePipeLineLearner.sourceModel  = Reader.readModel(sourceUri);
-        SimplePipeLineLearner.targetModel = Reader.readModel(targetUri);
+        SimplePipeLineLearner.sourceModel  = reader.readModel(sourceUri);
+        SimplePipeLineLearner.targetModel = reader.readModel(targetUri);
         long start = System.currentTimeMillis();
         learner.run();
         long end = System.currentTimeMillis();
         logger.info("Done in " + (end - start) + "ms");
     }
 
-    public static void evaluation(String args[], boolean isBatch, int max) throws IOException{
+    public void evaluation(String args[], boolean isBatch, int max) throws IOException{
         String folder = args[0];
         String results = "ModuleCount\tTime\tTreeSize\tIterationNr\tP\tR\tF\n";
         for(int i = 1 ; i <= max; i++){
@@ -242,8 +244,8 @@ public class SimplePipeLineLearner implements PipelineLearner{
             if(isBatch){
                 folder = folder + i;
             }
-            SimplePipeLineLearner.sourceModel  = Reader.readModel(folder + "/input.ttl");
-            SimplePipeLineLearner.targetModel  = Reader.readModel(folder + "/output.ttl");
+            SimplePipeLineLearner.sourceModel  = reader.readModel(folder + "/input.ttl");
+            SimplePipeLineLearner.targetModel  = reader.readModel(folder + "/output.ttl");
             long start = System.currentTimeMillis();
             RefinementNodeOld bestSolution = learner.run();
             long end = System.currentTimeMillis();
@@ -256,7 +258,7 @@ public class SimplePipeLineLearner implements PipelineLearner{
                     learner.computeRecall(bestSolution.outputModel, targetModel) + "\t" +
                     learner.computeFMeasure
                             (bestSolution.outputModel, targetModel);
-            Writer.writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
+            (new Writer()).writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
 //			bestSolution.outputModel.write(System.out,"TTL");
             System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
             System.out.println(results);

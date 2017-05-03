@@ -75,8 +75,8 @@ public class SimplePipelineLearnerEvaluation {
             if(isBatch){
                 folder = folder + i;
             }
-            SimplePipeLineLearner.sourceModel  = Reader.readModel(folder + "/input.ttl");
-            SimplePipeLineLearner.targetModel  = Reader.readModel(folder + "/output.ttl");
+            SimplePipeLineLearner.sourceModel  = new Reader().readModel(folder + "/input.ttl");
+            SimplePipeLineLearner.targetModel  = new Reader().readModel(folder + "/output.ttl");
             long start = System.currentTimeMillis();
             bestSolution = learner.run();
             long end = System.currentTimeMillis();
@@ -89,7 +89,7 @@ public class SimplePipelineLearnerEvaluation {
                     learner.computeRecall(bestSolution.outputModel, SimplePipeLineLearner.targetModel) + "\t" +
                     learner.computeFMeasure
                             (bestSolution.outputModel, SimplePipeLineLearner.targetModel);
-            Writer.writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
+            new Writer().writeModel(bestSolution.configModel, "TTL", folder + "/self_config.ttl");
             //			bestSolution.outputModel.write(System.out,"TTL");
             System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
             System.out.println(resultStr);
@@ -102,8 +102,8 @@ public class SimplePipelineLearnerEvaluation {
     //	resultStr += RDFConfigAnalyzer.getModules(selfConfig).size() + "\t"; // 	ModuleComplexity
 
     public static FMeasure evaluateSelfConfig(Model manualConfig, Model selfConfig) throws IOException {
-        Model manualKB = RDFConfigExecutor.execute(manualConfig).iterator().next();
-        Model selfConfigKB = RDFConfigExecutor.execute(selfConfig).iterator().next();
+        Model manualKB = new RDFConfigExecutor(manualConfig).simpleExecute();
+        Model selfConfigKB = new RDFConfigExecutor(selfConfig).simpleExecute();
         return FMeasure.computePRF(selfConfigKB, manualKB);
     }
 
@@ -153,8 +153,8 @@ public class SimplePipelineLearnerEvaluation {
     @SuppressWarnings("unused")
     public String testExampleCount(String kbFile, String kbSampleFile, String manualConfigFile, String authority, int exampleCount, double penaltyWeight) throws IOException{
         String folder = kbFile.substring(0, kbFile.lastIndexOf("/")+1);
-        Model kb = Reader.readModel(kbFile);
-        Model manualConfig = Reader.readModel(manualConfigFile);
+        Model kb = new Reader().readModel(kbFile);
+        Model manualConfig = new Reader().readModel(manualConfigFile);
         //		List<Resource> resources = getNResources(authority, kb, exampleCount);
         List<Resource> resources = getAllResourcesWithAuthority(authority, kb);
         Model cbd = ModelFactory.createDefaultModel();
@@ -170,7 +170,7 @@ public class SimplePipelineLearnerEvaluation {
                 cbd.add(getCBD(r, kb));
             }
             cbdOutputFile = folder + "cbd" + exampleCount + ".ttl";
-            Writer.writeModel(cbd, "TTL", cbdOutputFile);
+            new Writer().writeModel(cbd, "TTL", cbdOutputFile);
 
             // (2) Generate a manual-config file to the generated CBD in(1) and save it
             cbdManualConfig = changeInputFile(manualConfig, kbFile , cbdOutputFile);
@@ -179,10 +179,10 @@ public class SimplePipelineLearnerEvaluation {
             cbdManualConfig = changeOutputFile(cbdManualConfig, kbMOutputFile , cbdMOutputFile);
             cbdManualConfig.setNsPrefixes(manualConfig);
             String cbdManualConfigOutputFile =  folder + "m_config" + exampleCount +".ttl";
-            Writer.writeModel(cbdManualConfig, "TTL", cbdManualConfigOutputFile);
+            new Writer().writeModel(cbdManualConfig, "TTL", cbdManualConfigOutputFile);
 
             // (3) run the config generated in(2) and save result
-            manuallyEnrichedCBD = RDFConfigExecutor.simpleExecute(cbdManualConfig);
+            manuallyEnrichedCBD = new RDFConfigExecutor(cbdManualConfig).simpleExecute();
             if(!manuallyEnrichedCBD.isIsomorphicWith(cbd)){
                 foundExamples++;
             }
@@ -198,10 +198,10 @@ public class SimplePipelineLearnerEvaluation {
         long learningTime = System.currentTimeMillis() - start;
         Model selfConfEnrichedCBD = bestSolution.outputModel;
         String selfConfEnrichedCbdOutputFile =  folder + "cbd" + exampleCount + "s.ttl";
-        Writer.writeModel(selfConfEnrichedCBD, "TTL",  selfConfEnrichedCbdOutputFile);
+        new Writer().writeModel(selfConfEnrichedCBD, "TTL",  selfConfEnrichedCbdOutputFile);
         cbdSelfConfig = bestSolution.configModel;
         String cbdSelfConfigOutputFile =  folder + "s_config" + exampleCount + ".ttl";
-        Writer.writeModel(cbdSelfConfig, "TTL", cbdSelfConfigOutputFile);
+        new Writer().writeModel(cbdSelfConfig, "TTL", cbdSelfConfigOutputFile);
 /*
 		// (5) Compare manual and self-config in the entire KB
 		// I. Generate KBManualConfig and save it
@@ -214,14 +214,14 @@ public class SimplePipelineLearnerEvaluation {
 		KBManualConfig = changeOutputFile(KBManualConfig, cbdMOutputFile , kbMOutputFile);
 		KBManualConfig.setNsPrefixes(manualConfig);
 		String KBManualConfigOutputFile =  folder + "kb_m_config" + exampleCount + ".ttl";
-		Writer.writeModel(KBManualConfig, "TTL", KBManualConfigOutputFile);
+		new Writer().writeModel(KBManualConfig, "TTL", KBManualConfigOutputFile);
 
 		// II. Generate manuallyEnrichedKB by applying KBManualConfig to the entire KB and save it
 		start = System.currentTimeMillis();
 		Model manuallyEnrichedKB = RDFConfigExecuter.simpleExecute(KBManualConfig);
 		long manualConfigKBTime = System.currentTimeMillis() - start;
 		//		outputFile =  folder + "kb" + exampleCount + "m.ttl";
-		//		Writer.writeModel(manuallyEnrichedKB, "TTL", outputFile);
+		//		new Writer().writeModel(manuallyEnrichedKB, "TTL", outputFile);
 
 		// III. Generate KBSelfConfig and save it
 		String inputFile = "inputFile.ttl";
@@ -236,14 +236,14 @@ public class SimplePipelineLearnerEvaluation {
 		KBSelfConfig = changeOutputFile(KBSelfConfig, outputFile , kbSOutputFile);
 		KBSelfConfig.setNsPrefixes(manualConfig);
 		String KBSelfConfigOutputFile =  folder + "kb_s_config" + exampleCount + ".ttl";
-		Writer.writeModel(KBSelfConfig, "TTL", KBSelfConfigOutputFile);
+		new Writer().writeModel(KBSelfConfig, "TTL", KBSelfConfigOutputFile);
 
 		// IV. Generate selfConfigEnrichedKB by applying the self config to the entire KgeB 
 		start = System.currentTimeMillis();
 		Model selfConfigEnrichedKB = RDFConfigExecuter.simpleExecute(KBSelfConfig);
 		long selfConfigKBTime = System.currentTimeMillis() - start;
 		String selfConfigEnrichedKBoutputFile =  folder + "kb" + exampleCount + "s.ttl";
-		Writer.writeModel(selfConfigEnrichedKB, "TTL", selfConfigEnrichedKBoutputFile);
+		new Writer().writeModel(selfConfigEnrichedKB, "TTL", selfConfigEnrichedKBoutputFile);
 
 		// V. compare manuallyEnrichedKB vs selfConfigEnrichedKB
 //		System.out.println("+++++++++++++++++++");
@@ -341,7 +341,7 @@ public class SimplePipelineLearnerEvaluation {
             String authority = "http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs";
             resultStr += "-----------------------------------------------------------\n" +
                     e.testExampleCount(kbFile, kbSampleFile, manualConfigFile, authority, 1, 0.75);
-            Writer.writeModel(e.cbdSelfConfig, "TTL", folder + "s" + i +".ttl");
+            new Writer().writeModel(e.cbdSelfConfig, "TTL", folder + "s" + i +".ttl");
         }
 //		System.out.println("resultStr");
         File file = new File(folder + "result.txt");
@@ -365,7 +365,7 @@ public class SimplePipelineLearnerEvaluation {
             String authority = "http://dbpedia.org/resource/Berlin";
             resultStr += "-----------------------------------------------------------\n" +
                     e.testExampleCount(kbFile, kbSampleFile, manualConfigFile, authority, 2, 0.75);
-            Writer.writeModel(e.cbdSelfConfig, "TTL", folder + "s" + i +".ttl");
+            new Writer().writeModel(e.cbdSelfConfig, "TTL", folder + "s" + i +".ttl");
         }
 //		System.out.println("resultStr");
         File file = new File(folder + "result.txt");
