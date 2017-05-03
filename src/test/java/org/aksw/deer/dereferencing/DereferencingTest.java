@@ -37,7 +37,7 @@ public class DereferencingTest
     	
     	List<String> configurations= getConfigured(args[0]);
     	//load model with required dataset
-    	Model model=org.aksw.deer.io.Reader.readModel(configurations.get(0));//model is loaded with dataset from specified file
+    	Model model=new org.aksw.deer.io.Reader().readModel(configurations.get(0));//model is loaded with dataset from specified file
     	List<String> predicates=configurations.subList(1, configurations.size());//load targeted predicates to be added to enrich information in dataset
     	//Collect list of targeted predicates into Map
     	Map<String, String> parameters= new HashMap<String, String>();
@@ -50,7 +50,7 @@ public class DereferencingTest
     	Model resultedModel = u.process(model, parameters);// run the dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
 		long stopTime = System.currentTimeMillis();
 		try { 
-			org.aksw.deer.io.Writer.writeModel(resultedModel, "TTL", "src/main/resources/dereferencing/DereferencingEnriched.ttl");
+			new org.aksw.deer.io.Writer().writeModel(resultedModel, "TTL", "src/main/resources/dereferencing/DereferencingEnriched.ttl");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

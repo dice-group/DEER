@@ -28,9 +28,13 @@ public class Reader {
 
     public Model readModel(String fileNameOrUri)
     {
-        if (!subDir.isEmpty()) {
+        return readModel(fileNameOrUri, false);
+    }
+
+    private Model readModel(String fileNameOrUri, boolean ignoreSubDir) {
+        if (!subDir.isEmpty() && !ignoreSubDir) {
             try {
-                return readModel("./" + subDir + "/" + fileNameOrUri);
+                return readModel("./" + subDir + "/" + fileNameOrUri, true);
             } catch (Exception e) {
                 logger.debug("Ignoring subdirectory setting for input file: " + fileNameOrUri);
             }
