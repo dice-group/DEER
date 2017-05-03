@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.aksw.deer.operators;
 
@@ -13,7 +13,7 @@ import org.apache.jena.rdf.model.Model;
  *
  */
 public interface DeerOperator {
-	public List<Model> process(List<Model> models, Map<String, String> parameters);
-	public List<String> getParameters();
-	public List<String> getNecessaryParameters(); 
+    public List<Model> process(List<Model> models, Map<String, String> parameters);
+    public List<String> getParameters();
+    public List<String> getNecessaryParameters();
 }

@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
  */
 public class JSONConfigWriter {
     private static final Logger moduleLogger = Logger.getLogger(DeerModule.class.getName());
-    private static final Logger operatorLogger = Logger.getLogger(ModelOperatorFactory.class.getName());
 
     private static String join(String[] values) {
         StringBuilder joined = new StringBuilder();
@@ -99,7 +98,7 @@ public class JSONConfigWriter {
         operatorJSONConfig.append("{");
         operatorJSONConfig.append("\"$schema\":\"http://json-schema.org/draft-04/schema#\",");
         operatorJSONConfig.append("\"title\":\"").append(name).append("\",");
-        operatorJSONConfig.append("\"description\":\"").append(ModelOperatorFactory.getDescription(name)).append("\"");
+        operatorJSONConfig.append("\"description\":\"").append(OperatorFactory.getDescription(name)).append("\"");
 
         //there are no parameters used in operators. 
         //merge: model x model -> model
@@ -114,8 +113,7 @@ public class JSONConfigWriter {
         List<String> moduleNames = ModuleFactory.getNames();
 
         //get operators
-        ModelOperatorFactory modelOperatorFactory = new ModelOperatorFactory();
-        List<String> operatorNames = modelOperatorFactory.getNames();
+        List<String> operatorNames = OperatorFactory.getNames();
 
         StringBuilder jsonConfig = new StringBuilder();
         jsonConfig.append("{");
@@ -159,7 +157,6 @@ public class JSONConfigWriter {
 
     public static void write() {
         JSONConfigWriter.moduleLogger.setLevel(Level.OFF);
-        JSONConfigWriter.operatorLogger.setLevel(Level.OFF);
         String jsonConfig = JSONConfigWriter.buildJSONString();
         System.out.println(jsonConfig);
     }
