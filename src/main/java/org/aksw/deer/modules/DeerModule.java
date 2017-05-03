@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.aksw.deer.modules;
 
@@ -16,10 +16,10 @@ import org.apache.jena.rdf.model.Resource;
  *
  */
 public interface DeerModule {
-	public Model process(Model model, Map<String, String> parameters);
-	public List<String> getParameters();
-	public List<String> getNecessaryParameters();
-	public Map<String, String> selfConfig(Model source, Model target);
-    public List<ParameterType> getParameterWithTypes();
-	Resource getType();
+    Model process(Model model, Map<String, String> parameters);
+    List<String> getParameters();
+    List<String> getNecessaryParameters();
+    Map<String, String> selfConfig(Model source, Model target);
+    List<ParameterType> getParameterWithTypes();
+    Resource getType();
 }

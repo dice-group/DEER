@@ -1,11 +1,13 @@
 /**
- * 
+ *
  */
 package org.aksw.deer.workflow;
 
 import java.io.IOException;
 
-import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
+import org.aksw.deer.helper.datastructure.RunContext;
+import org.aksw.deer.server.Server;
+import org.aksw.deer.workflow.rdfspecs.RDFConfigExecutor;
 import org.apache.log4j.Logger;
 
 
@@ -14,21 +16,21 @@ import org.apache.log4j.Logger;
  *
  */
 public class DeerController {
-	private static final Logger logger = Logger.getLogger(DeerController.class);
-	private static final String HELP_MESSAGE = 
-			"To run DEER from command-line, provide the RDf configuration file as " +
-					"the only one parameter for the DEER jar file. \n" +
-					"Example: deer.jar config.ttl \n" +
-					"For details about the configuration file see DEER manual at " +
-					"https://github.com/GeoKnow/DEER/blob/master/DEER_manual/deer_manual.pdf ";
+    private static final Logger logger = Logger.getLogger(DeerController.class);
+    private static final String HELP_MESSAGE =
+            "To run DEER from command-line, provide the RDf configuration file as " +
+                    "the only one parameter for the DEER jar file. \n" +
+                    "Example: deer.jar config.ttl \n" +
+                    "For details about the configuration file see DEER manual at " +
+                    "https://github.com/GeoKnow/DEER/blob/master/DEER_manual/deer_manual.pdf ";
 
 
-	/**
-	 * 
-	 *@author sherif
-	 */
-	public DeerController() {
-	}
+    /**
+     *
+     *@author sherif
+     */
+    public DeerController() {
+    }
 
 
 //	/**
@@ -73,28 +75,33 @@ public class DeerController {
 //		logger.info("***** Done in " + totalTime + "ms *****");
 //	}
 
-	public static void run(String args[]) throws IOException {            
-		if(args.length == 0 || args[0].equals("-?") || args[0].toLowerCase().equals("--help")) {
-			//show help message
-			logger.info(DeerController.HELP_MESSAGE);
-			System.exit(0);
-		}
-		if(args[0].equals("-l") || args[0].toLowerCase().equals("--list")) {
-			org.aksw.deer.json.JSONConfigWriter.write();
-			System.exit(0);
-		}
-		//program didn't terminate until here so run RDF config mode
-		long startTime = System.currentTimeMillis();
-		RDFConfigExecuter.main(args);
-		Long totalTime = System.currentTimeMillis() - startTime;
-		logger.info("Running DEER Done in " + totalTime + "ms");
-	}
+    public static void run(String args[]) throws IOException {
+        if(args.length == 0 || args[0].equals("-?") || args[0].toLowerCase().equals("--help")) {
+            //show help message
+            logger.info(DeerController.HELP_MESSAGE);
+            System.exit(0);
+        }
+        if(args[0].equals("-l") || args[0].toLowerCase().equals("--list")) {
+            org.aksw.deer.json.JSONConfigWriter.write();
+            System.exit(0);
+        }
+        if(args[0].equals("-s") || args[0].toLowerCase().equals("--server")) {
+            Server.main(args);
+            System.exit(0);
+        }
+        //program didn't terminate until here so run RDF config mode
+        long startTime = System.currentTimeMillis();
+        RDFConfigExecutor executor = new RDFConfigExecutor(args[0], new RunContext(0,""));
+        executor.execute();
+        Long totalTime = System.currentTimeMillis() - startTime;
+        logger.info("Running DEER Done in " + totalTime + "ms");
+    }
 
-	/**
-	 * @param args
-	 * @author sherif
-	 */
-	public static void main(String args[]) throws IOException{
-		run(args);
-	}
+    /**
+     * @param args
+     * @author sherif
+     */
+    public static void main(String args[]) throws IOException{
+        run(args);
+    }
 }
