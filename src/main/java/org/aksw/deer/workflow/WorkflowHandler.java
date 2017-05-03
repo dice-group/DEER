@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.modules.DeerModule;
-import org.aksw.deer.modules.Dereferencing.DereferencingModule;
+import org.aksw.deer.modules.dereferencing.DereferencingModule;
 import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.deer.modules.filter.FilterModule;
 import org.aksw.deer.modules.linking.LinkingModule;

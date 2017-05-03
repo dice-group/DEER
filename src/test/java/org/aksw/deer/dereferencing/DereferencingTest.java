@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.deer.modules.Dereferencing.DereferencingModule;
+import org.aksw.deer.modules.dereferencing.DereferencingModule;
 
 import org.apache.jena.rdf.model.Model;
 

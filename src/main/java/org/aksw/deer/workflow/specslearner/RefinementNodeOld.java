@@ -4,7 +4,7 @@
 package org.aksw.deer.workflow.specslearner;
 
 
-import org.aksw.deer.helper.vacabularies.SPECS;
+import org.aksw.deer.helper.vocabularies.SPECS;
 import org.aksw.deer.modules.DeerModule;
 import org.aksw.deer.operators.DeerOperator;
 

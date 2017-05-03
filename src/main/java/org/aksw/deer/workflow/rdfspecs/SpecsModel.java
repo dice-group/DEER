@@ -6,9 +6,9 @@ package org.aksw.deer.workflow.rdfspecs;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.deer.helper.vacabularies.SPECS;
+import org.aksw.deer.helper.vocabularies.SPECS;
 import org.aksw.deer.modules.DeerModule;
-import org.aksw.deer.modules.Dereferencing.DereferencingModule;
+import org.aksw.deer.modules.dereferencing.DereferencingModule;
 import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.deer.modules.filter.FilterModule;
 import org.aksw.deer.modules.linking.LinkingModule;

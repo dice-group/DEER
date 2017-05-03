@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.aksw.deer.helper.vacabularies;
+package org.aksw.deer.helper.vocabularies;
 
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;

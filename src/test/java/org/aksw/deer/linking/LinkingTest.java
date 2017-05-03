@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.deer.modules.Dereferencing.DereferencingModule;
+import org.aksw.deer.modules.dereferencing.DereferencingModule;
 import org.aksw.deer.modules.linking.LinkingModule;
 
 import org.apache.jena.query.Query;

@@ -16,12 +16,25 @@ import org.apache.jena.util.FileManager;
 public class Reader {
 	private static final Logger logger = Logger.getLogger(Reader.class);
 
-    public static Model readModel(String fileNameOrUri) {
-        return readModel(fileNameOrUri, "");
+	private String subDir = "";
+
+    public Reader() {
+
     }
 
-	public static Model readModel(String fileNameOrUri, String subDir)
+	public Reader(String subDir) {
+	    this.subDir = subDir;
+    }
+
+	public Model readModel(String fileNameOrUri)
 	{
+	    if (!subDir.isEmpty()) {
+	        try {
+                return readModel("./" + subDir + "/" + fileNameOrUri);
+            } catch (Exception e) {
+	            logger.debug("Ignoring subdirectory setting for input file: " + fileNameOrUri);
+            }
+        }
 		long startTime = System.currentTimeMillis();
 		Model model=ModelFactory.createDefaultModel();
 		java.io.InputStream in = FileManager.get().open( fileNameOrUri );
@@ -44,10 +57,6 @@ public class Reader {
 		}
 		logger.info("Loading " + fileNameOrUri + " is done in " + (System.currentTimeMillis()-startTime) + "ms.");
 		return model;
-	}
-	
-	public static void main(String args[]){
-		readModel(args[0]).write(System.out, "TTL");
 	}
 
 }

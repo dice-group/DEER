@@ -6,7 +6,7 @@ package org.aksw.deer.workflow;
 import java.io.IOException;
 
 import org.aksw.deer.server.Server;
-import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
+import org.aksw.deer.workflow.rdfspecs.RFDConfigExecutor;
 import org.apache.log4j.Logger;
 
 
@@ -90,7 +90,8 @@ public class DeerController {
         }
 		//program didn't terminate until here so run RDF config mode
 		long startTime = System.currentTimeMillis();
-		RDFConfigExecuter.main(args);
+		RFDConfigExecutor executor = new RFDConfigExecutor(args[0]);
+		executor.execute();
 		Long totalTime = System.currentTimeMillis() - startTime;
 		logger.info("Running DEER Done in " + totalTime + "ms");
 	}

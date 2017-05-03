@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.aksw.deer.helper.vacabularies.SPECS;
+import org.aksw.deer.helper.datastructure.RunContext;
+import org.aksw.deer.helper.vocabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
-import org.aksw.deer.modules.Dereferencing.DereferencingModule;
+import org.aksw.deer.modules.dereferencing.DereferencingModule;
 import org.aksw.deer.modules.authorityconformation.AuthorityConformationModule;
 import org.aksw.deer.modules.filter.FilterModule;
 import org.aksw.deer.modules.linking.LinkingModule;
@@ -42,13 +43,18 @@ import org.apache.jena.vocabulary.RDF;
  * @author sherif
  *
  */
-public class RDFConfigExecuter {
-	private static final Logger logger = Logger.getLogger(RDFConfigExecuter.class.getName());
-	public static 	Model configModel;
+public class RFDConfigExecutor {
 
-	public static void main(String args[]) throws IOException{
-		configModel =  Reader.readModel(args[0]);
-		RDFConfigExecuter.execute(configModel);
+    private static final Logger logger = Logger.getLogger(RFDConfigExecutor.class.getName());
+
+	private Model configModel;
+	private RunContext context;
+	private Reader reader;
+
+	public RFDConfigExecutor(String modelUrl, RunContext context) throws IOException{
+	    this.context = context;
+	    this.reader = new Reader(context.getSubDir());
+		this.configModel = reader.readModel(modelUrl);
 	}
 
 	/**
@@ -57,9 +63,8 @@ public class RDFConfigExecuter {
 	 * @author sherif
 	 * @throws IOException 
 	 */
-	public static Set<Model> execute(Model config) throws IOException{
+	public Set<Model> execute() throws IOException{
 		Set<Model> result = new HashSet<Model>();
-		configModel =  config;
 		//		configModel.write(System.out,"TTL");
 		List<Resource> finalDatasets = getFinalDatasets();
 		logger.info("Found " + finalDatasets.size() + " output Datasets: " + finalDatasets);
@@ -77,8 +82,8 @@ public class RDFConfigExecuter {
 	 * @throws IOException
 	 * @author sherif
 	 */
-	public static Model simpleExecute(Model config) throws IOException{
-		return execute(config).iterator().next();
+	public Model simpleExecute() throws IOException{
+		return execute().iterator().next();
 	}
 
 
@@ -88,7 +93,7 @@ public class RDFConfigExecuter {
 	 * @return model resulted after executing the input module
 	 * @author sherif
 	 */
-	private static Model executeModule(Resource module, List<Model> inputDatasets) {
+	private Model executeModule(Resource module, List<Model> inputDatasets) {
 		Model enrichedModel = ModelFactory.createDefaultModel();
 		Map<String, String> moduleParameters = getParameters(module);
 		NodeIterator typeItr = configModel.listObjectsOfProperty(module, RDF.type);
@@ -143,7 +148,7 @@ public class RDFConfigExecuter {
 	 * @return model resulted after executing the input operator
 	 * @author sherif
 	 */
-	private static Model executeOperator(Resource operator, List<Model> inputDatasets) {
+	private Model executeOperator(Resource operator, List<Model> inputDatasets) {
 		Map<String, String> moduleParameters = getParameters(operator);
 		NodeIterator typeItr = configModel.listObjectsOfProperty(operator, RDF.type);
 		while(typeItr.hasNext()){
@@ -174,7 +179,7 @@ public class RDFConfigExecuter {
 	 * @return map of mudule parameters
 	 * @author sherif
 	 */
-	private static Map<String, String> getParameters(RDFNode moduleOrOperator) {
+	private Map<String, String> getParameters(RDFNode moduleOrOperator) {
 		String key = null;
 		String value = null;
 		Map<String, String> moduleParameters = new HashMap<String, String>();
@@ -200,7 +205,7 @@ public class RDFConfigExecuter {
 	 * @author sherif
 	 * @throws IOException 
 	 */
-	private static Model readDataset(Resource dataset) throws IOException {
+	private Model readDataset(Resource dataset) throws IOException {
 		// trivial case: read dataset from file/uri/endpoint
 		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.fromEndPoint);
 		if(uriItr.hasNext()){
@@ -211,13 +216,13 @@ public class RDFConfigExecuter {
 		}
 		uriItr = configModel.listObjectsOfProperty(dataset, SPECS.hasUri);
 		if(uriItr.hasNext()){
-			Model cbd = Reader.readModel(uriItr.next().toString());
+			Model cbd = reader.readModel(uriItr.next().toString());
 			writeDataset(dataset,cbd);
 			return cbd;
 		}
 		uriItr = configModel.listObjectsOfProperty(dataset, SPECS.inputFile);
 		if(uriItr.hasNext()){
-			Model cbd = Reader.readModel(uriItr.next().toString());
+			Model cbd = reader.readModel(uriItr.next().toString());
 			writeDataset(dataset,cbd);
 			return cbd;
 		}
@@ -235,7 +240,7 @@ public class RDFConfigExecuter {
 	 * @param string 
 	 * @param dataset 
 	 */
-	private static Model readDatasetFromEndPoint(Resource dataset, String endpointUri) {
+	private Model readDatasetFromEndPoint(Resource dataset, String endpointUri) {
 		long startTime = System.currentTimeMillis();
 		Model result = ModelFactory.createDefaultModel();
 		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.fromGraph);
@@ -282,7 +287,7 @@ public class RDFConfigExecuter {
 	 * @throws IOException
 	 * @author sherif
 	 */
-	private static void writeDataset(Resource datasetUri, Model dataSetModel) throws IOException{
+	private void writeDataset(Resource datasetUri, Model dataSetModel) throws IOException{
 		NodeIterator uriItr = configModel.listObjectsOfProperty(datasetUri, SPECS.outputFile);
 		if(uriItr.hasNext()){
 			String outputFile = uriItr.next().toString();
@@ -291,7 +296,7 @@ public class RDFConfigExecuter {
 			if(uriItr.hasNext()){
 				outputFormat = uriItr.next().toString();
 			}
-			Writer.writeModel(dataSetModel, outputFormat, outputFile);
+            (new Writer(context.getSubDir())).writeModel(dataSetModel, outputFormat, outputFile);
 		}else{ 
 			return;
 		}
@@ -303,7 +308,7 @@ public class RDFConfigExecuter {
 	 * @author sherif
 	 */
 	@SuppressWarnings("unused")
-	private static Model readCBD(Resource dataset, String endpointUri) {
+	private Model readCBD(Resource dataset, String endpointUri) {
 		long startTime = System.currentTimeMillis();
 		Model result = ModelFactory.createDefaultModel();
 		NodeIterator uriItr = configModel.listObjectsOfProperty(dataset, SPECS.hasUri);
@@ -330,7 +335,7 @@ public class RDFConfigExecuter {
 	 * @author sherif
 	 * @throws IOException 
 	 */
-	private static Model executeModuleOrOperator(Resource moduleOrOperator) throws IOException {
+	private Model executeModuleOrOperator(Resource moduleOrOperator) throws IOException {
 		List<Resource> inputDatasetsUris = getInputDatasetsUris(moduleOrOperator);
 		List<Model> inputDatasetsModels = new ArrayList<Model>();
 		for(Resource inputdatasetUri : inputDatasetsUris){
@@ -354,7 +359,7 @@ public class RDFConfigExecuter {
 	 * 			of some operators/models and not as input to any operator/model
 	 * @author sherif
 	 */
-	public static List<Resource> getFinalDatasets(){
+	public List<Resource> getFinalDatasets(){
 		List<Resource> result = new ArrayList<Resource>();
 		String sparqlQueryString = 
 				"SELECT DISTINCT ?d {?s1 <" + SPECS.hasOutput + "> ?d. " +
@@ -375,7 +380,7 @@ public class RDFConfigExecuter {
 	 * @return 	a list of all input datasets to a certain module/operator
 	 * @author sherif
 	 */
-	private static List<Resource> getInputDatasetsUris(Resource moduleOrOperator){
+	private List<Resource> getInputDatasetsUris(Resource moduleOrOperator){
 		List<Resource> result = new ArrayList<Resource>();
 		String s = "<" + moduleOrOperator + ">";
 		String sparqlQueryString = 
@@ -419,7 +424,7 @@ public class RDFConfigExecuter {
 	 * @return 	module/operator for a given input/output dataset. 
 	 * @author sherif
 	 */
-	private static Resource getModuleOrOperator(Resource inputDataset, Resource outputDataset){
+	private Resource getModuleOrOperator(Resource inputDataset, Resource outputDataset){
 		if(inputDataset == null && outputDataset == null){
 			return null;
 		}

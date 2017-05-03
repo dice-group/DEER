@@ -14,7 +14,7 @@ import org.aksw.deer.helper.datastructure.FMeasure;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
 import org.aksw.deer.workflow.rdfspecs.RDFConfigAnalyzer;
-import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
+import org.aksw.deer.workflow.rdfspecs.RFDConfigExecutor;
 import org.aksw.deer.workflow.specslearner.ComplexPipeLineLearner;
 import org.aksw.deer.workflow.specslearner.RefinementNode;
 import org.apache.log4j.Logger;
@@ -69,7 +69,7 @@ public class ComplexPipeLineLearnerEvaluation{
 				resultStr += RDFConfigAnalyzer.getOperators(mSpecs).size() + "\t";
 
 				// manual enrichment size
-				Model t = RDFConfigExecuter.simpleExecute(mSpecs);
+				Model t = RFDConfigExecutor.simpleExecute(mSpecs);
 				FMeasure f =  FMeasure.computePRF(s, t);
 				resultStr += f.P  + "\t" + f.R + "\t" + f.F + "\t";
 
@@ -135,7 +135,7 @@ public class ComplexPipeLineLearnerEvaluation{
 			//			mSpecs.write(System.out,"TTL");
 			//			System.out.println("----------------------- CBDs --------------------------");
 			//			cbd.write(System.out,"TTL");
-			manuallyEnrichedCBDMdl = RDFConfigExecuter.simpleExecute(manualSpecsMdl);
+			manuallyEnrichedCBDMdl = RFDConfigExecutor.simpleExecute(manualSpecsMdl);
 			//			System.out.println("----------------------- manuallyEnrichedCBD --------------------------");
 			//			manuallyEnrichedCBD.write(System.out,"TTL");
 		}while(manuallyEnrichedCBDMdl.isIsomorphicWith(cbdMdl));
@@ -170,7 +170,7 @@ public class ComplexPipeLineLearnerEvaluation{
 
 		// II. Generate manuallyEnrichedKB by applying KBManualConfig to the entire KB and save it
 		start = System.currentTimeMillis();
-		Model manuallyEnrichedKB = RDFConfigExecuter.simpleExecute(kbManualSpecMdl);
+		Model manuallyEnrichedKB = RFDConfigExecutor.simpleExecute(kbManualSpecMdl);
 		long manualConfigKBTime = System.currentTimeMillis() - start;
 
 		// III. Generate KBSelfConfig and save it
@@ -190,7 +190,7 @@ public class ComplexPipeLineLearnerEvaluation{
 
 		// IV. Generate selfConfigEnrichedKB by applying the self config to the entire KB 
 		start = System.currentTimeMillis();
-		Model selfConfigEnrichedKB = RDFConfigExecuter.simpleExecute(kbSelfConfigMdl);
+		Model selfConfigEnrichedKB = RFDConfigExecutor.simpleExecute(kbSelfConfigMdl);
 		long selfConfigKBTime = System.currentTimeMillis() - start;
 		//		String selfConfigEnrichedKBoutputFile =  folder + "kb" + examplesCount + "s.ttl";
 		//		Writer.writeModel(selfConfigEnrichedKB, "TTL", selfConfigEnrichedKBoutputFile);

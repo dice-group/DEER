@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.deer.helper.datastructure.FMeasure;
-import org.aksw.deer.helper.vacabularies.SPECS;
+import org.aksw.deer.helper.vocabularies.SPECS;
 import org.aksw.deer.io.Reader;
 import org.aksw.deer.io.Writer;
-import org.aksw.deer.workflow.rdfspecs.RDFConfigExecuter;
+import org.aksw.deer.workflow.rdfspecs.RFDConfigExecutor;
 import org.aksw.deer.workflow.specslearner.RefinementNodeOld;
 import org.aksw.deer.workflow.specslearner.SimplePipeLineLearner;
 import org.apache.log4j.Logger;
@@ -102,8 +102,8 @@ public class SimplePipelineLearnerEvaluation {
 	//	resultStr += RDFConfigAnalyzer.getModules(selfConfig).size() + "\t"; // 	ModuleComplexity 
 
 	public static FMeasure evaluateSelfConfig(Model manualConfig, Model selfConfig) throws IOException {
-		Model manualKB = RDFConfigExecuter.execute(manualConfig).iterator().next();
-		Model selfConfigKB = RDFConfigExecuter.execute(selfConfig).iterator().next();
+		Model manualKB = RFDConfigExecutor.execute(manualConfig).iterator().next();
+		Model selfConfigKB = RFDConfigExecutor.execute(selfConfig).iterator().next();
 		return FMeasure.computePRF(selfConfigKB, manualKB);
 	}
 
@@ -182,7 +182,7 @@ public class SimplePipelineLearnerEvaluation {
 			Writer.writeModel(cbdManualConfig, "TTL", cbdManualConfigOutputFile);
 
 			// (3) run the config generated in(2) and save result
-			manuallyEnrichedCBD = RDFConfigExecuter.simpleExecute(cbdManualConfig);
+			manuallyEnrichedCBD = RFDConfigExecutor.simpleExecute(cbdManualConfig);
 			if(!manuallyEnrichedCBD.isIsomorphicWith(cbd)){
 				foundExamples++;
 			}

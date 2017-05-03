@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.aksw.deer.helper.vacabularies.SPECS;
+import org.aksw.deer.helper.vocabularies.SPECS;
 import org.aksw.deer.io.Reader;
 
 import org.apache.jena.query.QueryExecution;
