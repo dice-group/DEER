@@ -2,6 +2,7 @@
 // *
 // */
 package org.aksw.deer.workflow;
+
 //
 //import java.io.IOException;
 //import java.util.Collection;
@@ -30,7 +31,7 @@ package org.aksw.deer.workflow;
 // * @author sherif
 // *
 // */
-public class WorkflowHandler{
+public class WorkflowHandler {
 //	private static final Logger logger = Logger.getLogger(DeerModule.class.getName());
 //
 //	private Model inputModel = ModelFactory.createDefaultModel();

@@ -4,7 +4,7 @@
 
 :d1		a				:Dataset ;
 		:hasUri			<http://dbpedia.org/resource/Berlin> ;
-		:FromEndPoint	<http://dbpedia.org/sparql> .
+		:fromEndPoint	<http://dbpedia.org/sparql> .
 
 :d2		a				:Dataset ;
 		:outputFile		"output.ttl" ;
