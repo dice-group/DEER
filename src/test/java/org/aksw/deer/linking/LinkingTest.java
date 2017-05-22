@@ -28,7 +28,6 @@ public class LinkingTest {
 //	 * @param args
 //	 */
 //	public static void main(String[] args) {
-//		// TODO Auto-generated method stub
 //		Map<String, String> parameters=new HashMap<String, String>();
 //		System.out.println("Start processing......");
 ////		parameters.put("datasetFilePath",args[0]);// The path to the dataset file to be loaded
@@ -41,7 +40,6 @@ public class LinkingTest {
 //		try {
 //			org.aksw.deer.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetUpdated.nt");
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 //		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +56,6 @@ public class LinkingTest {
 //		try {
 //			org.aksw.deer.io.Writer.writeModel(model, "TTL", "src/main/resources/linking/datasetLinkingDereferenced.nt");
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 //		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +96,6 @@ public class LinkingTest {
 //		try {
 //			org.aksw.deer.io.Writer.writeModel(model, "TTL", "/home/mofeed/Projects/GeoLift/src/main/resources/dataset.nt");
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 //	}
@@ -129,7 +125,6 @@ public class LinkingTest {
 //            try {
 //				br.close();
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 //        }

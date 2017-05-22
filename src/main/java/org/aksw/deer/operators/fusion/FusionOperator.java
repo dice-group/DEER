@@ -446,7 +446,6 @@ public class FusionOperator implements DeerOperator {
         try {
           learnOWLClassExpression(pos, neg, DBPEDIA_SAKE);
         } catch (ComponentInitException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
       }

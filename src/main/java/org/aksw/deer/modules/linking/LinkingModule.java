@@ -122,7 +122,6 @@ public class LinkingModule implements DeerModule {
   }
 //	////////////////////////////////////////////////////////////////////////////////////////////////
 //	public static void main(String[] args) {
-//		// TODO Auto-generated method stub
 //		Map<String, String> parameters=new HashMap<String, String>();
 //		String linksPath="";
 //		if(args.length > 0)
@@ -171,7 +170,6 @@ public class LinkingModule implements DeerModule {
    */
   @Override
   public Map<String, String> selfConfig(Model source, Model target) {
-    // TODO Auto-generated method stub
     return null;
   }
 

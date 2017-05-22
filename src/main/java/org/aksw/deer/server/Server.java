@@ -3,6 +3,7 @@ package org.aksw.deer.server;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import eu.medsea.mimeutil.MimeType;
 import eu.medsea.mimeutil.MimeUtil;
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,8 +68,7 @@ public class Server {
       // is the file available?
       if (requestedFile.exists()) {
         MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-        Collection mimeTypes = MimeUtil
-          .getMimeTypes(requestedFile, new eu.medsea.mimeutil.MimeType("text/plain"));
+        Collection mimeTypes = MimeUtil.getMimeTypes(requestedFile, new MimeType("text/plain"));
         res.type(mimeTypes.iterator().next().toString());
         res.header("Content-Disposition", "attachment; filename=" + req.params("file"));
         res.status(200);
@@ -95,13 +95,11 @@ public class Server {
   // methods used for logging
   private static void logInfo(Request req, Path tempFile) throws IOException, ServletException {
     System.out.println(
-      "Uploaded file '" + getFileName(req.raw().getPart("config_file")) + "' saved as '" + tempFile
-        .toAbsolutePath() + "'");
+      "Uploaded file '" + getFileName(req.raw().getPart("config_file")) + "' saved as '" +
+        tempFile.toAbsolutePath() + "'");
   }
 
   private static String getFileName(Part part) {
-    System.out.println("123");
-
     for (String cd : part.getHeader("content-disposition").split(";")) {
       if (cd.trim().startsWith("filename")) {
         return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");

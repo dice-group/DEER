@@ -52,7 +52,6 @@ public class AuthorityConformationModule implements DeerModule {
    * @author sherif
    */
   public AuthorityConformationModule() {
-    // TODO Auto-generated constructor stub
   }
 
   /**

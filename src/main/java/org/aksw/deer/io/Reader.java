@@ -3,6 +3,7 @@
  */
 package org.aksw.deer.io;
 
+import java.io.InputStream;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.util.FileManager;
@@ -39,7 +40,7 @@ public class Reader {
     }
     long startTime = System.currentTimeMillis();
     Model model = ModelFactory.createDefaultModel();
-    java.io.InputStream in = FileManager.get().open(fileNameOrUri);
+    InputStream in = FileManager.get().open(fileNameOrUri);
     if (in == null) {
       throw new IllegalArgumentException(fileNameOrUri + " not found");
     }

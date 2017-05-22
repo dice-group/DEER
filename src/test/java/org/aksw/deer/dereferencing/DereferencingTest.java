@@ -52,7 +52,6 @@ public class DereferencingTest
 		try { 
 			new org.aksw.deer.io.Writer().writeModel(resultedModel, "TTL", "src/main/resources/dereferencing/DereferencingEnriched.ttl");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	    long elapsedTime = stopTime - startTime;
@@ -84,7 +83,6 @@ public class DereferencingTest
             try {
 				br.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         }

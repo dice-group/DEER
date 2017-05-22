@@ -51,7 +51,6 @@ public class FilterModule implements DeerModule {
    * @author sherif
    */
   public FilterModule() {
-    // TODO Auto-generated constructor stub
   }
 
   /* (non-Javadoc)

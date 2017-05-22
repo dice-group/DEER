@@ -19,7 +19,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    */
   public RefinementTree() {
     super();
-    // TODO Auto-generated constructor stub
   }
 
   /**
@@ -27,7 +26,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    */
   public RefinementTree(RefinementNodeOld value) {
     super(value);
-    // TODO Auto-generated constructor stub
   }
 
   /**
@@ -36,7 +34,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
   public RefinementTree(Tree<RefinementNodeOld> parent, RefinementNodeOld value,
     List<Tree<RefinementNodeOld>> childrenlist) {
     super(parent, value, childrenlist);
-    // TODO Auto-generated constructor stub
   }
 
   @SuppressWarnings("unused")
@@ -56,7 +53,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    */
   @Override
   public Set<Tree<RefinementNodeOld>> getLeaves() {
-    // TODO Auto-generated method stub
     return super.getLeaves();
   }
 
@@ -65,7 +61,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    */
   @Override
   public void addChild(Tree<RefinementNodeOld> child) {
-    // TODO Auto-generated method stub
     super.addChild(child);
   }
 
@@ -74,7 +69,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    */
   @Override
   public void removeChild(Tree<RefinementNodeOld> child) {
-    // TODO Auto-generated method stub
     super.removeChild(child);
   }
 
@@ -83,7 +77,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    */
   @Override
   public Tree<RefinementNodeOld> getParent() {
-    // TODO Auto-generated method stub
     return super.getParent();
   }
 
@@ -92,7 +85,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    */
   @Override
   public List<Tree<RefinementNodeOld>> getchildren() {
-    // TODO Auto-generated method stub
     return super.getchildren();
   }
 
@@ -101,7 +93,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    */
   @Override
   public RefinementNodeOld getValue() {
-    // TODO Auto-generated method stub
     return super.getValue();
   }
 
@@ -110,7 +101,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
 //	 */
 //	@Override
 //	public void print(Tree<RefinementNode> root) {
-//		// TODO Auto-generated method stub
 //		super.print(root);
 //	}
 
@@ -119,7 +109,6 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    */
   @Override
   public long size() {
-    // TODO Auto-generated method stub
     return super.size();
   }
 

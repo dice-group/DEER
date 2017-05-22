@@ -201,7 +201,6 @@ public class SpecsModel {
 //	 * @author sherif
 //	 */
 //	public static void main(String[] args) {
-//		// TODO Auto-generated method stub
 //
 //	}
 //

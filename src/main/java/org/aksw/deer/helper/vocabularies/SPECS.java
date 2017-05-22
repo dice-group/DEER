@@ -4,9 +4,6 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
-/**
- * @author sherif
- */
 public class SPECS {
 
   public static final String uri = "http://geoknow.org/specsontology/";
@@ -53,11 +50,10 @@ public class SPECS {
     resource("PredicateConformationModuleParameter");
 
   private static Property property(String name) {
-    Property result = ResourceFactory.createProperty(uri + name);
-    return result;
+    return ResourceFactory.createProperty(uri + name);
   }
 
-  protected static final Resource resource(String local) {
+  protected static Resource resource(String local) {
     return ResourceFactory.createResource(uri + local);
   }
 

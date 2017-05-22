@@ -656,7 +656,6 @@ public class DereferencingModule implements DeerModule {
   //			try {
   //				br.close();
   //			} catch (IOException e) {
-  //				// TODO Auto-generated catch block
   //				e.printStackTrace();
   //			}
   //		}
