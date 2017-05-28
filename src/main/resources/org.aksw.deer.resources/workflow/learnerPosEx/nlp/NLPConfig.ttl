@@ -1,0 +1,22 @@
+@prefix : <http://geoknow.org/specsontology/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+
+:d1		a				:Dataset ;
+		:inputFile	"/home/sherif/JavaProjects/GeoKnow/GeoLift/src/main/resources/org.aksw.deer.resources.workflow/learnerPosEx/nlp/testInput.ttl" .
+
+:d2		a				:Dataset ;
+		:outputFile		"/home/sherif/JavaProjects/GeoKnow/GeoLift/src/main/resources/org.aksw.deer.resources.workflow/learnerPosEx/nlp/testOutput.ttl" ;
+		:outputFormat	"Turtle" .
+
+:nlp 	a				:Module, :NLPModule  ;
+		rdfs:label		"NLP module" ;
+		:hasInput		:d1 ;
+		:hasOutput		:d2 ;
+		:hasParameter	:nlpPram1, :nlpPram2 .
+
+:nlpPram1	a			:ModuleParameter, :NLPModuleParameter ;
+		:hasKey			"NEType" ;
+		:hasValue		"ALL" .
+
+

@@ -30,7 +30,7 @@
 		:hasOutput		:d3, :d4 .
 
 :nlp		a				:Module, :NLPModule  ;
-		rdfs:labe		"NLP module" ;
+		rdfs:label		"NLP module" ;
 		:hasInput		:d3 ;
 		:hasOutput		:d5 ;
 		:hasParameter	:nlpPram1, :nlpPram2 .

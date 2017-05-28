@@ -169,6 +169,16 @@
                 <!--</exclusion>-->
             </exclusions>
         </dependency>
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-extras</artifactId>
+        <version>3.1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-querybuilder</artifactId>
+        <version>3.1.0</version>
+      </dependency>
 
     </dependencies>
 
@@ -191,7 +201,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>org.aksw.deer.workflow.DeerController</mainClass>
+                                <mainClass>org.aksw.deer.execution.DeerController</mainClass>
                             </manifest>
                         </archive>
                         <descriptorRefs>
@@ -225,7 +235,7 @@
                                     <transformers>
                                         <transformer
                                                 implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>org.aksw.deer.workflow.DeerController</mainClass>
+                                            <mainClass>org.aksw.deer.execution.DeerController</mainClass>
                                         </transformer>
                                     </transformers>
                                 </configuration>

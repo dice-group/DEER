@@ -1,0 +1,40 @@
+@prefix : <http://geoknow.org/specsontology/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix dbpedia-owl: <http://dbpedia.org/ontology/> .
+
+:d1		a				:Dataset ;
+		:hasUri			<http://dbpedia.org/resource/Berlin> ;
+		:FromEndPoint	<http://dbpedia.org/sparql> .
+:d2		a				:Dataset .
+:d3		a				:Dataset ;
+		:outputFile		"/home/sherif/JavaProjects/GeoKnow/GeoLift/src/main/resources/org.aksw.deer.resources.workflow/learnerPosEx/deref_conform/deref_conform_Berlin.ttl" ;
+		:outputFormat	"Turtle" .
+
+:deref	a				:Module, :DereferencingModule  ;
+		rdfs:label		"Dereferencing module" ;
+		:hasInput		:d1 ;
+		:hasOutput		:d2 ;
+		:hasParameter	:derefParam1, :derefParam2 .
+
+:derefParam1	a		:ModuleParameter, :DereferencingModuleParameter ;
+		:hasKey			"inputProperty1" ;
+		:hasValue		 dbpedia-owl:ideology .
+		
+:derefParam2	a		:ModuleParameter, :DereferencingModuleParameter ;
+		:hasKey			"outputProperty1" ;
+		:hasValue		 dbpedia-owl:ideology .		
+
+:conform	a				:Module, :ConformationModule  ;
+		rdfs:label		"Conformation module" ;
+		:hasInput		:d2 ;
+		:hasOutput		:d3 ;
+		:hasParameter	:conformPram1, :conformPram2 .
+
+:conformPram1	a				:ModuleParameter, :NLPModuleParameter ;
+		:hasKey			"sourceURI" ;
+		:hasValue		"http://dbpedia.org" .
+
+:conformPram2	a				:ModuleParameter, :NLPModuleParameter ;
+		:hasKey			"targetURI" ;
+		:hasValue		"http://geolift.org" .

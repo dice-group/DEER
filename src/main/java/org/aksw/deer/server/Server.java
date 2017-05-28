@@ -18,8 +18,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
-import org.aksw.deer.helper.datastructure.RunContext;
-import org.aksw.deer.workflow.rdfspecs.RDFConfigExecutor;
+import org.aksw.deer.execution.RunContext;
+import org.aksw.deer.execution.RDFConfigExecutor;
 import spark.Request;
 
 /**

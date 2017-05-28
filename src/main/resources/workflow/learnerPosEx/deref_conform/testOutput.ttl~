@@ -1,8 +1,0 @@
-<http://geolift.org/resource/Berlin>
-      <http://dbpedia.org/ontology/leaderParty>
-              <http://dbpedia.org/resource/Christian_Democratic_Union_(Germany)> .
-
-<http://geolift.org/resource/Christian_Democratic_Union_(Germany)>
-      <http://dbpedia.org/ontology/ideology>
-              <http://dbpedia.org/resource/Liberal_conservatism> , <http://dbpedia.org/resource/Pro-Europeanism> , <http://dbpedia.org/resource/Christian_democracy> .
-

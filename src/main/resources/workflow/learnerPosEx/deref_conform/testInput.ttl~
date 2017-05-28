@@ -1,3 +1,0 @@
-@prefix dbpedia-owl:  <http://dbpedia.org/ontology/> .
-
-<http://dbpedia.org/resource/Berlin> dbpedia-owl:leaderParty <http://dbpedia.org/resource/Christian_Democratic_Union_(Germany)> .

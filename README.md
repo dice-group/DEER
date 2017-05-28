@@ -18,5 +18,5 @@ mvn clean compile assembly:assembly
 ```
 To test DEER, in the target folder 
 ```
-java -jar deer-1.0-SNAPSHOT-jar-with-dependencies.jar ../src/main/resources/workflow/config.ttl 
+java -jar deer-1.0-SNAPSHOT-jar-with-dependencies.jar ../src/main/resources/org.aksw.deer.resources.workflow/config.ttl 
 ```

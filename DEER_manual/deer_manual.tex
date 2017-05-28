@@ -118,7 +118,7 @@ Finally, we present the detailed developers' manual of \geolift.
 \section{Assumptions}
  Enriched information can be mentioned in three different ways within Linked Data:
 \begin{enumerate}
-\item \emph{Through dereferencing}: Several datasets contain links to datasets with explicit information such as \emph{DBpedia} or \emph{LinkedGeoData}. 
+\item \emph{Through org.aksw.deer.resources.dereferencing}: Several datasets contain links to datasets with explicit information such as \emph{DBpedia} or \emph{LinkedGeoData}.
 For example, in a music dataset, one might find information such as\\ 
 \texttt{http://example.org/Leipzig \\
 owl:sameAs \\ 
@@ -127,7 +127,7 @@ http://dbpedia.org/resource/Leipzig}.
 We call this type of reference \emph{explicit}. 
 We can now use the semantics of RDF to fetch additional information from DBpedia and attach it to the resource in the other ontology as \texttt{http://example.org/Leipzig} and \texttt{http://dbpedia.org/resource/Leipzig} refer to the same real-world object.
 
-\item \emph{Through linking}: It is known that the Web of Data contains an insufficient number of links. 
+\item \emph{Through org.aksw.deer.resources.linking}: It is known that the Web of Data contains an insufficient number of links.
 The latest approximations suggest that the Linked Open Data Cloud alone consists of 31+ billion triples but only contains approximately 0.5 billion links (i.e., less than 2\% of the triples are links between knowledge bases). 
 The second intuition behind our approach is thus to use link discovery to map resources in an input knowledge base to resources in a knowledge that contains explicit enrichment information. 
 For example, given a resource \texttt{http://example.org/Athen}, \geolift should aim to find a resource such as \texttt{http://dbpedia.org/resource/Athen} to map it with. 
@@ -154,15 +154,15 @@ To this aim, they implement the three intuitions presented above.
 The input for such a module is an RDF dataset (in Java, a \emph{Jena Model}).
 The output is also an RDF dataset enriched with additional information (in Java, an enriched \emph{Jena Model}).
 Formally, a module can thus be regarded as a function $\mu: \mathcal{R} \rightarrow \mathcal{R}$, where $\mathcal{R}$ is the set of all RDF datasets.
-\item \emph{Operators}: The idea behind operators is to enable users to define a workflow for processing their input dataset. 
-Thus, in case a user knows the type of enrichment that is to be carried out (using linking and then links for example), he can define the sequence of modules that must be used to process his dataset.
+\item \emph{Operators}: The idea behind operators is to enable users to define a org.aksw.deer.resources.workflow for processing their input dataset.
+Thus, in case a user knows the type of enrichment that is to be carried out (using org.aksw.deer.resources.linking and then links for example), he can define the sequence of modules that must be used to process his dataset.
 Note that the format of the input and output of modules is identical. 
 Thus, the user is empowered to create workflows of arbitrary complexity by simply connecting modules.
 Formally, an operator can be regarded as a function $\varphi: \mathcal{R} \cup \mathcal{R}^2 \rightarrow \mathcal{R} \cup \mathcal{R}^2$.
 \end{enumerate}
 The corresponding architecture is shown in Figure~\ref{fig:architecture}. The input layer allows reading RDF in different serializations.
 The enrichment modules are in the second layer and allow adding information to RDF datasets by different means.
-The operators (which will be implemented in the future version of \geolift) will combine the enrichment modules and allow defining a workflow for processing information.
+The operators (which will be implemented in the future version of \geolift) will combine the enrichment modules and allow defining a org.aksw.deer.resources.workflow for processing information.
 The output layer serializes the results in different format.
 The enrichment procedure will be monitored by implementing a controller, which will be added in the future version of \geolift.
 
@@ -179,7 +179,7 @@ In the following, we present the implementation of the three intuitions presente
 For datasets which contain \texttt{owl:sameAs} links, we dereference all links from the dataset to other datasets by using a content negotiation on HTTP as shown in Figure~\ref{fig:contentNegotiation}.
 This returns a set of triples that needs to be filtered for relevant information.
 Here, we use a predefined list of attributes that links to requested information.
-Amongst others, we look for \texttt{geo:lat}, \texttt{geo:long}, \texttt{geo:lat\_long}, \texttt{geo:line} and \texttt{geo:polygon}.
+Amongst org.aksw.deer.resources.others, we look for \texttt{geo:lat}, \texttt{geo:long}, \texttt{geo:lat\_long}, \texttt{geo:line} and \texttt{geo:polygon}.
 The list of retrieved property values can be configured.
 
 \begin{figure}[htb]
@@ -292,8 +292,8 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
       Also, the \texttt{getImplementations()} method returns all implemented modules.
       Currently, five modules are implemented:
       \begin{itemize}
-	\item \texttt{DereferencingModule} class which handles dereferencing  additional information extending process. 
-	\item \texttt{LinkingModule} class which handles linking information extending processes. 
+	\item \texttt{DereferencingModule} class which handles org.aksw.deer.resources.dereferencing  additional information extending process.
+	\item \texttt{LinkingModule} class which handles org.aksw.deer.resources.linking information extending processes.
 	\item \texttt{NLPModule} class which handles named entity extraction process.
 	\item \texttt{AuthorityConformationModule} class which handles the subject authority conformation process.
 	\item \texttt{PredicateConformationModule} class which handles the predicates conformation process.
@@ -320,7 +320,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     The input for such a module is an RDF dataset.
     The output is also an RDF dataset enriched with enriched information.
     Formally, a module can thus be regarded as a function $\mu: \mathcal{R} \rightarrow \mathcal{R}$, where $\mathcal{R}$ is the set of all RDF datasets.
-    Currently, \geolift implements six modules: dereferencing, linking, NLP, authority conformation, predicate conformation and filter.
+    Currently, \geolift implements six modules: org.aksw.deer.resources.dereferencing, org.aksw.deer.resources.linking, NLP, authority conformation, predicate conformation and filter.
 
     All modules implement the \texttt{GeoLiftModule} interface methods 
     \begin{itemize}
@@ -337,7 +337,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     For datasets which contain similarity proprieties links (e.g. \texttt{owl:sameAs}), we deference all links from the dataset to other datasets by using a content negotiation on HTTP as shown in Figure~\ref{fig:contentNegotiation}.
     This returns a set of triples that needs to be filtered for relevant information.
     Here, we use a predefined list of attributes that links to additional information.
-    Amongst others, we look for \texttt{geo:lat}, \texttt{geo:long}, \texttt{geo:lat\_long}, \texttt{geo:line} and \texttt{geo:polygon}.
+    Amongst org.aksw.deer.resources.others, we look for \texttt{geo:lat}, \texttt{geo:long}, \texttt{geo:lat\_long}, \texttt{geo:line} and \texttt{geo:polygon}.
     The list of retrieved property values can be configured.
 
 %     \subsubsection{Input}
@@ -360,7 +360,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     \midrule
     \texttt{outputProperty<n>} 	& The enriched output property. By default this parameter is set to \url{http://geoknow.org/ontology/relatedTo}\\
     \midrule
-    \texttt{resourcePrefix} 	& Resource prefix used for dereferencing resources, by default is set to \url{http://dbpedia.org/resource}\\
+    \texttt{resourcePrefix} 	& Resource prefix used for org.aksw.deer.resources.dereferencing resources, by default is set to \url{http://dbpedia.org/resource}\\
     \midrule
     \texttt{useBlankNodes}		& Use blank node in output dataset. By default, this parameter is set to \texttt{false}.\\
     \bottomrule
@@ -385,7 +385,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
 
     \begin{lstlisting}[label=lst:DereferencingModule, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{DereferencingModule} class.]
     // Define DereferencingModule object
-    DereferencingModule u = ModuleFactory.createModule("dereferencing");
+    DereferencingModule u = ModuleFactory.createModule("org.aksw.deer.resources.dereferencing");
     // Define parameters Map
     Map<String, String> parameters = new HashMap<String, String>();
     // Set parameters
@@ -404,11 +404,11 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     Here, we rely on the metrics implemented in the \limes framework\footnote{\url{http://limes.sf.net}}~\cite{NGAU11,NGON12c,NGO+13c} to link the resources in the input dataset with other datasets.
   
     \texttt{LinkingModule} have two inputs: an input model and list of parameters (see table~\ref{tbl:linkingPram} for parameters details).
-    The linking process starts by generating links between the input dataset model and another dataset as second partner. 
-    As said before, the linking process is done using \limes.
-    \limes linking specification file is given as parameter.
+    The org.aksw.deer.resources.linking process starts by generating links between the input dataset model and another dataset as second partner.
+    As said before, the org.aksw.deer.resources.linking process is done using \limes.
+    \limes org.aksw.deer.resources.linking specification file is given as parameter.
 %     By default, the links are stored in the \texttt{accept.nt} file.
-    The output model of the \texttt{LinkingModule} is generated as the input model plus the generated links added with their original resources in the input model using    some linking property such as \texttt{owl:samAs}.
+    The output model of the \texttt{LinkingModule} is generated as the input model plus the generated links added with their original resources in the input model using    some org.aksw.deer.resources.linking property such as \texttt{owl:samAs}.
 %     Another forward step is to feed the Dereference module with the resulted enriched model from Linking module as input. 
 %     The previously generated links in the model in addition to other objects in the URIs form will be dereferenced adding more and detailed geographical information.
     Listing \ref{lst:Linking} provides a sample code showing how to use the Linking module.
@@ -421,11 +421,11 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     \toprule
     \textbf{Parameter key} 	&  \textbf{Parameter value}\\
     \toprule
-    \texttt{specFile}	& The path to specification file used for linking process, the original dataset to be enriched must be on the source dataset , e.g. \url {linkingModuleData/linking/spec.xml}.\\
+    \texttt{specFile}	& The path to specification file used for org.aksw.deer.resources.linking process, the original dataset to be enriched must be on the source dataset , e.g. \url {linkingModuleData/org.aksw.deer.resources.linking/spec.xml}.\\
     \midrule
-    \texttt{linksFile}	& The path to links file resulted from the linking process. This file's path is the same as the one specified in LIME's specifications file as output file, e.g. \url {linkingModuleData/linking/links.nt}.\\
+    \texttt{linksFile}	& The path to links file resulted from the org.aksw.deer.resources.linking process. This file's path is the same as the one specified in LIME's specifications file as output file, e.g. \url {linkingModuleData/org.aksw.deer.resources.linking/links.nt}.\\
     \midrule
-    \texttt{linksPart} 	& Represents the original model's URI position as source/left or target/right in the linking specifications. Its value is either 'source' or 'target'.\\ 
+    \texttt{linksPart} 	& Represents the original model's URI position as source/left or target/right in the org.aksw.deer.resources.linking specifications. Its value is either 'source' or 'target'.\\
     \bottomrule
     % \end{tabular}
     \end{tabularx}
@@ -437,7 +437,7 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
 	\fontsize{8pt}{10pt}\selectfont
     \begin{lstlisting}[label=lst:Linking, float=tp, numbers=left, numberstyle=\tiny, caption = Code fragment to call the \texttt{Linking} class.]
     // Define Linking object
-    Linking l = ModuleFactory.createModule("linking");
+    Linking l = ModuleFactory.createModule("org.aksw.deer.resources.linking");
     // Define parameters Map
     Map<String, String> parameters = new HashMap<String, String>();
     // Set parameters
@@ -658,8 +658,8 @@ These vocabularies extend the two broadly used vocabularies Annotea\footnote{\ur
     \end{lstlisting}
     
 \subsection{\geolift Operators}
-The idea behind operators is to enable users to define a workflow for processing their input dataset. 
-\geolift operators combine the enrichment modules and allow defining a workflow for processing information.
+The idea behind operators is to enable users to define a org.aksw.deer.resources.workflow for processing their input dataset.
+\geolift operators combine the enrichment modules and allow defining a org.aksw.deer.resources.workflow for processing information.
 Note that the format of the input and output of operator is identical. 
 Thus, the user is empowered to create workflows of arbitrary complexity by simply connecting modules and/or operators.
 Formally, an operator can be regarded as a function $\varphi: \mathcal{R}^* \rightarrow \mathcal{R}^*$.
@@ -674,13 +674,13 @@ Formally, an operator can be regarded as a function $\varphi: \mathcal{R}^* \rig
 \subsubsection{Clone Operator}
 The idea behind the clone operator is to enable parallel execution of different modules in the same dataset. 
 The clone operator takes one dataset as input and produces $n \geq 2$ output datasets, which are all identical to the input dataset.
-Each of the output datasets of the clone operator has its own workflow (as to be input to any other module or operator).
+Each of the output datasets of the clone operator has its own org.aksw.deer.resources.workflow (as to be input to any other module or operator).
 Thus, \geolift is able to execute all workflows of output datasets in parallel. 
 
 \subsubsection{Merge Operator}
 The idea behind the merge operator is to enable combining datasets.
 The merge operator takes a set of $n \geq 2$ input datasets and merges them into one output dataset containing all the input datasets' triples.
-As in case of clone operator, the merged output dataset has its own workflow (as to be input to any other module or operator).
+As in case of clone operator, the merged output dataset has its own org.aksw.deer.resources.workflow (as to be input to any other module or operator).
 
 \section{\geolift RDF Specification Paradigm}
 In the current version of \geolift we introduce our new RDF based specification paradigm.
@@ -1042,7 +1042,7 @@ in the following we will describe each of them along with our example shown in l
 % \end{figure}
 
 % \textbf{Details of RDF configuration file will be here soon}
-% Command-line execution of \geolift enable user-defined workflow of different modules using configuration file.
+% Command-line execution of \geolift enable user-defined org.aksw.deer.resources.workflow of different modules using configuration file.
 % Through the configuration file user can give different parameters to different modules.
 % Currently, simple tab-separated values file format is implemented as configuration file, 
 % where values are set in form of \texttt{(executionModelIndex moduleName moduleParameterName moduleParameterVale)}.
@@ -1054,7 +1054,7 @@ in the following we will describe each of them along with our example shown in l
 % \begin{lstlisting}[label=lst:geoliftConfig, caption =\geolift configuration file example class.]
 % 1 nlp useFoxLight OFF
 % 1 nlp askEndPoint false
-% 2 dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat
+% 2 org.aksw.deer.resources.dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat
 % 3 nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment
 % 3 nlp useFoxLight org.aksw.fox.nertools.NEROpenNLP
 % 4 nlp useFoxLight org.aksw.fox.nertools.NERStanford
@@ -1066,7 +1066,7 @@ in the following we will describe each of them along with our example shown in l
 % 
 % {\flushleft\texttt{java -jar geolift.jar -i example.ttl -c config.tsv -o output.ttl}}
 % \newline
-% \\Note: The file limes.dtd (which exists in the package jar folder) must be in the same folder of linking.jar/geolift.jar files.
+% \\Note: The file limes.dtd (which exists in the package jar folder) must be in the same folder of org.aksw.deer.resources.linking.jar/geolift.jar files.
 % \begin{table*}[ht]
 % \caption{\geolift parameters description} \label{tbl:geoLiftPram}
 % \begin{tabular}{@{}  l  l p{10.5cm} l p{cm}@{}}
@@ -1075,7 +1075,7 @@ in the following we will describe each of them along with our example shown in l
 % \midrule
 % \texttt{--input} 	&\texttt{-i}	& The input file/URI to be enriched\\
 % \texttt{--output} 	&\texttt{-o} 	& The output file to write the enriched model to it\\
-% \texttt{--config} 	&\texttt{-c} 	& The configuration file to read the workflow configurations from\\
+% \texttt{--config} 	&\texttt{-c} 	& The configuration file to read the org.aksw.deer.resources.workflow configurations from\\
 % \texttt{--help}		&\texttt{-?} 	& provides some help about the \geolift command line \\
 % \bottomrule
 % \end{tabular}
@@ -1087,7 +1087,7 @@ The \geolift can be directly executed from command-line using the provided \text
 % Table \ref{tbl:geoLiftPram} explains the various parameters that can be used with the \geolift through command-line. 
 Simply, provide the RDf configuration file as the only one parameter for the \geolift jar file.
 \begin{equation*}
-  Example: \texttt{ deer.jar src/main/resources/workflow/config.ttl }
+  Example: \texttt{ deer.jar src/main/resources/org.aksw.deer.resources.workflow/config.ttl }
 \end{equation*}
 
 \section{Conclusions}
