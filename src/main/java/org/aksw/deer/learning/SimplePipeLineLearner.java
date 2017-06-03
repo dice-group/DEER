@@ -12,8 +12,8 @@ import org.aksw.deer.util.Tree;
 import org.aksw.deer.vocabulary.SPECS;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
-import org.aksw.deer.plugin.enrichment.IEnrichmentFunction;
-import org.aksw.deer.io.RDFConfigWriter;
+import org.aksw.deer.util.IEnrichmentFunction;
+import org.aksw.deer.io.ConfigWriter;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
@@ -44,7 +44,7 @@ public class SimplePipeLineLearner implements PipelineLearner {
     new RefinementNodeOld());
   public int iterationNr = 0;
   private int datasetIndex = 1;
-  private RDFConfigWriter rdfConfigWriter = new RDFConfigWriter();
+  private ConfigWriter configWriter = new ConfigWriter();
   private ModelReader modelReader = new ModelReader();
 
 
@@ -144,7 +144,7 @@ public class SimplePipeLineLearner implements PipelineLearner {
         }
         Resource outputDataset = ResourceFactory
           .createResource(SPECS.uri + "Dataset_" + datasetIndex++);
-        configMdl = rdfConfigWriter
+        configMdl = configWriter
           .addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
         node = new RefinementNodeOld(module, fitness, root.getValue().outputModel, currentMdl,
           inputDataset, outputDataset, configMdl);

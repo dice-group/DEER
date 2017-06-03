@@ -5,8 +5,8 @@ package org.aksw.deer.learning;
 
 
 import org.aksw.deer.vocabulary.SPECS;
-import org.aksw.deer.plugin.enrichment.IEnrichmentFunction;
-import org.aksw.deer.plugin.operator.IOperator;
+import org.aksw.deer.util.IEnrichmentFunction;
+import org.aksw.deer.util.IOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;

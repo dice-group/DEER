@@ -1,13 +1,11 @@
-/*
- *
- */
 package org.aksw.deer.io.json;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.aksw.deer.plugin.enrichment.IEnrichmentFunction;
-import org.aksw.deer.plugin.enrichment.EnrichmentFunctionFactory;
-import org.aksw.deer.plugin.operator.OperatorFactory;
+import org.aksw.deer.util.IEnrichmentFunction;
+import org.aksw.deer.util.IOperator;
+import org.aksw.deer.util.ParameterType;
+import org.aksw.deer.util.PluginFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -18,6 +16,8 @@ import org.apache.log4j.Logger;
 public class JSONConfigWriter {
 
   private static final Logger moduleLogger = Logger.getLogger(IEnrichmentFunction.class.getName());
+  private static PluginFactory<IOperator> operatorPluginFactory = new PluginFactory<>(IOperator.class);
+  private static PluginFactory<IEnrichmentFunction> enrichmentFunctionPluginFactory = new PluginFactory<>(IEnrichmentFunction.class);
 
   private static String join(String[] values) {
     StringBuilder joined = new StringBuilder();
@@ -37,7 +37,7 @@ public class JSONConfigWriter {
     moduleJSONConfig.append("{");
     moduleJSONConfig.append("\"$schema\":\"http://json-schema.org/draft-04/schema#\",");
     moduleJSONConfig.append("\"title\":\"").append(name).append("\",");
-    moduleJSONConfig.append("\"description\":\"").append(EnrichmentFunctionFactory.getDescription(name))
+    moduleJSONConfig.append("\"description\":\"").append(enrichmentFunctionPluginFactory.getDescription(name))
       .append("\",");
 
     List<ParameterType> parameters = module.getParameterWithTypes();
@@ -102,7 +102,7 @@ public class JSONConfigWriter {
     operatorJSONConfig.append("{");
     operatorJSONConfig.append("\"$schema\":\"http://json-schema.org/draft-04/schema#\",");
     operatorJSONConfig.append("\"title\":\"").append(name).append("\",");
-    operatorJSONConfig.append("\"description\":\"").append(OperatorFactory.getDescription(name))
+    operatorJSONConfig.append("\"description\":\"").append(operatorPluginFactory.getDescription(name))
       .append("\"");
 
     //there are no parameters used in operator.
@@ -115,10 +115,10 @@ public class JSONConfigWriter {
 
   private static String buildJSONString() {
     //get enrichment
-    List<String> moduleNames = EnrichmentFunctionFactory.getNames();
+    List<String> moduleNames = enrichmentFunctionPluginFactory.getNames();
 
     //get operator
-    List<String> operatorNames = OperatorFactory.getNames();
+    List<String> operatorNames = operatorPluginFactory.getNames();
 
     StringBuilder jsonConfig = new StringBuilder();
     jsonConfig.append("{");
@@ -128,7 +128,7 @@ public class JSONConfigWriter {
     if (moduleNames.size() > 0) {
       int i = 0;
       for (String moduleName : moduleNames) {
-        IEnrichmentFunction module = EnrichmentFunctionFactory.createModule(moduleName);
+        IEnrichmentFunction module = enrichmentFunctionPluginFactory.create(moduleName);
         jsonConfig.append(buildModuleJSONString(moduleName, module));
 
         if (i < moduleNames.size() - 1) {
@@ -144,7 +144,6 @@ public class JSONConfigWriter {
 
       int i = 0;
       for (String operatorName : operatorNames) {
-//                DeerOperator operator = ModelOperatorFactory.createOperator(operatorName);
         jsonConfig.append(buildOperatorJSONString(operatorName));
 
         if (i < operatorNames.size() - 1) {
