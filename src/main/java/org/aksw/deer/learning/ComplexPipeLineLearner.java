@@ -16,7 +16,6 @@ import org.aksw.deer.io.ModelWriter;
 import org.aksw.deer.util.IEnrichmentFunction;
 import org.aksw.deer.util.IOperator;
 import org.aksw.deer.util.OperatorFactory;
-import org.aksw.deer.io.ConfigWriter;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
@@ -46,7 +45,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
   public TreeX<RefinementNode> refinementTreeRoot = new TreeX<RefinementNode>(new RefinementNode());
   public int iterationNr = 0;
   private int datasetCounter = 1;
-  private ConfigWriter configWriter = new ConfigWriter();
+  private ConfigBuilder configBuilder = new ConfigBuilder();
   private ModelReader modelReader = new ModelReader();
   private IEnrichmentFunction leftModule = null;
 
@@ -179,12 +178,12 @@ public class ComplexPipeLineLearner implements PipelineLearner {
       Arrays.asList(leftNodeValue.getOutputModel(), rightNodeValue.getOutputModel()));
     List<Resource> mergeInputDatasets = new ArrayList<Resource>(
       Arrays.asList(leftNodeValue.getOutputDataset(), rightNodeValue.getOutputDataset()));
-    List<Model> mergeOutputModels = mergeOperator.process(mergeInputModels, null);
+    List<Model> mergeOutputModels = mergeOperator.apply(mergeInputModels);
     List<Model> mergeInputConfig = new ArrayList<Model>(
       Arrays.asList(leftNodeValue.configModel, rightNodeValue.configModel));
     List<Resource> mergeOutputDatasets = new ArrayList<Resource>(
       Arrays.asList(generateDatasetURI()));
-    Model mergeConfigModel = configWriter
+    Model mergeConfigModel = configBuilder
       .addOperator(mergeOperator, null, mergeInputConfig, mergeInputDatasets, mergeOutputDatasets);
     double fitness = computeFMeasure(mergeOutputModels.get(0), targetModel);
     RefinementNode mergeNodeValue = new RefinementNode(mergeOperator, fitness, mergeInputModels,
@@ -204,12 +203,12 @@ public class ComplexPipeLineLearner implements PipelineLearner {
       Arrays.asList(leftNodeValue.getOutputModel(), rightNodeValue.getOutputModel()));
     List<Resource> mergeInputDatasets = new ArrayList<Resource>(
       Arrays.asList(leftNodeValue.getOutputDataset(), rightNodeValue.getOutputDataset()));
-    List<Model> mergeOutputModels = mergeOperator.process(mergeInputModels, null);
+    List<Model> mergeOutputModels = mergeOperator.apply(mergeInputModels);
     List<Model> mergeInputConfig = new ArrayList<Model>(
       Arrays.asList(leftNodeValue.configModel, rightNodeValue.configModel));
     List<Resource> mergeOutputDatasets = new ArrayList<Resource>(
       Arrays.asList(generateDatasetURI()));
-    Model mergeConfigModel = configWriter
+    Model mergeConfigModel = configBuilder
       .addOperator(mergeOperator, null, mergeInputConfig, mergeInputDatasets, mergeOutputDatasets);
     double fitness = computeFMeasure(mergeOutputModels.get(0), targetModel);
     RefinementNode mergeNodeValue = new RefinementNode(mergeOperator, fitness, mergeInputModels,
@@ -227,12 +226,12 @@ public class ComplexPipeLineLearner implements PipelineLearner {
   private TreeX<RefinementNode> createCloneNode(TreeX<RefinementNode> root) {
     IOperator cloneOperator = OperatorFactory.createOperator(OperatorFactory.CLONE_OPERATOR);
     List<Model> cloneInputModels = root.getValue().outputModels;
-    List<Model> cloneOutputModels = cloneOperator.process(cloneInputModels, null);
+    List<Model> cloneOutputModels = cloneOperator.apply(cloneInputModels);
     List<Resource> cloneInputDatasets = root.getValue().outputDatasets;
     List<Resource> cloneOutputDatasets = new ArrayList<Resource>(
       Arrays.asList(generateDatasetURI(), generateDatasetURI()));
     List<Model> cloneInputConfig = new ArrayList<Model>(Arrays.asList(root.getValue().configModel));
-    Model cloneConfigModel = configWriter
+    Model cloneConfigModel = configBuilder
       .addOperator(cloneOperator, null, cloneInputConfig, cloneInputDatasets, cloneOutputDatasets);
     RefinementNode cloneNodeValue = new RefinementNode(cloneOperator, -1, cloneInputModels,
       cloneOutputModels, cloneConfigModel, cloneInputDatasets, cloneOutputDatasets);
@@ -296,7 +295,8 @@ public class ComplexPipeLineLearner implements PipelineLearner {
         node = new RefinementNode(module, -2, sourceModel, sourceModel, configModel, inputDataset,
           inputDataset);
       } else {
-        Model currentMdl = module.apply(inputModel, parameters);
+        module.init(parameters);
+        Model currentMdl = module.apply(inputModel);
         double fitness;
         if (currentMdl == null || currentMdl.size() == 0 || currentMdl
           .isIsomorphicWith(inputModel)) {
@@ -306,7 +306,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
           fitness = computeFMeasure(currentMdl, targetModel);
         }
         Resource outputDataset = generateDatasetURI();
-        configModel = configWriter
+        configModel = configBuilder
           .addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
         node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl,
           configModel, inputDataset, outputDataset);
@@ -327,7 +327,8 @@ public class ComplexPipeLineLearner implements PipelineLearner {
       Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
       logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
       if (parameters != null && parameters.size() > 0) { // if not a dead node
-        Model currentMdl = module.apply(inputModel, parameters);
+        module.init(parameters);
+        Model currentMdl = module.apply(inputModel);
         if (currentMdl == null || currentMdl.size() == 0 || currentMdl
           .isIsomorphicWith(inputModel)) {
           continue; // Dead node
@@ -336,7 +337,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
           Resource outputDataset = generateDatasetURI();
           // set dataset and config for the left node
           Resource inputDataset = rootValue.outputDatasets.get(0);
-          Model configMdl = configWriter
+          Model configMdl = configBuilder
             .addModule(module, parameters, rootValue.configModel, inputDataset, outputDataset);
           RefinementNode node = new RefinementNode(module, fitness, rootValue.getOutputModel(),
             currentMdl, configMdl, inputDataset, outputDataset);
@@ -349,7 +350,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
             if (rootValue.outputDatasets.size() > 1) {
               inputDataset = rootValue.outputDatasets.get(1);
               right.inputDatasets = new ArrayList<Resource>(Arrays.asList(inputDataset));
-              right.configModel = configWriter
+              right.configModel = configBuilder
                 .addModule(module, parameters, rootValue.configModel, inputDataset, outputDataset);
             }
 
@@ -534,7 +535,8 @@ public class ComplexPipeLineLearner implements PipelineLearner {
       if (parameters == null || parameters.size() == 0) {
         continue; // Dead node
       } else {
-        Model currentMdl = module.apply(inputModel, parameters);
+        module.init(parameters);
+        Model currentMdl = module.apply(inputModel);
         if (currentMdl == null || currentMdl.size() == 0 || currentMdl
           .isIsomorphicWith(inputModel)) {
           continue; // Dead node
@@ -542,7 +544,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
           double fitness = computeFMeasure(currentMdl, targetModel);
           Resource outputDataset = generateDatasetURI();
           Resource inputDataset = root.getValue().outputDatasets.get(0);
-          Model configModel = configWriter
+          Model configModel = configBuilder
             .addModule(module, parameters, root.getValue().configModel, inputDataset,
               outputDataset);
           node = new RefinementNode(module, fitness, root.getValue().getOutputModel(), currentMdl,
@@ -568,7 +570,8 @@ public class ComplexPipeLineLearner implements PipelineLearner {
       if (parameters == null || parameters.size() == 0) {
         continue; // Dead node
       } else {
-        Model currentMdl = module.apply(inputModel, parameters);
+        module.init(parameters);
+        Model currentMdl = module.apply(inputModel);
         if (currentMdl == null || currentMdl.size() == 0 || currentMdl
           .isIsomorphicWith(inputModel)) {
           continue; // Dead node
@@ -576,7 +579,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
           double fitness = computeFMeasure(currentMdl, targetModel);
           Resource outputDataset = generateDatasetURI();
           Resource inputDataset = root.getValue().outputDatasets.get(0);
-          Model configModel = configWriter
+          Model configModel = configBuilder
             .addModule(module, parameters, root.getValue().configModel, inputDataset,
               outputDataset);
           RefinementNode node = new RefinementNode(module, fitness,
@@ -621,7 +624,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
     Resource leftModuleUri = ConfigAnalyzer
       .getLastModuleUriOftype(leftValue.module.getType(), leftValue.configModel);
     Resource leftOutputDatasetUri = leftValue.outputDatasets.get(0);
-    Model leftConfig = configWriter
+    Model leftConfig = configBuilder
       .changeModuleInputOutput(leftValue.configModel, leftModuleUri, leftInputDatasetUri,
         leftOutputDatasetUri);
     leftValue.configModel = leftConfig.add(root.configModel);
@@ -630,7 +633,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
     Resource rightModuleUri = ConfigAnalyzer
       .getLastModuleUriOftype(rightValue.module.getType(), rightValue.configModel);
     Resource rightOutputDatasetUri = rightValue.outputDatasets.get(0);
-    Model rightConfig = configWriter
+    Model rightConfig = configBuilder
       .changeModuleInputOutput(rightValue.configModel, rightModuleUri, rightInputDatasetUri,
         rightOutputDatasetUri);
     leftValue.configModel = rightConfig.add(root.configModel);

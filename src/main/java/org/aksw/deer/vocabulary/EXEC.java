@@ -7,10 +7,11 @@ import org.apache.jena.rdf.model.ResourceFactory;
 public class EXEC {
 
   public static final String uri = "http://geoknow.org/executionontology/";
-  public static final String prefix = "DEEREX";
+  public static final String prefix = "dexec";
   public static final Property subGraphId = property("subGraphId");
   public static final Property isStartNode = property("isStartNode");
-
+  public static final Property isPipelineStartNode = property("isPipelineStartNode");
+  public static final Resource Hub = resource("Hub");
 
   private static Property property(String name) {
     return ResourceFactory.createProperty(uri + name);

@@ -1,24 +1,29 @@
 package org.aksw.deer.operator.clone;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.aksw.deer.operator.AOperator;
 import org.aksw.deer.util.IOperator;
+import org.aksw.deer.vocabulary.SPECS;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.log4j.Logger;
+import ro.fortsoft.pf4j.Extension;
 
 /**
  * @author sherif
  */
-public class CloneOperator implements IOperator {
+@Extension
+public class CloneOperator extends AOperator {
 
   private static final Logger logger = Logger.getLogger(CloneOperator.class.getName());
   public int clonesCount = 2;
 
   @Override
-  public List<Model> process(final List<Model> models, final Map<String, String> parameters) {
+  protected List<Model> process() {
     logger.info("--------------- Clone Operator ---------------");
     if (parameters != null && parameters.containsKey("cloneCount")) {
       clonesCount = Integer.parseInt(parameters.get("cloneCount"));
@@ -55,7 +60,7 @@ public class CloneOperator implements IOperator {
 
   @Override
   public Resource getType() {
-    return null;
+    return SPECS.CloneOperator;
   }
 
 }

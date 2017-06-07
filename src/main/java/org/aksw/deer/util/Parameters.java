@@ -34,19 +34,10 @@ public class Parameters {
 
   /**
    * Getter proxy for member map.
-   * @param key
    * @return
    */
-  public String get(String key) {
-    return params.get(key);
-  }
-
-  /**
-   * Return an stream of parameters as instances of Map.Entry<String, String>
-   * @return Stream of entries of the member map.
-   */
-  public Stream<Entry<String, String>> stream() {
-    return params.entrySet().stream();
+  public Map<String, String> get() {
+    return params;
   }
 
   /**
@@ -56,7 +47,7 @@ public class Parameters {
    * Needs to be linked to a valid model.
    * @return Parameter map
    */
-  private static ImmutableMap<String, String> getParameters(Resource moduleOrOperator) {
+  public static ImmutableMap<String, String> getParameters(Resource moduleOrOperator) {
     Builder<String, String> mapBuilder = new Builder<>();
     StmtIterator it = moduleOrOperator.listProperties(SPECS.hasParameter);
     while (it.hasNext()) {

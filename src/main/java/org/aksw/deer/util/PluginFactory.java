@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.aksw.deer.util.IEnrichmentFunction;
 import ro.fortsoft.pf4j.DefaultPluginManager;
 import ro.fortsoft.pf4j.ExtensionFactory;
 import ro.fortsoft.pf4j.PluginManager;
@@ -24,13 +23,13 @@ public class PluginFactory <T extends IPlugin> {
   public PluginFactory(Class<T> clazz) {
     this.clazz = clazz;
     this.factory = pluginManager.getExtensionFactory();
-    this.classMap = createFactories();
+    this.classMap = createClassMap();
   }
 
-  private Map<String, Class<?>> createFactories() {
+  private Map<String, Class<?>> createClassMap() {
     Map<String, Class<?>> classMap = new HashMap<>();
     pluginManager.getExtensions(clazz).forEach(
-      (aef) -> classMap.put(aef.id(), aef.getClass())
+      (aef) -> classMap.put(aef.getType().toString(), aef.getClass())
     );
     return classMap;
   }
@@ -58,9 +57,9 @@ public class PluginFactory <T extends IPlugin> {
   /**
    * @return list of instances of all implemented enrichment functions
    */
-  public List<IEnrichmentFunction> getImplementations() {
+  public List<T> getImplementations() {
     return classMap.values().stream()
-      .map(c -> (IEnrichmentFunction) factory.create(c))
+      .map(c -> (T) factory.create(c))
       .collect(Collectors.toList());
   }
 

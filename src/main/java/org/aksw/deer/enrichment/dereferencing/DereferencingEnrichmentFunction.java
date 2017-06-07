@@ -207,7 +207,7 @@ public class DereferencingEnrichmentFunction extends AEnrichmentFunction {
 	/* (non-Javadoc)
    * This method starts processing to retrieve information from the interesting predicates
 	 */
-  public Model process() {
+  protected Model process() {
     logger.info("--------------- org.aksw.deer.resources.dereferencing Module ---------------");
     if (model != null) {
       readParameters(parameters);

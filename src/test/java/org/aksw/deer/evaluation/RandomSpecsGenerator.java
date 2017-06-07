@@ -18,7 +18,7 @@ import org.aksw.deer.enrichment.predicateconformation.PredicateConformationEnric
 import org.aksw.deer.util.IOperator;
 import org.aksw.deer.util.OperatorFactory;
 import org.aksw.deer.learning.ConfigAnalyzer;
-import org.aksw.deer.io.ConfigWriter;
+import org.aksw.deer.learning.ConfigBuilder;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
@@ -39,9 +39,9 @@ public class RandomSpecsGenerator {
   private static final Logger logger = Logger.getLogger(RandomSpecsGenerator.class.getName());
   public static Model specsModel = ModelFactory.createDefaultModel();
   private static int datasetIndex = 1;
-  private static ConfigWriter configWriter = new ConfigWriter();
-  private static List<IEnrichmentFunction> deerModules = PluginFactory.getImplementations();
-  private static List<IOperator> deerOperators = OperatorFactory.getImplementations();
+  private static ConfigBuilder configBuilder = new ConfigBuilder();
+  private static List<IEnrichmentFunction> deerModules = new PluginFactory<>(IEnrichmentFunction.class).getImplementations();
+  private static List<IOperator> deerOperators = new PluginFactory<>(IOperator.class).getImplementations();
 
 
   /**
@@ -68,7 +68,7 @@ public class RandomSpecsGenerator {
     Model inputDataModel = new ModelReader().readModel(inputDataFile);
     Model specsModel = generateSpecs(inputDataModel, size, complexity);
     Resource firstDataset = ResourceFactory.createResource(SPECS.uri + "dataset_1");
-    configWriter.addDataset(specsModel, firstDataset, inputDataFile);
+    configBuilder.addDataset(specsModel, firstDataset, inputDataFile);
     return specsModel;
   }
 
@@ -93,7 +93,7 @@ public class RandomSpecsGenerator {
         .listSubjectsWithProperty(SPECS.hasInput, inputDatasetUri);
       if (moduleToChangeInput.hasNext()) {
         Resource r = moduleToChangeInput.next();
-        configWriter.changeInputDatasetUri(specsModel, r, inputDatasetUri, outputDatasetUri);
+        configBuilder.changeInputDatasetUri(specsModel, r, inputDatasetUri, outputDatasetUri);
 //				specsModel.write(System.out,"TTL");
       }
       if (Math.random() >= complexity) {
@@ -105,7 +105,7 @@ public class RandomSpecsGenerator {
           parameters = generateRandomParameters(module, inputDataModel);
         } while (parameters == null);
         logger.info("Generating Module: " + module.getType() + " with parameters: " + parameters);
-        specsModel = configWriter
+        specsModel = configBuilder
           .addModule(module, parameters, specsModel, inputDatasetUri, outputDatasetUri);
         inputDatasetUri = getRandomDataset();
       } else { // Create clone - merge sequence
@@ -141,7 +141,7 @@ public class RandomSpecsGenerator {
     List<Resource> inputDatasets = new ArrayList<Resource>(Arrays.asList(inputDatasetUri));
     List<Resource> outputDatasets = new ArrayList<Resource>(
       Arrays.asList(generateDatasetURI(), generateDatasetURI()));
-    specsModel = configWriter
+    specsModel = configBuilder
       .addOperator(clone, null, confModels, inputDatasets, outputDatasets);
     return outputDatasets;
   }
@@ -154,7 +154,7 @@ public class RandomSpecsGenerator {
     List<Resource> outputDatasetsUris = new ArrayList<Resource>(Arrays.asList(outputDatasetUri));
     IOperator merge = OperatorFactory.createOperator(OperatorFactory.MERGE_OPERATOR);
     List<Model> confModels = new ArrayList<Model>(Arrays.asList(specsModel));
-    specsModel = configWriter
+    specsModel = configBuilder
       .addOperator(merge, null, confModels, inputDatasetUris, outputDatasetsUris);
     return outputDatasetUri;
   }

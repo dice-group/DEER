@@ -92,7 +92,7 @@ public class AuthorityConformationEnrichmentFunction extends AEnrichmentFunction
   }
 
   @Override
-  public Model process() {
+  protected Model process() {
     logger.info("--------------- Authority Conformation Module ---------------");
 
     //Read parameters

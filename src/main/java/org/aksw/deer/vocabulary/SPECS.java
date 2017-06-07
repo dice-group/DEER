@@ -38,6 +38,7 @@ public class SPECS {
   public static final Resource MergeOperator = resource("MergeOperator");
   public static final Resource ModuleParameter = resource("ModuleParameter");
   public static final Resource OperatorParameter = resource("OperatorParameter");
+  public static final Resource FusionOperator = resource("FusionOperator");
 //  public static final Resource CloneOperatorParameter = resource("CloneOperatorParameter");
 //  public static final Resource MergeOperatorParameter = resource("MergeOperatorParameter");
 //  public static final Resource AuthorityConformationModuleParameter =

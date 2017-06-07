@@ -14,11 +14,11 @@
 :d4   a       :Dataset .
 
 :d5		a				:Dataset ;
-		:outputFile		"output.ttl" ;
+		:outputFile		"output1.ttl" ;
 		:outputFormat	"Turtle" .
 
 :d6		a				:Dataset ;
-		:outputFile		"output.ttl" ;
+		:outputFile		"output2.ttl" ;
 		:outputFormat	"Turtle" .
 
 :merge a :Operator, :MergeOperator ;

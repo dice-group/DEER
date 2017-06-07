@@ -15,7 +15,7 @@ import org.aksw.deer.io.ModelWriter;
 import org.aksw.deer.learning.ComplexPipeLineLearner;
 import org.aksw.deer.learning.RefinementNode;
 import org.aksw.deer.learning.ConfigAnalyzer;
-import org.aksw.deer.execution.Executor;
+import org.aksw.deer.execution.OldExecution;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
@@ -116,7 +116,7 @@ public class ComplexPipeLineLearnerEvaluation {
         resultStr += ConfigAnalyzer.getOperators(mSpecs).size() + "\t";
 
         // manual enrichment size
-        Model t = new Executor(mSpecs).simpleExecute();
+        Model t = new OldExecution(mSpecs).simpleExecute();
         FMeasure f = FMeasure.computePRF(s, t);
         resultStr += f.P + "\t" + f.R + "\t" + f.F + "\t";
 
@@ -185,7 +185,7 @@ public class ComplexPipeLineLearnerEvaluation {
       //			mSpecs.write(System.out,"TTL");
       //			System.out.println("----------------------- CBDs --------------------------");
       //			cbd.write(System.out,"TTL");
-      manuallyEnrichedCBDMdl = new Executor(manualSpecsMdl).simpleExecute();
+      manuallyEnrichedCBDMdl = new OldExecution(manualSpecsMdl).simpleExecute();
       //			System.out.println("----------------------- manuallyEnrichedCBD --------------------------");
       //			manuallyEnrichedCBD.write(System.out,"TTL");
     } while (manuallyEnrichedCBDMdl.isIsomorphicWith(cbdMdl));
@@ -224,7 +224,7 @@ public class ComplexPipeLineLearnerEvaluation {
 
     // II. Generate manuallyEnrichedKB by applying KBManualConfig to the entire KB and save it
     start = System.currentTimeMillis();
-    Model manuallyEnrichedKB = new Executor(kbManualSpecMdl).simpleExecute();
+    Model manuallyEnrichedKB = new OldExecution(kbManualSpecMdl).simpleExecute();
     long manualConfigKBTime = System.currentTimeMillis() - start;
 
     // III. Generate KBSelfConfig and save it
@@ -248,7 +248,7 @@ public class ComplexPipeLineLearnerEvaluation {
 
     // IV. Generate selfConfigEnrichedKB by applying the self config to the entire KB
     start = System.currentTimeMillis();
-    Model selfConfigEnrichedKB = new Executor(kbSelfConfigMdl).simpleExecute();
+    Model selfConfigEnrichedKB = new OldExecution(kbSelfConfigMdl).simpleExecute();
     long selfConfigKBTime = System.currentTimeMillis() - start;
     //		String selfConfigEnrichedKBoutputFile =  folder + "kb" + examplesCount + "s.ttl";
     //		Writer.writeModel(selfConfigEnrichedKB, "TTL", selfConfigEnrichedKBoutputFile);

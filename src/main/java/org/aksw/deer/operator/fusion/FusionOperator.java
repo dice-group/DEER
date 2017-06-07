@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.aksw.deer.io.ModelReader;
+import org.aksw.deer.operator.AOperator;
 import org.aksw.deer.util.IOperator;
+import org.aksw.deer.vocabulary.SPECS;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -47,12 +49,14 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import ro.fortsoft.pf4j.Extension;
 import uk.ac.manchester.cs.owl.owlapi.OWLNamedIndividualImpl;
 
 /**
  * @author sherif
  */
-public class FusionOperator implements IOperator {
+@Extension
+public class FusionOperator extends AOperator {
 
   public static final String FUNCTIONAL_PROPERTY = "functionalproperty";
   private static final Logger logger = Logger.getLogger(FusionOperator.class.getName());
@@ -364,14 +368,14 @@ public class FusionOperator implements IOperator {
     parameters.put(POSITIVE_EXAMPLE, path + "pos.nt");
     parameters.put(KB_NAMES, "s1 s2 s3");
     FusionOperator f = new FusionOperator();
-    f.process(testMdls, parameters);
+//    f.process(testMdls, parameters);
   }
 
   /* (non-Javadoc)
    * @see org.aksw.geolift.operator.ModelOperator#run(java.util.List)
    */
   @Override
-  public List<Model> process(final List<Model> models, final Map<String, String> parameters) {
+  protected List<Model> process() {
     List<Model> result = new ArrayList<Model>();
     logger.info("--------------- Fusion Operator ---------------");
     Set<Property> funcProp = new HashSet<>();
@@ -480,6 +484,6 @@ public class FusionOperator implements IOperator {
 
   @Override
   public Resource getType() {
-    return null;
+    return SPECS.FusionOperator;
   }
 }

@@ -13,7 +13,6 @@ import org.aksw.deer.vocabulary.SPECS;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
 import org.aksw.deer.util.IEnrichmentFunction;
-import org.aksw.deer.io.ConfigWriter;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
@@ -44,7 +43,7 @@ public class SimplePipeLineLearner implements PipelineLearner {
     new RefinementNodeOld());
   public int iterationNr = 0;
   private int datasetIndex = 1;
-  private ConfigWriter configWriter = new ConfigWriter();
+  private ConfigBuilder configBuilder = new ConfigBuilder();
   private ModelReader modelReader = new ModelReader();
 
 
@@ -133,7 +132,8 @@ public class SimplePipeLineLearner implements PipelineLearner {
         node = new RefinementNodeOld(module, -2, sourceModel, sourceModel, inputDataset,
           inputDataset, configMdl);
       } else {
-        Model currentMdl = module.apply(inputModel, parameters);
+        module.init(parameters);
+        Model currentMdl = module.apply(inputModel);
         double fitness;
         if (currentMdl == null || currentMdl.size() == 0 || currentMdl
           .isIsomorphicWith(inputModel)) {
@@ -144,7 +144,7 @@ public class SimplePipeLineLearner implements PipelineLearner {
         }
         Resource outputDataset = ResourceFactory
           .createResource(SPECS.uri + "Dataset_" + datasetIndex++);
-        configMdl = configWriter
+        configMdl = configBuilder
           .addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
         node = new RefinementNodeOld(module, fitness, root.getValue().outputModel, currentMdl,
           inputDataset, outputDataset, configMdl);

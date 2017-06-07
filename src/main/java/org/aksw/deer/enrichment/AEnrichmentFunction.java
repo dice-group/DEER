@@ -14,16 +14,23 @@ public abstract class AEnrichmentFunction implements IEnrichmentFunction {
   protected Map<String, String> parameters = null;
 
   @Override
-  public Model apply(Model model, Map<String, String> parameters) {
-    this.init(model, parameters);
+  public Model apply(Model model) {
+    this.model = model;
+    if (this.parameters == null) {
+      throw new RuntimeException(this.getClass().getCanonicalName() + " must be initialized before calling apply()!");
+    }
     return process();
   }
 
-  private void init(Model model, Map<String, String> parameters) {
-    this.model = model;
+  public void init(Map<String, String> parameters) {
     this.parameters = parameters;
   }
 
   protected abstract Model process();
 
+  @Deprecated
+  public Model apply(Model model, Map<String, String> parameters) {
+    init(parameters);
+    return apply(model);
+  }
 }

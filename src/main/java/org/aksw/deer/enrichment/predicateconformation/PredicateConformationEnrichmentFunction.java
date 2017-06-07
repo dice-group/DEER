@@ -111,7 +111,7 @@ public class PredicateConformationEnrichmentFunction extends AEnrichmentFunction
    * @see org.aksw.geolift.enrichment.GeoLiftModule#process(org.apache.jena.rdf.model.Model, java.util.Map)
    */
   @Override
-  public Model process() {
+  protected Model process() {
     logger.info("--------------- Predicate Conformation Module ---------------");
 
     //Read parameters

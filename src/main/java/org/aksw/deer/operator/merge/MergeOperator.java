@@ -2,22 +2,24 @@ package org.aksw.deer.operator.merge;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import org.aksw.deer.util.IOperator;
+import org.aksw.deer.operator.AOperator;
+import org.aksw.deer.vocabulary.SPECS;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.log4j.Logger;
+import ro.fortsoft.pf4j.Extension;
 
 /**
  * @author sherif
  */
-public class MergeOperator implements IOperator {
+@Extension
+public class MergeOperator extends AOperator {
 
   private static final Logger logger = Logger.getLogger(MergeOperator.class.getName());
 
   @Override
-  public List<Model> process(final List<Model> models, final Map<String, String> parameters) {
+  protected List<Model> process() {
     logger.info("--------------- Merge Operator ---------------");
     List<Model> result = new ArrayList<>();
     Model merge = ModelFactory.createDefaultModel();
@@ -49,7 +51,7 @@ public class MergeOperator implements IOperator {
 
   @Override
   public Resource getType() {
-    return null;
+    return SPECS.MergeOperator;
   }
 
 }

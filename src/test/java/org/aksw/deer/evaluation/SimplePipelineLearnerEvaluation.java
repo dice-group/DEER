@@ -15,7 +15,7 @@ import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
 import org.aksw.deer.learning.RefinementNodeOld;
 import org.aksw.deer.learning.SimplePipeLineLearner;
-import org.aksw.deer.execution.Executor;
+import org.aksw.deer.execution.OldExecution;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
@@ -97,8 +97,8 @@ public class SimplePipelineLearnerEvaluation {
 
   public static FMeasure evaluateSelfConfig(Model manualConfig, Model selfConfig)
     throws IOException {
-    Model manualKB = new Executor(manualConfig).simpleExecute();
-    Model selfConfigKB = new Executor(selfConfig).simpleExecute();
+    Model manualKB = new OldExecution(manualConfig).simpleExecute();
+    Model selfConfigKB = new OldExecution(selfConfig).simpleExecute();
     return FMeasure.computePRF(selfConfigKB, manualKB);
   }
 
@@ -271,7 +271,7 @@ public class SimplePipelineLearnerEvaluation {
       new ModelWriter().writeModel(cbdManualConfig, "TTL", cbdManualConfigOutputFile);
 
       // (3) run the config generated in(2) and save result
-      manuallyEnrichedCBD = new Executor(cbdManualConfig).simpleExecute();
+      manuallyEnrichedCBD = new OldExecution(cbdManualConfig).simpleExecute();
       if (!manuallyEnrichedCBD.isIsomorphicWith(cbd)) {
         foundExamples++;
       }

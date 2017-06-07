@@ -44,7 +44,7 @@ public class LinkingEnrichmentFunction extends AEnrichmentFunction {
    * @return model enriched with links generated from a org.aksw.deer.resources.linking tool
    */
 
-  public Model process() {
+  protected Model process() {
     logger.info("--------------- Linking Module ---------------");
 
     //@todo: Where does data come from?
@@ -146,7 +146,7 @@ public class LinkingEnrichmentFunction extends AEnrichmentFunction {
 //				if(args[i].equals("-s"))
 //				{
 //					parameters.put(SPEC_FILE,args[i+1]);
-//					linksPath = args[i+1].substring(0,args[i+1].lastIndexOf("/"))+"/accept.nt";
+//					linksPath = args[i+1].substring(0,args[i+1].lastIndexOf("/"))+"/setCallback.nt";
 //					parameters.put(LINKS_FILE,linksPath);
 //				}
 //				if(args[i].equals("-p"))

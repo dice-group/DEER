@@ -436,7 +436,7 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
   /* (non-Javadoc)
    * @see org.aksw.geolift.enrichment.GeoLiftModule#process(org.apache.jena.rdf.model.Model, java.util.Map)
    */
-  public Model process() {
+  protected Model process() {
     logger.info("--------------- NLP Module ---------------");
     if (parameters.containsKey("input")) {
       inputFile = parameters.get("input");

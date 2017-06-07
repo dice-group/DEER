@@ -179,9 +179,6 @@ public class LiteralPropertyRanker {
     return literalPropertyRank;
   }
 
-  /**
-   * @param propertyRank the propertyRank to set
-   */
 
   public Property getTopRankedLiteralProperty() {
     TreeMap<Float, Property> topNRankedLiteralProperty = getTopNRankedLiteralProperty(1);

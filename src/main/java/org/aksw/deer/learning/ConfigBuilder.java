@@ -1,4 +1,4 @@
-package org.aksw.deer.io;
+package org.aksw.deer.learning;
 
 import java.util.List;
 import java.util.Map;
@@ -17,9 +17,9 @@ import org.apache.log4j.Logger;
  * @author sherif
  */
 //@todo: change to configbuilder using builder pattern
-public class ConfigWriter {
+public class ConfigBuilder {
 
-  private final static Logger logger = Logger.getLogger(ConfigWriter.class.getName());
+  private final static Logger logger = Logger.getLogger(ConfigBuilder.class.getName());
   private long moduleNr = 1;
   private long parameterNr = 1;
 

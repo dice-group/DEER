@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.aksw.deer.util;
 
 import java.util.ArrayList;

@@ -46,7 +46,7 @@ public class FilterEnrichmentFunction extends AEnrichmentFunction {
    * @see org.aksw.geolift.enrichment.GeoLiftModule#process(org.apache.jena.rdf.model.Model, java.util.Map)
    */
   @Override
-  public Model process() {
+  protected Model process() {
     logger.info("--------------- Filter Module ---------------");
     if (parameters.containsKey(TRIPLES_PATTERN)) {
       triplesPattern = parameters.get(TRIPLES_PATTERN);
