@@ -1,2 +1,0 @@
-#!/usr/bin/perl -w
-system ("java", "-jar", "/etc/share/java/deer/deer.jar", @ARGV);
