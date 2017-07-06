@@ -41,7 +41,6 @@ public class OperatorFactory {
     if (name.equalsIgnoreCase(MERGE_OPERATOR)) {
       return new MergeOperator();
     }
-    //TODO Add any new operator here
 
     logger.error("Sorry, The enrichment " + name + " is not yet implemented. Exit with error ...");
     System.exit(1);
@@ -66,7 +65,6 @@ public class OperatorFactory {
     List<String> result = new ArrayList<String>();
     result.add(CLONE_OPERATOR);
     result.add(MERGE_OPERATOR);
-    //TODO Add any new enrichment here
     return result;
   }
 
@@ -78,7 +76,6 @@ public class OperatorFactory {
     List<IOperator> result = new ArrayList<IOperator>();
     result.add(new CloneOperator());
     result.add(new MergeOperator());
-    //TODO Add any new operator here
     return result;
   }
 }

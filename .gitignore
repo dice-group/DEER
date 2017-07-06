@@ -11,3 +11,7 @@ nbactions.xml
 # IntelliJ IDEA #
 *.iml
 .idea/
+
+# Markdown Editor Metadata #
+
+.Ulysses*

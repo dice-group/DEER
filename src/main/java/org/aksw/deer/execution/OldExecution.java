@@ -84,7 +84,6 @@ public class OldExecution {
 //          break;
 //        }
 //      }
-//      //@todo: implement abstraction for generation of pipelines from list of enrichment & their parameters
 //      //      CompletableFuture<List<Model>> q = CompletableFuture.completedFuture(Collections.singletonList(model));
 //
 //
@@ -206,7 +205,6 @@ public class OldExecution {
         s = dataset.getProperty(SPECS.inputFile).getObject().toString();
       }
       if (s == null) {
-        //@todo: introduce MalformedConfigurationException
         throw new RuntimeException("Encountered root dataset without source declaration: " + dataset);
       }
       cbd = modelReader.readModel(s);
