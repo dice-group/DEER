@@ -5,7 +5,6 @@ import static org.aksw.deer.util.QueryHelper.forEachResultOf;
 import static org.aksw.deer.util.QueryHelper.not;
 import static org.aksw.deer.util.QueryHelper.triple;
 
-import com.sun.xml.internal.rngom.digested.DDataPattern.Param;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.aksw.deer.io.ModelReader;
