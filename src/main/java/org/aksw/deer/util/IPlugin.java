@@ -12,8 +12,6 @@ public interface IPlugin extends IParameterized {
 
   List<String> getNecessaryParameters();
 
-  String id();
-
   String getDescription();
 
   Resource getType();

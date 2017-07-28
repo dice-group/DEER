@@ -162,22 +162,11 @@ public class PredicateConformationEnrichmentOperator extends AEnrichmentOperator
     return parameters;
   }
 
-  @Override
-  public String id() {
-    return null;
-  }
 
   @Override
   public String getDescription() {
     return null;
   }
-
-  @Override
-  public Resource getType() {
-    return SPECS.PredicateConformationModule;
-  }
-
-
 
 
 }

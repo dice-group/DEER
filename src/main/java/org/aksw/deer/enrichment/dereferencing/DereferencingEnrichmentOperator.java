@@ -193,10 +193,6 @@ public class DereferencingEnrichmentOperator extends AEnrichmentOperator {
     return parameters;
   }
 
-  @Override
-  public String id() {
-    return null;
-  }
 
   @Override
   public String getDescription() {
@@ -565,11 +561,6 @@ public class DereferencingEnrichmentOperator extends AEnrichmentOperator {
   private void setPrefixes() {
     String gn = "http://www.geonames.org/ontology#";
     localModel.setNsPrefix("gn", gn);
-  }
-
-  @Override
-  public Resource getType() {
-    return SPECS.DereferencingModule;
   }
 
 }

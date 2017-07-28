@@ -4,8 +4,10 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Map;
 import org.aksw.deer.util.IEnrichmentOperator;
+import org.aksw.deer.vocabulary.SPECS;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 
 /**
  * @author Kevin Dreßler
@@ -112,6 +114,14 @@ public abstract class AEnrichmentOperator implements IEnrichmentOperator {
       inBounds &= arityBounds.maxOut() >= out;
     }
     return inBounds;
+  }
+
+  public Resource getType() {
+    return SPECS.resource(this.getClass().getCanonicalName());
+  }
+
+  public ArityBoundsImpl getArityBounds() {
+    return new ArityBoundsImpl(1, 1, 1, 1);
   }
 
 }

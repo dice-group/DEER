@@ -84,10 +84,6 @@ public class LinkingEnrichmentOperator extends AEnrichmentOperator {
     return parameters;
   }
 
-  @Override
-  public String id() {
-    return null;
-  }
 
   @Override
   public String getDescription() {
@@ -189,9 +185,4 @@ public class LinkingEnrichmentOperator extends AEnrichmentOperator {
     return null;
   }
 
-
-  @Override
-  public Resource getType() {
-    return SPECS.LinkingModule;
-  }
 }

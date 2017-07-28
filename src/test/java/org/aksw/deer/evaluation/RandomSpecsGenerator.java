@@ -262,9 +262,9 @@ public class RandomSpecsGenerator {
     } else {
       authority = authority.substring(0, authority.lastIndexOf("/"));
     }
-    parameters.put(AuthorityConformationEnrichmentOperator.SOURCE_SUBJET_AUTHORITY, authority);
+    parameters.put(AuthorityConformationEnrichmentOperator.SOURCE_SUBJECT_AUTHORITY, authority);
     parameters
-      .put(AuthorityConformationEnrichmentOperator.TARGET_SUBJET_AUTHORITY, "http://example.com/resource/");
+      .put(AuthorityConformationEnrichmentOperator.TARGET_SUBJECT_AUTHORITY, "http://example.com/resource/");
     return parameters;
   }
 

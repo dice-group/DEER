@@ -531,10 +531,6 @@ public class NLPEnrichmentOperator extends AEnrichmentOperator {
     return parameters;
   }
 
-  @Override
-  public String id() {
-    return null;
-  }
 
   @Override
   public String getDescription() {
@@ -560,11 +556,6 @@ public class NLPEnrichmentOperator extends AEnrichmentOperator {
     Map<String, String> p = new HashMap<String, String>();
     p.put(NER_TYPE, ALL);
     return p;
-  }
-
-  @Override
-  public Resource getType() {
-    return SPECS.NLPModule;
   }
 
 }

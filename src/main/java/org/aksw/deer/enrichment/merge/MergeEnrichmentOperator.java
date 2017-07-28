@@ -40,19 +40,10 @@ public class MergeEnrichmentOperator extends AEnrichmentOperator {
     return new ArrayList<>();
   }
 
-  @Override
-  public String id() {
-    return null;
-  }
 
   @Override
   public String getDescription() {
     return null;
-  }
-
-  @Override
-  public Resource getType() {
-    return SPECS.MergeOperator;
   }
 
   @Override

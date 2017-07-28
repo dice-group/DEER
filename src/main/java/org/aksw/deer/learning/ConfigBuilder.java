@@ -32,7 +32,7 @@ public class ConfigBuilder {
     Resource inputDataset, Resource outputDataset) {
     Model config = ModelFactory.createDefaultModel();
     Resource s;
-    s = ResourceFactory.createResource(SPECS.uri + module.id() + moduleNr++);
+    s = ResourceFactory.createResource(module.getType().getURI() + moduleNr++);
     config.add(s, RDF.type, SPECS.Module);
     config.add(s, RDF.type, module.getType());
     addDataset(config, inputDataset);
@@ -62,7 +62,7 @@ public class ConfigBuilder {
   public Model addOperator(IEnrichmentOperator operator, Map<String, String> parameters,
     List<Model> inputConfigs, List<Resource> inputDatasets, List<Resource> outputDatasets) {
     Model config = ModelFactory.createDefaultModel();
-    Resource s = ResourceFactory.createResource(SPECS.uri + operator.id() + moduleNr++);
+    Resource s = ResourceFactory.createResource(operator.getType().getURI() + moduleNr++);
     config.add(s, RDF.type, SPECS.Operator);
     config.add(s, RDF.type, operator.getType());
     for (Resource inputDataset : inputDatasets) {

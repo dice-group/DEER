@@ -3,13 +3,11 @@ package org.aksw.deer.enrichment.authorityconformation;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.aksw.deer.enrichment.AEnrichmentOperator;
-import org.aksw.deer.vocabulary.SPECS;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -29,23 +27,17 @@ import ro.fortsoft.pf4j.Extension;
 public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator {
 
   // parameters keys
-  public static final String SOURCE_SUBJET_AUTHORITY = "sourceSubjectAuthority";
+  public static final String SOURCE_SUBJECT_AUTHORITY = "sourceSubjectAuthority";
   public static final String SOURCE_SUBJECT_AUTHORITY_DESC = "Source subject authority to be replaced by Target subject authority.";
-  public static final String TARGET_SUBJET_AUTHORITY = "targetSubjectAuthority";
+  public static final String TARGET_SUBJECT_AUTHORITY = "targetSubjectAuthority";
   public static final String TARGET_SUBJECT_AUTHORITY_DESC = "Target subject authority to replace the source subject authority.";
-  private static final Logger logger = Logger
-    .getLogger(AuthorityConformationEnrichmentOperator.class.getName());
+  private static final Logger logger = Logger.getLogger(AuthorityConformationEnrichmentOperator.class);
   // parameters list
   private String sourceSubjectAuthority = "";
   private String targetSubjectAuthority = "";
 
   public AuthorityConformationEnrichmentOperator() {
     super();
-  }
-
-  @Override
-  public ArityBounds getArityBounds() {
-    return new ArityBoundsImpl(1,1,1,1);
   }
 
   /**
@@ -62,8 +54,8 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
     if (s != t) {
       sourceSubjectAuthority = s;
       targetSubjectAuthority = t;
-      parameters.put(SOURCE_SUBJET_AUTHORITY, sourceSubjectAuthority);
-      parameters.put(TARGET_SUBJET_AUTHORITY, targetSubjectAuthority);
+      parameters.put(SOURCE_SUBJECT_AUTHORITY, sourceSubjectAuthority);
+      parameters.put(TARGET_SUBJECT_AUTHORITY, targetSubjectAuthority);
     }
     return parameters;
   }
@@ -73,7 +65,7 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
    * @return Most redundant source URI in the input model
    * @author sherif
    */
-  public String getMostRedundantUri(Model m) {
+  private String getMostRedundantUri(Model m) {
     Multiset<Resource> subjectsMultiset = HashMultiset.create();
     ResIterator listSubjects = m.listSubjects();
     while (listSubjects.hasNext()) {
@@ -86,7 +78,7 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
       subjectsMultiset.add(ResourceFactory.createResource(authority));
     }
     Resource result = ResourceFactory.createResource();
-    Integer max = new Integer(0);
+    int max = 0;
     for (Resource r : subjectsMultiset) {
       Integer value = subjectsMultiset.count(r);
       if (value > max) {
@@ -104,10 +96,10 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
 
     //Read parameters
     boolean parameterFound = false;
-    if (parameters.containsKey(SOURCE_SUBJET_AUTHORITY) && parameters
-      .containsKey(TARGET_SUBJET_AUTHORITY)) {
-      String s = parameters.get(SOURCE_SUBJET_AUTHORITY);
-      String t = parameters.get(TARGET_SUBJET_AUTHORITY);
+    if (parameters.containsKey(SOURCE_SUBJECT_AUTHORITY) && parameters
+      .containsKey(TARGET_SUBJECT_AUTHORITY)) {
+      String s = parameters.get(SOURCE_SUBJECT_AUTHORITY);
+      String t = parameters.get(TARGET_SUBJECT_AUTHORITY);
       if (!s.equals(t)) {
         sourceSubjectAuthority = s;
         targetSubjectAuthority = t;
@@ -137,32 +129,14 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
     return Collections.singletonList(model);
   }
 
-
-  /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#getParameters()
-   */
   @Override
   public List<String> getParameters() {
-    List<String> parameters = new ArrayList<String>();
-    parameters.add(SOURCE_SUBJET_AUTHORITY);
-    parameters.add(TARGET_SUBJET_AUTHORITY);
-    return parameters;
+    return Lists.newArrayList(SOURCE_SUBJECT_AUTHORITY, TARGET_SUBJECT_AUTHORITY);
   }
 
-  /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#getNecessaryParameters()
-   */
   @Override
   public List<String> getNecessaryParameters() {
-    List<String> parameters = new ArrayList<String>();
-    parameters.add(SOURCE_SUBJET_AUTHORITY);
-    parameters.add(TARGET_SUBJET_AUTHORITY);
-    return parameters;
-  }
-
-  @Override
-  public String id() {
-    return null;
+    return Lists.newArrayList(SOURCE_SUBJECT_AUTHORITY, TARGET_SUBJECT_AUTHORITY);
   }
 
   @Override
@@ -170,8 +144,4 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
     return null;
   }
 
-  @Override
-  public Resource getType() {
-    return SPECS.AuthorityConformationModule;
-  }
 }

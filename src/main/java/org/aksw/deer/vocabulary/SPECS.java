@@ -24,6 +24,8 @@ public class SPECS {
   public static final Property hasOutput = property("hasOutput");
   public static final Resource Dataset = resource("Dataset");
   public static final Resource Module = resource("Module");
+
+
   public static final Resource DereferencingModule = resource("DereferencingModule");
   public static final Resource LinkingModule = resource("LinkingModule");
   public static final Resource NLPModule = resource("NLPModule");
@@ -39,23 +41,12 @@ public class SPECS {
   public static final Resource ModuleParameter = resource("ModuleParameter");
   public static final Resource OperatorParameter = resource("OperatorParameter");
   public static final Resource FusionOperator = resource("FusionOperator");
-//  public static final Resource CloneOperatorParameter = resource("CloneOperatorParameter");
-//  public static final Resource MergeOperatorParameter = resource("MergeOperatorParameter");
-//  public static final Resource AuthorityConformationModuleParameter =
-//    resource("AuthorityConformationModuleParameter");
-//  public static final Resource PredicateConformationModuleParameter =
-//    resource("PredicateConformationModuleParameter");
-//  public static final Resource NLPModuleParameter = resource("NLPModuleParameter");
-//  public static final Resource DereferencingModuleParameter =
-//    resource("DereferencingModuleParameter");
-//  public static final Resource LinkingModuleParameter = resource("linkingModuleParameter");
-//  public static final Resource FilterModuleParameter = resource("FilterModuleParameter");
 
-  private static Property property(String name) {
+  public static Property property(String name) {
     return ResourceFactory.createProperty(uri + name);
   }
 
-  protected static Resource resource(String local) {
+  public static Resource resource(String local) {
     return ResourceFactory.createResource(uri + local);
   }
 
