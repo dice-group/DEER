@@ -2,10 +2,11 @@ package org.aksw.deer.execution;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import org.aksw.deer.util.IOperator;
+import org.aksw.deer.util.IEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 
 /**
@@ -17,9 +18,9 @@ public class ExecutionHub {
   private Collection<ExecutionPipeline> outPipes;
   private List<Model> inModels;
   private List<Model> outModels;
-  private IOperator operator;
+  private IEnrichmentOperator operator;
 
-  public ExecutionHub(IOperator operator) {
+  public ExecutionHub(IEnrichmentOperator operator) {
     this.operator = operator;
     this.inPipes = new ArrayList<>();
     this.outPipes = new ArrayList<>();
@@ -41,8 +42,8 @@ public class ExecutionHub {
     }
   }
 
-  private synchronized void consume(Model m) {
-    inModels.add(m);
+  private synchronized void consume(List<Model> m) {
+    inModels.add(m.get(0));
     if (inModels.size() == inPipes.size()) {
       execute();
     }
@@ -55,14 +56,15 @@ public class ExecutionHub {
         + operator.getClass().getSimpleName() + "(Expected: " + outPipes.size() + ", Actual: "
         + outModels.size() + ")");
     }
-    CompletableFuture<Model> trigger = new CompletableFuture<>();
-    CompletableFuture<Model> lst = new CompletableFuture<>();
+    CompletableFuture<List<Model>> trigger = new CompletableFuture<>();
+    CompletableFuture<List<Model>> lst = new CompletableFuture<>();
     Iterator<ExecutionPipeline> pipeIt = outPipes.iterator();
     for (Model outModel : outModels) {
       ExecutionPipeline outPipe = pipeIt.next();
-      lst = trigger.thenApplyAsync((m) -> outModel).thenApplyAsync(outPipe);
+      lst = trigger.thenApplyAsync((m) -> Collections.singletonList(outModel)).thenApplyAsync(outPipe);
     }
     trigger.complete(null);
-    lst.join();
+    //@todo: really necessary? if yes, need to extend?
+    //    lst.join();
   }
 }

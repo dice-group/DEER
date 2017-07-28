@@ -31,7 +31,6 @@ public class ModelWriter implements Consumer<Model> {
     accept(model);
   }
 
-
   public void init(String format, String outputFile) {
     this.format = format;
     this.outputFile = outputFile;

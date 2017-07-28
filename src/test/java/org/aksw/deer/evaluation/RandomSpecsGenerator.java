@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Map;
 import org.aksw.deer.vocabulary.SPECS;
 import org.aksw.deer.io.ModelReader;
-import org.aksw.deer.util.IEnrichmentFunction;
 import org.aksw.deer.util.PluginFactory;
-import org.aksw.deer.enrichment.authorityconformation.AuthorityConformationEnrichmentFunction;
-import org.aksw.deer.enrichment.dereferencing.DereferencingEnrichmentFunction;
-import org.aksw.deer.enrichment.filter.FilterEnrichmentFunction;
-import org.aksw.deer.enrichment.linking.LinkingEnrichmentFunction;
-import org.aksw.deer.enrichment.nlp.NLPEnrichmentFunction;
-import org.aksw.deer.enrichment.predicateconformation.PredicateConformationEnrichmentFunction;
-import org.aksw.deer.util.IOperator;
+import org.aksw.deer.enrichment.authorityconformation.AuthorityConformationEnrichmentOperator;
+import org.aksw.deer.enrichment.dereferencing.DereferencingEnrichmentOperator;
+import org.aksw.deer.enrichment.filter.FilterEnrichmentOperator;
+import org.aksw.deer.enrichment.linking.LinkingEnrichmentOperator;
+import org.aksw.deer.enrichment.nlp.NLPEnrichmentOperator;
+import org.aksw.deer.enrichment.predicateconformation.PredicateConformationEnrichmentOperator;
+import org.aksw.deer.util.IEnrichmentOperator;
 import org.aksw.deer.util.OperatorFactory;
 import org.aksw.deer.learning.ConfigAnalyzer;
 import org.aksw.deer.learning.ConfigBuilder;
@@ -40,8 +39,8 @@ public class RandomSpecsGenerator {
   public static Model specsModel = ModelFactory.createDefaultModel();
   private static int datasetIndex = 1;
   private static ConfigBuilder configBuilder = new ConfigBuilder();
-  private static List<IEnrichmentFunction> deerModules = new PluginFactory<>(IEnrichmentFunction.class).getImplementations();
-  private static List<IOperator> deerOperators = new PluginFactory<>(IOperator.class).getImplementations();
+  private static List<IEnrichmentOperator> deerModules = new PluginFactory<>(IEnrichmentOperator.class).getImplementations();
+  private static List<IEnrichmentOperator> deerOperators = new PluginFactory<>(IEnrichmentOperator.class).getImplementations();
 
 
   /**
@@ -98,7 +97,7 @@ public class RandomSpecsGenerator {
       }
       if (Math.random() >= complexity) {
         // Create enrichment
-        IEnrichmentFunction module;
+        IEnrichmentOperator module;
         Map<String, String> parameters = null;
         do {
           module = getRandomModule();
@@ -136,7 +135,7 @@ public class RandomSpecsGenerator {
    * @author sherif
    */
   private static List<Resource> addCloneOperator(final Resource inputDatasetUri) {
-    IOperator clone = OperatorFactory.createOperator(OperatorFactory.CLONE_OPERATOR);
+    IEnrichmentOperator clone = OperatorFactory.createOperator(OperatorFactory.CLONE_OPERATOR);
     List<Model> confModels = new ArrayList<Model>(Arrays.asList(specsModel));
     List<Resource> inputDatasets = new ArrayList<Resource>(Arrays.asList(inputDatasetUri));
     List<Resource> outputDatasets = new ArrayList<Resource>(
@@ -152,7 +151,7 @@ public class RandomSpecsGenerator {
   private static Resource addMergeOperator(final List<Resource> inputDatasetUris,
     final Resource outputDatasetUri) {
     List<Resource> outputDatasetsUris = new ArrayList<Resource>(Arrays.asList(outputDatasetUri));
-    IOperator merge = OperatorFactory.createOperator(OperatorFactory.MERGE_OPERATOR);
+    IEnrichmentOperator merge = OperatorFactory.createOperator(OperatorFactory.MERGE_OPERATOR);
     List<Model> confModels = new ArrayList<Model>(Arrays.asList(specsModel));
     specsModel = configBuilder
       .addOperator(merge, null, confModels, inputDatasetUris, outputDatasetsUris);
@@ -162,19 +161,19 @@ public class RandomSpecsGenerator {
   /**
    * @author sherif
    */
-  private static Map<String, String> generateRandomParameters(final IEnrichmentFunction module,
+  private static Map<String, String> generateRandomParameters(final IEnrichmentOperator module,
     final Model inputDataset) {
-    if (module instanceof DereferencingEnrichmentFunction) {
+    if (module instanceof DereferencingEnrichmentOperator) {
       return DereferencingModuleRandomParameter(inputDataset);
-    } else if (module instanceof NLPEnrichmentFunction) {
+    } else if (module instanceof NLPEnrichmentOperator) {
       return nlpModuleRandomParameter();
-    } else if (module instanceof AuthorityConformationEnrichmentFunction) {
+    } else if (module instanceof AuthorityConformationEnrichmentOperator) {
       return authorityConformationModuleRandomParameter(inputDataset);
-    } else if (module instanceof PredicateConformationEnrichmentFunction) {
+    } else if (module instanceof PredicateConformationEnrichmentOperator) {
       return predicateConformationModuleRandomParameter(inputDataset);
-    } else if (module instanceof FilterEnrichmentFunction) {
+    } else if (module instanceof FilterEnrichmentOperator) {
       return filterModuleRandomParameter(inputDataset);
-    } else if (module instanceof LinkingEnrichmentFunction) {
+    } else if (module instanceof LinkingEnrichmentOperator) {
       return linkingModuleRandomParameter(inputDataset);
     }
     return null;
@@ -194,7 +193,7 @@ public class RandomSpecsGenerator {
     for (String p : predicates) {
       triplePattern += p + " ";
     }
-    parameters.put(FilterEnrichmentFunction.TRIPLES_PATTERN, triplePattern);
+    parameters.put(FilterEnrichmentOperator.TRIPLES_PATTERN, triplePattern);
     return parameters;
   }
 
@@ -211,8 +210,8 @@ public class RandomSpecsGenerator {
     }
     int i = 1;
     for (String p : predicates) {
-      parameters.put(PredicateConformationEnrichmentFunction.SOURCE_PROPERTY + i++, p);
-      parameters.put(PredicateConformationEnrichmentFunction.TARGET_PROPERTY + i++, p + i);
+      parameters.put(PredicateConformationEnrichmentOperator.SOURCE_PROPERTY + i++, p);
+      parameters.put(PredicateConformationEnrichmentOperator.TARGET_PROPERTY + i++, p + i);
     }
     return parameters;
   }
@@ -263,9 +262,9 @@ public class RandomSpecsGenerator {
     } else {
       authority = authority.substring(0, authority.lastIndexOf("/"));
     }
-    parameters.put(AuthorityConformationEnrichmentFunction.SOURCE_SUBJET_AUTHORITY, authority);
+    parameters.put(AuthorityConformationEnrichmentOperator.SOURCE_SUBJET_AUTHORITY, authority);
     parameters
-      .put(AuthorityConformationEnrichmentFunction.TARGET_SUBJET_AUTHORITY, "http://example.com/resource/");
+      .put(AuthorityConformationEnrichmentOperator.TARGET_SUBJET_AUTHORITY, "http://example.com/resource/");
     return parameters;
   }
 
@@ -283,13 +282,13 @@ public class RandomSpecsGenerator {
     Map<String, String> parameters = new HashMap<String, String>();
     double r = Math.random();
     if (r > 0.75) {
-      parameters.put(NLPEnrichmentFunction.NER_TYPE, NLPEnrichmentFunction.LOCATION);
+      parameters.put(NLPEnrichmentOperator.NER_TYPE, NLPEnrichmentOperator.LOCATION);
     } else if (r > 0.5) {
-      parameters.put(NLPEnrichmentFunction.NER_TYPE, NLPEnrichmentFunction.PERSON);
+      parameters.put(NLPEnrichmentOperator.NER_TYPE, NLPEnrichmentOperator.PERSON);
     } else if (r > 0.25) {
-      parameters.put(NLPEnrichmentFunction.NER_TYPE, NLPEnrichmentFunction.ORGANIZATION);
+      parameters.put(NLPEnrichmentOperator.NER_TYPE, NLPEnrichmentOperator.ORGANIZATION);
     } else {
-      parameters.put(NLPEnrichmentFunction.NER_TYPE, NLPEnrichmentFunction.ALL);
+      parameters.put(NLPEnrichmentOperator.NER_TYPE, NLPEnrichmentOperator.ALL);
     }
     return parameters;
   }
@@ -303,8 +302,8 @@ public class RandomSpecsGenerator {
     List<String> predicates = getPredicates(inputDataset, l);
     int i = 1;
     for (String p : predicates) {
-      parameters.put(DereferencingEnrichmentFunction.INPUT_PROPERTY + i++, p);
-      parameters.put(DereferencingEnrichmentFunction.OUTPUT_PROPERTY + i++, p + i);
+      parameters.put(DereferencingEnrichmentOperator.INPUT_PROPERTY + i++, p);
+      parameters.put(DereferencingEnrichmentOperator.OUTPUT_PROPERTY + i++, p + i);
     }
     return parameters;
   }
@@ -312,7 +311,7 @@ public class RandomSpecsGenerator {
   /**
    * @author sherif
    */
-  private static IEnrichmentFunction getRandomModule() {
+  private static IEnrichmentOperator getRandomModule() {
     int i = (int) (Math.random() * deerModules.size());
     return deerModules.get(i);
   }

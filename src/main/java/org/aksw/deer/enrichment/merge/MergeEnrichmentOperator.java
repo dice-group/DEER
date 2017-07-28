@@ -1,8 +1,9 @@
-package org.aksw.deer.operator.merge;
+package org.aksw.deer.enrichment.merge;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.aksw.deer.operator.AOperator;
+import java.util.Map;
+import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.vocabulary.SPECS;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -14,9 +15,9 @@ import ro.fortsoft.pf4j.Extension;
  * @author sherif
  */
 @Extension
-public class MergeOperator extends AOperator {
+public class MergeEnrichmentOperator extends AEnrichmentOperator {
 
-  private static final Logger logger = Logger.getLogger(MergeOperator.class.getName());
+  private static final Logger logger = Logger.getLogger(MergeEnrichmentOperator.class.getName());
 
   @Override
   protected List<Model> process() {
@@ -54,4 +55,13 @@ public class MergeOperator extends AOperator {
     return SPECS.MergeOperator;
   }
 
+  @Override
+  public ArityBounds getArityBounds() {
+    return new ArityBoundsImpl(1,Integer.MAX_VALUE,1,1);
+  }
+
+  @Override
+  public Map<String, String> selfConfig(Model source, Model target) {
+    return null;
+  }
 }

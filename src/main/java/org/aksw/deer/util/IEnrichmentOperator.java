@@ -12,15 +12,22 @@ import ro.fortsoft.pf4j.ExtensionPoint;
 /**
  * @author sherif
  */
-public interface IOperator extends ExtensionPoint, IPlugin, UnaryOperator<List<Model>> {
+public interface IEnrichmentOperator extends ExtensionPoint, IPlugin, UnaryOperator<List<Model>> {
 
-  interface OperatorArity {
-    int getInArity();
-    int getOutArity();
+  interface ArityBounds {
+    int minIn();
+    int maxIn();
+    int minOut();
+    int maxOut();
   }
 
-  OperatorArity getArity();
+  ArityBounds getArityBounds();
+
+  int getInArity();
+  int getOutArity();
 
   void init(Map<String, String> parameters, int inArity, int outArity);
+
+  Map<String, String> selfConfig(Model source, Model target);
 
 }

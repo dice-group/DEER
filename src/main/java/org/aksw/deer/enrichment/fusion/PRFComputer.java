@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.aksw.deer.operator.fusion;
+package org.aksw.deer.enrichment.fusion;
 
 import java.util.Collection;
 import org.semanticweb.owlapi.model.OWLIndividual;

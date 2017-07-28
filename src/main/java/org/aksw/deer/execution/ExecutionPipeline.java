@@ -2,28 +2,28 @@ package org.aksw.deer.execution;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import org.aksw.deer.io.ModelWriter;
-import org.aksw.deer.util.IEnrichmentFunction;
+import org.aksw.deer.util.IEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 
 /**
  * @author Kevin Dreßler
  */
-public class ExecutionPipeline implements UnaryOperator<Model> {
+public class ExecutionPipeline implements UnaryOperator<List<Model>> {
 
   private Deque<Enrichment> fnStack;
-  private Consumer<Model> callBack;
+  private Consumer<List<Model>> callBack;
   private ModelWriter writeFirst;
 
   private static class Enrichment {
-    private IEnrichmentFunction fn;
+    private IEnrichmentOperator fn;
     private Consumer<Model> writer;
 
-
-    private Enrichment(IEnrichmentFunction fn, Consumer<Model> writer) {
+    private Enrichment(IEnrichmentOperator fn, Consumer<Model> writer) {
       this.fn = fn;
       this.writer = writer;
     }
@@ -32,14 +32,14 @@ public class ExecutionPipeline implements UnaryOperator<Model> {
       return writer;
     }
 
-    public IEnrichmentFunction getFn() {
+    public IEnrichmentOperator getFn() {
       return fn;
     }
 
-    public CompletableFuture<Model> appendToPipeline(CompletableFuture<Model> fn) {
-      CompletableFuture<Model> cfn = fn.thenApplyAsync(this.fn);
+    public CompletableFuture<List<Model>> appendToPipeline(CompletableFuture<List<Model>> fn) {
+      CompletableFuture<List<Model>> cfn = fn.thenApplyAsync(this.fn);
       if (writer != null) {
-        cfn.thenAcceptAsync(writer);
+        cfn.thenApplyAsync((list->list.get(0))).thenAcceptAsync(writer);
       }
       return cfn;
     }
@@ -55,11 +55,11 @@ public class ExecutionPipeline implements UnaryOperator<Model> {
     this.callBack = null;
   }
 
-  public ExecutionPipeline chain(IEnrichmentFunction fn) {
+  public ExecutionPipeline chain(IEnrichmentOperator fn) {
     return chain(fn, null);
   }
 
-  public ExecutionPipeline chain(IEnrichmentFunction fn, Consumer<Model> writer) {
+  public ExecutionPipeline chain(IEnrichmentOperator fn, Consumer<Model> writer) {
     this.fnStack.addLast(new Enrichment(fn, writer));
     return this;
   }
@@ -69,17 +69,17 @@ public class ExecutionPipeline implements UnaryOperator<Model> {
   }
 
   @Override
-  public Model apply(Model model) {
-    CompletableFuture<Model> trigger = new CompletableFuture<>();
-    CompletableFuture<Model> cfn = buildComposedFunction(trigger);
+  public List<Model> apply(List<Model> model) {
+    CompletableFuture<List<Model>> trigger = new CompletableFuture<>();
+    CompletableFuture<List<Model>> cfn = buildComposedFunction(trigger);
     trigger.complete(model);
     return cfn.join();
   }
 
-  private CompletableFuture<Model> buildComposedFunction(CompletableFuture<Model> trigger) {
-    CompletableFuture<Model> cfn = trigger.thenApplyAsync((m)->m);
+  private CompletableFuture<List<Model>> buildComposedFunction(CompletableFuture<List<Model>> trigger) {
+    CompletableFuture<List<Model>> cfn = trigger.thenApplyAsync((m)->m);
     if (writeFirst != null) {
-      cfn.thenAcceptAsync(writeFirst);
+      cfn.thenApplyAsync((list->list.get(0))).thenAcceptAsync(writeFirst);
     }
     for (Enrichment enrichment : fnStack) {
       cfn = enrichment.appendToPipeline(cfn);
@@ -90,7 +90,7 @@ public class ExecutionPipeline implements UnaryOperator<Model> {
     return cfn;
   }
 
-  public void setCallback(Consumer<Model> consumer) {
+  public void setCallback(Consumer<List<Model>> consumer) {
     this.callBack = consumer;
   }
 

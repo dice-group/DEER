@@ -14,10 +14,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
-import org.aksw.deer.util.IEnrichmentFunction;
-import org.aksw.deer.util.IOperator;
+import org.aksw.deer.util.IEnrichmentOperator;
 import org.aksw.deer.util.Parameters;
 import org.aksw.deer.util.PluginFactory;
 import org.aksw.deer.vocabulary.EXEC;
@@ -37,8 +37,7 @@ public class ExecutionModelGenerator {
   private ModelReader modelReader;
   private List<ExecutionPipeline> pipes;
   private List<Resource> hubs;
-  private PluginFactory<IOperator> operatorPluginFactory;
-  private PluginFactory<IEnrichmentFunction> enrichmentFunctionPluginFactory;
+  private PluginFactory<AEnrichmentOperator> pluginFactory;
 
   public ExecutionModelGenerator(String modelUrl, RunContext context) throws IOException {
     this(context);
@@ -52,8 +51,7 @@ public class ExecutionModelGenerator {
 
   private ExecutionModelGenerator(RunContext context) throws IOException {
     this.modelReader = new ModelReader(context.getSubDir());
-    this.operatorPluginFactory = new PluginFactory<>(IOperator.class);
-    this.enrichmentFunctionPluginFactory = new PluginFactory<>(IEnrichmentFunction.class);
+    this.pluginFactory = new PluginFactory<>(AEnrichmentOperator.class);
     this.pipes = new ArrayList<>();
     this.hubs = new ArrayList<>();
   }
@@ -73,7 +71,7 @@ public class ExecutionModelGenerator {
       .addVar("?id").addVar("?ds")
       .addWhere("?ds", EXEC.subGraphId, "?id");
     for (Resource operatorHub : hubs) {
-      IOperator operator = getOperator(operatorHub);
+      IEnrichmentOperator operator = getOperator(operatorHub);
       ExecutionHub hub = new ExecutionHub(operator);
       Query inQuery = sb.clone().addWhere(operatorHub, SPECS.hasInput, "?ds").build();
       AtomicInteger inCount = new AtomicInteger();
@@ -162,16 +160,18 @@ public class ExecutionModelGenerator {
         (qs) -> {
           Resource ds = qs.getResource("?o");
           Resource node = qs.getResource("?s");
-          boolean isOperator = node.hasProperty(RDF.type, SPECS.Operator);
-          if (isOperator) {
+          int inCount = model.listObjectsOfProperty(node, SPECS.hasInput).toSet().size();
+          int outCount = model.listObjectsOfProperty(node, SPECS.hasOutput).toSet().size();
+          boolean isHub = inCount > 1 || outCount > 1;
+          if (isHub) {
             // create new pipeline
             ds.addLiteral(EXEC.subGraphId, pipes.size());
             pipes.add(new ExecutionPipeline(getWriter(ds)));
             hubs.add(node);
           } else {
             // add enrichment function to pipe
-            IEnrichmentFunction fn = getEnrichmentFunction(node);
-            fn.init(new Parameters(node).get());
+            IEnrichmentOperator fn = getEnrichmentFunction(node);
+            fn.init(new Parameters(node).get(), 1, 1);
             pipes.get(subGraphId).chain(fn, getWriter(ds));
             ds.addLiteral(EXEC.subGraphId, subGraphId);
           }
@@ -215,14 +215,14 @@ public class ExecutionModelGenerator {
   /**
    * @return Implementation of IModule defined by the given resource's rdf:type
    */
-  private IEnrichmentFunction getEnrichmentFunction(Resource enrichmentFunctionNode) {
+  private IEnrichmentOperator getEnrichmentFunction(Resource enrichmentFunctionNode) {
     NodeIterator typeItr = model.listObjectsOfProperty(enrichmentFunctionNode, RDF.type);
     while (typeItr.hasNext()) {
       RDFNode type = typeItr.next();
       if (type.equals(SPECS.Module)) {
         continue;
       }
-      return enrichmentFunctionPluginFactory.create(type.toString());
+      return pluginFactory.create(type.toString());
     }
     throw new RuntimeException("Implementation type of enrichment " + enrichmentFunctionNode + " is not specified!");
   }
@@ -230,25 +230,30 @@ public class ExecutionModelGenerator {
   /**
    * @return Implementation of IModule defined by the given resource's rdf:type
    */
-  private IOperator getOperator(Resource operator) {
+  private IEnrichmentOperator getOperator(Resource operator) {
     NodeIterator typeItr = model.listObjectsOfProperty(operator, RDF.type);
     while (typeItr.hasNext()) {
       RDFNode type = typeItr.next();
       if (type.equals(SPECS.Operator)) {
         continue;
       }
-      return operatorPluginFactory.create(type.toString());
+      return pluginFactory.create(type.toString());
     }
     throw new RuntimeException("Implementation type of enrichment " + operator + " is not specified!");
   }
 
+  /**
+   * Return instance of ModelWriter for a dataset, configured by relevant RDF properties
+   * @param datasetUri URI of the Resource describing the dataset and its configuration
+   * @return Configured Instance of ModelWriter
+   */
   private ModelWriter getWriter(Resource datasetUri) {
     ModelWriter writer = new ModelWriter();
     Statement fileName = datasetUri.getProperty(SPECS.outputFile);
     if (fileName == null) {
       return null;
     }
-    Statement fileFormat = datasetUri.getProperty(SPECS.outputFile);
+    Statement fileFormat = datasetUri.getProperty(SPECS.outputFormat);
     writer.init(fileFormat == null ? "TTL" : fileFormat.getString(), fileName.getString());
     return writer;
   }

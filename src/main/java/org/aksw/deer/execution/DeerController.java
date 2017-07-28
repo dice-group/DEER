@@ -21,8 +21,6 @@ public class DeerController {
       logger.info(DeerController.HELP_MESSAGE);
     } else if (args[0].equals("-s") || args[0].toLowerCase().equals("--server")) {
       Server.main(args);
-    } else if (args[0].equals("-l") || args[0].toLowerCase().equals("--list")) {
-      org.aksw.deer.io.json.JSONConfigWriter.write();
     } else {
       // rdf config mode
       long startTime = System.currentTimeMillis();

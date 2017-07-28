@@ -1,5 +1,6 @@
 package org.aksw.deer.enrichment.dereferencing;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,9 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.vocabulary.SPECS;
-import org.aksw.deer.util.ParameterType;
-import org.aksw.deer.enrichment.AEnrichmentFunction;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -42,13 +42,13 @@ import ro.fortsoft.pf4j.Extension;
  *         such information in the dereferenced target
  */
 @Extension
-public class DereferencingEnrichmentFunction extends AEnrichmentFunction {
+public class DereferencingEnrichmentOperator extends AEnrichmentOperator {
 
   public static final String INPUT_PROPERTY = "inputproperty";
   public static final String OUTPUT_PROPERTY = "outputproperty";
   public static final String USE_BLANK_NODES = "useBlankNodes";
   public static final String RESOURCE_PREFIX = "resourceprefix";
-  private static final Logger logger = Logger.getLogger(DereferencingEnrichmentFunction.class);
+  private static final Logger logger = Logger.getLogger(DereferencingEnrichmentOperator.class);
   private static final Property DEFAULT_OUTPUT_PROPERTY = ResourceFactory
     .createProperty("http://geoknow.org/ontology/relatedTo");
   private static final String DEFAULT_RESOURCE_PREFIX = "http://dbpedia.org/resource";
@@ -71,7 +71,7 @@ public class DereferencingEnrichmentFunction extends AEnrichmentFunction {
   private boolean useCache = false;
   private boolean useBlankNodes = false;
 
-  public DereferencingEnrichmentFunction() {
+  public DereferencingEnrichmentOperator() {
     super();
   }
 
@@ -116,6 +116,11 @@ public class DereferencingEnrichmentFunction extends AEnrichmentFunction {
     parameters.add(USE_BLANK_NODES);
     //		parameters.add("useCache");
     return parameters;
+  }
+
+  @Override
+  public ArityBounds getArityBounds() {
+    return new ArityBoundsImpl(1,1,1,1);
   }
 
   /**
@@ -204,11 +209,8 @@ public class DereferencingEnrichmentFunction extends AEnrichmentFunction {
    * putAdditionalInfoUsingBlankNode to make the enrichment
    */
 
-	/* (non-Javadoc)
-   * This method starts processing to retrieve information from the interesting predicates
-	 */
-  protected Model process() {
-    logger.info("--------------- org.aksw.deer.resources.dereferencing Module ---------------");
+  protected List<Model> process() {;
+    Model model = models.get(0);
     if (model != null) {
       readParameters(parameters);
       localModel = localModel.union(model);
@@ -219,7 +221,7 @@ public class DereferencingEnrichmentFunction extends AEnrichmentFunction {
         addAdditionalProperties();
       }
     }
-    return localModel;
+    return Lists.newArrayList(localModel);
   }
 
   /**
@@ -312,7 +314,6 @@ public class DereferencingEnrichmentFunction extends AEnrichmentFunction {
     }
     return resourceFocusedInfo;
   }
-
 
   /**
    * @param predicates: list of targeted predicates to enrich the model It calls
@@ -433,7 +434,6 @@ public class DereferencingEnrichmentFunction extends AEnrichmentFunction {
       }
     }
   }
-
 
   /**
    * @return list of triples having URI-typed objects it queries  the model for all its URI-typed
@@ -562,216 +562,14 @@ public class DereferencingEnrichmentFunction extends AEnrichmentFunction {
     return objectsURIs;
   }
 
-
   private void setPrefixes() {
     String gn = "http://www.geonames.org/ontology#";
     localModel.setNsPrefix("gn", gn);
   }
 
   @Override
-  public List<ParameterType> getParameterWithTypes() {
-    List<ParameterType> parameters = new ArrayList<ParameterType>();
-    parameters
-      .add(new ParameterType(ParameterType.STRING, INPUT_PROPERTY, INPUT_PROPERTY_DESC, true));
-    parameters
-      .add(new ParameterType(ParameterType.STRING, OUTPUT_PROPERTY, OUTPUT_PROPERTY_DESC, false));
-    parameters
-      .add(new ParameterType(ParameterType.BOOLEAN, USE_BLANK_NODES, USE_BLANK_NODES_DESC, false));
-    return parameters;
-  }
-
-  @Override
   public Resource getType() {
     return SPECS.DereferencingModule;
   }
-
-  //---------------------------------- OLD CODE -----------------------------------------------------------------------
-
-  //	private static Map<String,String> list2map (List<String> Predicates)
-  //	{
-  //		Map<String,String> predicatesMap= new HashMap<String, String>();
-  //		int i=1;
-  //		for (String predicateLine : Predicates)
-  //		{
-  //			predicatesMap.put("predicate"+i++, predicateLine);
-  //		}
-  //		return predicatesMap;
-  //	}
-  //	public static void main( String[] args )
-  //	{
-  //		String datasetSource="";
-  //		String datasetOutput="";
-  //		Map<String,String> predicates=null;
-  //		logger.info("Start org.aksw.deer.resources.dereferencing enrichment.");
-  //		logger.info("Reading parameters......");
-  //		if(args.length > 0)
-  //		{
-  //			for(int i=0;i<args.length;i+=2)
-  //			{
-  //				if(args[i].equals("-d") || args[i].equals("--data"))
-  //					datasetSource = args[i+1];
-  //				if(args[i].equals("-o") || args[i].equals("--output"))
-  //					datasetOutput = args[i+1];
-  //				if(args[i].equals("-p") || args[i].equals("--predicate"))
-  //					predicates= getConfigurations(args[i+1]);
-  //			}
-  //		}
-  //		else
-  //			logger.error("Missed parameter");
-  //		try
-  //		{
-  //			logger.info("Loading resource information into model");
-  //			//First parameter: model is loaded with dataset from specified file/resource
-  //			Model model=org.aksw.deer.io.Reader.readModel(datasetSource);
-  //			//Create org.aksw.deer.resources.dereferencing object to start the process
-  //			DereferencingModule URID = new DereferencingModule();
-  //			// run the org.aksw.deer.resources.dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
-  //			Model resultedModel = URID.process(model, predicates);
-  //			logger.info("Saving enriched model into file");
-  //			org.aksw.deer.io.Writer.writeModel(resultedModel, "TTL", datasetOutput);
-  //
-  //		} catch (Exception e) {
-  //			e.printStackTrace();
-  //		}
-  //		logger.info("Finished");
-  //	}
-
-  //	private static void querySparqlService(String service,String query)
-  //	{
-  //		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
-  //		ResultSet results = qe.execSelect();
-  //	}
-
-  //	//This method get the org.aksw.deer.resources.dereferencing parameters from the given file by the user
-  //	private static Map<String,String> getConfigurations(String file)
-  //	{
-  //		Map<String,String> configurationInfo = new HashMap<String, String>();
-  //		BufferedReader br=null;
-  //		try {
-  //			br = new BufferedReader(new FileReader(file));
-  //			String line = br.readLine();
-  //
-  //			while (line != null)
-  //			{
-  //				String[] predicateLine= line.split(",");
-  //				configurationInfo.put(predicateLine[0],predicateLine[1]);
-  //				line = br.readLine();
-  //			}
-  //		}
-  //		catch (FileNotFoundException e)
-  //		{
-  //			e.printStackTrace();
-  //		}
-  //		catch (IOException e)
-  //		{
-  //			e.printStackTrace();
-  //		} finally {
-  //			try {
-  //				br.close();
-  //			} catch (IOException e) {
-  //				e.printStackTrace();
-  //			}
-  //		}
-  //		return configurationInfo;
-  //	}
-
-  //	/**
-  //	 * @param predicates: list of targeted predicates to enrich the model
-  //	 * It calls getTriplesWithObjectsAreURI() method retrieving list of triples in model having URI-typed objects.
-  //	 * For each object of them, it is checked if it is in dbpedia (can be extended later) then calls getURIInfo()
-  //	 * method to dereference the URI-typed object in hashmap and retrieve the targeted predicates values "if exist",
-  //	 * it iterates over the hashmap and add them to the resources in the model.
-  //	 */
-  //	private static void putAdditionalInfo(Map<String,String> predicates)
-  //	{
-  //		//list will contain triples having URIs as their Objects
-  //		List<Triple> triplesURIsObjects=null;
-  //
-  //		// retrieve list of all triples having URIs as Objects
-  //		triplesURIsObjects= getTriplesWithObjectsAreURI();
-  //		if(triplesURIsObjects.size()>0)
-  //		{
-  //			Map<String, RDFNode> resourceInterestingInfoExtension= new HashMap<String, RDFNode>();
-  //			Resource object=null;
-  //			//iterate over each triple to dereference each URI object and add its information to its resource subject
-  //			for (Triple triple : triplesURIsObjects)
-  //			{
-  //				// for a URI object get the required information about it (e.g. Leipzig uri is dereferenced as rdf/xml and its information are extracted)
-  //				if(objectsDerefModelAdded.containsKey(triple.Object))
-  //				{
-  //					//resourceInterestingInfoExtension=objectsDerefInfo.get(triple.Object);
-  //					object=objectsDerefModelAdded.get(triple.Object);
-  //					Resource resource= localModel.getResource(triple.subject);
-  //					resource.addProperty(addedProperty, object);
-  //				}
-  //				else
-  //				{
-  //					//create new triple with empty node as its subject where this subject will be an object of the targeted resource to be extended
-  //					object=localModel.createResource();//here
-  //					resourceInterestingInfoExtension= URIDereferencing.getURIInfo(triple.Object,predicates);
-  //					for (String key : resourceInterestingInfoExtension.keySet())
-  //					{
-  //						//add the new properties to the new triple
-  //						object.addProperty(ResourceFactory.createProperty(key), resourceInterestingInfoExtension.get(key));
-  //					}
-  //					objectsDerefModelAdded.put(triple.Object, object);
-  //					//add the empty node as an object to the enriched subject
-  //					Resource resource= localModel.getResource(triple.subject);
-  //					resource.addProperty(addedProperty, object);
-  //					resourceInterestingInfoExtension= null;
-  //				}
-  //				//create new triple with empty node as its subject where this subject will be an object of the targeted resource to be extended
-  //				//Resource object=localModel.createResource();
-  //				//iterate over the retrieved information extension required predicate:object
-  //				for (String key : resourceInterestingInfoExtension.keySet())
-  //					{
-  //						//add the new properties to the new triple
-  //						object.addProperty(ResourceFactory.createProperty(key), resourceInterestingInfoExtension.get(key));
-  //					}
-  //					//add the empty node as an object to the enriched subject
-  //					Resource resource= localModel.getResource(triple.subject);
-  //					resource.addProperty(addedProperty, object);
-  //					resourceInterestingInfoExtension= null;
-  //			}
-  //		}
-  //	}
-
-	/*private static Map<String, String> getURIInfo2(String uri,Map<String,String> predicates)
-	{
-		//to store each predicate and its value
-		Map<String, String> resourceFocusedInfo = new HashMap<String, String>();
-		//define local model to have the data of the uri and extract focused info through built sparql query
-
-	    String value = null;
-	    try 
-	    {
-		   URLConnection conn = new URL(uri).openConnection();
-		   conn.setRequestProperty("Accept", "application/rdf+xml");
-		   Model model = ModelFactory.createDefaultModel();
-		   InputStream in = conn.getInputStream();
-		   model.read(in, null);
-		   for(String predicate: predicates.values()) 
-		   {  
-			   QueryExecution qe = QueryExecutionFactory.create(query, model);
-			   ResultSet results = qe.execSelect();
-			   for(Statement st : model.listStatements(model.getResource(uri),ResourceFactory.createProperty(predicate) , (RDFNode)null).toList())
-			   {
-				   value=st.getObject().asLiteral().toString();
-				   resourceFocusedInfo.put(predicate, value);
-			   }
-		   }
-	    } catch (MalformedURLException e) 
-	    {
-	    	e.printStackTrace();
-	    } catch (IOException e) 
-	    {
-	    	e.printStackTrace();
-	    }catch (Exception e) 
-	    {
-	    	e.printStackTrace();
-	    }
-	     return resourceFocusedInfo;
-	}
-	 */
 
 }

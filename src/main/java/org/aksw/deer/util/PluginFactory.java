@@ -36,11 +36,11 @@ public class PluginFactory <T extends IPlugin> {
 
   public T create(String id) {
     if (!classMap.containsKey(id)) {
-      throw new RuntimeException(clazz.getCanonicalName() + " implementation for AEF declaration \"" + id + "\" could not be found.");
+      throw new RuntimeException(clazz.getCanonicalName() + " implementation for declaration \"" + id + "\" could not be found.");
     } else {
       Object o = factory.create(classMap.get(id));
       if (!clazz.isInstance(o)) {
-        throw new RuntimeException("Plugin \"" + id + "\" required as " + clazz.getCanonicalName() + " has type " + o.getClass().getCanonicalName());
+        throw new RuntimeException("Plugin \"" + id + "\" required as " + clazz.getCanonicalName() + ", but has type " + o.getClass().getCanonicalName());
       } else {
         return (T) o;
       }
@@ -65,9 +65,9 @@ public class PluginFactory <T extends IPlugin> {
 
   public String getDescription(String id) {
     if (!classMap.containsKey(id)) {
-      throw new RuntimeException("IEnrichmentFunction implementation for AEF declaration \"" + id + "\" could not be found.");
+      throw new RuntimeException("Implementation for declaration \"" + id + "\" could not be found.");
     } else {
-      return ((IEnrichmentFunction) factory.create(classMap.get(id))).getDescription();
+      return ((IEnrichmentOperator) factory.create(classMap.get(id))).getDescription();
     }
   }
 //  public static final String DEREFERENCING_MODULE_DESCRIPTION =

@@ -8,8 +8,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.aksw.deer.vocabulary.SPECS;
-import org.aksw.deer.util.IEnrichmentFunction;
-import org.aksw.deer.util.IOperator;
+import org.aksw.deer.util.IEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -22,8 +21,8 @@ public class RefinementNode implements Comparable<RefinementNode> {
 
   private static final Logger logger = Logger.getLogger(RefinementNode.class.getName());
 
-  public IEnrichmentFunction module = null;
-  public IOperator operator = null;
+  public IEnrichmentOperator module = null;
+  public IEnrichmentOperator operator = null;
   public double fitness = -Double.MAX_VALUE;
   public List<Model> inputModels = new ArrayList<Model>();
   public List<Model> outputModels = new ArrayList<Model>();
@@ -36,7 +35,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(IEnrichmentFunction module, IOperator operator, double fitness,
+  private RefinementNode(IEnrichmentOperator module, IEnrichmentOperator operator, double fitness,
     List<Model> inputModels,
     List<Model> outputModels, Model configModel, List<Resource> inputDatasets,
     List<Resource> outputDatasets) {
@@ -81,7 +80,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
    *
    * @author sherif
    */
-  public RefinementNode(IOperator operator, double fitness, List<Model> inputModels,
+  public RefinementNode(IEnrichmentOperator operator, double fitness, List<Model> inputModels,
     List<Model> outputModels,
     Model configModel, List<Resource> inputDatasets, List<Resource> outputDatasets) {
     this(null, operator, fitness, inputModels, outputModels, configModel, inputDatasets,
@@ -92,7 +91,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(IEnrichmentFunction module, IOperator operator, double fitness, Model inputModel,
+  private RefinementNode(IEnrichmentOperator module, IEnrichmentOperator operator, double fitness, Model inputModel,
     Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
     super();
     if (module != null && operator != null) {
@@ -119,7 +118,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
    *
    * @author sherif
    */
-  public RefinementNode(IEnrichmentFunction module, double fitness, Model inputModel,
+  public RefinementNode(IEnrichmentOperator module, double fitness, Model inputModel,
     Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
     this(module, null, fitness, inputModel, outputModel, configModel, inputDataset, outputDataset);
   }

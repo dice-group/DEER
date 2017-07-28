@@ -1,6 +1,7 @@
 package org.aksw.deer.enrichment.nlp;
 
 
+import com.google.common.collect.Lists;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileWriter;
@@ -17,12 +18,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.vocabulary.DBpedia;
 import org.aksw.deer.vocabulary.SCMSANN;
 import org.aksw.deer.vocabulary.SPECS;
 import org.aksw.deer.io.ModelReader;
-import org.aksw.deer.util.ParameterType;
-import org.aksw.deer.enrichment.AEnrichmentFunction;
 import org.aksw.fox.binding.java.FoxApi;
 import org.aksw.fox.binding.java.FoxParameter.OUTPUT;
 import org.aksw.fox.binding.java.FoxResponse;
@@ -60,7 +60,7 @@ import ro.fortsoft.pf4j.Extension;
  * @author sherif
  */
 @Extension
-public class NLPEnrichmentFunction extends AEnrichmentFunction {
+public class NLPEnrichmentOperator extends AEnrichmentOperator {
 
   public static final String ORGANIZATION = "organization";
   public static final String LOCATION = "location";
@@ -103,7 +103,7 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
   public static final String LITERAL_PROPERTY = "literalProperty";
   public static final String FOX_API_URL = "http://139.18.2.164:4444/api";
   public static final String DBPEDIA_END_POINT = "dbpediaendpoint";
-  private static final Logger logger = Logger.getLogger(NLPEnrichmentFunction.class.getName());
+  private static final Logger logger = Logger.getLogger(NLPEnrichmentOperator.class.getName());
   private static String dbpediaEndPoint = "http://dbpedia.org/sparql";
   //@todo: this should be configurable
   private static String FOX_SERVICE_URI = "http://fox:4444/call/ner/entities";
@@ -122,9 +122,11 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
   private Property addedProperty = ResourceFactory
     .createProperty("http://geoknow.org/ontology/relatedTo");
 
-  public NLPEnrichmentFunction() {
+  public NLPEnrichmentOperator() {
     super();
   }
+  private Model model = ModelFactory.createDefaultModel();
+
 
   /**
    * @return the relatedToProperty
@@ -360,7 +362,7 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
    * @return Geo-spatial enriched model
    * @author sherif
    */
-  public Model getEnrichrdTriples() {
+  public Model getEnrichedTriples() {
     Model resultModel = ModelFactory.createDefaultModel();
     StmtIterator stItr = model.listStatements(null, literalProperty, (RDFNode) null);
     logger.info("--------------- Added triples through  NLP ---------------");
@@ -430,14 +432,14 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
   }
 
   public Model enrichModel() {
-    return model.union(getEnrichrdTriples());
+    return model.union(getEnrichedTriples());
   }
 
   /* (non-Javadoc)
    * @see org.aksw.geolift.enrichment.GeoLiftModule#process(org.apache.jena.rdf.model.Model, java.util.Map)
    */
-  protected Model process() {
-    logger.info("--------------- NLP Module ---------------");
+  protected List<Model> process() {
+    model = models.get(0);
     if (parameters.containsKey("input")) {
       inputFile = parameters.get("input");
       model = (new ModelReader()).readModel(inputFile);
@@ -449,7 +451,7 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
       literalProperty = lpr.getTopRankedLiteralProperty();
       if (literalProperty == null) {
         logger.info("No Literal Properties!, return input model.");
-        return model;
+        return Lists.newArrayList(model);
       }
       logger.info("Top ranked Literal Property: " + literalProperty);
     }
@@ -483,7 +485,7 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
       dbpediaEndPoint = parameters.get(DBPEDIA_END_POINT).toLowerCase();
     }
 
-    Model enrichedModel = getEnrichrdTriples();
+    Model enrichedModel = getEnrichedTriples();
     enrichedModel.add(model);
 
     if (parameters.containsKey("output")) {
@@ -496,14 +498,14 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
       }
       enrichedModel.write(outFile, "TURTLE");
     }
-    return enrichedModel;
+    return Lists.newArrayList(enrichedModel);
   }
 
   /* (non-Javadoc)
    * @see org.aksw.geolift.enrichment.GeoLiftModule#getParameters()
    */
   public List<String> getParameters() {
-    List<String> parameters = new ArrayList<String>();
+    List<String> parameters = new ArrayList<>();
     //		parameters.add("input");
     //		parameters.add("output");
     parameters.add(LITERAL_PROPERTY);
@@ -525,7 +527,7 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
    */
   @Override
   public List<String> getNecessaryParameters() {
-    List<String> parameters = new ArrayList<String>();
+    List<String> parameters = new ArrayList<>();
     return parameters;
   }
 
@@ -537,6 +539,11 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
   @Override
   public String getDescription() {
     return null;
+  }
+
+  @Override
+  public ArityBounds getArityBounds() {
+    return new ArityBoundsImpl(1,1,1,1);
   }
 
   /**
@@ -553,22 +560,6 @@ public class NLPEnrichmentFunction extends AEnrichmentFunction {
     Map<String, String> p = new HashMap<String, String>();
     p.put(NER_TYPE, ALL);
     return p;
-  }
-
-  @Override
-  public List<ParameterType> getParameterWithTypes() {
-    List<ParameterType> parameters = new ArrayList<ParameterType>();
-    parameters
-      .add(new ParameterType(ParameterType.STRING, LITERAL_PROPERTY, LITERAL_PROPERTY_DESC, false));
-    parameters.add(new ParameterType(ParameterType.STRING, ADDED_PROPERTY, USE_FOX_LIGHT_VALUES,
-      ADDED_PROPERTY_DESC, false));
-    parameters
-      .add(new ParameterType(ParameterType.STRING, USE_FOX_LIGHT, USE_FOX_LIGHT_DESC, false));
-    parameters
-      .add(new ParameterType(ParameterType.BOOLEAN, ASK_END_POINT, ASK_END_POINT_DESC, false));
-    parameters.add(
-      new ParameterType(ParameterType.STRING, NER_TYPE, NER_TYPE_VALUES, NER_TYPE_DESC, false));
-    return parameters;
   }
 
   @Override

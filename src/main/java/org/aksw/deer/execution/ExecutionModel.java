@@ -1,5 +1,6 @@
 package org.aksw.deer.execution;
 
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import org.apache.jena.rdf.model.Model;
 
@@ -19,6 +20,6 @@ public class ExecutionModel {
   }
 
   public void addStartPipe(ExecutionPipeline pipe, Model model) {
-    trigger.thenApply((ignored)->model).thenApplyAsync(pipe);
+    trigger.thenApply((ignored)-> Collections.singletonList(model)).thenApplyAsync(pipe);
   }
 }

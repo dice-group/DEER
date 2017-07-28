@@ -15,8 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
-import org.aksw.deer.util.IEnrichmentFunction;
-import org.aksw.deer.util.IOperator;
+import org.aksw.deer.util.IEnrichmentOperator;
 import org.aksw.deer.util.PluginFactory;
 import org.aksw.deer.vocabulary.EXEC;
 import org.aksw.deer.vocabulary.SPECS;
@@ -44,8 +43,8 @@ public class OldExecution {
   private RunContext context;
   private ModelReader modelReader;
   private ModelWriter modelWriter;
-  private PluginFactory<IOperator> operatorPluginFactory;
-  private PluginFactory<IEnrichmentFunction> enrichmentFunctionPluginFactory;
+  private PluginFactory<IEnrichmentOperator> operatorPluginFactory;
+  private PluginFactory<IEnrichmentOperator> enrichmentFunctionPluginFactory;
   private List<ExecutionPipeline> pipes;
 
 
@@ -62,8 +61,8 @@ public class OldExecution {
   private OldExecution(RunContext context) throws IOException {
     this.modelReader = new ModelReader(context.getSubDir());
     this.modelWriter = new ModelWriter(context.getSubDir());
-    this.operatorPluginFactory = new PluginFactory<>(IOperator.class);
-    this.enrichmentFunctionPluginFactory = new PluginFactory<>(IEnrichmentFunction.class);
+    this.operatorPluginFactory = new PluginFactory<>(IEnrichmentOperator.class);
+    this.enrichmentFunctionPluginFactory = new PluginFactory<>(IEnrichmentOperator.class);
     this.pipes = new ArrayList<>();
   }
   //
@@ -161,7 +160,7 @@ public class OldExecution {
   /**
    * @return Implementation of IModule defined by the given resource's rdf:type
    */
-  private IEnrichmentFunction getModule (Resource module) {
+  private IEnrichmentOperator getModule (Resource module) {
     NodeIterator typeItr = model.listObjectsOfProperty(module, RDF.type);
     while (typeItr.hasNext()) {
       RDFNode type = typeItr.next();
@@ -177,7 +176,7 @@ public class OldExecution {
   /**
    * @return Implementation of IModule defined by the given resource's rdf:type
    */
-  private IOperator getOperator(Resource operator) {
+  private IEnrichmentOperator getOperator(Resource operator) {
     NodeIterator typeItr = model.listObjectsOfProperty(operator, RDF.type);
     while (typeItr.hasNext()) {
       RDFNode type = typeItr.next();

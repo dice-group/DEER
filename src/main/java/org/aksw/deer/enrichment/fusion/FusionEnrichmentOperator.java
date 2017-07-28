@@ -1,4 +1,4 @@
-package org.aksw.deer.operator.fusion;
+package org.aksw.deer.enrichment.fusion;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -17,8 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.aksw.deer.io.ModelReader;
-import org.aksw.deer.operator.AOperator;
-import org.aksw.deer.util.IOperator;
+import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.vocabulary.SPECS;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -56,10 +55,10 @@ import uk.ac.manchester.cs.owl.owlapi.OWLNamedIndividualImpl;
  * @author sherif
  */
 @Extension
-public class FusionOperator extends AOperator {
+public class FusionEnrichmentOperator extends AEnrichmentOperator {
 
   public static final String FUNCTIONAL_PROPERTY = "functionalproperty";
-  private static final Logger logger = Logger.getLogger(FusionOperator.class.getName());
+  private static final Logger logger = Logger.getLogger(FusionEnrichmentOperator.class.getName());
   private static final String DBPEDIA = "http://dbpedia.org/sparql";
   private static final String DBPEDIA_SAKE = "http://sake.informatik.uni-leipzig.de:8890/sparql";
   private static final String DBPEDIA_ONTOLOGY_201504 = "src/main/resources/org.aksw.deer.resources.merge/dbpedia_201504.owl";
@@ -358,7 +357,7 @@ public class FusionOperator extends AOperator {
   }
 
   public static void test() {
-    URL path = FusionOperator.class.getClassLoader().getResource("org.aksw.deer.resources.merge/");
+    URL path = FusionEnrichmentOperator.class.getClassLoader().getResource("org.aksw.deer.resources.merge/");
     List<Model> testMdls = new ArrayList<>();
     for (int i = 1; i <= 3; i++) {
       testMdls.add((new ModelReader()).readModel(path + "s" + i + ".nt"));
@@ -367,7 +366,7 @@ public class FusionOperator extends AOperator {
     parameters.put(FUNCTIONAL_PROPERTY, "http://dbpedia.org/ontology/birthDate");
     parameters.put(POSITIVE_EXAMPLE, path + "pos.nt");
     parameters.put(KB_NAMES, "s1 s2 s3");
-    FusionOperator f = new FusionOperator();
+    FusionEnrichmentOperator f = new FusionEnrichmentOperator();
 //    f.process(testMdls, parameters);
   }
 
@@ -485,5 +484,15 @@ public class FusionOperator extends AOperator {
   @Override
   public Resource getType() {
     return SPECS.FusionOperator;
+  }
+
+  @Override
+  public ArityBounds getArityBounds() {
+    return new ArityBoundsImpl(1, Integer.MAX_VALUE, 1, 1);
+  }
+
+  @Override
+  public Map<String, String> selfConfig(Model source, Model target) {
+    return null;
   }
 }

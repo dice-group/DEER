@@ -5,8 +5,7 @@ package org.aksw.deer.learning;
 
 
 import org.aksw.deer.vocabulary.SPECS;
-import org.aksw.deer.util.IEnrichmentFunction;
-import org.aksw.deer.util.IOperator;
+import org.aksw.deer.util.IEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -17,7 +16,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
  */
 public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
 
-  public IEnrichmentFunction module = null;
+  public IEnrichmentOperator module = null;
   public double fitness = -Double.MAX_VALUE;
   public Model inputModel = ModelFactory.createDefaultModel();
   public Model outputModel = ModelFactory.createDefaultModel();
@@ -42,7 +41,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
   /**
    * @author sherif
    */
-  public RefinementNodeOld(IEnrichmentFunction module, double fitness, Model inputModel, Model outputModel,
+  public RefinementNodeOld(IEnrichmentOperator module, double fitness, Model inputModel, Model outputModel,
     Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     this.module = module;
@@ -61,7 +60,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
   }
 
 
-  public RefinementNodeOld(IOperator operator, Model inputModel, Model outputModel,
+  public RefinementNodeOld(IEnrichmentOperator operator, Model inputModel, Model outputModel,
     Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     if (fitness == -2) {

@@ -1,11 +1,11 @@
 package org.aksw.deer.enrichment.linking;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.vocabulary.SPECS;
-import org.aksw.deer.util.ParameterType;
-import org.aksw.deer.enrichment.AEnrichmentFunction;
 import org.aksw.limes.core.controller.Controller;
 import org.aksw.limes.core.io.config.Configuration;
 import org.aksw.limes.core.io.config.reader.xml.XMLConfigurationReader;
@@ -22,9 +22,9 @@ import ro.fortsoft.pf4j.Extension;
  * @author mofeed
  */
 @Extension
-public class LinkingEnrichmentFunction extends AEnrichmentFunction {
+public class LinkingEnrichmentOperator extends AEnrichmentOperator {
 
-  private static final Logger logger = Logger.getLogger(LinkingEnrichmentFunction.class.getName());
+  private static final Logger logger = Logger.getLogger(LinkingEnrichmentOperator.class.getName());
 
   private static final String LINKS_PART = "linkspart";
   private static final String SPEC_FILE = "specfile";
@@ -36,7 +36,7 @@ public class LinkingEnrichmentFunction extends AEnrichmentFunction {
   private String linksFilePath;
   private String linksPart;
 
-  public LinkingEnrichmentFunction() {
+  public LinkingEnrichmentOperator() {
     super();
   }
 
@@ -44,11 +44,9 @@ public class LinkingEnrichmentFunction extends AEnrichmentFunction {
    * @return model enriched with links generated from a org.aksw.deer.resources.linking tool
    */
 
-  protected Model process() {
-    logger.info("--------------- Linking Module ---------------");
-
+  protected List<Model> process() {
     //@todo: Where does data come from?
-
+    //@todo: implement ability to link internal datasets
     for (String key : parameters.keySet()) {
       if (key.equalsIgnoreCase(SPEC_FILE)) {
         specFilePath = parameters.get(SPEC_FILE);
@@ -63,10 +61,10 @@ public class LinkingEnrichmentFunction extends AEnrichmentFunction {
       }
     }
 
-    model = setPrefixes(model);
+    Model model = setPrefixes(models.get(0));
     Configuration cfg = new XMLConfigurationReader(specFilePath).read();
     model = addLinksToModel(model, cfg, linksPart);
-    return model;
+    return Lists.newArrayList(model);
   }
 
   public List<String> getParameters() {
@@ -178,23 +176,19 @@ public class LinkingEnrichmentFunction extends AEnrichmentFunction {
 //		System.out.println("Finished");
 //	}
 
+  @Override
+  public ArityBounds getArityBounds() {
+    return new ArityBoundsImpl(1, 2, 1, 1);
+  }
+
   /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#selfConfig(org.apache.jena.rdf.model.Model, org.apache.jena.rdf.model.Model)
-   */
+     * @see org.aksw.geolift.enrichment.GeoLiftModule#selfConfig(org.apache.jena.rdf.model.Model, org.apache.jena.rdf.model.Model)
+     */
   @Override
   public Map<String, String> selfConfig(Model source, Model target) {
     return null;
   }
 
-
-  @Override
-  public List<ParameterType> getParameterWithTypes() {
-    List<ParameterType> parameters = new ArrayList<>();
-    parameters.add(new ParameterType(ParameterType.STRING, SPEC_FILE, SPEC_FILE_DESC, true));
-    parameters.add(new ParameterType(ParameterType.STRING, LINKS_PART, LINKS_PART_DESC, true));
-
-    return parameters;
-  }
 
   @Override
   public Resource getType() {

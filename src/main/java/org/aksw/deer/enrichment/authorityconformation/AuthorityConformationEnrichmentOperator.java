@@ -1,14 +1,15 @@
 package org.aksw.deer.enrichment.authorityconformation;
 
 import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.vocabulary.SPECS;
-import org.aksw.deer.util.ParameterType;
-import org.aksw.deer.enrichment.AEnrichmentFunction;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -25,7 +26,7 @@ import ro.fortsoft.pf4j.Extension;
  * @author sherif
  */
 @Extension
-public class AuthorityConformationEnrichmentFunction extends AEnrichmentFunction {
+public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator {
 
   // parameters keys
   public static final String SOURCE_SUBJET_AUTHORITY = "sourceSubjectAuthority";
@@ -33,13 +34,18 @@ public class AuthorityConformationEnrichmentFunction extends AEnrichmentFunction
   public static final String TARGET_SUBJET_AUTHORITY = "targetSubjectAuthority";
   public static final String TARGET_SUBJECT_AUTHORITY_DESC = "Target subject authority to replace the source subject authority.";
   private static final Logger logger = Logger
-    .getLogger(AuthorityConformationEnrichmentFunction.class.getName());
+    .getLogger(AuthorityConformationEnrichmentOperator.class.getName());
   // parameters list
   private String sourceSubjectAuthority = "";
   private String targetSubjectAuthority = "";
 
-  public AuthorityConformationEnrichmentFunction() {
+  public AuthorityConformationEnrichmentOperator() {
     super();
+  }
+
+  @Override
+  public ArityBounds getArityBounds() {
+    return new ArityBoundsImpl(1,1,1,1);
   }
 
   /**
@@ -92,7 +98,8 @@ public class AuthorityConformationEnrichmentFunction extends AEnrichmentFunction
   }
 
   @Override
-  protected Model process() {
+  protected List<Model> process() {
+    Model model = models.get(0);
     logger.info("--------------- Authority Conformation Module ---------------");
 
     //Read parameters
@@ -108,7 +115,7 @@ public class AuthorityConformationEnrichmentFunction extends AEnrichmentFunction
       }
     }
     if (!parameterFound) {
-      return model;
+      return Lists.newArrayList(model);
     }
 
     //Conform Model
@@ -127,7 +134,7 @@ public class AuthorityConformationEnrichmentFunction extends AEnrichmentFunction
       conformModel.add(s, p, o);
     }
     model = conformModel;
-    return model;
+    return Collections.singletonList(model);
   }
 
 
@@ -161,16 +168,6 @@ public class AuthorityConformationEnrichmentFunction extends AEnrichmentFunction
   @Override
   public String getDescription() {
     return null;
-  }
-
-
-  public List<ParameterType> getParameterWithTypes() {
-    List<ParameterType> parameters = new ArrayList<ParameterType>();
-    parameters.add(new ParameterType(ParameterType.STRING, SOURCE_SUBJET_AUTHORITY,
-      SOURCE_SUBJECT_AUTHORITY_DESC, true));
-    parameters.add(new ParameterType(ParameterType.STRING, TARGET_SUBJET_AUTHORITY,
-      TARGET_SUBJECT_AUTHORITY_DESC, true));
-    return parameters;
   }
 
   @Override

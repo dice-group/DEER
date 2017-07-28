@@ -2,8 +2,7 @@ package org.aksw.deer.learning;
 
 import java.util.List;
 import java.util.Map;
-import org.aksw.deer.util.IEnrichmentFunction;
-import org.aksw.deer.util.IOperator;
+import org.aksw.deer.util.IEnrichmentOperator;
 import org.aksw.deer.vocabulary.SPECS;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -29,7 +28,7 @@ public class ConfigBuilder {
    * configuration model  is independent of the input configuration model
    * @author sherif
    */
-  public Model addModule(IEnrichmentFunction module, Map<String, String> parameters, final Model inputConfig,
+  public Model addModule(IEnrichmentOperator module, Map<String, String> parameters, final Model inputConfig,
     Resource inputDataset, Resource outputDataset) {
     Model config = ModelFactory.createDefaultModel();
     Resource s;
@@ -60,7 +59,7 @@ public class ConfigBuilder {
    * configuration model  is independent of the input configuration model
    * @author sherif
    */
-  public Model addOperator(IOperator operator, Map<String, String> parameters,
+  public Model addOperator(IEnrichmentOperator operator, Map<String, String> parameters,
     List<Model> inputConfigs, List<Resource> inputDatasets, List<Resource> outputDatasets) {
     Model config = ModelFactory.createDefaultModel();
     Resource s = ResourceFactory.createResource(SPECS.uri + operator.id() + moduleNr++);

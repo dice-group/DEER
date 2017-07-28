@@ -2,8 +2,8 @@ package org.aksw.deer.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.aksw.deer.operator.clone.CloneOperator;
-import org.aksw.deer.operator.merge.MergeOperator;
+import org.aksw.deer.enrichment.clone.CloneEnrichmentOperator;
+import org.aksw.deer.enrichment.merge.MergeEnrichmentOperator;
 import org.apache.log4j.Logger;
 
 
@@ -32,14 +32,14 @@ public class OperatorFactory {
    * @return a specific operator instance given its operator's name
    * @author sherif
    */
-  public static IOperator createOperator(String name) {
+  public static IEnrichmentOperator createOperator(String name) {
     logger.info("Creating operator with name " + name);
 
     if (name.equalsIgnoreCase(CLONE_OPERATOR)) {
-      return new CloneOperator();
+      return new CloneEnrichmentOperator();
     }
     if (name.equalsIgnoreCase(MERGE_OPERATOR)) {
-      return new MergeOperator();
+      return new MergeEnrichmentOperator();
     }
 
     logger.error("Sorry, The enrichment " + name + " is not yet implemented. Exit with error ...");
@@ -62,7 +62,7 @@ public class OperatorFactory {
    * @author sherif
    */
   public static List<String> getNames() {
-    List<String> result = new ArrayList<String>();
+    List<String> result = new ArrayList<>();
     result.add(CLONE_OPERATOR);
     result.add(MERGE_OPERATOR);
     return result;
@@ -72,10 +72,10 @@ public class OperatorFactory {
    * @return list of instances of all implemented operator
    * @author sherif
    */
-  public static List<IOperator> getImplementations() {
-    List<IOperator> result = new ArrayList<IOperator>();
-    result.add(new CloneOperator());
-    result.add(new MergeOperator());
+  public static List<IEnrichmentOperator> getImplementations() {
+    List<IEnrichmentOperator> result = new ArrayList<>();
+    result.add(new CloneEnrichmentOperator());
+    result.add(new MergeEnrichmentOperator());
     return result;
   }
 }

@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.aksw.deer.operator.fusion;
+package org.aksw.deer.enrichment.fusion;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;

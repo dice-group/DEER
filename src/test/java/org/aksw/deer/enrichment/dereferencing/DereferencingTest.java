@@ -47,8 +47,9 @@ public class DereferencingTest
     		parameters.put(predicate, predicate);
 		}
     	
-    	DereferencingEnrichmentFunction u = new DereferencingEnrichmentFunction();
-    	Model resultedModel = u.apply(model, parameters);// run the org.aksw.deer.resources.dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
+    	DereferencingEnrichmentOperator u = new DereferencingEnrichmentOperator();
+    	u.init(parameters, 1, 1);
+    	Model resultedModel = u.apply(model).get(0);// run the org.aksw.deer.resources.dereferencing process it requires model contains the dataset and list of targeted predicates to enrich the model
 		long stopTime = System.currentTimeMillis();
 		try { 
 			new ModelWriter().writeModel(resultedModel, "TTL", "src/main/resources/org.aksw.deer.resources.dereferencing/DereferencingEnriched.ttl");

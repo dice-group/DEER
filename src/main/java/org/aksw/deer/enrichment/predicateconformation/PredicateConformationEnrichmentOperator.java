@@ -1,5 +1,6 @@
 package org.aksw.deer.enrichment.predicateconformation;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,9 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.vocabulary.SPECS;
-import org.aksw.deer.util.ParameterType;
-import org.aksw.deer.enrichment.AEnrichmentFunction;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -26,20 +26,24 @@ import ro.fortsoft.pf4j.Extension;
  * @author sherif
  */
 @Extension
-public class PredicateConformationEnrichmentFunction extends AEnrichmentFunction {
+public class PredicateConformationEnrichmentOperator extends AEnrichmentOperator {
 
   // parameters keys
   public static final String SOURCE_PROPERTY = "sourceProperty";
   public static final String SOURCE_PROPERTY_DESC = "Source property to be replaced by target property";
   public static final String TARGET_PROPERTY = "targetProperty";
   public static final String TARGET_PROPERTY_DESC = "Target property to replace source property";
-  private static final Logger logger = Logger
-    .getLogger(PredicateConformationEnrichmentFunction.class.getName());
+  private static final Logger logger = Logger.getLogger(PredicateConformationEnrichmentOperator.class.getName());
   // parameters list
   private Map<Property, Property> propertyMap = new HashMap<>();
 
-  public PredicateConformationEnrichmentFunction() {
+  public PredicateConformationEnrichmentOperator() {
     super();
+  }
+
+  @Override
+  public ArityBounds getArityBounds() {
+    return new ArityBoundsImpl(1,1,1,1);
   }
 
   /**
@@ -106,14 +110,9 @@ public class PredicateConformationEnrichmentFunction extends AEnrichmentFunction
     return parameters;
   }
 
-
-  /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#process(org.apache.jena.rdf.model.Model, java.util.Map)
-   */
   @Override
-  protected Model process() {
-    logger.info("--------------- Predicate Conformation Module ---------------");
-
+  protected List<Model> process() {
+    Model model = models.get(0);
     //Read parameters
     boolean parameterFound = false;
     for (long i = 1;
@@ -126,7 +125,7 @@ public class PredicateConformationEnrichmentFunction extends AEnrichmentFunction
       parameterFound = true;
     }
     if (!parameterFound) {
-      return model;
+      return Lists.newArrayList(model);
     }
 
     //Conform Model
@@ -144,13 +143,9 @@ public class PredicateConformationEnrichmentFunction extends AEnrichmentFunction
       conformModel.add(s, p, o);
     }
     model = conformModel;
-    return model;
+    return Lists.newArrayList(model);
   }
 
-
-  /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#getParameters()
-   */
   @Override
   public List<String> getParameters() {
     List<String> parameters = new ArrayList<>();
@@ -159,9 +154,6 @@ public class PredicateConformationEnrichmentFunction extends AEnrichmentFunction
     return parameters;
   }
 
-  /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#getNecessaryParameters()
-   */
   @Override
   public List<String> getNecessaryParameters() {
     List<String> parameters = new ArrayList<>();
@@ -178,16 +170,6 @@ public class PredicateConformationEnrichmentFunction extends AEnrichmentFunction
   @Override
   public String getDescription() {
     return null;
-  }
-
-  @Override
-  public List<ParameterType> getParameterWithTypes() {
-    List<ParameterType> parameters = new ArrayList<>();
-    parameters
-      .add(new ParameterType(ParameterType.STRING, SOURCE_PROPERTY, SOURCE_PROPERTY_DESC, true));
-    parameters
-      .add(new ParameterType(ParameterType.STRING, TARGET_PROPERTY, TARGET_PROPERTY_DESC, true));
-    return parameters;
   }
 
   @Override
