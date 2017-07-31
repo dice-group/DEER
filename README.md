@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dice-group/DEER.svg?branch=master)](https://travis-ci.org/dice-group/DEER)
+
 DEER
 =======
 
