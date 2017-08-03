@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.vocabulary.DEER;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.util.PluginFactory;
 import org.aksw.deer.enrichment.authorityconformation.AuthorityConformationEnrichmentOperator;
@@ -53,7 +53,7 @@ public class RandomSpecsGenerator {
     double complexity) {
     Model specsModel = generateSpecs(inputDataFile, size, complexity);
     Resource finalDataset = ConfigAnalyzer.getFinalDatasets(specsModel).get(0);
-    specsModel.add(finalDataset, SPECS.outputFile, outputDataFile);
+    specsModel.add(finalDataset, DEER.outputFile, outputDataFile);
     return specsModel;
   }
 
@@ -66,7 +66,7 @@ public class RandomSpecsGenerator {
   public static Model generateSpecs(String inputDataFile, int size, double complexity) {
     Model inputDataModel = new ModelReader().readModel(inputDataFile);
     Model specsModel = generateSpecs(inputDataModel, size, complexity);
-    Resource firstDataset = ResourceFactory.createResource(SPECS.uri + "dataset_1");
+    Resource firstDataset = ResourceFactory.createResource(DEER.uri + "dataset_1");
     configBuilder.addDataset(specsModel, firstDataset, inputDataFile);
     return specsModel;
   }
@@ -89,7 +89,7 @@ public class RandomSpecsGenerator {
       Resource outputDatasetUri = generateDatasetURI();
       // fix specs file for in/out datasets URIs
       ResIterator moduleToChangeInput = specsModel
-        .listSubjectsWithProperty(SPECS.hasInput, inputDatasetUri);
+        .listSubjectsWithProperty(DEER.hasInput, inputDatasetUri);
       if (moduleToChangeInput.hasNext()) {
         Resource r = moduleToChangeInput.next();
         configBuilder.changeInputDatasetUri(specsModel, r, inputDatasetUri, outputDatasetUri);
@@ -262,9 +262,9 @@ public class RandomSpecsGenerator {
     } else {
       authority = authority.substring(0, authority.lastIndexOf("/"));
     }
-    parameters.put(AuthorityConformationEnrichmentOperator.SOURCE_SUBJECT_AUTHORITY, authority);
-    parameters
-      .put(AuthorityConformationEnrichmentOperator.TARGET_SUBJECT_AUTHORITY, "http://example.com/resource/");
+//    parameters.put(AuthorityConformationEnrichmentOperator.SOURCE_SUBJECT_AUTHORITY, authority);
+//    parameters
+//      .put(AuthorityConformationEnrichmentOperator.TARGET_SUBJECT_AUTHORITY, "http://example.com/resource/");
     return parameters;
   }
 
@@ -327,7 +327,7 @@ public class RandomSpecsGenerator {
   }
 
   private static Resource generateDatasetURI() {
-    return ResourceFactory.createResource(SPECS.uri + "dataset_" + datasetIndex++);
+    return ResourceFactory.createResource(DEER.uri + "dataset_" + datasetIndex++);
   }
 
 

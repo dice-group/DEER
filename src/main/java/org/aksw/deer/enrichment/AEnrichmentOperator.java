@@ -4,7 +4,8 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Map;
 import org.aksw.deer.util.IEnrichmentOperator;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.util.Parameter;
+import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -58,13 +59,26 @@ public abstract class AEnrichmentOperator implements IEnrichmentOperator {
 
   public void init(Map<String, String> parameters, int inArity, int outArity) {
     if (arityInBounds(inArity, outArity)) {
-      this.parameters = parameters;
+      applyParameters(parameters);
       this.inArity = inArity;
       this.outArity = outArity;
       this.initialized = true;
     } else {
       //@todo: add better operatorinvalidarityexception
       throw new RuntimeException("Arity not valid!");
+    }
+  }
+
+  private void applyParameters(Map<String, String> providedParameters) {
+    List<Parameter> parameters = this.getParameters();
+    for (Parameter p : parameters) {
+      if (p.isRequired() && providedParameters.get(p.getName()) != null) {
+        throw new RuntimeException("Required parameter " + p.getName() + " not defined for " + this.getType());
+      } else if (providedParameters.get(p.getName()) != null) {
+        p.getAssignmentConsumer().accept(providedParameters.get(p.getName()));
+      } else {
+        p.getAssignmentConsumer().accept(p.getDefaultValue());
+      }
     }
   }
 
@@ -117,10 +131,10 @@ public abstract class AEnrichmentOperator implements IEnrichmentOperator {
   }
 
   public Resource getType() {
-    return SPECS.resource(this.getClass().getCanonicalName());
+    return DEER.resource(this.getClass().getCanonicalName());
   }
 
-  public ArityBoundsImpl getArityBounds() {
+  public ArityBounds getArityBounds() {
     return new ArityBoundsImpl(1, 1, 1, 1);
   }
 

@@ -7,7 +7,7 @@ package org.aksw.deer.learning;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.vocabulary.DEER;
 import org.aksw.deer.util.IEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -54,7 +54,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
     this.inputDatasets = inputDatasets;
     this.outputDatasets = outputDatasets;
     if (configModel != null) {
-      configModel.setNsPrefix(SPECS.prefix, SPECS.uri);
+      configModel.setNsPrefix(DEER.prefix, DEER.uri);
     }
   }
 
@@ -108,7 +108,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
     this.inputDatasets.add(inputDataset);
     this.outputDatasets.add(outputDataset);
     if (configModel != null) {
-      configModel.setNsPrefix(SPECS.prefix, SPECS.uri);
+      configModel.setNsPrefix(DEER.prefix, DEER.uri);
     }
   }
 
@@ -146,7 +146,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
    */
   public RefinementNode() {
     super();
-    configModel.setNsPrefix(SPECS.prefix, SPECS.uri);
+    configModel.setNsPrefix(DEER.prefix, DEER.uri);
   }
 
   /**

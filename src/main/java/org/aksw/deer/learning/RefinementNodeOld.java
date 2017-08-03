@@ -4,7 +4,7 @@
 package org.aksw.deer.learning;
 
 
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.vocabulary.DEER;
 import org.aksw.deer.util.IEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -30,7 +30,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
    */
   public RefinementNodeOld() {
     super();
-    configModel.setNsPrefix("gl", SPECS.uri);
+    configModel.setNsPrefix("gl", DEER.uri);
   }
 
   public RefinementNodeOld(double fitness) {
@@ -55,7 +55,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
     this.inputDataset = inputDataset;
     this.outputDataset = outputDataset;
     if (configModel != null) {
-      configModel.setNsPrefix("gl", SPECS.uri);
+      configModel.setNsPrefix("gl", DEER.uri);
     }
   }
 
@@ -72,7 +72,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
     this.inputDataset = inputDataset;
     this.outputDataset = outputDataset;
     if (configModel != null) {
-      configModel.setNsPrefix("gl", SPECS.uri);
+      configModel.setNsPrefix("gl", DEER.uri);
     }
   }
 

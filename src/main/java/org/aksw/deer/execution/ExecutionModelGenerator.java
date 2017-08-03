@@ -18,10 +18,10 @@ import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
 import org.aksw.deer.util.IEnrichmentOperator;
-import org.aksw.deer.util.Parameters;
+import org.aksw.deer.util.ParameterReader;
 import org.aksw.deer.util.PluginFactory;
 import org.aksw.deer.vocabulary.EXEC;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.query.Query;
 import org.apache.jena.rdf.model.Model;
@@ -73,7 +73,7 @@ public class ExecutionModelGenerator {
     for (Resource operatorHub : hubs) {
       IEnrichmentOperator operator = getOperator(operatorHub);
       ExecutionHub hub = new ExecutionHub(operator);
-      Query inQuery = sb.clone().addWhere(operatorHub, SPECS.hasInput, "?ds").build();
+      Query inQuery = sb.clone().addWhere(operatorHub, DEER.hasInput, "?ds").build();
       AtomicInteger inCount = new AtomicInteger();
       forEachResultOf(inQuery, model, (sqs) -> {
         int subGraphId = sqs.getLiteral("?id").getInt();
@@ -81,13 +81,13 @@ public class ExecutionModelGenerator {
         inCount.incrementAndGet();
       });
       AtomicInteger outCount = new AtomicInteger();
-      Query outQuery = sb.clone().addWhere(operatorHub, SPECS.hasOutput, "?ds").build();
+      Query outQuery = sb.clone().addWhere(operatorHub, DEER.hasOutput, "?ds").build();
       forEachResultOf(outQuery, model, (sqs) -> {
         int subGraphId = sqs.getLiteral("?id").getInt();
         hub.addOutPipe(pipes.get(subGraphId));
         outCount.incrementAndGet();
       });
-      operator.init(Parameters.getParameters(operatorHub), inCount.get(), outCount.get());
+      operator.init(ParameterReader.getParameters(operatorHub), inCount.get(), outCount.get());
       hub.glue();
     }
   }
@@ -128,8 +128,8 @@ public class ExecutionModelGenerator {
       SelectBuilder sb = new SelectBuilder()
         .setDistinct(true)
         .addVar("?d")
-        .addWhere("?s1", SPECS.hasInput, "?d")
-        .addFilter(not(exists(triple("?s2", SPECS.hasOutput, "?d"))));
+        .addWhere("?s1", DEER.hasInput, "?d")
+        .addFilter(not(exists(triple("?s2", DEER.hasOutput, "?d"))));
       forEachResultOf(sb.build(), model,
         (qs) -> result.add(qs.getResource("?d")));
     } catch (ParseException e) {
@@ -151,8 +151,8 @@ public class ExecutionModelGenerator {
         .setDistinct(true)
         .addVar("?s")
         .addVar("?o")
-        .addWhere("?s", SPECS.hasInput, resource)
-        .addWhere("?s", SPECS.hasOutput, "?o")
+        .addWhere("?s", DEER.hasInput, resource)
+        .addWhere("?s", DEER.hasOutput, "?o")
         .addOptional("?o", EXEC.subGraphId, "?q")
         .addFilter("!bound(?q)")
         .build();
@@ -160,8 +160,8 @@ public class ExecutionModelGenerator {
         (qs) -> {
           Resource ds = qs.getResource("?o");
           Resource node = qs.getResource("?s");
-          int inCount = model.listObjectsOfProperty(node, SPECS.hasInput).toSet().size();
-          int outCount = model.listObjectsOfProperty(node, SPECS.hasOutput).toSet().size();
+          int inCount = model.listObjectsOfProperty(node, DEER.hasInput).toSet().size();
+          int outCount = model.listObjectsOfProperty(node, DEER.hasOutput).toSet().size();
           boolean isHub = inCount > 1 || outCount > 1;
           if (isHub) {
             // create new pipeline
@@ -170,8 +170,8 @@ public class ExecutionModelGenerator {
             hubs.add(node);
           } else {
             // add enrichment function to pipe
-            IEnrichmentOperator fn = getEnrichmentFunction(node);
-            fn.init(new Parameters(node).get(), 1, 1);
+            IEnrichmentOperator fn = getOperator(node);
+            fn.init(ParameterReader.getParameters(node), 1, 1);
             pipes.get(subGraphId).chain(fn, getWriter(ds));
             ds.addLiteral(EXEC.subGraphId, subGraphId);
           }
@@ -189,15 +189,15 @@ public class ExecutionModelGenerator {
   @SuppressWarnings("Duplicates")
   private Model readDataset(Resource dataset) {
     Model model;
-    if (dataset.hasProperty(SPECS.fromEndPoint)) {
+    if (dataset.hasProperty(DEER.fromEndPoint)) {
       model = ModelReader
-        .readModelFromEndPoint(dataset, dataset.getProperty(SPECS.fromEndPoint).getObject().toString());
+        .readModelFromEndPoint(dataset, dataset.getProperty(DEER.fromEndPoint).getObject().toString());
     } else {
       String s = null;
-      if (dataset.hasProperty(SPECS.hasUri)) {
-        s = dataset.getProperty(SPECS.hasUri).getObject().toString();
-      } else if (dataset.hasProperty(SPECS.inputFile)) {
-        s = dataset.getProperty(SPECS.inputFile).getObject().toString();
+      if (dataset.hasProperty(DEER.hasUri)) {
+        s = dataset.getProperty(DEER.hasUri).getObject().toString();
+      } else if (dataset.hasProperty(DEER.inputFile)) {
+        s = dataset.getProperty(DEER.inputFile).getObject().toString();
       }
       if (s == null) {
         //@todo: introduce MalformedConfigurationException
@@ -215,26 +215,11 @@ public class ExecutionModelGenerator {
   /**
    * @return Implementation of IModule defined by the given resource's rdf:type
    */
-  private IEnrichmentOperator getEnrichmentFunction(Resource enrichmentFunctionNode) {
-    NodeIterator typeItr = model.listObjectsOfProperty(enrichmentFunctionNode, RDF.type);
-    while (typeItr.hasNext()) {
-      RDFNode type = typeItr.next();
-      if (type.equals(SPECS.Module)) {
-        continue;
-      }
-      return pluginFactory.create(type.toString());
-    }
-    throw new RuntimeException("Implementation type of enrichment " + enrichmentFunctionNode + " is not specified!");
-  }
-
-  /**
-   * @return Implementation of IModule defined by the given resource's rdf:type
-   */
   private IEnrichmentOperator getOperator(Resource operator) {
     NodeIterator typeItr = model.listObjectsOfProperty(operator, RDF.type);
     while (typeItr.hasNext()) {
       RDFNode type = typeItr.next();
-      if (type.equals(SPECS.Operator)) {
+      if (type.equals(DEER.Operator)) {
         continue;
       }
       return pluginFactory.create(type.toString());
@@ -249,11 +234,11 @@ public class ExecutionModelGenerator {
    */
   private ModelWriter getWriter(Resource datasetUri) {
     ModelWriter writer = new ModelWriter();
-    Statement fileName = datasetUri.getProperty(SPECS.outputFile);
+    Statement fileName = datasetUri.getProperty(DEER.outputFile);
     if (fileName == null) {
       return null;
     }
-    Statement fileFormat = datasetUri.getProperty(SPECS.outputFormat);
+    Statement fileFormat = datasetUri.getProperty(DEER.outputFormat);
     writer.init(fileFormat == null ? "TTL" : fileFormat.getString(), fileName.getString());
     return writer;
   }

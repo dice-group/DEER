@@ -3,30 +3,6 @@
  */
 package org.aksw.deer.learning;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import org.aksw.deer.util.TreeX;
-import org.aksw.deer.vocabulary.SPECS;
-import org.aksw.deer.io.ModelReader;
-import org.aksw.deer.io.ModelWriter;
-import org.aksw.deer.util.IEnrichmentOperator;
-import org.aksw.deer.util.OperatorFactory;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.log4j.Logger;
-
 
 /**
  * @author sherif

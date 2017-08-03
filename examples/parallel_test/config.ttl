@@ -1,0 +1,34 @@
+@prefix : <http://aksw.org/deer/ontology#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+:d1           a               :Dataset ;
+		          :hasUri			    <http://dbpedia.org/resource/Berlin> ;
+		          :fromEndPoint	  <http://dbpedia.org/sparql> .
+:d2           a               :Dataset ;
+              :hasUri			    <http://dbpedia.org/resource/Berlin> ;
+              :fromEndPoint	  <http://dbpedia.org/sparql> .
+:d3           a               :Dataset .
+:d4           a               :Dataset .
+:d5	          a               :Dataset ;
+		          :outputFile		  "output1.ttl" ;
+		          :outputFormat	  "Turtle" .
+:d6           a				        :Dataset ;
+              :outputFile     "output2.ttl" ;
+              :outputFormat   "Turtle" .
+:merge        a               :Operator, :org.aksw.deer.MergeEnrichmentOperator ;
+              :hasInput       (:d1, :d2) ;
+              :hasOutput      :d3 .
+:conf         a               :Operator, :org.aksw.deer.AuthorityConformationEnrichmentOperator ;
+		          rdfs:label		  "Conformation module" ;
+		          :hasInput		    :d3 ;
+		          :hasOutput		  :d4 ;
+		          :hasParameter	  :confParam1 , :confParam2 .
+:confParam1	  a		            :Parameter ;
+		          :hasKey			    "sourceSubjectAuthority" ;
+		          :hasValue		    "http://dbpedia.org" .
+:confParam2 	a		            :Parameter ;
+		          :hasKey		  	  "targetSubjectAuthority" ;
+		          :hasValue	  	  "http://deer.org" .
+:split        a               :Operator, :org.aksw.deer.CloneEnrichmentOperator ;
+              :hasInput       :d4 ;
+              :hasOutput      (:d5, :d6) .

@@ -18,12 +18,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.enrichment.AEnrichmentOperator;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.util.Parameter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
@@ -457,20 +456,10 @@ public class FusionEnrichmentOperator extends AEnrichmentOperator {
   /* (non-Javadoc)
    * @see org.aksw.geolift.enrichment.GeoLiftModule#getParameters()
    */
-  public List<String> getParameters() {
+  public List<Parameter> getParameters() {
     List<String> parameters = new ArrayList<String>();
-    return parameters;
+    return null;
   }
-
-  /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#getNecessaryParameters()
-   */
-  @Override
-  public List<String> getNecessaryParameters() {
-    List<String> parameters = new ArrayList<String>();
-    return parameters;
-  }
-
 
   @Override
   public String getDescription() {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.aksw.deer.enrichment.AEnrichmentOperator;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.util.Parameter;
 import org.aksw.limes.core.controller.Controller;
 import org.aksw.limes.core.io.config.Configuration;
 import org.aksw.limes.core.io.config.reader.xml.XMLConfigurationReader;
@@ -67,21 +67,12 @@ public class LinkingEnrichmentOperator extends AEnrichmentOperator {
     return Lists.newArrayList(model);
   }
 
-  public List<String> getParameters() {
+  public List<Parameter> getParameters() {
     List<String> parameters = new ArrayList<String>();
 //		parameters.add("datasetSource");
     parameters.add(SPEC_FILE);
     parameters.add(LINKS_PART);
-    return parameters;
-  }
-
-  /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#getNecessaryParameters()
-   */
-  @Override
-  public List<String> getNecessaryParameters() {
-    List<String> parameters = new ArrayList<String>();
-    return parameters;
+    return null;
   }
 
 

@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.aksw.deer.enrichment.AEnrichmentOperator;
+import org.aksw.deer.util.Parameter;
 import org.aksw.deer.vocabulary.DBpedia;
 import org.aksw.deer.vocabulary.SCMSANN;
-import org.aksw.deer.vocabulary.SPECS;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.fox.binding.java.FoxApi;
 import org.aksw.fox.binding.java.FoxParameter.OUTPUT;
@@ -504,7 +504,7 @@ public class NLPEnrichmentOperator extends AEnrichmentOperator {
   /* (non-Javadoc)
    * @see org.aksw.geolift.enrichment.GeoLiftModule#getParameters()
    */
-  public List<String> getParameters() {
+  public List<Parameter> getParameters() {
     List<String> parameters = new ArrayList<>();
     //		parameters.add("input");
     //		parameters.add("output");
@@ -519,18 +519,8 @@ public class NLPEnrichmentOperator extends AEnrichmentOperator {
     //		parameters.add("foxReturnHtml");
     parameters.add(ADDED_PROPERTY);
     parameters.add(NER_TYPE);
-    return parameters;
+    return null;
   }
-
-  /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#getNecessaryParameters()
-   */
-  @Override
-  public List<String> getNecessaryParameters() {
-    List<String> parameters = new ArrayList<>();
-    return parameters;
-  }
-
 
   @Override
   public String getDescription() {

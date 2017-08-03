@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.aksw.deer.enrichment.AEnrichmentOperator;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.util.Parameter;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -109,13 +109,13 @@ public class DereferencingEnrichmentOperator extends AEnrichmentOperator {
   /**
    * @author sherif
    */
-  public List<String> getParameters() {
-    List<String> parameters = new ArrayList<String>();
+  public List<Parameter> getParameters() {
+    List<String> parameters = new ArrayList<>();
     parameters.add(INPUT_PROPERTY + "<i>");
     parameters.add(OUTPUT_PROPERTY + "<i>");
     parameters.add(USE_BLANK_NODES);
     //		parameters.add("useCache");
-    return parameters;
+    return null;
   }
 
   @Override
@@ -182,17 +182,6 @@ public class DereferencingEnrichmentOperator extends AEnrichmentOperator {
     }
     return diffProperties;
   }
-
-  /* (non-Javadoc)
-   * @see org.aksw.geolift.enrichment.GeoLiftModule#getNecessaryParameters()
-   */
-  @Override
-  public List<String> getNecessaryParameters() {
-    List<String> parameters = new ArrayList<String>();
-    parameters.add(INPUT_PROPERTY + "<i>");
-    return parameters;
-  }
-
 
   @Override
   public String getDescription() {

@@ -1,7 +1,7 @@
 package org.aksw.deer.io;
 
 import java.io.InputStream;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.Model;
@@ -79,11 +79,11 @@ public class ModelReader {
     Model result;
     long startTime = System.currentTimeMillis();
     logger.info("Reading dataset  " + dataset + " from " + endpointUri);
-    Statement fromGraph = dataset.getProperty(SPECS.fromGraph);
-    Statement hasUri = dataset.getProperty(SPECS.hasUri);
+    Statement fromGraph = dataset.getProperty(DEER.fromGraph);
+    Statement hasUri = dataset.getProperty(DEER.hasUri);
     if (fromGraph != null) {
       String triplePattern = "?s ?p ?o";
-      Statement graphTriplePattern = dataset.getProperty(SPECS.graphTriplePattern);
+      Statement graphTriplePattern = dataset.getProperty(DEER.graphTriplePattern);
       if (graphTriplePattern != null) {
         triplePattern = graphTriplePattern.getObject().toString();
       }
@@ -99,7 +99,7 @@ public class ModelReader {
       result = qExec.execDescribe();
       qExec.close();
     } else {
-      throw new RuntimeException("Neither " + SPECS.hasUri + " nor " + SPECS.fromGraph +
+      throw new RuntimeException("Neither " + DEER.hasUri + " nor " + DEER.fromGraph +
         " defined to generate dataset " + dataset + " from " + endpointUri
         + ", exit with error.");
     }

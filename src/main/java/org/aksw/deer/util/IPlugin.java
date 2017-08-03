@@ -6,11 +6,9 @@ import org.apache.jena.rdf.model.Resource;
 /**
  * @author Kevin Dreßler
  */
-public interface IPlugin extends IParameterized {
+public interface IPlugin {
 
-  List<String> getParameters();
-
-  List<String> getNecessaryParameters();
+  List<Parameter> getParameters();
 
   String getDescription();
 

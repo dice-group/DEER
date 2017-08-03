@@ -4,9 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.aksw.deer.enrichment.AEnrichmentOperator;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.util.Parameter;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.log4j.Logger;
 import ro.fortsoft.pf4j.Extension;
 
@@ -23,12 +22,7 @@ public class CloneEnrichmentOperator extends AEnrichmentOperator {
     return models;
   }
 
-  public List<String> getParameters() {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public List<String> getNecessaryParameters() {
+  public List<Parameter> getParameters() {
     return Collections.emptyList();
   }
 

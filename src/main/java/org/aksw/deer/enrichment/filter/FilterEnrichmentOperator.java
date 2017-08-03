@@ -6,11 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.aksw.deer.enrichment.AEnrichmentOperator;
-import org.aksw.deer.vocabulary.SPECS;
+import org.aksw.deer.util.Parameter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
@@ -67,19 +66,11 @@ public class FilterEnrichmentOperator extends AEnrichmentOperator {
   }
 
   @Override
-  public List<String> getParameters() {
+  public List<Parameter> getParameters() {
     List<String> parameters = new ArrayList<>();
     parameters.add(TRIPLES_PATTERN);
-    return parameters;
+    return null;
   }
-
-  @Override
-  public List<String> getNecessaryParameters() {
-    List<String> parameters = new ArrayList<>();
-    parameters.add(TRIPLES_PATTERN);
-    return parameters;
-  }
-
 
   @Override
   public String getDescription() {
