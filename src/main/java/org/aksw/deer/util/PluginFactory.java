@@ -81,10 +81,7 @@ public class PluginFactory <T extends IPlugin> {
 //      "spatial information URIs represented by the addedGeoProperty predicates, " +
 //      "witch by default is geoknow:relatedTo predicates";
 //  public static final String AUTHORITY_CONFORMATION_MODULE_DESCRIPTION =
-//    "The purpose of the authority conformation enrichment is to hange a specified source URI " +
-//      "to a specified target URI, for example using " +
-//      "source URI of 'http://dbpedia.org' and target URI of 'http://geolift.org' " +
-//      "changes a resource like 'http://dbpedia.org/Berlin' to 'http://geolift.org/Berlin'";
+
 //  public static final String PREDICATE_CONFORMATION_MODULE_DESCRIPTION =
 //    "The purpose of the predicate conformation enrichment is to change a set of source predicates to a set of target predicates."
 //      +

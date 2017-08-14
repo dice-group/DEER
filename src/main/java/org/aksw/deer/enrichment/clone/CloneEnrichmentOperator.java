@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import ro.fortsoft.pf4j.Extension;
 
 /**
- * @author sherif
+ * @author Kevin Dreßler <dressler@informatik.uni-leipzig.de>
  */
 @Extension
 public class CloneEnrichmentOperator extends AEnrichmentOperator {
@@ -28,7 +28,11 @@ public class CloneEnrichmentOperator extends AEnrichmentOperator {
 
   @Override
   public String getDescription() {
-    return null;
+    return "The idea behind the clone operator is to enable parallel execution of different enrichment" +
+      " in the same dataset. The clone operator takes one dataset as input and produces n ≥ 2 " +
+      "output datasets, which are all identical to the input dataset. Each of the output " +
+      "datasets of the clone operator has its own execution (as to be input to any other enrichment" +
+      " or operator). Thus, DEER is able to execute all workflows of output datasets in parallel.";
   }
 
   @Override

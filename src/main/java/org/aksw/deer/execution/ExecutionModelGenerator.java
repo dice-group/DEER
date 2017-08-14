@@ -1,187 +1,128 @@
 package org.aksw.deer.execution;
 
-import static org.aksw.deer.util.QueryHelper.exists;
-import static org.aksw.deer.util.QueryHelper.forEachResultOf;
-import static org.aksw.deer.util.QueryHelper.not;
-import static org.aksw.deer.util.QueryHelper.triple;
-
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import org.aksw.deer.enrichment.AEnrichmentOperator;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
 import org.aksw.deer.util.IEnrichmentOperator;
 import org.aksw.deer.util.ParameterReader;
 import org.aksw.deer.util.PluginFactory;
-import org.aksw.deer.vocabulary.EXEC;
 import org.aksw.deer.vocabulary.DEER;
-import org.apache.jena.arq.querybuilder.SelectBuilder;
-import org.apache.jena.query.Query;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.NodeIterator;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.vocabulary.RDF;
+import org.jetbrains.annotations.Nullable;
 
 public class ExecutionModelGenerator {
-  private Model model;
-  private ModelReader modelReader;
-  private List<ExecutionPipeline> pipes;
+  private ExecutionGraph executionGraph;
+  private List<ExecutionPipelineBuilder> pipeBuilders;
   private List<Resource> hubs;
   private PluginFactory<AEnrichmentOperator> pluginFactory;
 
-  public ExecutionModelGenerator(String modelUrl, RunContext context) throws IOException {
-    this(context);
-    this.model = modelReader.readModel(modelUrl);
-  }
-
   public ExecutionModelGenerator(Model model) throws IOException {
-    this(new RunContext(0, ""));
-    this.model = model;
+    this();
+    this.executionGraph = new ExecutionGraph(model);
   }
 
-  private ExecutionModelGenerator(RunContext context) throws IOException {
-    this.modelReader = new ModelReader(context.getSubDir());
+  private ExecutionModelGenerator() throws IOException {
     this.pluginFactory = new PluginFactory<>(AEnrichmentOperator.class);
-    this.pipes = new ArrayList<>();
+    this.pipeBuilders = new ArrayList<>();
     this.hubs = new ArrayList<>();
   }
 
   public ExecutionModel generate() {
     // first step: build pipelines
-    ExecutionModel executionModel = buildPipelines();
-    // second step: glue them together using hubs
-    gluePipelines();
-    //    model.write(System.out,"TTL");
-    return executionModel;
-  }
-
-  private void gluePipelines() {
-    SelectBuilder sb = new SelectBuilder()
-      .setDistinct(true)
-      .addVar("?id").addVar("?ds")
-      .addWhere("?ds", EXEC.subGraphId, "?id");
-    for (Resource operatorHub : hubs) {
-      IEnrichmentOperator operator = getOperator(operatorHub);
-      ExecutionHub hub = new ExecutionHub(operator);
-      Query inQuery = sb.clone().addWhere(operatorHub, DEER.hasInput, "?ds").build();
-      AtomicInteger inCount = new AtomicInteger();
-      forEachResultOf(inQuery, model, (sqs) -> {
-        int subGraphId = sqs.getLiteral("?id").getInt();
-        hub.addInPipe(pipes.get(subGraphId));
-        inCount.incrementAndGet();
-      });
-      AtomicInteger outCount = new AtomicInteger();
-      Query outQuery = sb.clone().addWhere(operatorHub, DEER.hasOutput, "?ds").build();
-      forEachResultOf(outQuery, model, (sqs) -> {
-        int subGraphId = sqs.getLiteral("?id").getInt();
-        hub.addOutPipe(pipes.get(subGraphId));
-        outCount.incrementAndGet();
-      });
-      operator.init(ParameterReader.getParameters(operatorHub), inCount.get(), outCount.get());
-      hub.glue();
-    }
+    List<ExecutionPipeline> pipes = buildPipelines();
+    // second step: glue them together using hubs and return resulting executionModel
+    return gluePipelines(pipes);
   }
 
   /**
    * Do a depth-first search starting at input dataset nodes in the given configuration graph.
    */
-  private ExecutionModel buildPipelines() {
-    ExecutionModel executionModel = new ExecutionModel();
-    Collection<Resource> datasets = getStartDatasets();
-    model.setNsPrefix(EXEC.prefix, EXEC.uri);
+  private List<ExecutionPipeline> buildPipelines() {
+    Set<Resource> datasets = executionGraph.getStartDatasets();
     Deque<Resource> stack = new ArrayDeque<>();
     for (Resource ds : datasets) {
-      ds.addLiteral(EXEC.subGraphId, pipes.size());
+      executionGraph.setSubGraphId(ds, pipeBuilders.size());
       stack.push(ds);
-      ExecutionPipeline pipe = new ExecutionPipeline(getWriter(ds));
-      pipes.add(pipe);
-      executionModel.addStartPipe(pipe, readDataset(ds));
+      pipeBuilders.add(new ExecutionPipelineBuilder().writeFirstUsing(getWriter(ds)));
     }
     while (!stack.isEmpty()) {
-      Resource ds = stack.pop();
-      int subGraphId = ds.getProperty(EXEC.subGraphId).getLiteral().getInt();
-      Set<Resource> links = traverse(ds, subGraphId);
+      Set<Resource> links = traverse(stack.pop());
       for (Resource link : links) {
         stack.push(link);
       }
     }
+    return pipeBuilders.stream().map(ExecutionPipelineBuilder::build).collect(Collectors.toList());
+  }
+
+  /**
+   * Get datasets connected to this dataset with one enrichment operator inbetween.
+   * @param ds Input dataset
+   * @return Set of datasets connected to this dataset with one enrichment or operator inbetween.
+   */
+  private Set<Resource> traverse(Resource ds) {
+    Set<Resource> links = new HashSet<>();
+    List<Resource> operators = executionGraph.getDatasetConsumers(ds);
+    int currentSubGraphId = executionGraph.getSubGraphId(ds);
+    for (Resource operator : operators) {
+      if (!executionGraph.isVisited(operator)) {
+        if (executionGraph.isHub(operator)) {
+          hubs.add(operator);
+          for (Resource dataset : executionGraph.getOperatorOutputs(operator)) {
+            // set subgraph id (visited state) and add to links
+            executionGraph.setSubGraphId(dataset, pipeBuilders.size());
+            // create new pipelines
+            pipeBuilders.add(new ExecutionPipelineBuilder().writeFirstUsing(getWriter(dataset)));
+            links.add(dataset);
+          }
+        } else {
+          Resource dataset = executionGraph.getOperatorOutputs(operator).get(0);
+          // add enrichment function to pipe
+          IEnrichmentOperator fn = getOperator(operator);
+          fn.init(ParameterReader.getParameters(operator), 1, 1);
+          pipeBuilders.get(currentSubGraphId).chain(fn, getWriter(dataset));
+          // set subgraph id (visited state) and add to links
+          executionGraph.setSubGraphId(dataset, currentSubGraphId);
+          links.add(dataset);
+        }
+        executionGraph.visit(operator);
+      }
+    }
+    return links;
+  }
+
+  private ExecutionModel gluePipelines(List<ExecutionPipeline> pipes) {
+    for (Resource operatorHub : hubs) {
+      List<Resource> operatorInputs = executionGraph.getOperatorInputs(operatorHub);
+      List<Resource> operatorOutputs = executionGraph.getOperatorOutputs(operatorHub);
+      IEnrichmentOperator operator = getOperator(operatorHub);
+      operator.init(ParameterReader.getParameters(operatorHub), operatorInputs.size(), operatorOutputs.size());
+      ExecutionHub hub = new ExecutionHub(operator);
+      for (Resource ds : operatorInputs) {
+        hub.addInPipe(pipes.get(executionGraph.getSubGraphId(ds)));
+      }
+      for (Resource ds : operatorOutputs) {
+        hub.addOutPipe(pipes.get(executionGraph.getSubGraphId(ds)));
+      }
+      hub.glue();
+    }
+    ExecutionModel executionModel = new ExecutionModel();
+    for (Resource startDs : executionGraph.getStartDatasets()) {
+      executionModel.addStartPipe(pipes.get(executionGraph.getSubGraphId(startDs)), readDataset(startDs));
+    }
     return executionModel;
   }
 
-  /**
-   * @return a list of all final output datasets, which are included as output of some
-   * operator/models and not as input to any operator/model
-   */
-  private List<Resource> getStartDatasets() {
-    List<Resource> result = new ArrayList<>();
-    try {
-      SelectBuilder sb = new SelectBuilder()
-        .setDistinct(true)
-        .addVar("?d")
-        .addWhere("?s1", DEER.hasInput, "?d")
-        .addFilter(not(exists(triple("?s2", DEER.hasOutput, "?d"))));
-      forEachResultOf(sb.build(), model,
-        (qs) -> result.add(qs.getResource("?d")));
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
-    return result;
-  }
-
-  /**
-   * Get datasets connected to this dataset with one enrichment or operator inbetween.
-   * Also assigns new subgraph ids in case of merge / split operator.
-   * @param resource Input dataset
-   * @return Set of datasets connected to this dataset with one enrichment or operator inbetween.
-   */
-  private Set<Resource> traverse(Resource resource, int subGraphId) {
-    try {
-      Set<Resource> links = new HashSet<>();
-      Query query = new SelectBuilder()
-        .setDistinct(true)
-        .addVar("?s")
-        .addVar("?o")
-        .addWhere("?s", DEER.hasInput, resource)
-        .addWhere("?s", DEER.hasOutput, "?o")
-        .addOptional("?o", EXEC.subGraphId, "?q")
-        .addFilter("!bound(?q)")
-        .build();
-      forEachResultOf(query, model,
-        (qs) -> {
-          Resource ds = qs.getResource("?o");
-          Resource node = qs.getResource("?s");
-          int inCount = model.listObjectsOfProperty(node, DEER.hasInput).toSet().size();
-          int outCount = model.listObjectsOfProperty(node, DEER.hasOutput).toSet().size();
-          boolean isHub = inCount > 1 || outCount > 1;
-          if (isHub) {
-            // create new pipeline
-            ds.addLiteral(EXEC.subGraphId, pipes.size());
-            pipes.add(new ExecutionPipeline(getWriter(ds)));
-            hubs.add(node);
-          } else {
-            // add enrichment function to pipe
-            IEnrichmentOperator fn = getOperator(node);
-            fn.init(ParameterReader.getParameters(node), 1, 1);
-            pipes.get(subGraphId).chain(fn, getWriter(ds));
-            ds.addLiteral(EXEC.subGraphId, subGraphId);
-          }
-          links.add(ds);
-        });
-      return links;
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   /**
    * @return dataset model from file/uri/endpoint
@@ -203,11 +144,7 @@ public class ExecutionModelGenerator {
         //@todo: introduce MalformedConfigurationException
         throw new RuntimeException("Encountered root dataset without source declaration: " + dataset);
       }
-      model = modelReader.readModel(s);
-    }
-    ModelWriter writer = getWriter(dataset);
-    if (writer != null) {
-      writer.accept(model);
+      model = new ModelReader().readModel(s);
     }
     return model;
   }
@@ -216,15 +153,11 @@ public class ExecutionModelGenerator {
    * @return Implementation of IModule defined by the given resource's rdf:type
    */
   private IEnrichmentOperator getOperator(Resource operator) {
-    NodeIterator typeItr = model.listObjectsOfProperty(operator, RDF.type);
-    while (typeItr.hasNext()) {
-      RDFNode type = typeItr.next();
-      if (type.equals(DEER.Operator)) {
-        continue;
-      }
-      return pluginFactory.create(type.toString());
+    Resource implementation = operator.getPropertyResourceValue(DEER.implementedIn);
+    if (implementation == null) {
+      throw new RuntimeException("Implementation type of enrichment " + operator + " is not specified!");
     }
-    throw new RuntimeException("Implementation type of enrichment " + operator + " is not specified!");
+    return pluginFactory.create(implementation.getURI());
   }
 
   /**
@@ -232,7 +165,8 @@ public class ExecutionModelGenerator {
    * @param datasetUri URI of the Resource describing the dataset and its configuration
    * @return Configured Instance of ModelWriter
    */
-  private ModelWriter getWriter(Resource datasetUri) {
+  @Nullable
+  private Consumer<Model> getWriter(Resource datasetUri) {
     ModelWriter writer = new ModelWriter();
     Statement fileName = datasetUri.getProperty(DEER.outputFile);
     if (fileName == null) {

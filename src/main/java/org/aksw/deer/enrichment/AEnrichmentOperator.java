@@ -72,7 +72,7 @@ public abstract class AEnrichmentOperator implements IEnrichmentOperator {
   private void applyParameters(Map<String, String> providedParameters) {
     List<Parameter> parameters = this.getParameters();
     for (Parameter p : parameters) {
-      if (p.isRequired() && providedParameters.get(p.getName()) != null) {
+      if (p.isRequired() && providedParameters.get(p.getName()) == null) {
         throw new RuntimeException("Required parameter " + p.getName() + " not defined for " + this.getType());
       } else if (providedParameters.get(p.getName()) != null) {
         p.getAssignmentConsumer().accept(providedParameters.get(p.getName()));
@@ -111,8 +111,13 @@ public abstract class AEnrichmentOperator implements IEnrichmentOperator {
     return result;
   }
 
-  public List<Model> apply(Model model) {
-    return apply(Lists.newArrayList(model));
+  public Model apply(Model model) {
+    List<Model> models = apply(Lists.newArrayList(model));
+    if (models.isEmpty()) {
+      return null;
+    } else {
+      return models.get(0);
+    }
   }
 
   protected abstract List<Model> process();

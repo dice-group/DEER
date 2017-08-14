@@ -1,10 +1,8 @@
 package org.aksw.deer.execution;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.CompletableFuture;
 import org.aksw.deer.util.IEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
@@ -14,11 +12,12 @@ import org.apache.jena.rdf.model.Model;
  */
 public class ExecutionHub {
 
-  private Collection<ExecutionPipeline> inPipes;
-  private Collection<ExecutionPipeline> outPipes;
+  private List<ExecutionPipeline> inPipes;
+  private List<ExecutionPipeline> outPipes;
   private List<Model> inModels;
   private List<Model> outModels;
   private IEnrichmentOperator operator;
+  private int launchLatch;
 
   public ExecutionHub(IEnrichmentOperator operator) {
     this.operator = operator;
@@ -37,14 +36,19 @@ public class ExecutionHub {
   }
 
   public void glue() {
-    for (ExecutionPipeline in : inPipes) {
-      in.setCallback(this::consume);
+    this.launchLatch = inPipes.size();
+    for (int i = 0; i < inPipes.size(); i++) {
+      int finalI = i;
+      inPipes.get(i).setCallback(m -> this.consume(finalI, m));
+      inModels.add(null);
     }
   }
 
-  private synchronized void consume(List<Model> m) {
-    inModels.add(m.get(0));
-    if (inModels.size() == inPipes.size()) {
+  private synchronized void consume(int index, Model model) {
+    inModels.set(index, model);
+    System.out.println("Pipe gives model to hub!");
+    if (--launchLatch == 0) {
+      System.out.println("Hub executes!");
       execute();
     }
   }
@@ -56,15 +60,18 @@ public class ExecutionHub {
         + operator.getClass().getSimpleName() + "(Expected: " + outPipes.size() + ", Actual: "
         + outModels.size() + ")");
     }
-    CompletableFuture<List<Model>> trigger = new CompletableFuture<>();
-    CompletableFuture<List<Model>> lst = new CompletableFuture<>();
-    Iterator<ExecutionPipeline> pipeIt = outPipes.iterator();
+    CompletableFuture<Void> trigger = new CompletableFuture<>();
+    List<CompletableFuture<Model>> lst = new ArrayList<>();
+    ListIterator<ExecutionPipeline> pipeIt = outPipes.listIterator();
     for (Model outModel : outModels) {
       ExecutionPipeline outPipe = pipeIt.next();
-      lst = trigger.thenApplyAsync((m) -> Collections.singletonList(outModel)).thenApplyAsync(outPipe);
+      lst.add(trigger.thenApplyAsync($ -> outModel).thenApplyAsync(outPipe));
     }
     trigger.complete(null);
     //@todo: really necessary? if yes, need to extend?
-    //    lst.join();
+    for (CompletableFuture<Model> cf : lst) {
+      cf.join();
+    }
   }
+
 }

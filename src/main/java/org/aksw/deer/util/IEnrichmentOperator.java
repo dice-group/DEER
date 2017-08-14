@@ -2,6 +2,7 @@ package org.aksw.deer.util;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -10,7 +11,7 @@ import ro.fortsoft.pf4j.ExtensionPoint;
 /**
  * @author sherif
  */
-public interface IEnrichmentOperator extends ExtensionPoint, UnaryOperator<List<Model>>, IPlugin {
+public interface IEnrichmentOperator extends ExtensionPoint, UnaryOperator<Model>, IPlugin {
 
   interface ArityBounds {
     int minIn();
@@ -34,8 +35,8 @@ public interface IEnrichmentOperator extends ExtensionPoint, UnaryOperator<List<
 
   Resource getType();
 
-  List<Model> apply(List<Model> models);
+  Model apply(Model model);
 
-  List<Model> apply(Model model);
+  List<Model> apply(List<Model> models);
 
 }

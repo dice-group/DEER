@@ -93,7 +93,10 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
 
   @Override
   public String getDescription() {
-    return "";
+    return "The purpose of the authority conformation enrichment is to change a specified " +
+      "source URI to a specified target URI, for example using " +
+      "source URI of 'http://dbpedia.org' and target URI of 'http://example.org' " +
+      "changes a resource like 'http://dbpedia.org/Berlin' to 'http://example.org/Berlin'";
   }
 
   /**

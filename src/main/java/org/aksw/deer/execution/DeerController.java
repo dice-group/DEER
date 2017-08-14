@@ -3,7 +3,9 @@ package org.aksw.deer.execution;
 import java.io.IOException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.server.Server;
+import org.apache.jena.rdf.model.Model;
 import org.apache.log4j.Logger;
 
 public class DeerController {
@@ -14,7 +16,7 @@ public class DeerController {
       "the only one parameter for the DEER jar file. \n" +
       "Example: deer.jar config.ttl \n" +
       "For details about the configuration file see DEER manual at " +
-      "https://github.com/GeoKnow/DEER/blob/master/DEER_manual/deer_manual.pdf ";
+      "https://github.com/dice-group/DEER/";
 
   public static void main(String args[]) throws IOException {
     if (args.length == 0 || args[0].equals("-?") || args[0].toLowerCase().equals("--help")) {
@@ -24,10 +26,12 @@ public class DeerController {
     } else {
       // rdf config mode
       long startTime = System.currentTimeMillis();
-      ExecutionModelGenerator executionModelGenerator = new ExecutionModelGenerator(args[0], new RunContext(0, ""));
+      ModelReader reader = new ModelReader();
+      Model configurationModel = reader.readModel(args[0]);
+      ExecutionModelGenerator executionModelGenerator = new ExecutionModelGenerator(configurationModel);
       ExecutionModel executionModel = executionModelGenerator.generate();
-      executionModel.execute();
       logger.info("DEER started execution");
+      executionModel.execute();
       int i = 0;
       int interval = 10;
       TimeUnit unit = TimeUnit.MINUTES;

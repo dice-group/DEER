@@ -11,6 +11,7 @@ public class DEER {
   public static final Resource Dataset = resource("Dataset");
   public static final Resource Operator = resource("Operator");
   public static final Resource Parameter = resource("Parameter");
+  public static final Property implementedIn = property("implementedIn");
   public static final Property hasInput = property("hasInput");
   public static final Property hasOutput = property("hasOutput");
   public static final Property hasParameter = property("hasParameter");

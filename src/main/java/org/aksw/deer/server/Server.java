@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.MultipartConfigElement;
@@ -38,10 +39,11 @@ public class Server {
   private static final String STORAGE_DIR_PATH = "./temp/";
   private static final String CONFIG_FILE_PREFIX = "deer_cfg_";
   private static final String CONFIG_FILE_SUFFIX = ".ttl";
-  private static Map<String, InputStream> logStreamMap;
+  private static Map<String, InputStream> logStreamMap = new HashMap<>();
 
   public static void main(String[] args) {
     threadPool(4, 1, 30000);
+    final String pathToJar = args[0];
     File uploadDir = new File(STORAGE_DIR_PATH);
     uploadDir.mkdir();
 
@@ -67,16 +69,16 @@ public class Server {
           .command(
           "java",
           "-jar",
-          urlToFile(getLocation(Server.class)).getAbsolutePath(),
+          pathToJar,
           tempFile.toFile().getAbsolutePath()
         )
           .directory(workingDir)
-          .redirectErrorStream(true)
-          .start();
+          .redirectErrorStream(true).start();
         logStreamMap.put(id, process.getInputStream());
         return id;
       } catch (Exception e) {
-        return Arrays.toString(e.getStackTrace());
+        e.printStackTrace();
+        return e.getMessage();
       }
     });
 
@@ -109,6 +111,7 @@ public class Server {
 
     awaitInitialization();
   }
+
   @WebSocket
   public static class LogSocket {
 
