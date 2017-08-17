@@ -32,7 +32,7 @@ public class OperatorFactory {
    * @return a specific operator instance given its operator's name
    * @author sherif
    */
-  public static IEnrichmentOperator createOperator(String name) {
+  public static EnrichmentOperator createOperator(String name) {
     logger.info("Creating operator with name " + name);
 
     if (name.equalsIgnoreCase(CLONE_OPERATOR)) {
@@ -72,8 +72,8 @@ public class OperatorFactory {
    * @return list of instances of all implemented operator
    * @author sherif
    */
-  public static List<IEnrichmentOperator> getImplementations() {
-    List<IEnrichmentOperator> result = new ArrayList<>();
+  public static List<EnrichmentOperator> getImplementations() {
+    List<EnrichmentOperator> result = new ArrayList<>();
     result.add(new CloneEnrichmentOperator());
     result.add(new MergeEnrichmentOperator());
     return result;

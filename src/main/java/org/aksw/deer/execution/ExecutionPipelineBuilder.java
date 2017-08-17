@@ -4,9 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
-import org.aksw.deer.io.ModelWriter;
-import org.aksw.deer.util.IEnrichmentOperator;
+import org.aksw.deer.util.EnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 
 /**
@@ -27,11 +25,11 @@ public class ExecutionPipelineBuilder {
     return this;
   }
 
-  public ExecutionPipelineBuilder chain(IEnrichmentOperator fn) {
+  public ExecutionPipelineBuilder chain(EnrichmentOperator fn) {
     return chain(fn, null);
   }
 
-  public ExecutionPipelineBuilder chain(IEnrichmentOperator fn, Consumer<Model> writer) {
+  public ExecutionPipelineBuilder chain(EnrichmentOperator fn, Consumer<Model> writer) {
     this.fnStack.addLast(new EnrichmentContainer(fn, writer));
     return this;
   }
@@ -57,10 +55,10 @@ public class ExecutionPipelineBuilder {
 
 
   private static class EnrichmentContainer {
-    private IEnrichmentOperator fn;
+    private EnrichmentOperator fn;
     private Consumer<Model> writer;
 
-    private EnrichmentContainer(IEnrichmentOperator fn, Consumer<Model> writer) {
+    private EnrichmentContainer(EnrichmentOperator fn, Consumer<Model> writer) {
       this.fn = fn;
       this.writer = writer;
     }
@@ -69,7 +67,7 @@ public class ExecutionPipelineBuilder {
       return writer;
     }
 
-    public IEnrichmentOperator getFn() {
+    public EnrichmentOperator getFn() {
       return fn;
     }
   }

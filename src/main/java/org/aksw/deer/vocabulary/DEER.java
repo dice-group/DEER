@@ -14,9 +14,9 @@ public class DEER {
   public static final Property implementedIn = property("implementedIn");
   public static final Property hasInput = property("hasInput");
   public static final Property hasOutput = property("hasOutput");
-  public static final Property hasParameter = property("hasParameter");
-  public static final Property hasKey = property("hasKey");
-  public static final Property hasValue = property("hasValue");
+//  public static final Property hasParameter = property("hasParameter");
+//  public static final Property hasKey = property("hasKey");
+//  public static final Property hasValue = property("hasValue");
   public static final Property inputFile = property("inputFile");
   public static final Property outputFile = property("outputFile");
   public static final Property outputFormat = property("outputFormat");

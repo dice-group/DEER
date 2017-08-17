@@ -76,6 +76,7 @@ public class ModelReader {
    */
   public static Model readModelFromEndPoint(Resource dataset, String endpointUri) {
     //@todo: implement new parameter for content type
+    //@todo refactor for better tests
     Model result;
     long startTime = System.currentTimeMillis();
     logger.info("Reading dataset  " + dataset + " from " + endpointUri);

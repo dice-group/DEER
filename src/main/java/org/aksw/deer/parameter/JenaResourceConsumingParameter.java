@@ -1,26 +1,25 @@
-package org.aksw.deer.util;
+package org.aksw.deer.parameter;
 
 import java.util.function.Consumer;
+import org.aksw.deer.parameter.Parameter;
 
 /**
  * @author Kevin Dreßler
  */
-public class Parameter {
+public class JenaResourceConsumingParameter {
 
   private String name;
   private String description;
   private String defaultValue;
   private boolean required;
-  private boolean enumerable;
   private Consumer<String> assignmentConsumer;
 
-  public Parameter(String name, String description, String defaultValue, boolean required,
-    boolean enumerable, Consumer<String> assignmentConsumer) {
+  public JenaResourceConsumingParameter(String name, String description, String defaultValue, boolean required,
+    Consumer<String> assignmentConsumer) {
     this.name = name;
     this.description = description;
     this.defaultValue = defaultValue;
     this.required = required;
-    this.enumerable = enumerable;
     this.assignmentConsumer = assignmentConsumer;
   }
 
@@ -44,7 +43,4 @@ public class Parameter {
     return required;
   }
 
-  public boolean isEnumerable() {
-    return enumerable;
-  }
 }

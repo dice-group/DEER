@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import org.aksw.deer.enrichment.AEnrichmentOperator;
+import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
-import org.aksw.deer.util.IEnrichmentOperator;
-import org.aksw.deer.util.ParameterReader;
+import org.aksw.deer.parameter.ParameterMap;
+import org.aksw.deer.util.EnrichmentOperator;
 import org.aksw.deer.util.PluginFactory;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
@@ -25,7 +25,7 @@ public class ExecutionModelGenerator {
   private ExecutionGraph executionGraph;
   private List<ExecutionPipelineBuilder> pipeBuilders;
   private List<Resource> hubs;
-  private PluginFactory<AEnrichmentOperator> pluginFactory;
+  private PluginFactory<AbstractEnrichmentOperator> pluginFactory;
 
   public ExecutionModelGenerator(Model model) throws IOException {
     this();
@@ -33,7 +33,7 @@ public class ExecutionModelGenerator {
   }
 
   private ExecutionModelGenerator() throws IOException {
-    this.pluginFactory = new PluginFactory<>(AEnrichmentOperator.class);
+    this.pluginFactory = new PluginFactory<>(AbstractEnrichmentOperator.class);
     this.pipeBuilders = new ArrayList<>();
     this.hubs = new ArrayList<>();
   }
@@ -70,6 +70,7 @@ public class ExecutionModelGenerator {
    * @param ds Input dataset
    * @return Set of datasets connected to this dataset with one enrichment or operator inbetween.
    */
+  @SuppressWarnings("unchecked")
   private Set<Resource> traverse(Resource ds) {
     Set<Resource> links = new HashSet<>();
     List<Resource> operators = executionGraph.getDatasetConsumers(ds);
@@ -88,8 +89,10 @@ public class ExecutionModelGenerator {
         } else {
           Resource dataset = executionGraph.getOperatorOutputs(operator).get(0);
           // add enrichment function to pipe
-          IEnrichmentOperator fn = getOperator(operator);
-          fn.init(ParameterReader.getParameters(operator), 1, 1);
+          EnrichmentOperator fn = getOperator(operator);
+          ParameterMap parameterMap = fn.createParameterMap();
+          parameterMap.init(operator);
+          fn.init(parameterMap, 1, 1);
           pipeBuilders.get(currentSubGraphId).chain(fn, getWriter(dataset));
           // set subgraph id (visited state) and add to links
           executionGraph.setSubGraphId(dataset, currentSubGraphId);
@@ -101,12 +104,15 @@ public class ExecutionModelGenerator {
     return links;
   }
 
+  @SuppressWarnings("unchecked")
   private ExecutionModel gluePipelines(List<ExecutionPipeline> pipes) {
     for (Resource operatorHub : hubs) {
       List<Resource> operatorInputs = executionGraph.getOperatorInputs(operatorHub);
       List<Resource> operatorOutputs = executionGraph.getOperatorOutputs(operatorHub);
-      IEnrichmentOperator operator = getOperator(operatorHub);
-      operator.init(ParameterReader.getParameters(operatorHub), operatorInputs.size(), operatorOutputs.size());
+      EnrichmentOperator operator = getOperator(operatorHub);
+      ParameterMap parameterMap = operator.createParameterMap();
+      parameterMap.init(operatorHub);
+      operator.init(parameterMap, operatorInputs.size(), operatorOutputs.size());
       ExecutionHub hub = new ExecutionHub(operator);
       for (Resource ds : operatorInputs) {
         hub.addInPipe(pipes.get(executionGraph.getSubGraphId(ds)));
@@ -152,7 +158,7 @@ public class ExecutionModelGenerator {
   /**
    * @return Implementation of IModule defined by the given resource's rdf:type
    */
-  private IEnrichmentOperator getOperator(Resource operator) {
+  private EnrichmentOperator getOperator(Resource operator) {
     Resource implementation = operator.getPropertyResourceValue(DEER.implementedIn);
     if (implementation == null) {
       throw new RuntimeException("Implementation type of enrichment " + operator + " is not specified!");

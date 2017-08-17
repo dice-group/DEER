@@ -3,12 +3,13 @@ package org.aksw.deer.enrichment.authorityconformation;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import org.aksw.deer.enrichment.AEnrichmentOperator;
-import org.aksw.deer.util.Parameter;
+import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
+import org.aksw.deer.parameter.BaseParameter;
+import org.aksw.deer.parameter.BaseParameterMap;
+import org.aksw.deer.parameter.JenaBackedParameterMap;
+import org.aksw.deer.parameter.JenaResourceConsumingParameter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
@@ -21,23 +22,24 @@ import ro.fortsoft.pf4j.Extension;
  * @author sherif
  */
 @Extension
-public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator {
+public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentOperator<JenaBackedParameterMap> {
 
   private static final Logger logger = Logger.getLogger(AuthorityConformationEnrichmentOperator.class);
 
-  private String sourceSubjectAuthority;
-
-  private final Parameter SOURCE_SUBJECT_AUTHORITY = new Parameter(
+  public static final BaseParameter SOURCE_SUBJECT_AUTHORITY = new BaseParameter(
     "sourceSubjectAuthority",
     "Source subject authority to be replaced by Target subject authority",
-    "", true, false, x -> this.sourceSubjectAuthority = x);
+    true);
+
+  public static final BaseParameter TARGET_SUBJECT_AUTHORITY = new BaseParameter(
+    "targetSubjectAuthority",
+    "Target subject authority to replace the source subject authority",
+    true);
+
+  private String sourceSubjectAuthority;
 
   private String targetSubjectAuthority;
 
-  private final Parameter TARGET_SUBJECT_AUTHORITY = new Parameter(
-    "targetSubjectAuthority",
-    "Target subject authority to replace the source subject authority",
-    "", true, false, x -> this.targetSubjectAuthority = x);
 
   public AuthorityConformationEnrichmentOperator() {
     super();
@@ -50,7 +52,8 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
     input.listStatements().forEachRemaining(stmt -> {
       Resource s = stmt.getSubject();
       if (!Objects.equals(sourceSubjectAuthority, "") && s.getURI().startsWith(sourceSubjectAuthority)) {
-        s = ResourceFactory.createResource(s.getURI().replaceFirst(sourceSubjectAuthority, targetSubjectAuthority));
+        String conformedUri = s.getURI().replaceFirst(sourceSubjectAuthority, targetSubjectAuthority);
+        s = ResourceFactory.createResource(conformedUri);
       }
       output.add(s, stmt.getPredicate(), stmt.getObject());
     });
@@ -87,11 +90,6 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
   }
 
   @Override
-  public List<Parameter> getParameters() {
-    return Lists.newArrayList(SOURCE_SUBJECT_AUTHORITY, TARGET_SUBJECT_AUTHORITY);
-  }
-
-  @Override
   public String getDescription() {
     return "The purpose of the authority conformation enrichment is to change a specified " +
       "source URI to a specified target URI, for example using " +
@@ -107,15 +105,28 @@ public class AuthorityConformationEnrichmentOperator extends AEnrichmentOperator
    * @author sherif
    */
   @Override
-  public Map<String, String> selfConfig(Model source, Model target) {
-    Map<String, String> parameters = new HashMap<>();
+  public JenaBackedParameterMap selfConfig(Model source, Model target) {
+    JenaBackedParameterMap parameters = createParameterMap();
     String s = getMostRedundantUri(source);
     String t = getMostRedundantUri(target);
     if (!Objects.equals(s, t)) {
-      parameters.put(SOURCE_SUBJECT_AUTHORITY.getName(), s);
-      parameters.put(TARGET_SUBJECT_AUTHORITY.getName(), t);
+      parameters.setValue(SOURCE_SUBJECT_AUTHORITY, s);
+      parameters.setValue(TARGET_SUBJECT_AUTHORITY, s);
     }
     return parameters;
   }
 
+  @Override
+  public JenaBackedParameterMap createParameterMap() {
+    JenaBackedParameterMap result = new JenaBackedParameterMap();
+    result.addParameter(SOURCE_SUBJECT_AUTHORITY);
+    result.addParameter(TARGET_SUBJECT_AUTHORITY);
+    return result;
+  }
+
+  @Override
+  public void accept(JenaBackedParameterMap baseParameterMap) {
+    this.sourceSubjectAuthority = baseParameterMap.getValue(SOURCE_SUBJECT_AUTHORITY);
+    this.targetSubjectAuthority = baseParameterMap.getValue(TARGET_SUBJECT_AUTHORITY);
+  }
 }

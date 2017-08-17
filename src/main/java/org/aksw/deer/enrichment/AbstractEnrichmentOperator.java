@@ -2,9 +2,8 @@ package org.aksw.deer.enrichment;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import java.util.Map;
-import org.aksw.deer.util.IEnrichmentOperator;
-import org.aksw.deer.util.Parameter;
+import org.aksw.deer.parameter.ParameterMap;
+import org.aksw.deer.util.EnrichmentOperator;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -13,9 +12,9 @@ import org.apache.jena.rdf.model.Resource;
 /**
  * @author Kevin Dreßler
  */
-public abstract class AEnrichmentOperator implements IEnrichmentOperator {
+public abstract class AbstractEnrichmentOperator<T extends ParameterMap> implements EnrichmentOperator<T> {
 
-  protected static class ArityBoundsImpl implements IEnrichmentOperator.ArityBounds{
+  protected static class ArityBoundsImpl implements EnrichmentOperator.ArityBounds{
 
     private final int minIn;
     private final int maxIn;
@@ -51,39 +50,26 @@ public abstract class AEnrichmentOperator implements IEnrichmentOperator {
 
   }
 
-  protected Map<String, String> parameters;
+  protected T parameterMap;
   protected List<Model> models;
   private int inArity;
   private int outArity;
   private boolean initialized = false;
 
-  public void init(Map<String, String> parameters, int inArity, int outArity) {
-    if (arityInBounds(inArity, outArity)) {
-      applyParameters(parameters);
+  public void init(T parameterMap, int inArity, int outArity) {
+    if (!parameterMap.isInitialized()) {
+      //@todo: implement exceptions
+      throw new RuntimeException("ParameterMap needs to be initialized with values first!");
+    } else if (!arityInBounds(inArity, outArity)) {
+      //@todo: add better operatorinvalidarityexception
+      throw new RuntimeException("Arity not valid!");
+    } else {
+      this.accept(parameterMap);
+      this.parameterMap = parameterMap;
       this.inArity = inArity;
       this.outArity = outArity;
       this.initialized = true;
-    } else {
-      //@todo: add better operatorinvalidarityexception
-      throw new RuntimeException("Arity not valid!");
     }
-  }
-
-  private void applyParameters(Map<String, String> providedParameters) {
-    List<Parameter> parameters = this.getParameters();
-    for (Parameter p : parameters) {
-      if (p.isRequired() && providedParameters.get(p.getName()) == null) {
-        throw new RuntimeException("Required parameter " + p.getName() + " not defined for " + this.getType());
-      } else if (providedParameters.get(p.getName()) != null) {
-        p.getAssignmentConsumer().accept(providedParameters.get(p.getName()));
-      } else {
-        p.getAssignmentConsumer().accept(p.getDefaultValue());
-      }
-    }
-  }
-
-  public void init(Map<String, String> parameters) {
-    init(parameters, 1, 1);
   }
 
   public int getInArity() {
@@ -92,6 +78,10 @@ public abstract class AEnrichmentOperator implements IEnrichmentOperator {
 
   public int getOutArity() {
     return outArity;
+  }
+
+  public T getParameterMap() {
+    return parameterMap;
   }
 
   public List<Model> apply(List<Model> models) {

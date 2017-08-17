@@ -13,7 +13,7 @@ import ro.fortsoft.pf4j.PluginManager;
  * @author sherif
  */
 
-public class PluginFactory <T extends IPlugin> {
+public class PluginFactory <T extends Plugin> {
 
   private static final PluginManager pluginManager = new DefaultPluginManager();
   private ExtensionFactory factory;
@@ -67,7 +67,7 @@ public class PluginFactory <T extends IPlugin> {
     if (!classMap.containsKey(id)) {
       throw new RuntimeException("Implementation for declaration \"" + id + "\" could not be found.");
     } else {
-      return ((IEnrichmentOperator) factory.create(classMap.get(id))).getDescription();
+      return ((EnrichmentOperator) factory.create(classMap.get(id))).getDescription();
     }
   }
 //  public static final String DEREFERENCING_MODULE_DESCRIPTION =

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CompletableFuture;
-import org.aksw.deer.util.IEnrichmentOperator;
+import org.aksw.deer.util.EnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 
 /**
@@ -16,10 +16,10 @@ public class ExecutionHub {
   private List<ExecutionPipeline> outPipes;
   private List<Model> inModels;
   private List<Model> outModels;
-  private IEnrichmentOperator operator;
+  private EnrichmentOperator operator;
   private int launchLatch;
 
-  public ExecutionHub(IEnrichmentOperator operator) {
+  public ExecutionHub(EnrichmentOperator operator) {
     this.operator = operator;
     this.inPipes = new ArrayList<>();
     this.outPipes = new ArrayList<>();

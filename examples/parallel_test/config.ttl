@@ -24,13 +24,8 @@
 		          rdfs:label		     "Conformation" ;
 		          :hasInput		       ( :d3 ) ;
 		          :hasOutput		     ( :d4 ) ;
-		          :hasParameter	     :confParam1 , :confParam2 .
-:confParam1	  a		               :Parameter ;
-		          :hasKey			       "sourceSubjectAuthority" ;
-		          :hasValue		       "http://dbpedia.org" .
-:confParam2 	a		               :Parameter ;
-		          :hasKey		  	     "targetSubjectAuthority" ;
-		          :hasValue	  	     "http://deer.org" .
+		          :sourceSubjectAuthority  "http://dbpedia.org" ;
+		          :targetSubjectAuthority  "http://deer.org" .
 :split        a                  :Operator ;
               :implementedIn     :org.aksw.deer.enrichment.clone.CloneEnrichmentOperator ;
               :hasInput          ( :d4 ) ;

@@ -1,35 +1,5 @@
 package org.aksw.deer.evaluation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.aksw.deer.vocabulary.DEER;
-import org.aksw.deer.io.ModelReader;
-import org.aksw.deer.util.PluginFactory;
-import org.aksw.deer.enrichment.authorityconformation.AuthorityConformationEnrichmentOperator;
-import org.aksw.deer.enrichment.dereferencing.DereferencingEnrichmentOperator;
-import org.aksw.deer.enrichment.filter.FilterEnrichmentOperator;
-import org.aksw.deer.enrichment.linking.LinkingEnrichmentOperator;
-import org.aksw.deer.enrichment.nlp.NLPEnrichmentOperator;
-import org.aksw.deer.enrichment.predicateconformation.PredicateConformationEnrichmentOperator;
-import org.aksw.deer.util.IEnrichmentOperator;
-import org.aksw.deer.util.OperatorFactory;
-import org.aksw.deer.learning.ConfigAnalyzer;
-import org.aksw.deer.learning.ConfigBuilder;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.log4j.Logger;
-
 /**
  * @author sherif
  */

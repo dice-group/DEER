@@ -1,33 +1,8 @@
 package org.aksw.deer.execution;
 
-import static org.aksw.deer.util.QueryHelper.exists;
 import static org.aksw.deer.util.QueryHelper.forEachResultOf;
 import static org.aksw.deer.util.QueryHelper.mapResultOf;
-import static org.aksw.deer.util.QueryHelper.not;
 import static org.aksw.deer.util.QueryHelper.triple;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.aksw.deer.io.ModelReader;
-import org.aksw.deer.io.ModelWriter;
-import org.aksw.deer.util.IEnrichmentOperator;
-import org.aksw.deer.util.PluginFactory;
-import org.aksw.deer.vocabulary.EXEC;
-import org.aksw.deer.vocabulary.DEER;
-import org.apache.jena.arq.querybuilder.SelectBuilder;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.NodeIterator;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.log4j.Logger;
 
 /**
  * @author sherif
