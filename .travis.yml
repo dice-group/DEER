@@ -21,7 +21,7 @@ script:
   - mvn test
 
 # deploy gitbook after success
-after_success: bash ./scipts/gh-deploy.sh
+after_success: bash ./scripts/gh-deploy.sh
 
 # disable emails, enable slack push
 notifications:
