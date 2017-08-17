@@ -21,7 +21,7 @@ script:
   - mvn test
 
 # deploy gitbook after success
-after_success: bash ./gh-deploy.sh
+after_success: bash ./scipts/gh-deploy.sh
 
 # disable emails, enable slack push
 notifications:
@@ -32,4 +32,4 @@ notifications:
 env:
   global:
     - ENCRYPTION_LABEL: "eec107ffaeb8"
-    - COMMIT_AUTHOR_EMAIL: "yamalight+travis@gmail.com"
+    - COMMIT_AUTHOR_EMAIL: "kvndrsslr@gmail.com"
