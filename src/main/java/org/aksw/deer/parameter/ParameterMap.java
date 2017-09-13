@@ -1,6 +1,7 @@
 package org.aksw.deer.parameter;
 
 import java.util.Set;
+
 import org.apache.jena.rdf.model.Resource;
 
 /**
@@ -8,12 +9,16 @@ import org.apache.jena.rdf.model.Resource;
  */
 public interface ParameterMap {
 
+  ParameterMap EMPTY_INSTANCE = new DefaultParameterMap().init(null);
+
+  ParameterMap addParameter(Parameter p);
+
   Set<Parameter> getAllParameters();
 
-  boolean isInitialized();
+  ParameterMap setValue(Parameter p, Object node);
 
-  void init();
+  <T> T getValue(Parameter p);
 
-  void init(Resource parameterRoot);
+  ParameterMap init(Resource r);
 
 }

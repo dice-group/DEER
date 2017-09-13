@@ -1,21 +1,17 @@
 package org.aksw.deer.util;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
-import org.aksw.deer.parameter.JenaResourceConsumingParameter;
-import org.aksw.deer.parameter.Parameter;
-import org.aksw.deer.parameter.ParameterAssigner;
 import org.aksw.deer.parameter.ParameterMap;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import ro.fortsoft.pf4j.ExtensionPoint;
 
+import java.util.List;
+import java.util.function.UnaryOperator;
+
 /**
- * @author sherif
+ * @author Kevin Dreßler
  */
-public interface EnrichmentOperator<T extends ParameterMap> extends ExtensionPoint, UnaryOperator<Model>, Plugin<T> {
+public interface EnrichmentOperator extends ExtensionPoint, UnaryOperator<Model>, Plugin {
 
   interface ArityBounds {
     int minIn();
@@ -29,13 +25,11 @@ public interface EnrichmentOperator<T extends ParameterMap> extends ExtensionPoi
   int getInArity();
   int getOutArity();
 
-  void init(T parameterMap, int inArity, int outArity);
+  void init(ParameterMap parameterMap, int inArity, int outArity);
 
-  T selfConfig(Model source, Model target);
+  ParameterMap selfConfig(Model source, Model target);
 
-  T getParameterMap();
-
-  T createParameterMap();
+  ParameterMap getParameterMap();
 
   String getDescription();
 
@@ -45,6 +39,6 @@ public interface EnrichmentOperator<T extends ParameterMap> extends ExtensionPoi
 
   List<Model> apply(List<Model> models);
 
-  void accept(T t);
+  void accept(ParameterMap params);
 
 }

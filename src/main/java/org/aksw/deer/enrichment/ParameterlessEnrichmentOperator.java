@@ -1,25 +1,23 @@
 package org.aksw.deer.enrichment;
 
-import org.aksw.deer.parameter.EmptyParameterMap;
+import org.aksw.deer.parameter.ParameterMap;
 import org.apache.jena.rdf.model.Model;
 
 /**
  * @author Kevin Dreßler
  */
-public abstract class ParameterlessEnrichmentOperator extends AbstractEnrichmentOperator<EmptyParameterMap> {
+public abstract class ParameterlessEnrichmentOperator extends AbstractEnrichmentOperator {
 
   @Override
-  public EmptyParameterMap selfConfig(Model source, Model target) {
-    return EmptyParameterMap.INSTANCE;
+  public ParameterMap selfConfig(Model source, Model target) {
+    return ParameterMap.EMPTY_INSTANCE;
   }
 
   @Override
-  public void accept(EmptyParameterMap emptyParameterMap) {
-
-  }
+  public void accept(ParameterMap emptyParameterMap) { }
 
   @Override
-  public EmptyParameterMap createParameterMap() {
-    return EmptyParameterMap.INSTANCE;
+  public ParameterMap createParameterMap() {
+    return ParameterMap.EMPTY_INSTANCE;
   }
 }

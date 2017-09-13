@@ -7,11 +7,11 @@ import org.apache.jena.rdf.model.Resource;
 /**
  * @author Kevin Dreßler
  */
-public interface Plugin<T extends ParameterMap> extends Consumer<T> {
+public interface Plugin extends Consumer<ParameterMap> {
 
-  T getParameterMap();
+  ParameterMap getParameterMap();
 
-  T createParameterMap();
+  ParameterMap createParameterMap();
 
   String getDescription();
 

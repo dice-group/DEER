@@ -12,7 +12,7 @@ import org.apache.jena.rdf.model.Resource;
 /**
  * @author Kevin Dreßler
  */
-public abstract class AbstractEnrichmentOperator<T extends ParameterMap> implements EnrichmentOperator<T> {
+public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
 
   protected static class ArityBoundsImpl implements EnrichmentOperator.ArityBounds{
 
@@ -50,17 +50,14 @@ public abstract class AbstractEnrichmentOperator<T extends ParameterMap> impleme
 
   }
 
-  protected T parameterMap;
+  protected ParameterMap parameterMap;
   protected List<Model> models;
   private int inArity;
   private int outArity;
   private boolean initialized = false;
 
-  public void init(T parameterMap, int inArity, int outArity) {
-    if (!parameterMap.isInitialized()) {
-      //@todo: implement exceptions
-      throw new RuntimeException("ParameterMap needs to be initialized with values first!");
-    } else if (!arityInBounds(inArity, outArity)) {
+  public void init(ParameterMap parameterMap, int inArity, int outArity) {
+    if (!arityInBounds(inArity, outArity)) {
       //@todo: add better operatorinvalidarityexception
       throw new RuntimeException("Arity not valid!");
     } else {
@@ -80,7 +77,7 @@ public abstract class AbstractEnrichmentOperator<T extends ParameterMap> impleme
     return outArity;
   }
 
-  public T getParameterMap() {
+  public ParameterMap getParameterMap() {
     return parameterMap;
   }
 

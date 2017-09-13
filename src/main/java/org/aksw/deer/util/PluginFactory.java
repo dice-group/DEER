@@ -13,7 +13,7 @@ import ro.fortsoft.pf4j.PluginManager;
  * @author sherif
  */
 
-public class PluginFactory <T extends Plugin> {
+public class  PluginFactory <T extends Plugin> {
 
   private static final PluginManager pluginManager = new DefaultPluginManager();
   private ExtensionFactory factory;

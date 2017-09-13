@@ -1,3 +1,16 @@
 {
-  "plugins": ["katex"]
+  "plugins": ["theme-api"],
+  "pluginsConfig": {
+    "theme-api": {
+      "split" : true,
+      "theme" : "dark",
+      "languages": [
+        {
+          "lang": "java",
+          "name": "Java",
+          "default": true
+        }
+      ]
+    }
+  }
 }
