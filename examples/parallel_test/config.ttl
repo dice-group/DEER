@@ -26,6 +26,12 @@
 		          :hasOutput		     ( :d4 ) ;
 		          :sourceSubjectAuthority  "http://dbpedia.org" ;
 		          :targetSubjectAuthority  "http://deer.org" .
+:pconf         a                  :Operator ;
+              :implementedIn     :org.aksw.deer.enrichment.predicateconformation.PredicateConformationEnrichmentOperator ;
+		          rdfs:label		     "Conformation" ;
+		          :hasInput		       ( :d3 ) ;
+		          :hasOutput		     ( :d4 ) ;
+		          :propertyDictList  ( [ :source "" ; :target "" ] [ :source "" ; :target "" ] )
 :split        a                  :Operator ;
               :implementedIn     :org.aksw.deer.enrichment.clone.CloneEnrichmentOperator ;
               :hasInput          ( :d4 ) ;

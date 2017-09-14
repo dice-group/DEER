@@ -3,14 +3,13 @@ package org.aksw.deer.enrichment.predicateconformation;
 import com.google.common.collect.Lists;
 import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
 import org.aksw.deer.enrichment.authorityconformation.AuthorityConformationEnrichmentOperator;
-import org.aksw.deer.parameter.DefaultParameter;
-import org.aksw.deer.parameter.DefaultParameterMap;
-import org.aksw.deer.parameter.Parameter;
-import org.aksw.deer.parameter.ParameterMap;
+import org.aksw.deer.parameter.*;
+import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.*;
 import org.apache.log4j.Logger;
 import ro.fortsoft.pf4j.Extension;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +22,16 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
 
   private static final Logger logger = Logger.getLogger(AuthorityConformationEnrichmentOperator.class);
 
-  public static final Parameter PROPERTY_MAP = new DefaultParameter(
-    "propertyMap",
+  private static final Property SOURCE = DEER.property("source");
+  private static final Property TARGET = DEER.property("target");
+
+  private static final Parameter PROPERTY_DICT_LIST = new DefaultParameter(
+    "propertyDictList",
     "List of (source, target) pairs of property URIs. For each pair," +
       "source in input model will be conformed to target.",
-    PropertyMapParameterConversion.INSTANCE, true);
+    new DictListParameterConversion(SOURCE, TARGET), true);
 
-  private Map<Property, Property> propertyMap = new HashMap<>();
+  private List<Map<Property , RDFNode>> propertyDictList = new ArrayList<>();
 
   public PredicateConformationEnrichmentOperator() {
     super();
@@ -43,20 +45,23 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
   @Override
   public ParameterMap selfConfig(Model source, Model target) {
     ParameterMap result = createParameterMap();
-    Map<Property, Property> propertyMap = new HashMap<>();
+    List<Map<Property , RDFNode>> propertyDictList = new ArrayList<>();
     source.listStatements().forEachRemaining(s -> {
-      StmtIterator stmtIterator = target.listStatements(s.getSubject(), null, s.getObject());
-      if (stmtIterator.hasNext()) {
-        propertyMap.put(s.getPredicate(), stmtIterator.next().getPredicate());
+      StmtIterator targetIt = target.listStatements(s.getSubject(), null, s.getObject());
+      if (targetIt.hasNext()) {
+        Map<Property, RDFNode> nodeMap = new HashMap<>();
+        nodeMap.put(SOURCE, s.getPredicate().asResource());
+        nodeMap.put(TARGET, targetIt.next().getPredicate().asResource());
+        propertyDictList.add(nodeMap);
       }
     });
-    result.setValue(PROPERTY_MAP, propertyMap);
+    result.setValue(PROPERTY_DICT_LIST, propertyDictList);
     return result;
   }
 
   @Override
   public ParameterMap createParameterMap() {
-    return new DefaultParameterMap(PROPERTY_MAP);
+    return new DefaultParameterMap(PROPERTY_DICT_LIST);
   }
 
   @Override
@@ -71,13 +76,21 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
       Property p = statment.getPredicate();
       RDFNode o = statment.getObject();
       // conform properties
-      if (propertyMap.containsKey(p)) {
-        p = propertyMap.get(p);
-      }
-      conformModel.add(s, p, o);
+      Property replacement = findReplacement(p);
+      conformModel.add(s, replacement != null ? replacement : p, o);
     }
     model = conformModel;
     return Lists.newArrayList(model);
+  }
+
+  private Property findReplacement(Property p) {
+    final Property[] result = {null};
+    propertyDictList.forEach(nodeMap -> {
+      if (nodeMap.get(SOURCE).equals(p)) {
+        result[0] = nodeMap.get(TARGET).as(Property.class);
+      }
+    });
+    return result[0];
   }
 
   @Override
@@ -87,7 +100,7 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
 
   @Override
   public void accept(ParameterMap parameterMap) {
-    this.propertyMap = parameterMap.getValue(PROPERTY_MAP);
+    this.propertyDictList = parameterMap.getValue(PROPERTY_DICT_LIST);
   }
 
 }

@@ -49,7 +49,7 @@ public class DefaultParameterMap implements ParameterMap {
     for (Parameter p : parameters) {
       if (r != null && r.hasProperty(p.getProperty())) {
         RDFNode node = r.getProperty(p.getProperty()).getObject();
-        setValue(p, p.applyDeserializer(node));
+        setValue(p, p.applyDeserialization(node));
       }
       if (p.isRequired() && getValue(p) == null) {
         throw new RuntimeException("Required parameter " + p.getProperty().getURI() + " not defined!");
