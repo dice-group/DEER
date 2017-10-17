@@ -16,18 +16,18 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @author sherif
+ * 
  */
 @Extension
 public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentOperator {
 
   private static final Logger logger = Logger.getLogger(AuthorityConformationEnrichmentOperator.class);
 
-  public static final Parameter SOURCE_SUBJECT_AUTHORITY = new DefaultParameter(
+  private static final Parameter SOURCE_SUBJECT_AUTHORITY = new DefaultParameter(
     "sourceSubjectAuthority",
     "Source subject authority to be replaced by Target subject authority");
 
-  public static final Parameter TARGET_SUBJECT_AUTHORITY = new DefaultParameter(
+  private static final Parameter TARGET_SUBJECT_AUTHORITY = new DefaultParameter(
     "targetSubjectAuthority",
     "Target subject authority to replace the source subject authority");
 

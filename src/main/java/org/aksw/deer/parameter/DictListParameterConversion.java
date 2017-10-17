@@ -42,14 +42,17 @@ public class DictListParameterConversion implements ParameterConversion {
       Resource r = n.asResource();
       Map<Property, RDFNode> nodeMap = new HashMap<>();
       properties.forEach(p -> {
-        RDFNode pValue = r.getProperty(p).getObject();
-        switch (force) {
-          case RESOURCE:
-            pValue = pValue.asResource();
-            break;
-          case LITERAL:
-            pValue = pValue.asLiteral();
-            break;
+        RDFNode pValue = null;
+        if (r.hasProperty(p)) {
+          pValue = r.getProperty(p).getObject();
+          switch (force) {
+            case RESOURCE:
+              pValue = pValue.asResource();
+              break;
+            case LITERAL:
+              pValue = pValue.asLiteral();
+              break;
+          }
         }
           nodeMap.put(p, pValue);
       });

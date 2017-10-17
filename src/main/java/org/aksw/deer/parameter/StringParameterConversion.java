@@ -9,7 +9,12 @@ import org.apache.jena.rdf.model.RDFNode;
  */
 public class StringParameterConversion implements ParameterConversion {
 
-  public static final StringParameterConversion INSTANCE = new StringParameterConversion();
+  private static final StringParameterConversion INSTANCE = new StringParameterConversion();
+
+  public static StringParameterConversion getInstance() {
+    return INSTANCE;
+  }
+
   private StringParameterConversion() { }
 
   @Override

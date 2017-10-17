@@ -25,21 +25,21 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
   private static final Property SOURCE = DEER.property("source");
   private static final Property TARGET = DEER.property("target");
 
-  private static final Parameter PROPERTY_DICT_LIST = new DefaultParameter(
-    "propertyDictList",
+  private static final Parameter PROPERTY_MAPPING = new DefaultParameter(
+    "propertyMapping",
     "List of (source, target) pairs of property URIs. For each pair," +
       "source in input model will be conformed to target.",
     new DictListParameterConversion(SOURCE, TARGET), true);
 
-  private List<Map<Property , RDFNode>> propertyDictList = new ArrayList<>();
+  private List<Map<Property , RDFNode>> propertyMapping = new ArrayList<>();
 
   public PredicateConformationEnrichmentOperator() {
     super();
   }
 
   @Override
-  public ArityBounds getArityBounds() {
-    return new ArityBoundsImpl(1,1,1,1);
+  public DegreeBounds getDegreeBounds() {
+    return new DefaultDegreeBounds(1,1,1,1);
   }
 
   @Override
@@ -55,13 +55,13 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
         propertyDictList.add(nodeMap);
       }
     });
-    result.setValue(PROPERTY_DICT_LIST, propertyDictList);
+    result.setValue(PROPERTY_MAPPING, propertyDictList);
     return result;
   }
 
   @Override
   public ParameterMap createParameterMap() {
-    return new DefaultParameterMap(PROPERTY_DICT_LIST);
+    return new DefaultParameterMap(PROPERTY_MAPPING);
   }
 
   @Override
@@ -85,7 +85,7 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
 
   private Property findReplacement(Property p) {
     final Property[] result = {null};
-    propertyDictList.forEach(nodeMap -> {
+    propertyMapping.forEach(nodeMap -> {
       if (nodeMap.get(SOURCE).equals(p)) {
         result[0] = nodeMap.get(TARGET).as(Property.class);
       }
@@ -100,7 +100,7 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
 
   @Override
   public void accept(ParameterMap parameterMap) {
-    this.propertyDictList = parameterMap.getValue(PROPERTY_DICT_LIST);
+    this.propertyMapping = parameterMap.getValue(PROPERTY_MAPPING);
   }
 
 }

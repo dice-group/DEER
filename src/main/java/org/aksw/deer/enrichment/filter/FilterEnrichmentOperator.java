@@ -1,36 +1,36 @@
 package org.aksw.deer.enrichment.filter;
 
 import com.google.common.collect.Lists;
+import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
+import org.aksw.deer.parameter.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.log4j.Logger;
+import ro.fortsoft.pf4j.Extension;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
-import org.aksw.deer.parameter.JenaResourceConsumingParameter;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.log4j.Logger;
-import ro.fortsoft.pf4j.Extension;
 
 /**
- * @author sherif
+ * @author Kevin Dreßler
  */
 @Extension
 public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
 
-  public static final String TRIPLES_PATTERN = "triplesPattern";
-  public static final String TRIPLES_PATTERN_DESC =
+  private static final Logger logger = Logger.getLogger(FilterEnrichmentOperator.class);
+
+  private static final Parameter SELECTORS = new DefaultParameter(
+    "selectors",
     "Set of triple pattern to run against the input model of the filter enrichment. " +
       "By default, this parameter is set to ?s ?p ?o. which generates the whole " +
       "input model as output, changing the values of " +
-      "?s, ?p and/or ?o will restrict the output model";
-  private static final Logger logger = Logger.getLogger(FilterEnrichmentOperator.class.getName());
-  private Model model = ModelFactory.createDefaultModel();
-  private String triplesPattern = "?s ?p ?o .";
+      "?s, ?p and/or ?o will restrict the output model",
+    new DictListParameterConversion(RDF.subject, RDF.predicate, RDF.object), false
+  );
+
+  private List<Map<Property, RDFNode>> selectors = new ArrayList<>();
 
   public FilterEnrichmentOperator() {
     super();
@@ -38,38 +38,27 @@ public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
 
   @Override
   protected List<Model> process() {
-    this.model = models.get(0);
-    if (parameters.containsKey(TRIPLES_PATTERN)) {
-      triplesPattern = parameters.get(TRIPLES_PATTERN);
-    }
-    return Lists.newArrayList(filterModel());
+    return Lists.newArrayList(filterModel(models.get(0)));
   }
 
-  private Model filterModel() {
+  private Model filterModel(Model model) {
     Model resultModel = ModelFactory.createDefaultModel();
-    List<Property> accepted = new ArrayList<>();
-    if (triplesPattern.contains(" ")) {
-      for (String str : triplesPattern.split(" ")) {
-        accepted.add(ResourceFactory.createProperty(str));
-      }
-    } else { // if only one property
-      accepted.add(ResourceFactory.createProperty(triplesPattern));
-    }
-    StmtIterator listStatements = model.listStatements();
-    while (listStatements.hasNext()) {
-      Statement stat = listStatements.next();
-      if (accepted.contains(stat.getPredicate())) {
-        resultModel.add(stat);
-      }
+    for (Map<Property, RDFNode> selectorMap : selectors) {
+      RDFNode s = selectorMap.get(RDF.subject);
+      RDFNode p = selectorMap.get(RDF.predicate);
+      SimpleSelector selector = new SimpleSelector(
+        s == null ? null : s.asResource(),
+        p == null ? null : p.as(Property.class),
+        selectorMap.get(RDF.object)
+      );
+      resultModel.add(model.listStatements(selector));
     }
     return resultModel;
   }
 
   @Override
-  public List<JenaResourceConsumingParameter> getParameters() {
-    List<String> parameters = new ArrayList<>();
-    parameters.add(TRIPLES_PATTERN);
-    return null;
+  public ParameterMap createParameterMap() {
+    return new DefaultParameterMap(SELECTORS);
   }
 
   @Override
@@ -78,25 +67,34 @@ public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  public ArityBounds getArityBounds() {
-    return new ArityBoundsImpl(1,1,1,1);
+  public void accept(ParameterMap params) {
+    selectors = params.getValue(SELECTORS);
+    if (selectors.size() == 0) {
+      // empty HashMap will select everything - equivalent to "?s ?p ?o"
+      selectors.add(new HashMap<>());
+    }
   }
 
   @Override
-  public Map<String, String> selfConfig(Model source, Model target) {
-    Map<String, String> parameters = new HashMap<>();
+  public DegreeBounds getDegreeBounds() {
+    return new DefaultDegreeBounds(1,1,1,1);
+  }
+
+  @Override
+  public ParameterMap selfConfig(Model source, Model target) {
+    ParameterMap result = createParameterMap();
     Model intersection = source.intersection(target);
     if (intersection.isEmpty()) {
-      return null;
+      return result;
     }
-    triplesPattern = "";
-    StmtIterator listStatements = intersection.listStatements();
-    while (listStatements.hasNext()) {
-      Statement stmnt = listStatements.next();
-      triplesPattern += stmnt.getPredicate() + " ";
-    }
-    parameters.put(TRIPLES_PATTERN, triplesPattern);
-    return parameters;
+    List<Map<Property, RDFNode>> selectors = new ArrayList<>();
+    intersection.listStatements().forEachRemaining(stmt -> {
+      Map<Property, RDFNode> selectorMap = new HashMap<>();
+      selectorMap.put(RDF.predicate, stmt.getPredicate());
+      selectors.add(selectorMap);
+    });
+    result.setValue(SELECTORS, selectors);
+    return result;
   }
 
 }

@@ -9,21 +9,26 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 /**
+ * An Enrichment Operator.
+ *
+ * An enrichment operator is an atomic operator on a list of RDF models, yielding a list of RDF models.
+ * Its arity
+ *
  * @author Kevin Dreßler
  */
 public interface EnrichmentOperator extends ExtensionPoint, UnaryOperator<Model>, Plugin {
 
-  interface ArityBounds {
+  interface DegreeBounds {
     int minIn();
     int maxIn();
     int minOut();
     int maxOut();
   }
 
-  ArityBounds getArityBounds();
+  DegreeBounds getDegreeBounds();
 
-  int getInArity();
-  int getOutArity();
+  int getInDegree();
+  int getOutDegree();
 
   void init(ParameterMap parameterMap, int inArity, int outArity);
 

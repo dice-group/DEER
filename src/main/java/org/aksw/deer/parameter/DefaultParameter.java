@@ -20,7 +20,7 @@ public class DefaultParameter implements Parameter {
   }
 
   public DefaultParameter(String propertyName, String description) {
-    this(DEER.property(propertyName), description, StringParameterConversion.INSTANCE, true);
+    this(DEER.property(propertyName), description, StringParameterConversion.getInstance(), true);
   }
 
   private DefaultParameter(Property property, String description,

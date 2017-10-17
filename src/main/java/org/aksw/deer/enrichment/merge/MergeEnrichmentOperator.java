@@ -30,8 +30,8 @@ public class MergeEnrichmentOperator extends ParameterlessEnrichmentOperator {
   }
 
   @Override
-  public ArityBounds getArityBounds() {
-    return new ArityBoundsImpl(1,Integer.MAX_VALUE,1,1);
+  public DegreeBounds getDegreeBounds() {
+    return new DefaultDegreeBounds(1,Integer.MAX_VALUE,1,1);
   }
 
 }

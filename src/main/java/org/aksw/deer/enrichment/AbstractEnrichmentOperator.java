@@ -14,14 +14,14 @@ import org.apache.jena.rdf.model.Resource;
  */
 public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
 
-  protected static class ArityBoundsImpl implements EnrichmentOperator.ArityBounds{
+  protected static class DefaultDegreeBounds implements DegreeBounds {
 
     private final int minIn;
     private final int maxIn;
     private final int minOut;
     private final int maxOut;
 
-    public ArityBoundsImpl(int minIn, int maxIn, int minOut, int maxOut) {
+    public DefaultDegreeBounds(int minIn, int maxIn, int minOut, int maxOut) {
       this.minIn = minIn;
       this.maxIn = maxIn;
       this.minOut = minOut;
@@ -50,14 +50,14 @@ public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
 
   }
 
-  protected ParameterMap parameterMap;
+  private ParameterMap parameterMap;
   protected List<Model> models;
   private int inArity;
   private int outArity;
   private boolean initialized = false;
 
   public void init(ParameterMap parameterMap, int inArity, int outArity) {
-    if (!arityInBounds(inArity, outArity)) {
+    if (!degreeInBounds(inArity, outArity)) {
       //@todo: add better operatorinvalidarityexception
       throw new RuntimeException("Arity not valid!");
     } else {
@@ -69,11 +69,11 @@ public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
     }
   }
 
-  public int getInArity() {
+  public int getInDegree() {
     return inArity;
   }
 
-  public int getOutArity() {
+  public int getOutDegree() {
     return outArity;
   }
 
@@ -109,15 +109,15 @@ public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
 
   protected abstract List<Model> process();
 
-  private boolean arityInBounds(int in, int out) {
+  private boolean degreeInBounds(int in, int out) {
     boolean inBounds;
-    ArityBounds arityBounds = getArityBounds();
-    inBounds  = arityBounds.minIn() <= in;
-    inBounds &= arityBounds.maxIn() >= in;
-    inBounds &= arityBounds.minOut() <= out;
+    DegreeBounds degreeBounds = getDegreeBounds();
+    inBounds  = degreeBounds.minIn() <= in;
+    inBounds &= degreeBounds.maxIn() >= in;
+    inBounds &= degreeBounds.minOut() <= out;
     // we only need to check for maxOut if it is greater than 1 as for 1 we apply implicit cloning.
-    if (arityBounds.maxOut() > 1) {
-      inBounds &= arityBounds.maxOut() >= out;
+    if (degreeBounds.maxOut() > 1) {
+      inBounds &= degreeBounds.maxOut() >= out;
     }
     return inBounds;
   }
@@ -126,8 +126,8 @@ public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
     return DEER.resource(this.getClass().getCanonicalName());
   }
 
-  public ArityBounds getArityBounds() {
-    return new ArityBoundsImpl(1, 1, 1, 1);
+  public DegreeBounds getDegreeBounds() {
+    return new DefaultDegreeBounds(1, 1, 1, 1);
   }
 
 }
