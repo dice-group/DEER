@@ -16,7 +16,7 @@ DEER implemented in Java as an open-source project. Please see /DEER_Manual/DEER
 
 To build DEER using Maven, simply do
 ```
-mvn clean compile assembly:assembly
+mvn clean package shade:shade -Dcheckstyle.skip=true -Dmaven.test.skip=true
 ```
 
 
