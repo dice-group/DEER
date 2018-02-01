@@ -13,8 +13,6 @@ public interface Plugin extends Consumer<ParameterMap> {
 
   ParameterMap createParameterMap();
 
-  String getDescription();
-
   Resource getType();
 
 }

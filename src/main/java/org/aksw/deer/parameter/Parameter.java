@@ -12,8 +12,6 @@ public interface Parameter {
 
   Property getProperty();
 
-  String getDescription();
-
   RDFNode applySerialization(Object object);
 
   Object applyDeserialization(RDFNode node);

@@ -36,11 +36,11 @@ public class  PluginFactory <T extends Plugin> {
 
   public T create(String id) {
     if (!classMap.containsKey(id)) {
-      throw new RuntimeException(clazz.getCanonicalName() + " implementation for declaration \"" + id + "\" could not be found.");
+      throw new RuntimeException(clazz.getName() + " implementation for declaration \"" + id + "\" could not be found.");
     } else {
       Object o = factory.create(classMap.get(id));
       if (!clazz.isInstance(o)) {
-        throw new RuntimeException("Plugin \"" + id + "\" required as " + clazz.getCanonicalName() + ", but has type " + o.getClass().getCanonicalName());
+        throw new RuntimeException("Plugin \"" + id + "\" required as " + clazz.getName() + ", but has type " + o.getClass().getName());
       } else {
         return (T) o;
       }
@@ -63,33 +63,4 @@ public class  PluginFactory <T extends Plugin> {
       .collect(Collectors.toList());
   }
 
-  public String getDescription(String id) {
-    if (!classMap.containsKey(id)) {
-      throw new RuntimeException("Implementation for declaration \"" + id + "\" could not be found.");
-    } else {
-      return ((EnrichmentOperator) factory.create(classMap.get(id))).getDescription();
-    }
-  }
-//  public static final String DEREFERENCING_MODULE_DESCRIPTION =
-//    "The purpose of the org.aksw.deer.resources.dereferencing enrichment is to extend the model's Geo-spatial" +
-//      "information by set of information through specified predicates";
-//  public static final String LINKING_MODULE_DESCRIPTION =
-//    "The purpose of the org.aksw.deer.resources.linking enrichment is to enrich a model with additional " +
-//      "geographic information URIs represented in owl:sameAs predicates";
-//  public static final String NLP_MODULE_DESCRIPTION =
-//    "The purpose of the NLP enrichment is to enrich a model with additional Geo-" +
-//      "spatial information URIs represented by the addedGeoProperty predicates, " +
-//      "witch by default is geoknow:relatedTo predicates";
-//  public static final String AUTHORITY_CONFORMATION_MODULE_DESCRIPTION =
-
-//  public static final String PREDICATE_CONFORMATION_MODULE_DESCRIPTION =
-//    "The purpose of the predicate conformation enrichment is to change a set of source predicates to a set of target predicates."
-//      +
-//      "For example, all rdfs:label can be conformed to become skos:prefLabel";
-//  public static final String FILTER_MODULE_DESCRIPTION =
-//    "Runs a set of triples patterns against an input model to filter some triples out " +
-//      "of it and export them to an output model. For example running triple pattern " +
-//      "'?s <http://dbpedia.org/ontology/abstract> ?o' againt an input model containing " +
-//      "'http://dbpedia.org/resource/Berlin' will generate output model containing only " +
-//      "Berlin's abstracts of DBpedia";
 }

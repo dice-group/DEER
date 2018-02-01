@@ -1,0 +1,43 @@
+@prefix : <http://aksw.org/deer/ontology#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+:d1           a                  :Dataset ;
+		          :hasUri			       <http://dbpedia.org/resource/Paderborn> ;
+		          :fromEndPoint	     <http://dbpedia.org/sparql> ;
+		          :outputFile		     "input_dbp.ttl" ;
+		          :outputFormat	     "Turtle" .
+:d2           a                  :Dataset ;
+              :hasUri			       <http://linkedgeodata.org/data/triplify/node240114473> ;
+              :outputFile		     "input_lgd.ttl" ;
+              :outputFormat	     "Turtle" .
+:d3           a                  :Dataset .
+:d4           a                  :Dataset .
+:d5	          a                  :Dataset ;
+		          :outputFile		     "output_demo.ttl" ;
+		          :outputFormat	     "Turtle" .
+:merge        a                  :Operator ;
+              :implementedIn     :GeoFusionEnrichmentOperator ;
+              :hasInput          ( :d3 :d2 ) ;
+              :hasOutput         ( :d4 ) ;
+              :fusionAction      "takeAll" ;
+              :mergeOtherStatements
+                                 "true" .
+:filter       a                  :Operator ;
+              :implementedIn     :FilterEnrichmentOperator ;
+              :hasInput          ( :d4 ) ;
+              :hasOutput         ( :d5 ) ;
+              :selectors         (
+                    [ :predicate geo:lat ]
+                    [ :predicate geo:long ]
+                    [ :predicate rdfs:label ]
+                    [ :predicate owl:sameAs ]
+              ) .
+:conf         a                  :Operator ;
+              :implementedIn     :AuthorityConformationEnrichmentOperator ;
+		          rdfs:label		     "Conformation" ;
+		          :hasInput		       ( :d1 ) ;
+		          :hasOutput		     ( :d3 ) ;
+		          :sourceSubjectAuthority  "http://dbpedia.org" ;
+		          :targetSubjectAuthority  "http://deer.org" .

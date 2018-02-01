@@ -18,11 +18,35 @@ import java.util.function.UnaryOperator;
  */
 public interface EnrichmentOperator extends ExtensionPoint, UnaryOperator<Model>, Plugin {
 
-  interface DegreeBounds {
-    int minIn();
-    int maxIn();
-    int minOut();
-    int maxOut();
+  class DegreeBounds {
+    private final int minIn;
+    private final int maxIn;
+    private final int minOut;
+    private final int maxOut;
+
+    public DegreeBounds(int minIn, int maxIn, int minOut, int maxOut) {
+      this.minIn = minIn;
+      this.maxIn = maxIn;
+      this.minOut = minOut;
+      this.maxOut = maxOut;
+    }
+
+    public int minIn() {
+      return minIn;
+    }
+
+    public int maxIn() {
+      return maxIn;
+    }
+
+    public int minOut() {
+      return minOut;
+    }
+
+    public int maxOut() {
+      return maxOut;
+    }
+
   }
 
   DegreeBounds getDegreeBounds();
@@ -35,8 +59,6 @@ public interface EnrichmentOperator extends ExtensionPoint, UnaryOperator<Model>
   ParameterMap selfConfig(Model source, Model target);
 
   ParameterMap getParameterMap();
-
-  String getDescription();
 
   Resource getType();
 

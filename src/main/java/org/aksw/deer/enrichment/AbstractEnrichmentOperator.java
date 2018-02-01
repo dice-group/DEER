@@ -14,42 +14,6 @@ import org.apache.jena.rdf.model.Resource;
  */
 public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
 
-  protected static class DefaultDegreeBounds implements DegreeBounds {
-
-    private final int minIn;
-    private final int maxIn;
-    private final int minOut;
-    private final int maxOut;
-
-    public DefaultDegreeBounds(int minIn, int maxIn, int minOut, int maxOut) {
-      this.minIn = minIn;
-      this.maxIn = maxIn;
-      this.minOut = minOut;
-      this.maxOut = maxOut;
-    }
-
-    @Override
-    public int minIn() {
-      return minIn;
-    }
-
-    @Override
-    public int maxIn() {
-      return maxIn;
-    }
-
-    @Override
-    public int minOut() {
-      return minOut;
-    }
-
-    @Override
-    public int maxOut() {
-      return maxOut;
-    }
-
-  }
-
   private ParameterMap parameterMap;
   protected List<Model> models;
   private int inArity;
@@ -112,22 +76,22 @@ public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
   private boolean degreeInBounds(int in, int out) {
     boolean inBounds;
     DegreeBounds degreeBounds = getDegreeBounds();
-    inBounds  = degreeBounds.minIn() <= in;
-    inBounds &= degreeBounds.maxIn() >= in;
-    inBounds &= degreeBounds.minOut() <= out;
+    inBounds  = in >= degreeBounds.minIn();
+    inBounds &= in <= degreeBounds.maxIn();
+    inBounds &= out >= degreeBounds.minOut();
     // we only need to check for maxOut if it is greater than 1 as for 1 we apply implicit cloning.
     if (degreeBounds.maxOut() > 1) {
-      inBounds &= degreeBounds.maxOut() >= out;
+      inBounds &= out <= degreeBounds.maxOut();
     }
     return inBounds;
   }
 
   public Resource getType() {
-    return DEER.resource(this.getClass().getCanonicalName());
+    return DEER.resource(this.getClass().getSimpleName());
   }
 
   public DegreeBounds getDegreeBounds() {
-    return new DefaultDegreeBounds(1, 1, 1, 1);
+    return new DegreeBounds(1, 1, 1, 1);
   }
 
 }

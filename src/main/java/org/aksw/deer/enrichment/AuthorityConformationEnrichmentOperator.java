@@ -1,11 +1,10 @@
-package org.aksw.deer.enrichment.authorityconformation;
+package org.aksw.deer.enrichment;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
-import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
 import org.aksw.deer.parameter.Parameter;
-import org.aksw.deer.parameter.DefaultParameter;
+import org.aksw.deer.parameter.ParameterImpl;
 import org.aksw.deer.parameter.DefaultParameterMap;
 import org.aksw.deer.parameter.ParameterMap;
 import org.apache.jena.rdf.model.*;
@@ -23,13 +22,9 @@ public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentO
 
   private static final Logger logger = Logger.getLogger(AuthorityConformationEnrichmentOperator.class);
 
-  private static final Parameter SOURCE_SUBJECT_AUTHORITY = new DefaultParameter(
-    "sourceSubjectAuthority",
-    "Source subject authority to be replaced by Target subject authority");
+  private static final Parameter SOURCE_SUBJECT_AUTHORITY = new ParameterImpl("sourceSubjectAuthority");
 
-  private static final Parameter TARGET_SUBJECT_AUTHORITY = new DefaultParameter(
-    "targetSubjectAuthority",
-    "Target subject authority to replace the source subject authority");
+  private static final Parameter TARGET_SUBJECT_AUTHORITY = new ParameterImpl("targetSubjectAuthority");
 
   private String sourceSubjectAuthority;
 
@@ -82,14 +77,6 @@ public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentO
       }
     }
     return result;
-  }
-
-  @Override
-  public String getDescription() {
-    return "The purpose of the authority conformation enrichment is to change a specified " +
-      "source URI to a specified target URI, for example using " +
-      "source URI of 'http://dbpedia.org' and target URI of 'http://example.org' " +
-      "changes a resource like 'http://dbpedia.org/Berlin' to 'http://example.org/Berlin'";
   }
 
   /**

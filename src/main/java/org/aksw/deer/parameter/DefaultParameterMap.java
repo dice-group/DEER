@@ -31,17 +31,26 @@ public class DefaultParameterMap implements ParameterMap {
   }
 
   @SuppressWarnings("unchecked")
-  public <T> T getValue(Parameter p) {
+  public <T> T getValue(Parameter p, T defaultValue) {
     if (!initialized) {
       throw new RuntimeException("ParameterMap needs to be initialized before usage!");
     }
     try {
-      return (T) values.get(p.getProperty().getURI());
+      String key = p.getProperty().getURI();
+      if (values.containsKey(key)) {
+        return (T) values.get(key);
+      } else {
+        return defaultValue;
+      }
     } catch (ClassCastException e) {
       ClassCastException ee = new ClassCastException("Unable to retrieve parameter " + p.getProperty().getURI() + " of instance " + "");
       ee.initCause(e);
       throw ee;
     }
+  }
+
+  public <T> T getValue(Parameter p) {
+    return getValue(p, null);
   }
 
   @Override
@@ -51,7 +60,7 @@ public class DefaultParameterMap implements ParameterMap {
         RDFNode node = r.getProperty(p.getProperty()).getObject();
         setValue(p, p.applyDeserialization(node));
       }
-      if (p.isRequired() && getValue(p) == null) {
+      if (p.isRequired() && values.get(p.getProperty().getURI()) == null) {
         throw new RuntimeException("Required parameter " + p.getProperty().getURI() + " not defined!");
       }
     }

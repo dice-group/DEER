@@ -1,8 +1,8 @@
-package org.aksw.deer.enrichment.predicateconformation;
+package org.aksw.deer.enrichment;
 
 import com.google.common.collect.Lists;
 import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
-import org.aksw.deer.enrichment.authorityconformation.AuthorityConformationEnrichmentOperator;
+import org.aksw.deer.enrichment.AuthorityConformationEnrichmentOperator;
 import org.aksw.deer.parameter.*;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.*;
@@ -25,21 +25,13 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
   private static final Property SOURCE = DEER.property("source");
   private static final Property TARGET = DEER.property("target");
 
-  private static final Parameter PROPERTY_MAPPING = new DefaultParameter(
-    "propertyMapping",
-    "List of (source, target) pairs of property URIs. For each pair," +
-      "source in input model will be conformed to target.",
+  private static final Parameter PROPERTY_MAPPING = new ParameterImpl("propertyMapping",
     new DictListParameterConversion(SOURCE, TARGET), true);
 
   private List<Map<Property , RDFNode>> propertyMapping = new ArrayList<>();
 
   public PredicateConformationEnrichmentOperator() {
     super();
-  }
-
-  @Override
-  public DegreeBounds getDegreeBounds() {
-    return new DefaultDegreeBounds(1,1,1,1);
   }
 
   @Override
@@ -91,11 +83,6 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
       }
     });
     return result[0];
-  }
-
-  @Override
-  public String getDescription() {
-    return null;
   }
 
   @Override

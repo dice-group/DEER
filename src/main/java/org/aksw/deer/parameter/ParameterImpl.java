@@ -7,26 +7,22 @@ import org.apache.jena.rdf.model.RDFNode;
 /**
  * @author Kevin Dreßler
  */
-public class DefaultParameter implements Parameter {
+public class ParameterImpl implements Parameter {
 
   private Property property;
-  private String description;
   private boolean required;
   private ParameterConversion conversion;
 
-  public DefaultParameter(String propertyName, String description,
-                          ParameterConversion conversion, boolean required) {
-    this(DEER.property(propertyName), description, conversion, required);
+  public ParameterImpl(String propertyName) {
+    this(DEER.property(propertyName), StringParameterConversion.getInstance(), true);
   }
 
-  public DefaultParameter(String propertyName, String description) {
-    this(DEER.property(propertyName), description, StringParameterConversion.getInstance(), true);
+  public ParameterImpl(String propertyName, ParameterConversion conversion, boolean required) {
+    this(DEER.property(propertyName), conversion, required);
   }
 
-  private DefaultParameter(Property property, String description,
-                           ParameterConversion conversion, boolean required) {
+  private ParameterImpl(Property property, ParameterConversion conversion, boolean required) {
     this.property = property;
-    this.description = description;
     this.required = required;
     this.conversion = conversion;
   }
@@ -34,11 +30,6 @@ public class DefaultParameter implements Parameter {
   @Override
   public Property getProperty() {
     return property;
-  }
-
-  @Override
-  public String getDescription() {
-    return description;
   }
 
   @Override

@@ -19,6 +19,8 @@ public interface ParameterMap {
 
   <T> T getValue(Parameter p);
 
+  <T> T getValue(Parameter p, T defaultValue);
+
   ParameterMap init(Resource r);
 
 }

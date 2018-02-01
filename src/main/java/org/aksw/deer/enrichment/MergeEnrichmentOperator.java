@@ -1,4 +1,4 @@
-package org.aksw.deer.enrichment.merge;
+package org.aksw.deer.enrichment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,16 +22,8 @@ public class MergeEnrichmentOperator extends ParameterlessEnrichmentOperator {
   }
 
   @Override
-  public String getDescription() {
-    return "The idea behind the merge operator is to enable combining datasets. The merge operator " +
-      "takes a set of n ≥ 2 input datasets and merges them into one output dataset containing all" +
-      " the input datasets’ triples. As in case of clone operator, the merged output dataset has " +
-      "its own execution (as to be input to any other enrichment or operator).";
-  }
-
-  @Override
   public DegreeBounds getDegreeBounds() {
-    return new DefaultDegreeBounds(1,Integer.MAX_VALUE,1,1);
+    return new DegreeBounds(1,Integer.MAX_VALUE,1,1);
   }
 
 }
