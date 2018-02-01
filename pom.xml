@@ -157,7 +157,7 @@
           <transformers>
             <transformer
               implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>org.aksw.limes.core.controller.Controller</mainClass>
+              <mainClass>org.aksw.deer.execution.Controller</mainClass>
               <manifestEntries>
                 <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                 <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
