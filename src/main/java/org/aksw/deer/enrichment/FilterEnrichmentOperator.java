@@ -4,17 +4,15 @@ import com.google.common.collect.Lists;
 import org.aksw.deer.parameter.*;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.vocabulary.RDF;
 import org.apache.log4j.Logger;
-import ro.fortsoft.pf4j.Extension;
-
+import org.jetbrains.annotations.NotNull;
+import org.pf4j.Extension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @author Kevin Dreßler
  */
 @Extension
 public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
@@ -56,19 +54,21 @@ public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
     return resultModel;
   }
 
+  @NotNull
   @Override
   public ParameterMap createParameterMap() {
-    return new DefaultParameterMap(SELECTORS);
+    return new ParameterMapImpl(SELECTORS);
   }
 
   @Override
-  public void accept(ParameterMap params) {
+  public void accept(@NotNull ParameterMap params) {
     selectors = params.getValue(SELECTORS);
     if (selectors.size() == 0) {
       // empty HashMap will select everything - equivalent to "?s ?p ?o"
       selectors.add(new HashMap<>());
     }
   }
+  @NotNull
   @Override
   public ParameterMap selfConfig(Model source, Model target) {
     ParameterMap result = createParameterMap();

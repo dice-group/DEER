@@ -1,13 +1,12 @@
 package org.aksw.deer.enrichment;
 
 import com.google.common.collect.Lists;
-import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
-import org.aksw.deer.enrichment.AuthorityConformationEnrichmentOperator;
 import org.aksw.deer.parameter.*;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.*;
 import org.apache.log4j.Logger;
-import ro.fortsoft.pf4j.Extension;
+import org.jetbrains.annotations.NotNull;
+import org.pf4j.Extension;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author sherif
  */
 @Extension
 public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentOperator {
@@ -34,6 +32,7 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
     super();
   }
 
+  @NotNull
   @Override
   public ParameterMap selfConfig(Model source, Model target) {
     ParameterMap result = createParameterMap();
@@ -51,9 +50,10 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
     return result;
   }
 
+  @NotNull
   @Override
   public ParameterMap createParameterMap() {
-    return new DefaultParameterMap(PROPERTY_MAPPING);
+    return new ParameterMapImpl(PROPERTY_MAPPING);
   }
 
   @Override
@@ -86,7 +86,7 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
   }
 
   @Override
-  public void accept(ParameterMap parameterMap) {
+  public void accept(@NotNull ParameterMap parameterMap) {
     this.propertyMapping = parameterMap.getValue(PROPERTY_MAPPING);
   }
 

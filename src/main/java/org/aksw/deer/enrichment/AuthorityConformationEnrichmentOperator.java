@@ -5,11 +5,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import org.aksw.deer.parameter.Parameter;
 import org.aksw.deer.parameter.ParameterImpl;
-import org.aksw.deer.parameter.DefaultParameterMap;
+import org.aksw.deer.parameter.ParameterMapImpl;
 import org.aksw.deer.parameter.ParameterMap;
 import org.apache.jena.rdf.model.*;
 import org.apache.log4j.Logger;
-import ro.fortsoft.pf4j.Extension;
+import org.jetbrains.annotations.NotNull;
+import org.pf4j.Extension;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,7 +53,6 @@ public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentO
 
   /**
    * @return Most redundant source URI in the input model
-   * @author sherif
    */
   private String getMostRedundantUri(Model m) {
     Multiset<Resource> subjectsMultiset = HashMultiset.create();
@@ -84,8 +84,8 @@ public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentO
    * Find source/target URI as the most redundant URIs
    *
    * @return Map of (key, value) pairs of self configured parameters
-   * @author sherif
    */
+  @NotNull
   @Override
   public ParameterMap selfConfig(Model source, Model target) {
     ParameterMap parameters = createParameterMap();
@@ -98,13 +98,14 @@ public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentO
     return parameters;
   }
 
+  @NotNull
   @Override
   public ParameterMap createParameterMap() {
-    return new DefaultParameterMap(SOURCE_SUBJECT_AUTHORITY, TARGET_SUBJECT_AUTHORITY);
+    return new ParameterMapImpl(SOURCE_SUBJECT_AUTHORITY, TARGET_SUBJECT_AUTHORITY);
   }
 
   @Override
-  public void accept(ParameterMap params) {
+  public void accept(@NotNull ParameterMap params) {
     this.sourceSubjectAuthority = params.getValue(SOURCE_SUBJECT_AUTHORITY);
     this.targetSubjectAuthority = params.getValue(TARGET_SUBJECT_AUTHORITY);
   }

@@ -7,7 +7,7 @@ import java.util.Set;
 
 
 /**
- * @author sherif
+ * 
  */
 public class TreeX<T> {
 
@@ -21,7 +21,7 @@ public class TreeX<T> {
   /**
    * create tree node with many parents and many children
    *
-   * @author sherif
+   * 
    */
   public TreeX(List<TreeX<T>> parents, T value, List<TreeX<T>> childrenlist) {
     //		this.parents = parents;
@@ -41,7 +41,7 @@ public class TreeX<T> {
   /**
    * Copy constructor
    *
-   * @author sherif
+   * 
    */
   public TreeX(TreeX<T> root) {
     this(root.parents, root.value, root.children);
@@ -50,7 +50,7 @@ public class TreeX<T> {
   /**
    * create tree node with a single parent and many children
    *
-   * @author sherif
+   * 
    */
   public TreeX(TreeX<T> parent, T value, List<TreeX<T>> childrenlist) {
     if (parent != null) {
@@ -67,7 +67,7 @@ public class TreeX<T> {
   /**
    * create tree node with many parents and a single child
    *
-   * @author sherif
+   * 
    */
   public TreeX(List<TreeX<T>> parents, T value, TreeX<T> child) {
     this.value = value;
@@ -82,7 +82,7 @@ public class TreeX<T> {
   /**
    * Create a tree node with the given value with a null parents and children
    *
-   * @author sherif
+   * 
    */
   public TreeX(T value) {
     this.parents = null;
@@ -93,7 +93,7 @@ public class TreeX<T> {
   /**
    * Create an empty tree node
    *
-   * @author sherif
+   * 
    */
   public TreeX() {
     children = null;
@@ -139,7 +139,7 @@ public class TreeX<T> {
   /**
    * returns tree leaves
    *
-   * @author sherif
+   * 
    */
   public Set<TreeX<T>> getLeaves() {
     Set<TreeX<T>> leaves = new HashSet<TreeX<T>>();
@@ -159,7 +159,7 @@ public class TreeX<T> {
   /**
    * Add child node to the current tree node
    *
-   * @author sherif
+   * 
    */
   public TreeX<T> addChild(TreeX<T> child) {
     if (children == null) {
@@ -177,7 +177,7 @@ public class TreeX<T> {
    * Add parent node to the current tree node
    *
    * @return the added parent node
-   * @author sherif
+   * 
    */
   public TreeX<T> addParent(TreeX<T> parent) {
     if (parents == null) {
@@ -196,7 +196,7 @@ public class TreeX<T> {
   /**
    * Remove Child
    *
-   * @author sherif
+   * 
    */
   public void removeChild(TreeX<T> child) {
     children.remove(child);
@@ -205,7 +205,7 @@ public class TreeX<T> {
   /**
    * Return the first parent
    *
-   * @author sherif
+   * 
    */
   public TreeX<T> getParent() {
     return parents.get(0);
@@ -228,7 +228,7 @@ public class TreeX<T> {
   /**
    * Return all parents
    *
-   * @author sherif
+   * 
    */
   public List<TreeX<T>> getParents() {
     return parents;
@@ -243,7 +243,7 @@ public class TreeX<T> {
 
   /**
    * @return a list of all children nodes of the current tree node
-   * @author sherif
+   * 
    */
   public List<TreeX<T>> getchildren() {
     return children;
@@ -275,7 +275,7 @@ public class TreeX<T> {
 
   /**
    * @return the data value of the current tree node
-   * @author sherif
+   * 
    */
   public T getValue() {
     return value;
@@ -284,7 +284,7 @@ public class TreeX<T> {
   /**
    * Print current tree in console
    *
-   * @author sherif
+   * 
    */
   public void print() {
     unsetPrintFlag();
@@ -331,7 +331,7 @@ public class TreeX<T> {
 
   /**
    * @return tree size
-   * @author sherif
+   * 
    */
   public long size() {
     long size = 0;
@@ -346,7 +346,7 @@ public class TreeX<T> {
 
   /**
    * @return tree depth
-   * @author sherif
+   * 
    */
   public long depth() {
     if (children == null || children.size() == 0) {
@@ -364,7 +364,7 @@ public class TreeX<T> {
 
   /**
    * @return current node level
-   * @author sherif
+   * 
    */
   public long level() {
     long level = 0;

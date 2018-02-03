@@ -14,7 +14,7 @@ import org.apache.jena.util.FileManager;
 import org.apache.log4j.Logger;
 
 /**
- * @author sherif
+ *
  */
 public class ModelReader {
 

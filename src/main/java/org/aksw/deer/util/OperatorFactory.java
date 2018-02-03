@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 
 /**
- * @author sherif
  */
 @Deprecated
 public class OperatorFactory {
@@ -30,7 +29,6 @@ public class OperatorFactory {
 
   /**
    * @return a specific operator instance given its operator's name
-   * @author sherif
    */
   public static EnrichmentOperator createOperator(String name) {
     logger.info("Creating operator with name " + name);
@@ -59,7 +57,6 @@ public class OperatorFactory {
 
   /**
    * @return list of names of all implemented operator
-   * @author sherif
    */
   public static List<String> getNames() {
     List<String> result = new ArrayList<>();
@@ -70,7 +67,6 @@ public class OperatorFactory {
 
   /**
    * @return list of instances of all implemented operator
-   * @author sherif
    */
   public static List<EnrichmentOperator> getImplementations() {
     List<EnrichmentOperator> result = new ArrayList<>();

@@ -5,7 +5,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 
 /**
- * @author Kevin Dreßler
  */
 public class StringParameterConversion implements ParameterConversion {
 

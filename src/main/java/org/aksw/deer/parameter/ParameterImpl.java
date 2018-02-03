@@ -5,7 +5,6 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 
 /**
- * @author Kevin Dreßler
  */
 public class ParameterImpl implements Parameter {
 
@@ -46,4 +45,25 @@ public class ParameterImpl implements Parameter {
   public boolean isRequired() {
     return required;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Parameter) {
+      Parameter p = (Parameter) o;
+      return this.getProperty().equals(p.getProperty());
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return this.getProperty().hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return this.getProperty().toString() + " [required]";
+  }
+
 }

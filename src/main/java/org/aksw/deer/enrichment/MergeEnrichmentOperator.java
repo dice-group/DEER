@@ -5,7 +5,7 @@ import java.util.List;
 import org.aksw.deer.enrichment.ParameterlessEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import ro.fortsoft.pf4j.Extension;
+import org.pf4j.Extension;
 
 @Extension
 public class MergeEnrichmentOperator extends ParameterlessEnrichmentOperator {

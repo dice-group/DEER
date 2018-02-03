@@ -5,9 +5,10 @@ import org.aksw.deer.parameter.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.vocabulary.OWL;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.fortsoft.pf4j.Extension;
+import org.pf4j.Extension;
 
 import java.util.List;
 
@@ -126,6 +127,7 @@ public class GeoFusionEnrichmentOperator extends AbstractEnrichmentOperator {
     return Lists.newArrayList(targetModel);
   }
 
+  @NotNull
   @Override
   public ParameterMap selfConfig(Model source, Model target) {
     ParameterMap result = createParameterMap();
@@ -135,14 +137,15 @@ public class GeoFusionEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  public void accept(ParameterMap params) {
+  public void accept(@NotNull ParameterMap params) {
     this.fusionAction = GeoFusionAction.valueOf(params.getValue(FUSION_ACTION));
     this.mergeOtherStatements = Boolean.valueOf(params.getValue(MERGE_OTHER_STATEMENTS, "true"));
   }
 
+  @NotNull
   @Override
   public ParameterMap createParameterMap() {
-    return new DefaultParameterMap(FUSION_ACTION, MERGE_OTHER_STATEMENTS);
+    return new ParameterMapImpl(FUSION_ACTION, MERGE_OTHER_STATEMENTS);
   }
 
   @Override

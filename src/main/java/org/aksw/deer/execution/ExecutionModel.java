@@ -4,7 +4,6 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.jena.rdf.model.Model;
 
 /**
- * @author Kevin Dreßler
  */
 public class ExecutionModel {
 

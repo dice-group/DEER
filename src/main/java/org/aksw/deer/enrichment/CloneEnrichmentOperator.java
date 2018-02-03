@@ -4,7 +4,7 @@ import java.util.List;
 import org.aksw.deer.enrichment.ParameterlessEnrichmentOperator;
 import org.aksw.deer.util.EnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
-import ro.fortsoft.pf4j.Extension;
+import org.pf4j.Extension;
 
 /**
  *  An {@code EnrichmentOperator} for copying models to multiple parallel processed outputs.

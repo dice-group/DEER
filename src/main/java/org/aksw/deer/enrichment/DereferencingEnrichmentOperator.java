@@ -7,7 +7,8 @@ import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.log4j.Logger;
-import ro.fortsoft.pf4j.Extension;
+import org.jetbrains.annotations.NotNull;
+import org.pf4j.Extension;
 
 import java.util.*;
 import java.util.function.Function;
@@ -114,8 +115,8 @@ public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator 
    * Find source/target URI as the most redundant URIs
    *
    * @return Map of (key, value) pairs of self configured parameters
-   * @author sherif
    */
+  @NotNull
   @Override
   public ParameterMap selfConfig(Model source, Model target) {
     ParameterMap parameters = createParameterMap();
@@ -126,13 +127,14 @@ public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator 
     return parameters;
   }
 
+  @NotNull
   @Override
   public ParameterMap createParameterMap() {
-    return new DefaultParameterMap(OPERATIONS);
+    return new ParameterMapImpl(OPERATIONS);
   }
 
   @Override
-  public void accept(ParameterMap params) {
+  public void accept(@NotNull ParameterMap params) {
     this.operations = params.getValue(OPERATIONS);
 
   }

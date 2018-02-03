@@ -19,7 +19,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
- * @author Kevin Dreßler
  */
 public class ExecutionGraph {
 

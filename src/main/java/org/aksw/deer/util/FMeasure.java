@@ -6,7 +6,6 @@ package org.aksw.deer.util;
 import org.apache.jena.rdf.model.Model;
 
 /**
- * @author sherif
  */
 public class FMeasure {
 
@@ -14,7 +13,6 @@ public class FMeasure {
   public double P, R, F;
 
   /**
-   * @author sherif
    */
   public FMeasure(double p, double r, double f) {
     P = p;

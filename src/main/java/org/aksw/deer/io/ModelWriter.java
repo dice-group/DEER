@@ -7,7 +7,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.log4j.Logger;
 
 /**
- * @author sherif
  */
 public class ModelWriter implements Consumer<Model> {
 

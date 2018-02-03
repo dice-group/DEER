@@ -5,11 +5,13 @@ import java.util.Set;
 import org.apache.jena.rdf.model.Resource;
 
 /**
- * @author Kevin Dreßler
  */
 public interface ParameterMap {
 
-  ParameterMap EMPTY_INSTANCE = new DefaultParameterMap().init(null);
+  /**
+   * An empty instance to be passed
+   */
+  ParameterMap EMPTY_INSTANCE = new ParameterMapImpl().init(null);
 
   ParameterMap addParameter(Parameter p);
 

@@ -6,7 +6,6 @@ import java.util.function.UnaryOperator;
 import org.apache.jena.rdf.model.Model;
 
 /**
- * @author Kevin Dreßler
  */
 
 public class ExecutionPipeline implements UnaryOperator<Model> {

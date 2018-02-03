@@ -6,16 +6,16 @@ import org.apache.jena.rdf.model.Resource;
 import java.util.*;
 
 /**
- * @author Kevin Dreßler
+ * Default implementation of {@code ParameterMap}
  */
 
-public class DefaultParameterMap implements ParameterMap {
+public class ParameterMapImpl implements ParameterMap {
 
-  private Set<Parameter> parameters = new HashSet<>();
   private boolean initialized = false;
-  private Map<String, Object> values = new HashMap<>();
+  private Set<Parameter> parameters = new HashSet<>();
+  private Map<Parameter, Object> values = new HashMap<>();
 
-  public DefaultParameterMap(Parameter...p) {
+  public ParameterMapImpl(Parameter...p) {
     this.parameters.addAll(Arrays.asList(p));
   }
 
@@ -36,14 +36,14 @@ public class DefaultParameterMap implements ParameterMap {
       throw new RuntimeException("ParameterMap needs to be initialized before usage!");
     }
     try {
-      String key = p.getProperty().getURI();
-      if (values.containsKey(key)) {
-        return (T) values.get(key);
+      if (values.containsKey(p)) {
+        return (T) values.get(p);
       } else {
         return defaultValue;
       }
     } catch (ClassCastException e) {
-      ClassCastException ee = new ClassCastException("Unable to retrieve parameter " + p.getProperty().getURI() + " of instance " + "");
+      ClassCastException ee = new ClassCastException("Unable to retrieve parameter " + p +
+        " of type " + defaultValue.getClass().getSimpleName());
       ee.initCause(e);
       throw ee;
     }
@@ -60,8 +60,8 @@ public class DefaultParameterMap implements ParameterMap {
         RDFNode node = r.getProperty(p.getProperty()).getObject();
         setValue(p, p.applyDeserialization(node));
       }
-      if (p.isRequired() && values.get(p.getProperty().getURI()) == null) {
-        throw new RuntimeException("Required parameter " + p.getProperty().getURI() + " not defined!");
+      if (p.isRequired() && values.get(p) == null) {
+        throw new RuntimeException("Required parameter '" + p + "' not defined!");
       }
     }
     initialized = true;
@@ -69,7 +69,7 @@ public class DefaultParameterMap implements ParameterMap {
   }
 
   public ParameterMap setValue(Parameter p, Object o) {
-    values.put(p.getProperty().getURI(),o);
+    values.put(p, o);
     return this;
   }
 

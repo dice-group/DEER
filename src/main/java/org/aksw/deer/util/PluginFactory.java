@@ -5,15 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import ro.fortsoft.pf4j.DefaultPluginManager;
-import ro.fortsoft.pf4j.ExtensionFactory;
-import ro.fortsoft.pf4j.PluginManager;
+import org.pf4j.DefaultPluginManager;
+import org.pf4j.ExtensionFactory;
+import org.pf4j.PluginManager;
 
 /**
- * @author sherif
  */
 
-public class  PluginFactory <T extends Plugin> {
+public class  PluginFactory <T extends ParametrizedPlugin> {
 
   private static final PluginManager pluginManager = new DefaultPluginManager();
   private ExtensionFactory factory;

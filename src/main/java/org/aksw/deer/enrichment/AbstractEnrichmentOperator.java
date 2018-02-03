@@ -8,9 +8,9 @@ import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * @author Kevin Dreßler
  */
 public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
 
@@ -41,6 +41,7 @@ public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
     return outArity;
   }
 
+  @NotNull
   public ParameterMap getParameterMap() {
     return parameterMap;
   }
@@ -86,6 +87,7 @@ public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
     return inBounds;
   }
 
+  @NotNull
   public Resource getType() {
     return DEER.resource(this.getClass().getSimpleName());
   }

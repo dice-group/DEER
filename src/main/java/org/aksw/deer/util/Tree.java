@@ -10,7 +10,6 @@ import java.util.Set;
 
 
 /**
- * @author sherif
  */
 public class Tree<T> {
 
@@ -36,7 +35,6 @@ public class Tree<T> {
   }
 
   /**
-   * @author sherif
    */
   public Tree() {
     children = null;

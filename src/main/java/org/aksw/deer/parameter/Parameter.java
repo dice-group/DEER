@@ -4,7 +4,6 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 
 /**
- * @author Kevin Dreßler
  */
 public interface Parameter {
 

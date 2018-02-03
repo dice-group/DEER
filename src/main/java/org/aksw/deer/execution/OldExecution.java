@@ -5,7 +5,6 @@ import static org.aksw.deer.util.QueryHelper.mapResultOf;
 import static org.aksw.deer.util.QueryHelper.triple;
 
 /**
- * @author sherif
  */
 @Deprecated
 public class OldExecution {

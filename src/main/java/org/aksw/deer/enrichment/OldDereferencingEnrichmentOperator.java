@@ -32,10 +32,10 @@
 //import org.apache.jena.rdf.model.Statement;
 //import org.apache.jena.rdf.model.StmtIterator;
 //import org.apache.log4j.Logger;
-//import ro.fortsoft.pf4j.Extension;
+//import org.pf4j.Extension;
 //
 ///**
-// * @author mofeed This class includes methods in order to load dataset in Model from file. It
+// * This class includes methods in order to load dataset in Model from file. It
 // *         enriches such model with additional information specified by list of targeted predicates
 // *         to be added. This is done by following each URI-typed objects in the model and query for
 // *         such information in the dereferenced target
@@ -76,7 +76,6 @@
 //  }
 //
 //  /**
-//   * @author sherif
 //   */
 //  private void readParameters(Map<String, String> parameters) {
 //    for (String key : parameters.keySet()) {
@@ -107,7 +106,6 @@
 //  }
 //
 //  /**
-//   * @author sherif
 //   */
 //  public List<JenaResourceConsumingParameter> getParameters() {
 //    List<String> parameters = new ArrayList<>();
@@ -129,7 +127,6 @@
 //   * Find properties in target which are not in source
 //   *
 //   * @return Map of (key, value) pairs of self configured parameters
-//   * @author sherif
 //   */
 //  public Map<String, String> selfConfig(Model source, Model target) {
 //    Map<String, String> parameters = new HashMap<String, String>();
@@ -151,12 +148,10 @@
 //   * Properties(target) - Properties(source) - Properties(ignoredProperties)
 //   *
 //   * @return properties which are in target and not in source
-//   * @author sherif
 //   */
 //
 //
 //  /**
-//   * @author sherif
 //   */
 //  private Set<Property> removeUnwantedProperties(Set<Property> diffProperties) {
 //    Set<Property> ignoreProperties = new HashSet<Property>();

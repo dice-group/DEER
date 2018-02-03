@@ -32,7 +32,6 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import spark.Request;
 
 /**
- * @author Kevin Dreßler
  */
 public class Server {
 

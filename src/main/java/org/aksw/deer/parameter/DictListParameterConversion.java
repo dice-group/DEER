@@ -6,7 +6,6 @@ import org.apache.jena.rdf.model.*;
 import java.util.*;
 
 /**
- * @author Kevin Dreßler
  */
 
 public class DictListParameterConversion implements ParameterConversion {

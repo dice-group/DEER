@@ -8,7 +8,6 @@ import org.aksw.deer.util.EnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 
 /**
- * @author Kevin Dreßler
  */
 public class ExecutionHub {
 
