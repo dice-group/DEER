@@ -6,23 +6,37 @@ import org.apache.jena.rdf.model.*;
 import java.util.*;
 
 /**
+ * A {@code ParameterConversion} to convert between RDF lists and
+ * instances of {@code List<Map<Property, RDFNode>>}
+ * <p>
+ * A {@code DictListParameterConversion} is constructed with the list of {@link Property} that
+ * are should be extracted from the resources (typically blank nodes) in a RDF list.
  */
-
 public class DictListParameterConversion implements ParameterConversion {
 
   private static final short RESOURCE = 1;
   private static final short LITERAL = 2;
 
-  private List<Property> properties;
+  /**
+   * List of {@code Property} to be extracted
+   */
+  private Set<Property> properties = new HashSet<>();
+  /**
+   * Force mode of this {@code DictListParameterConversion}
+   */
   private short force = 0;
 
+  /**
+   * Constructor
+   * @param properties  varargs of {@code Property} to be extracted
+   */
   public DictListParameterConversion(Property...properties) {
-    this.properties = Lists.newArrayList(properties);
+    this.properties.addAll(Lists.newArrayList(properties));
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public RDFNode serialize(Object object) {
+  public RDFNode toRDF(Object object) {
     List<Map<Property, RDFNode>> dictList = (List<Map<Property, RDFNode>>) object;
     Model model = ModelFactory.createDefaultModel();
     RDFList list = model.createList();
@@ -35,7 +49,7 @@ public class DictListParameterConversion implements ParameterConversion {
   }
 
   @Override
-  public Object deserialize(RDFNode node) {
+  public Object fromRDF(RDFNode node) {
     List<Map<Property, RDFNode>> dictList = new ArrayList<>();
     node.as(RDFList.class).iterator().forEachRemaining(n -> {
       Resource r = n.asResource();
@@ -60,11 +74,25 @@ public class DictListParameterConversion implements ParameterConversion {
     return dictList;
   }
 
+  /**
+   * Force this {@code DictListParameterConversion} to always convert
+   * its values to instances of {@link Resource}, effectively throwing an exception if a
+   * {@link Literal} is encountered.
+   *
+   * @return this {@code DictListParameterConversion}, for method chaining
+   */
   public DictListParameterConversion forceResource() {
     this.force = RESOURCE;
     return this;
   }
 
+  /**
+   * Force this {@code DictListParameterConversion} to always convert
+   * its values to instances of {@link Literal}, effectively throwing an exception if a
+   * {@link Resource} is encountered.
+   *
+   * @return this {@code DictListParameterConversion}, for method chaining
+   */
   public DictListParameterConversion forceLiteral() {
     this.force = LITERAL;
     return this;

@@ -11,10 +11,23 @@ import java.util.*;
 
 public class ParameterMapImpl implements ParameterMap {
 
+  /**
+   * Initialized state variable
+   */
   private boolean initialized = false;
+  /**
+   * Set of allowed parameters
+   */
   private Set<Parameter> parameters = new HashSet<>();
+  /**
+   * Map of parameter values
+   */
   private Map<Parameter, Object> values = new HashMap<>();
 
+  /**
+   * Construct this {@code ParameterMapImpl} for the given {@code Parameter... p}
+   * @param p  an arbitrary number of parameters as a vararg
+   */
   public ParameterMapImpl(Parameter...p) {
     this.parameters.addAll(Arrays.asList(p));
   }
@@ -24,16 +37,12 @@ public class ParameterMapImpl implements ParameterMap {
     return parameters;
   }
 
-  @Override
-  public ParameterMap addParameter(Parameter p) {
-    parameters.add(p);
-    return this;
-  }
 
   @SuppressWarnings("unchecked")
-  public <T> T getValue(Parameter p, T defaultValue) {
+  @Override
+  public <T> T getValue(Parameter p, T defaultValue) throws IllegalStateException {
     if (!initialized) {
-      throw new RuntimeException("ParameterMap needs to be initialized before usage!");
+      throw new IllegalStateException("ParameterMap needs to be initialized before usage!");
     }
     try {
       if (values.containsKey(p)) {
@@ -43,13 +52,14 @@ public class ParameterMapImpl implements ParameterMap {
       }
     } catch (ClassCastException e) {
       ClassCastException ee = new ClassCastException("Unable to retrieve parameter " + p +
-        " of type " + defaultValue.getClass().getSimpleName());
+        " as instance of required type.");
       ee.initCause(e);
       throw ee;
     }
   }
 
-  public <T> T getValue(Parameter p) {
+  @Override
+  public <T> T getValue(Parameter p) throws IllegalStateException {
     return getValue(p, null);
   }
 
@@ -68,7 +78,11 @@ public class ParameterMapImpl implements ParameterMap {
     return this;
   }
 
-  public ParameterMap setValue(Parameter p, Object o) {
+  @Override
+  public ParameterMap setValue(Parameter p, Object o) throws IllegalStateException {
+    if (initialized) {
+      throw new IllegalStateException("ParameterMap can not set values after being initialized!");
+    }
     values.put(p, o);
     return this;
   }

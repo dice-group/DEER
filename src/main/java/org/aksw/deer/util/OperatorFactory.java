@@ -3,6 +3,7 @@ package org.aksw.deer.util;
 import java.util.ArrayList;
 import java.util.List;
 import org.aksw.deer.enrichment.CloneEnrichmentOperator;
+import org.aksw.deer.enrichment.EnrichmentOperator;
 import org.aksw.deer.enrichment.MergeEnrichmentOperator;
 import org.apache.log4j.Logger;
 

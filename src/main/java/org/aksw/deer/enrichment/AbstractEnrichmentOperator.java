@@ -3,7 +3,6 @@ package org.aksw.deer.enrichment;
 import com.google.common.collect.Lists;
 import java.util.List;
 import org.aksw.deer.parameter.ParameterMap;
-import org.aksw.deer.util.EnrichmentOperator;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -85,11 +84,6 @@ public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
       inBounds &= out <= degreeBounds.maxOut();
     }
     return inBounds;
-  }
-
-  @NotNull
-  public Resource getType() {
-    return DEER.resource(this.getClass().getSimpleName());
   }
 
   public DegreeBounds getDegreeBounds() {

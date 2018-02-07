@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import org.aksw.deer.util.EnrichmentOperator;
+import org.aksw.deer.enrichment.EnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 
 /**

@@ -1,8 +1,7 @@
 package org.aksw.deer.enrichment;
 
 import java.util.List;
-import org.aksw.deer.enrichment.ParameterlessEnrichmentOperator;
-import org.aksw.deer.util.EnrichmentOperator;
+
 import org.apache.jena.rdf.model.Model;
 import org.pf4j.Extension;
 

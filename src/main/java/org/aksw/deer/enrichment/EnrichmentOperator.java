@@ -1,6 +1,7 @@
-package org.aksw.deer.util;
+package org.aksw.deer.enrichment;
 
 import org.aksw.deer.parameter.ParameterMap;
+import org.aksw.deer.parameter.ParametrizedPlugin;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
@@ -61,9 +62,6 @@ public interface EnrichmentOperator extends ExtensionPoint, UnaryOperator<Model>
 
   @NotNull
   ParameterMap getParameterMap();
-
-  @NotNull
-  Resource getType();
 
   Model apply(Model model);
 

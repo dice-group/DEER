@@ -13,8 +13,8 @@ import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
 import org.aksw.deer.parameter.ParameterMap;
-import org.aksw.deer.util.EnrichmentOperator;
-import org.aksw.deer.util.PluginFactory;
+import org.aksw.deer.enrichment.EnrichmentOperator;
+import org.aksw.deer.parameter.ParametrizedPluginFactory;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -25,7 +25,7 @@ public class ExecutionModelGenerator {
   private ExecutionGraph executionGraph;
   private List<ExecutionPipelineBuilder> pipeBuilders;
   private List<Resource> hubs;
-  private PluginFactory<AbstractEnrichmentOperator> pluginFactory;
+  private ParametrizedPluginFactory<AbstractEnrichmentOperator> pluginFactory;
 
   public ExecutionModelGenerator(Model model) throws IOException {
     this();
@@ -33,7 +33,7 @@ public class ExecutionModelGenerator {
   }
 
   private ExecutionModelGenerator() throws IOException {
-    this.pluginFactory = new PluginFactory<>(AbstractEnrichmentOperator.class);
+    this.pluginFactory = new ParametrizedPluginFactory<>(AbstractEnrichmentOperator.class);
     this.pipeBuilders = new ArrayList<>();
     this.hubs = new ArrayList<>();
   }

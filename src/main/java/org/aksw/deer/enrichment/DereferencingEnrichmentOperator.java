@@ -13,7 +13,6 @@ import org.pf4j.Extension;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 /**
  * An EnrichmentOperator for dereferencing.
  * <p>

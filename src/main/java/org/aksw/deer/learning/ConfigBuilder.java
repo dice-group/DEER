@@ -1,17 +1,5 @@
 package org.aksw.deer.learning;
 
-import java.util.List;
-import java.util.Map;
-import org.aksw.deer.util.EnrichmentOperator;
-import org.aksw.deer.vocabulary.DEER;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
-import org.apache.log4j.Logger;
-
 /**
  * @author sherif
  */

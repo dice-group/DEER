@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.deer.util.EnrichmentOperator;
+import org.aksw.deer.enrichment.EnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;

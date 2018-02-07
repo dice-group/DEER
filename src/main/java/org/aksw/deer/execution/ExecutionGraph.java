@@ -19,8 +19,9 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
+ * Helper class representing an execution graph
  */
-public class ExecutionGraph {
+class ExecutionGraph {
 
   private Map<Resource, List<Resource>> operatorInputs;
   private Map<Resource, List<Resource>> operatorOutputs;
@@ -30,7 +31,7 @@ public class ExecutionGraph {
   private Set<Resource> visitedOperators;
   private Model model;
 
-  public ExecutionGraph(Model model) {
+  ExecutionGraph(Model model) {
     this.operatorInputs = new HashMap<>();
     this.operatorOutputs = new HashMap<>();
     this.datasetConsumers = new HashMap<>();
@@ -65,43 +66,43 @@ public class ExecutionGraph {
     map.put(op, list);
   }
 
-  public List<Resource> getOperatorInputs(Resource op) {
+  List<Resource> getOperatorInputs(Resource op) {
     return operatorInputs.getOrDefault(op, Collections.emptyList());
   }
 
-  public List<Resource> getOperatorOutputs(Resource op) {
+  List<Resource> getOperatorOutputs(Resource op) {
     return operatorOutputs.getOrDefault(op, Collections.emptyList());
   }
 
-  public List<Resource> getDatasetProducers(Resource ds) {
+  List<Resource> getDatasetProducers(Resource ds) {
     return datasetProducers.getOrDefault(ds, Collections.emptyList());
   }
 
-  public List<Resource> getDatasetConsumers(Resource ds) {
+  List<Resource> getDatasetConsumers(Resource ds) {
     return datasetConsumers.getOrDefault(ds, Collections.emptyList());
   }
 
-  public Set<Resource> getStartDatasets() {
+  Set<Resource> getStartDatasets() {
     return Sets.difference(datasetConsumers.keySet(), datasetProducers.keySet());
   }
 
-  public void setSubGraphId(Resource ds, int id) {
+  void setSubGraphId(Resource ds, int id) {
     subGraphIds.put(ds, id);
   }
 
-  public int getSubGraphId(Resource ds) {
+  int getSubGraphId(Resource ds) {
     return subGraphIds.getOrDefault(ds, -1);
   }
 
-  public boolean isVisited(Resource op) {
+  boolean isVisited(Resource op) {
     return visitedOperators.contains(op);
   }
 
-  public void visit(Resource op) {
+  void visit(Resource op) {
     visitedOperators.add(op);
   }
 
-  public boolean isHub(Resource op) {
+  boolean isHub(Resource op) {
     return operatorInputs.get(op).size() > 1 || operatorOutputs.get(op).size() > 1;
   }
 

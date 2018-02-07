@@ -8,6 +8,9 @@ import org.aksw.deer.server.Server;
 import org.apache.jena.rdf.model.Model;
 import org.apache.log4j.Logger;
 
+/**
+ * Main class for DEER.
+ */
 public class DeerController {
 
   private static final Logger logger = Logger.getLogger(DeerController.class);
@@ -24,24 +27,27 @@ public class DeerController {
     } else if (args[0].equals("-s") || args[0].toLowerCase().equals("--server")) {
       Server.main(args);
     } else {
-      // rdf config mode
-      long startTime = System.currentTimeMillis();
       ModelReader reader = new ModelReader();
       Model configurationModel = reader.readModel(args[0]);
-      ExecutionModelGenerator executionModelGenerator = new ExecutionModelGenerator(configurationModel);
-      ExecutionModel executionModel = executionModelGenerator.generate();
-      logger.info("DEER started execution");
-      executionModel.execute();
-      int i = 0;
-      int interval = 10;
-      TimeUnit unit = TimeUnit.MINUTES;
-      while (!ForkJoinPool.commonPool().awaitQuiescence(interval, unit)) {
-        i++;
-        logger.info("DEER is alive (started execution " + unit.toMinutes(i*interval) + " minutes ago)");
-      }
-      Long totalTime = System.currentTimeMillis() - startTime;
-      logger.info("Running DEER Done in " + totalTime + "ms");
+      runDeer(configurationModel);
     }
+  }
+
+  private static void runDeer(Model configurationModel) throws IOException {
+    long startTime = System.currentTimeMillis();
+    ExecutionModelGenerator executionModelGenerator = new ExecutionModelGenerator(configurationModel);
+    ExecutionModel executionModel = executionModelGenerator.generate();
+    logger.info("DEER started execution");
+    executionModel.execute();
+    int i = 0;
+    int interval = 10;
+    TimeUnit unit = TimeUnit.MINUTES;
+    while (!ForkJoinPool.commonPool().awaitQuiescence(interval, unit)) {
+      i++;
+      logger.info("DEER is alive (started execution " + unit.toMinutes(i*interval) + " minutes ago)");
+    }
+    Long totalTime = System.currentTimeMillis() - startTime;
+    logger.info("Running DEER Done in " + totalTime + "ms");
   }
 
 }

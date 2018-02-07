@@ -33,12 +33,12 @@ public class ParameterImpl implements Parameter {
 
   @Override
   public RDFNode applySerialization(Object object) {
-    return conversion.serialize(object);
+    return conversion.toRDF(object);
   }
 
   @Override
   public Object applyDeserialization(RDFNode node) {
-    return conversion.deserialize(node);
+    return conversion.fromRDF(node);
   }
 
   @Override

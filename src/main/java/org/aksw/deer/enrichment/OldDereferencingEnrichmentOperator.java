@@ -1,4 +1,4 @@
-//package org.aksw.deer.enrichment.dereferencing;
+package org.aksw.deer.enrichment.dereferencing;
 //
 //import com.google.common.collect.ImmutableSet;
 //import com.google.common.collect.Lists;
@@ -41,7 +41,8 @@
 // *         such information in the dereferenced target
 // */
 //@Extension
-//public class OldDereferencingEnrichmentOperator  {
+@Deprecated
+public class OldDereferencingEnrichmentOperator  {
 //
 //  public static final String INPUT_PROPERTY = "inputproperty";
 //  public static final String OUTPUT_PROPERTY = "outputproperty";
@@ -257,7 +258,7 @@
 //      e.printStackTrace();
 //    }
 //
-//    if (demo) { //serialize the output (for Demo purpose)
+//    if (demo) { //toRDF the output (for Demo purpose)
 //      try {
 //        HashMap<String, List<String>> ser = new HashMap<String, List<String>>();
 //        FileOutputStream fileOut = new FileOutputStream("resourceFocusedInfo.ser");
@@ -450,7 +451,7 @@
 //      triplesWithURIObjects.add(triple);
 //    }
 //
-//    if (demo) {    //serialize the output (for Demo purpose)
+//    if (demo) {    //toRDF the output (for Demo purpose)
 //      try {
 //        FileOutputStream fileOut = new FileOutputStream("triplesWithURIObjects.ser");
 //        ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -507,7 +508,7 @@
 //      RDFNode object = sol.get("?o");
 //      objectsURIs.add(object);
 //    }
-//    if (demo) { //serialize the output (for Demo purpose)
+//    if (demo) { //toRDF the output (for Demo purpose)
 //      try {
 //        FileOutputStream fileOut = new FileOutputStream("URIObjects.ser");
 //        ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -531,4 +532,4 @@
 //    localModel.setNsPrefix("gn", gn);
 //  }
 //
-//}
+}
