@@ -15,6 +15,8 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
 /**
+ * Helper class for working with Jena SPARQL API.
+ * Best used with static imports.
  */
 public class QueryHelper {
 

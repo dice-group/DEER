@@ -16,6 +16,7 @@ import org.apache.jena.rdf.model.RDFNode;
  *
  */
 public interface Parameter {
+
   /**
    * @return true if this {@code Parameter} is required
    */

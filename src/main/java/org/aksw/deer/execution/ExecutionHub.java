@@ -8,8 +8,9 @@ import org.aksw.deer.enrichment.EnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 
 /**
+ * A non-linear node in the execution graph, ties together at least three linear nodes.
  */
-public class ExecutionHub {
+class ExecutionHub {
 
   private List<ExecutionPipeline> inPipes;
   private List<ExecutionPipeline> outPipes;
@@ -18,23 +19,19 @@ public class ExecutionHub {
   private EnrichmentOperator operator;
   private int launchLatch;
 
-  public ExecutionHub(EnrichmentOperator operator) {
+  /**
+   * Constructor.
+   *
+   * @param operator {@code EnrichmentOperator} with at least two in or outputs.
+   * @param inPipes  List of {@code ExecutionPipeline}s floating into this {@code ExecutionHub}.
+   * @param outPipes  List of {@code ExecutionPipeline}s floating from this {@code ExecutionHub}.
+   */
+  ExecutionHub(EnrichmentOperator operator, List<ExecutionPipeline> inPipes, List<ExecutionPipeline> outPipes) {
     this.operator = operator;
-    this.inPipes = new ArrayList<>();
-    this.outPipes = new ArrayList<>();
+    this.inPipes = inPipes;
+    this.outPipes = outPipes;
     this.inModels = new ArrayList<>();
     this.outModels = new ArrayList<>();
-  }
-
-  public void addInPipe(ExecutionPipeline in) {
-    inPipes.add(in);
-  }
-
-  public void addOutPipe(ExecutionPipeline in) {
-    outPipes.add(in);
-  }
-
-  public void glue() {
     this.launchLatch = inPipes.size();
     for (int i = 0; i < inPipes.size(); i++) {
       int finalI = i;
@@ -43,8 +40,14 @@ public class ExecutionHub {
     }
   }
 
-  private synchronized void consume(int index, Model model) {
-    inModels.set(index, model);
+  /**
+   * Consume a model and place it at index {@code i} in the {@code inModels}.
+   *
+   * @param i  index the consumed model should be assigned
+   * @param model  model to be consumed
+   */
+  private synchronized void consume(int i, Model model) {
+    inModels.set(i, model);
     System.out.println("Pipe gives model to hub!");
     if (--launchLatch == 0) {
       System.out.println("Hub executes!");
@@ -52,6 +55,11 @@ public class ExecutionHub {
     }
   }
 
+  /**
+   * Execute this {@code ExecutionHub}, passing all the input models to the
+   * encapsulated operator and in turn passing that operators output models as input to the
+   * outgoing {@code ExecutionPipeline}s.
+   */
   private void execute() {
     this.outModels = operator.apply(inModels);
     if (outModels.size() != outPipes.size()) {
@@ -68,9 +76,9 @@ public class ExecutionHub {
     }
     trigger.complete(null);
     //@todo: really necessary? if yes, need to extend?
-    for (CompletableFuture<Model> cf : lst) {
-      cf.join();
-    }
+//    for (CompletableFuture<Model> cf : lst) {
+//      cf.join();
+//    }
   }
 
 }

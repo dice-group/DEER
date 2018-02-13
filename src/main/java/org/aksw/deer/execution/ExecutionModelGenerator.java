@@ -1,19 +1,10 @@
 package org.aksw.deer.execution;
 
-import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
+import org.aksw.deer.enrichment.EnrichmentOperator;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
 import org.aksw.deer.parameter.ParameterMap;
-import org.aksw.deer.enrichment.EnrichmentOperator;
 import org.aksw.deer.parameter.ParametrizedPluginFactory;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
@@ -21,23 +12,45 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
+ * Generate an {@code ExecutionModel} from a given RDF configuration model.
+ * <p>
+ *
+ */
 public class ExecutionModelGenerator {
+
   private ExecutionGraph executionGraph;
   private List<ExecutionPipelineBuilder> pipeBuilders;
   private List<Resource> hubs;
   private ParametrizedPluginFactory<AbstractEnrichmentOperator> pluginFactory;
 
-  public ExecutionModelGenerator(Model model) throws IOException {
+  /**
+   *
+   * @param model  a configuration RDF model
+   */
+  public ExecutionModelGenerator(Model model) {
     this();
     this.executionGraph = new ExecutionGraph(model);
   }
 
-  private ExecutionModelGenerator() throws IOException {
+  /**
+   *
+   */
+  private ExecutionModelGenerator() {
     this.pluginFactory = new ParametrizedPluginFactory<>(AbstractEnrichmentOperator.class);
     this.pipeBuilders = new ArrayList<>();
     this.hubs = new ArrayList<>();
   }
 
+  /**
+   *
+   * @return
+   */
   public ExecutionModel generate() {
     // first step: build pipelines
     List<ExecutionPipeline> pipes = buildPipelines();
@@ -47,6 +60,8 @@ public class ExecutionModelGenerator {
 
   /**
    * Do a depth-first search starting at input dataset nodes in the given configuration graph.
+   *
+   * @return
    */
   private List<ExecutionPipeline> buildPipelines() {
     Set<Resource> datasets = executionGraph.getStartDatasets();
@@ -67,6 +82,7 @@ public class ExecutionModelGenerator {
 
   /**
    * Get datasets connected to this dataset with one enrichment operator inbetween.
+   *
    * @param ds Input dataset
    * @return Set of datasets connected to this dataset with one enrichment or operator inbetween.
    */
@@ -104,6 +120,11 @@ public class ExecutionModelGenerator {
     return links;
   }
 
+  /**
+   *
+   * @param pipes
+   * @return
+   */
   @SuppressWarnings("unchecked")
   private ExecutionModel gluePipelines(List<ExecutionPipeline> pipes) {
     for (Resource operatorHub : hubs) {
@@ -113,24 +134,21 @@ public class ExecutionModelGenerator {
       ParameterMap parameterMap = operator.createParameterMap();
       parameterMap.init(operatorHub);
       operator.init(parameterMap, operatorInputs.size(), operatorOutputs.size());
-      ExecutionHub hub = new ExecutionHub(operator);
-      for (Resource ds : operatorInputs) {
-        hub.addInPipe(pipes.get(executionGraph.getSubGraphId(ds)));
-      }
-      for (Resource ds : operatorOutputs) {
-        hub.addOutPipe(pipes.get(executionGraph.getSubGraphId(ds)));
-      }
-      hub.glue();
+      Function<List<Resource>, List<ExecutionPipeline>> getPipes = l -> l.stream()
+          .map(r -> pipes.get(executionGraph.getSubGraphId(r)))
+          .collect(Collectors.toList());
+      ExecutionHub hub = new ExecutionHub(operator, getPipes.apply(operatorInputs), getPipes.apply(operatorOutputs));
     }
     ExecutionModel executionModel = new ExecutionModel();
     for (Resource startDs : executionGraph.getStartDatasets()) {
-      executionModel.addStartPipe(pipes.get(executionGraph.getSubGraphId(startDs)), readDataset(startDs));
+      executionModel.addPipeline(pipes.get(executionGraph.getSubGraphId(startDs)), readDataset(startDs));
     }
     return executionModel;
   }
 
 
   /**
+   * @param dataset
    * @return dataset model from file/uri/endpoint
    */
   @SuppressWarnings("Duplicates")
@@ -156,6 +174,9 @@ public class ExecutionModelGenerator {
   }
 
   /**
+   *
+   *
+   * @param operator
    * @return Implementation of IModule defined by the given resource's rdf:type
    */
   private EnrichmentOperator getOperator(Resource operator) {
@@ -168,6 +189,7 @@ public class ExecutionModelGenerator {
 
   /**
    * Return instance of ModelWriter for a dataset, configured by relevant RDF properties
+   *
    * @param datasetUri URI of the Resource describing the dataset and its configuration
    * @return Configured Instance of ModelWriter
    */

@@ -9,35 +9,35 @@ import org.apache.jena.rdf.model.Model;
 
 /**
  */
-public class ExecutionPipelineBuilder {
+class ExecutionPipelineBuilder {
 
   private Deque<EnrichmentContainer> fnStack;
   private Consumer<Model> writeFirst;
 
-  public ExecutionPipelineBuilder() {
+  ExecutionPipelineBuilder() {
     this.fnStack = new ArrayDeque<>();
     this.writeFirst = null;
   }
 
-  public ExecutionPipelineBuilder writeFirstUsing(Consumer<Model> writer) {
+  ExecutionPipelineBuilder writeFirstUsing(Consumer<Model> writer) {
     this.writeFirst = writer;
     return this;
   }
 
-  public ExecutionPipelineBuilder chain(EnrichmentOperator fn) {
+  ExecutionPipelineBuilder chain(EnrichmentOperator fn) {
     return chain(fn, null);
   }
 
-  public ExecutionPipelineBuilder chain(EnrichmentOperator fn, Consumer<Model> writer) {
+  ExecutionPipelineBuilder chain(EnrichmentOperator fn, Consumer<Model> writer) {
     this.fnStack.addLast(new EnrichmentContainer(fn, writer));
     return this;
   }
 
-  public EnrichmentContainer unchain() {
+  EnrichmentContainer unchain() {
     return this.fnStack.pollLast();
   }
 
-  public ExecutionPipeline build() {
+  ExecutionPipeline build() {
     CompletableFuture<Model> trigger = new CompletableFuture<>();
     CompletableFuture<Model> cfn = trigger.thenApplyAsync((m)->m);
     if (writeFirst != null) {
@@ -62,11 +62,11 @@ public class ExecutionPipelineBuilder {
       this.writer = writer;
     }
 
-    public Consumer<Model> getWriter() {
+    Consumer<Model> getWriter() {
       return writer;
     }
 
-    public EnrichmentOperator getFn() {
+    EnrichmentOperator getFn() {
       return fn;
     }
   }

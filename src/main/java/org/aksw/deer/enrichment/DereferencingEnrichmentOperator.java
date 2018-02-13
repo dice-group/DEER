@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  *     <li>Query the external knowledge base for triples {@code (?x, d, ?y)},
  *         where d is a defined property path in the external knowledge base.</li>
  *     <li>Add all results to the local model in the form of {@code (?x, i, ?y)},
- *         where i is the property name under which they should be inserted.</li>
+ *         where i is the property name under which they should be imported.</li>
  * </ol>
  * <h2>Configuration</h2>
  *
@@ -120,9 +120,15 @@ public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator 
   public ParameterMap selfConfig(Model source, Model target) {
     ParameterMap parameters = createParameterMap();
     Set<Property> propertyDifference = getPropertyDifference(source, target);
+    List<Map<Property, RDFNode>> autoOperations = new ArrayList<>();
     for (Property property : propertyDifference) {
-
+      Map<Property, RDFNode> autoOperation = new HashMap<>();
+      autoOperation.put(DEREFERENCING_PROPERTY_PATH, property);
+      autoOperation.put(IMPORT_PROPERTY, property);
+      autoOperation.put(LOOKUP_PROPERTY, property);
+      autoOperations.add(autoOperation);
     }
+    parameters.setValue(OPERATIONS, autoOperations);
     return parameters;
   }
 

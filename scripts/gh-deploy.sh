@@ -50,6 +50,8 @@ cp -r _book/** ../out
 # exit to higher level
 cd ..
 
+cp -R target/apidocs out/javadoc
+
 # Now let's go have some fun with the cloned repo
 cd out
 git config user.name "Travis CI"
@@ -60,6 +62,8 @@ git config user.email "$COMMIT_AUTHOR_EMAIL"
 #    echo "No changes to the output on this push; exiting."
 #    exit 0
 #fi
+
+
 
 # Commit the "changes", i.e. the new version.
 # The delta will show diffs between new and old versions.

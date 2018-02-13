@@ -1,13 +1,12 @@
 package org.aksw.deer.enrichment;
 
 import com.google.common.collect.Lists;
-import java.util.List;
 import org.aksw.deer.parameter.ParameterMap;
-import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  */

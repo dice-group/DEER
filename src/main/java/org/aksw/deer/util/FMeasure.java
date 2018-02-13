@@ -1,50 +1,53 @@
-/**
- *
- */
 package org.aksw.deer.util;
 
 import org.apache.jena.rdf.model.Model;
 
 /**
+ * Helper class for FMeasure computation.
+ * Deprecated, due to be replaced with LIMES implementation.
  */
+@Deprecated
 public class FMeasure {
 
+  private double p;
+  private double r;
+  private double f;
 
-  public double P, R, F;
+  public FMeasure(Model current, Model target) {
+    this(computePrecision(current, target), computeRecall(current, target));
+  }
 
   /**
    */
-  public FMeasure(double p, double r, double f) {
-    P = p;
-    R = r;
-    F = f;
+  public FMeasure(double p, double r) {
+    this.p = p;
+    this.r = r;
+    this.f = 2 * p * r / (p + r);
   }
 
-
-  public static FMeasure computePRF(Model current, Model target) {
-    double p = computePrecision(current, target);
-    double r = computeRecall(current, target);
-    double f = 2 * p * r / (p + r);
-    return new FMeasure(p, r, f);
+  public double precision() {
+    return p;
   }
 
-  public static double computeFMeasure(Model current, Model target) {
-    double p = computePrecision(current, target);
-    double r = computeRecall(current, target);
-    return 2 * p * r / (p + r);
+  public double recall() {
+    return r;
   }
 
-  public static double computePrecision(Model current, Model target) {
+  public double fMeasure() {
+    return f;
+  }
+
+  private static double computePrecision(Model current, Model target) {
     return (double) current.intersection(target).size() / (double) current.size();
   }
 
-  public static double computeRecall(Model current, Model target) {
+  private static double computeRecall(Model current, Model target) {
     return (double) current.intersection(target).size() / (double) target.size();
   }
 
   @Override
   public String toString() {
-    return "FMeasure [P=" + P + ", R=" + R + ", F=" + F + "]";
+    return "FMeasure [p=" + p + ", r=" + r + ", f=" + f + "]";
   }
 
 }
