@@ -21,6 +21,9 @@ learning capabilities in our [user manual](./user/).
 Developers can find instructions on how to extend deer with new enrichment
 operators in the [dev manual](./dev/).
 
+*THIS DOCUMENTATION IS STILL UNDER CONSTRUCTION*  
+*In the meantime please refer to the official [javadoc](./javadoc/)*
+
 ```
 String s = "";
 ``` 

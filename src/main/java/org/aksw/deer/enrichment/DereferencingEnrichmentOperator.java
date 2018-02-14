@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,19 +40,19 @@ import java.util.stream.Collectors;
  * Each entry may contain the following properties:
  *
  * <blockquote>
- *     <b>{@code :lookUpProperty} [required]</b>
- *     <i>range: resource</i>
+ *     <b>{@code :lookUpPrefix} [required]</b>
+ *     <i>range: string</i>
  *     <br>
  *     Determines the starting resources {@code ?x} as all objects of triples having
  *     the value of {@code :lookUpProperty} as predicate.
  * </blockquote>
 
  * <blockquote>
- *     <b>{@code :dereferencingPropertyPath} [required]</b>
- *     <i>range: string</i>
+ *     <b>{@code :dereferencingProperty} [required]</b>
+ *     <i>range: resource</i>
  *     <br>
  *     Look up the values to be imported to the local model in the external knowledge base
- *     using the property path defined by the value of {@code :dereferencingPropertyPath}.
+ *     using the property defined by the value of {@code :dereferencingProperty}.
  * </blockquote>
  *
  * <blockquote>
@@ -76,37 +78,36 @@ public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator 
 
   private static final Logger logger = Logger.getLogger(DereferencingEnrichmentOperator.class);
 
-  private static final Property LOOKUP_PROPERTY = DEER.property("lookUpProperty");
+  // @todo: implement this someday.. requires sparql endpoint discovery
+  //  * <blockquote>
+  //  *     <b>{@code :lookUpProperty} [required]</b>
+  //  *     <i>range: resource</i>
+  //  *     <br>
+  //  *     Determines the starting resources {@code ?x} as all objects of triples having
+  //  *     the value of {@code :lookUpProperty} as predicate.
+  //  * </blockquote>
+  //  private static final Property LOOKUP_PROPERTY = DEER.property("lookUpProperty");
 
-  private static final Property DEREFERENCING_PROPERTY_PATH = DEER.property("dereferencingPropertyPath");
+  private static final Property LOOKUP_PREFIX = DEER.property("lookUpPrefix");
+
+  private static final Property DEREFERENCING_PROPERTY = DEER.property("dereferencingProperty");
 
   private static final Property IMPORT_PROPERTY = DEER.property("importProperty");
 
   private static final Parameter OPERATIONS = new ParameterImpl("operations",
-    new DictListParameterConversion(LOOKUP_PROPERTY, DEREFERENCING_PROPERTY_PATH, IMPORT_PROPERTY),
-    true);
+    new DictListParameterConversion(LOOKUP_PREFIX, DEREFERENCING_PROPERTY,
+      IMPORT_PROPERTY), true);
 
-  private static Set<Property> ignoredProperties = new HashSet<>(Arrays.asList(OWL.sameAs));
+  private static final String DEFAULT_LOOKUP_PREFIX = "http://dbpedia.org/resource";
 
-  private Map<Property, RDFNode> operations;
+  private static final Set<Property> ignoredProperties = new HashSet<>(Arrays.asList(OWL.sameAs));
+
+  private List<Map<Property, RDFNode>> operations;
+
+  private Model model;
 
   public DereferencingEnrichmentOperator() {
     super();
-  }
-
-  @Override
-  protected List<Model> process() {
-    Model input = models.get(0);
-    Model output = ModelFactory.createDefaultModel();
-
-    return Lists.newArrayList(output);
-  }
-
-  private Set<Property> getPropertyDifference(Model source, Model target) {
-    Function<Model, Set<Property>> getProperties =
-      (m) -> m.listStatements().mapWith(Statement::getPredicate).toSet();
-    return Sets.difference(getProperties.apply(source), getProperties.apply(target))
-      .stream().filter(p -> !ignoredProperties.contains(p)).collect(Collectors.toSet());
   }
 
   /**
@@ -123,9 +124,8 @@ public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator 
     List<Map<Property, RDFNode>> autoOperations = new ArrayList<>();
     for (Property property : propertyDifference) {
       Map<Property, RDFNode> autoOperation = new HashMap<>();
-      autoOperation.put(DEREFERENCING_PROPERTY_PATH, property);
+      autoOperation.put(DEREFERENCING_PROPERTY, property);
       autoOperation.put(IMPORT_PROPERTY, property);
-      autoOperation.put(LOOKUP_PROPERTY, property);
       autoOperations.add(autoOperation);
     }
     parameters.setValue(OPERATIONS, autoOperations);
@@ -142,6 +142,70 @@ public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator 
   public void accept(@NotNull ParameterMap params) {
     this.operations = params.getValue(OPERATIONS);
 
+  }
+
+  @Override
+  protected List<Model> process() {
+    model = ModelFactory.createDefaultModel().add(models.get(0));
+    operations.forEach(this::runOperation);
+    return Lists.newArrayList(model);
+  }
+
+  private void runOperation(Map<Property, RDFNode> op) {
+    // get configuration for this operation
+    String lookUpPrefix = op.get(LOOKUP_PREFIX) == null
+      ? DEFAULT_LOOKUP_PREFIX : op.get(LOOKUP_PREFIX).toString();
+    Property dereferencingProperty = op.get(DEREFERENCING_PROPERTY) == null
+      ? null : op.get(DEREFERENCING_PROPERTY).as(Property.class);
+    Property importProperty = op.get(IMPORT_PROPERTY) == null
+      ? dereferencingProperty : op.get(IMPORT_PROPERTY).as(Property.class);
+    // execute this operation
+    if (dereferencingProperty != null) {
+      for (Resource s : getCandidateNodesByPrefix(lookUpPrefix)) {
+        for (RDFNode o : getEnrichmentValuesFor(s, dereferencingProperty)) {
+          s.addProperty(importProperty, o);
+        }
+      }
+    }
+  }
+
+  private List<Resource> getCandidateNodesByPrefix (String lookupPrefix) {
+    // old way with sparql:
+    //      "SELECT * " +
+    //      "WHERE { ?s ?p ?o . FILTER (isURI(?o)) . " +
+    //      "FILTER (STRSTARTS(STR(?o), \"" + lookupPrefix + "\"))}";
+    return model.listStatements()
+      .mapWith(Statement::getObject)
+      .filterKeep(RDFNode::isURIResource)
+      .mapWith(RDFNode::asResource)
+      .filterKeep(o -> o.getURI().startsWith(lookupPrefix))
+      .toList();
+  }
+
+
+  private List<RDFNode> getEnrichmentValuesFor(Resource resource, Property dereferencingProperty) {
+    try {
+      URLConnection conn = new URL(resource.getURI()).openConnection();
+      conn.setRequestProperty("Accept", "application/rdf+xml");
+      conn.setRequestProperty("Accept-Language", "en");
+      return ModelFactory.createDefaultModel()
+        .read(conn.getInputStream(), null)
+        .listStatements(resource, dereferencingProperty, (RDFNode) null)
+        .mapWith(Statement::getObject)
+        .filterDrop(v -> v.isLiteral() && !Arrays.asList("en","")
+          .contains(v.asLiteral().getLanguage().toLowerCase()))
+        .toList();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return Collections.emptyList();
+    }
+  }
+
+  private Set<Property> getPropertyDifference(Model source, Model target) {
+    Function<Model, Set<Property>> getProperties =
+      (m) -> m.listStatements().mapWith(Statement::getPredicate).toSet();
+    return Sets.difference(getProperties.apply(source), getProperties.apply(target))
+      .stream().filter(p -> !ignoredProperties.contains(p)).collect(Collectors.toSet());
   }
 
 }
