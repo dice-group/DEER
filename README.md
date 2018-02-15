@@ -29,7 +29,7 @@ java -jar path_to_config.ttl
   <dependency>
     <groupId>com.github.dice-group</groupId>
     <artifactId>deer</artifactId>
-    <version>1.0-alpha</version>
+    <version>1.0.0-alpha1</version>
   </dependency>
 </dependencies>
 
