@@ -15,7 +15,7 @@ public abstract class ParameterlessEnrichmentOperator extends AbstractEnrichment
   }
 
   @Override
-  public void accept(@NotNull ParameterMap emptyParameterMap) { }
+  public void init(@NotNull ParameterMap emptyParameterMap) { }
 
   @NotNull
   @Override

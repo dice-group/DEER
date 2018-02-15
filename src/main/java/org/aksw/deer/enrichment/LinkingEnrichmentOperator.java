@@ -43,7 +43,7 @@ public class LinkingEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  public void accept(@NotNull ParameterMap params) {
+  public void init(@NotNull ParameterMap params) {
     this.linksPart = DATASET_PART.valueOf(params.getValue(LINKS_PART, "source").toUpperCase());
   }
 

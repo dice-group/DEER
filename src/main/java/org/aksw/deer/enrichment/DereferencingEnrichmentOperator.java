@@ -139,7 +139,7 @@ public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator 
   }
 
   @Override
-  public void accept(@NotNull ParameterMap params) {
+  public void init(@NotNull ParameterMap params) {
     this.operations = params.getValue(OPERATIONS);
 
   }

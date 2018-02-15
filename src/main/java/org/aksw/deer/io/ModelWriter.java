@@ -12,42 +12,28 @@ public class ModelWriter implements Consumer<Model> {
 
   private static final Logger logger = Logger.getLogger(ModelWriter.class.getName());
 
-  private String subDir = "";
-  private String format;
+  private String format = "TTL";
   private String outputFile;
 
-  public ModelWriter() {
-
-  }
-
-  public ModelWriter(String subDir) {
-    this.subDir = subDir;
-  }
-
-  @Deprecated
-  public void writeModel(Model model, String format, String outputFile) throws IOException {
-    init(format, outputFile);
-    accept(model);
-  }
-
-  public void init(String format, String outputFile) {
+  public ModelWriter (String outputFile, String format) {
+    this(outputFile);
     this.format = format;
+  }
+
+  public ModelWriter (String outputFile) {
     this.outputFile = outputFile;
   }
 
   @Override
   public void accept(Model model) {
     try {
-      if (!subDir.isEmpty()) {
-        outputFile = "./" + subDir + "/" + outputFile;
-      }
       logger.info("Saving dataset to " + outputFile + "...");
-      long starTime = System.currentTimeMillis();
-      FileWriter fileWriter = new FileWriter(outputFile);
-      model.write(fileWriter, format);
-      logger.info("Saving file done in " + (System.currentTimeMillis() - starTime) + "ms.");
+      final long starTime = System.currentTimeMillis();
+      model.write(new FileWriter(outputFile), format);
+      logger.info("Saving dataset done in " + (System.currentTimeMillis() - starTime) + "ms.");
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Encountered problem while trying to write dataset to " +
+        outputFile, e);
     }
   }
 }

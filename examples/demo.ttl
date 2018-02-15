@@ -9,7 +9,8 @@
 		          :outputFile		     "input_dbp.ttl" ;
 		          :outputFormat	     "Turtle" .
 :d2           a                  :Dataset ;
-              :hasUri			       <http://linkedgeodata.org/data/triplify/node240114473> ;
+              :hasUri			       <http://dbpedia.org/resource/Paderborn> ;
+              :fromEndPoint	     <http://dbpedia.org/sparql> ;
               :outputFile		     "input_lgd.ttl" ;
               :outputFormat	     "Turtle" .
 :d3           a                  :Dataset .

@@ -18,12 +18,12 @@ public abstract class AbstractEnrichmentOperator implements EnrichmentOperator {
   private int outArity;
   private boolean initialized = false;
 
-  public void init(ParameterMap parameterMap, int inArity, int outArity) {
+  public void init(@NotNull ParameterMap parameterMap, int inArity, int outArity) {
     if (!degreeInBounds(inArity, outArity)) {
       //@todo: add better operatorinvalidarityexception
       throw new RuntimeException("Arity not valid!");
     } else {
-      this.accept(parameterMap);
+      this.init(parameterMap);
       this.parameterMap = parameterMap;
       this.inArity = inArity;
       this.outArity = outArity;

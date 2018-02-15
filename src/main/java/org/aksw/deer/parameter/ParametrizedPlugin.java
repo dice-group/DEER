@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * annotated with {@link org.pf4j.Extension}.
  *
  */
-public interface ParametrizedPlugin extends Consumer<ParameterMap> {
+public interface ParametrizedPlugin {
 
   /**
    * Get the type {@code ParametrizedPlugin}.
@@ -48,7 +48,7 @@ public interface ParametrizedPlugin extends Consumer<ParameterMap> {
    *
    * @param params  an initialized {@code ParameterMap}
    */
-  void accept(@NotNull ParameterMap params);
+  void init(@NotNull ParameterMap params);
 
   /**
    * Get this instances configuration as an initialized {@code ParameterMap}.

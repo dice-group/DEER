@@ -137,7 +137,7 @@ public class GeoFusionEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  public void accept(@NotNull ParameterMap params) {
+  public void init(@NotNull ParameterMap params) {
     this.fusionAction = GeoFusionAction.valueOf(params.getValue(FUSION_ACTION));
     this.mergeOtherStatements = Boolean.valueOf(params.getValue(MERGE_OTHER_STATEMENTS, "true"));
   }

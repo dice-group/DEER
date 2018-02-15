@@ -86,7 +86,7 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
   }
 
   @Override
-  public void accept(@NotNull ParameterMap parameterMap) {
+  public void init(@NotNull ParameterMap parameterMap) {
     this.propertyMapping = parameterMap.getValue(PROPERTY_MAPPING);
   }
 

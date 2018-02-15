@@ -105,7 +105,7 @@ public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentO
   }
 
   @Override
-  public void accept(@NotNull ParameterMap params) {
+  public void init(@NotNull ParameterMap params) {
     this.sourceSubjectAuthority = params.getValue(SOURCE_SUBJECT_AUTHORITY);
     this.targetSubjectAuthority = params.getValue(TARGET_SUBJECT_AUTHORITY);
   }

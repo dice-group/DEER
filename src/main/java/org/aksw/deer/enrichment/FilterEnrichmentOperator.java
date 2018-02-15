@@ -61,7 +61,7 @@ public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  public void accept(@NotNull ParameterMap params) {
+  public void init(@NotNull ParameterMap params) {
     selectors = params.getValue(SELECTORS);
     if (selectors.size() == 0) {
       // empty HashMap will select everything - equivalent to "?s ?p ?o"

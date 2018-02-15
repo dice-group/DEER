@@ -3,7 +3,6 @@ package org.aksw.deer.enrichment;
 import org.aksw.deer.parameter.ParameterMap;
 import org.aksw.deer.parameter.ParametrizedPlugin;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.ExtensionPoint;
 
@@ -12,10 +11,9 @@ import java.util.function.UnaryOperator;
 
 /**
  * An Enrichment Operator.
- *
+ * <p>
  * An enrichment operator is an atomic operator on a list of RDF models, yielding a list of RDF models.
  * Its arity
- *
  */
 public interface EnrichmentOperator extends ExtensionPoint, UnaryOperator<Model>, ParametrizedPlugin {
 
@@ -53,9 +51,10 @@ public interface EnrichmentOperator extends ExtensionPoint, UnaryOperator<Model>
   DegreeBounds getDegreeBounds();
 
   int getInDegree();
+
   int getOutDegree();
 
-  void init(ParameterMap parameterMap, int inArity, int outArity);
+  void init(@NotNull ParameterMap parameterMap, int inArity, int outArity);
 
   @NotNull
   ParameterMap selfConfig(Model source, Model target);
@@ -67,6 +66,6 @@ public interface EnrichmentOperator extends ExtensionPoint, UnaryOperator<Model>
 
   List<Model> apply(List<Model> models);
 
-  void accept(@NotNull ParameterMap params);
+  void init(@NotNull ParameterMap params);
 
 }

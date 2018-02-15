@@ -1,5 +1,16 @@
 # DEER Documentation
 
+## Motivation
+
+Over the last years, the Linked Data principles have been used across academia and industry
+to publish and consume structured data.
+Thanks to the fourth Linked Data principle, many of the RDF datasets used within these applications
+contain implicit and explicit references to more data.
+For example, music datasets such as Jamendo include, amongst others, references to locations of
+record labels, places where artists were born or have been.
+Datasets such as Drugbank contain references to drugs from DBpedia, were verbal description of the
+drugs and their usage is explicitly available.
+
 The RDF Dataset Enrichment Framework (DEER), is a modular and highly
 extensible software system for dataset manipulation and verification.
 DEER has its own configuration language, which describes dataset enrichment

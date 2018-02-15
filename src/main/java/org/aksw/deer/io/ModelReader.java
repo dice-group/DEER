@@ -2,6 +2,7 @@ package org.aksw.deer.io;
 
 import java.io.InputStream;
 import org.aksw.deer.vocabulary.DEER;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.Model;
@@ -20,53 +21,20 @@ public class ModelReader {
 
   private static final Logger logger = Logger.getLogger(ModelReader.class);
 
-  private String subDir = "";
-
-  public ModelReader() {
-
-  }
-
-  public ModelReader(String subDir) {
-    this.subDir = subDir;
-  }
-
   public Model readModel(String fileNameOrUri) {
-    return readModel(fileNameOrUri, false);
-  }
-
-  private Model readModel(String fileNameOrUri, boolean ignoreSubDir) {
-    if (!subDir.isEmpty() && !ignoreSubDir) {
-      try {
-        return readModel("./" + subDir + "/" + fileNameOrUri, true);
-      } catch (Exception e) {
-        logger.debug("Ignoring subdirectory setting for input file: " + fileNameOrUri);
-      }
-    }
-    long startTime = System.currentTimeMillis();
+    final long startTime = System.currentTimeMillis();
     Model model = ModelFactory.createDefaultModel();
-    InputStream in = FileManager.get().open(fileNameOrUri);
-    if (in == null) {
-      throw new IllegalArgumentException(fileNameOrUri + " not found");
-    }
-    if (fileNameOrUri.contains(".ttl") || fileNameOrUri.contains(".n3")) {
-      logger.info("Opening Turtle file");
-      model.read(in, null, "TTL");
-    } else if (fileNameOrUri.contains(".rdf")) {
-      logger.info("Opening RDFXML file");
-      model.read(in, null);
-    } else if (fileNameOrUri.contains(".nt")) {
-      logger.info("Opening N-Triples file");
-      model.read(in, null, "N-TRIPLE");
-    } else {
-      logger.info("Content negotiation to get RDFXML from " + fileNameOrUri);
-
+    try {
       model.read(fileNameOrUri);
+      logger.info(
+        "Loading " + fileNameOrUri + " is done in " +
+          (System.currentTimeMillis() - startTime) + "ms.");
+    } catch (HttpException e) {
+      throw new RuntimeException("Encountered HTTP problem trying to load model from " +
+        fileNameOrUri ,e);
     }
-    logger.info(
-      "Loading " + fileNameOrUri + " is done in " + (System.currentTimeMillis() - startTime)
-        + "ms.");
     return model;
-  }
+}
 
 
   /**
@@ -108,4 +76,9 @@ public class ModelReader {
     return result;
   }
 
+  public static void main(String[] args) {
+    Model m = ModelFactory.createDefaultModel().read("./examples/demo.ttl");
+    m.listStatements().forEachRemaining(s->System.out.println(s.toString()));
+
+  }
 }

@@ -1,6 +1,5 @@
 package org.aksw.deer.execution;
 
-import org.aksw.deer.enrichment.AbstractEnrichmentOperator;
 import org.aksw.deer.enrichment.EnrichmentOperator;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.io.ModelWriter;
@@ -11,6 +10,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -24,10 +24,12 @@ import java.util.stream.Collectors;
  */
 public class ExecutionModelGenerator {
 
+  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ExecutionModelGenerator.class);
+
   private ExecutionGraph executionGraph;
   private List<ExecutionPipelineBuilder> pipeBuilders;
   private List<Resource> hubs;
-  private ParametrizedPluginFactory<AbstractEnrichmentOperator> pluginFactory;
+  private ParametrizedPluginFactory<EnrichmentOperator> pluginFactory;
 
   /**
    *
@@ -42,7 +44,7 @@ public class ExecutionModelGenerator {
    *
    */
   private ExecutionModelGenerator() {
-    this.pluginFactory = new ParametrizedPluginFactory<>(AbstractEnrichmentOperator.class);
+    this.pluginFactory = new ParametrizedPluginFactory<>(EnrichmentOperator.class);
     this.pipeBuilders = new ArrayList<>();
     this.hubs = new ArrayList<>();
   }
@@ -125,7 +127,6 @@ public class ExecutionModelGenerator {
    * @param pipes
    * @return
    */
-  @SuppressWarnings("unchecked")
   private ExecutionModel gluePipelines(List<ExecutionPipeline> pipes) {
     for (Resource operatorHub : hubs) {
       List<Resource> operatorInputs = executionGraph.getOperatorInputs(operatorHub);
@@ -137,7 +138,7 @@ public class ExecutionModelGenerator {
       Function<List<Resource>, List<ExecutionPipeline>> getPipes = l -> l.stream()
           .map(r -> pipes.get(executionGraph.getSubGraphId(r)))
           .collect(Collectors.toList());
-      ExecutionHub hub = new ExecutionHub(operator, getPipes.apply(operatorInputs), getPipes.apply(operatorOutputs));
+      new ExecutionHub(operator, getPipes.apply(operatorInputs), getPipes.apply(operatorOutputs));
     }
     ExecutionModel executionModel = new ExecutionModel();
     for (Resource startDs : executionGraph.getStartDatasets()) {
@@ -195,14 +196,17 @@ public class ExecutionModelGenerator {
    */
   @Nullable
   private Consumer<Model> getWriter(Resource datasetUri) {
-    ModelWriter writer = new ModelWriter();
-    Statement fileName = datasetUri.getProperty(DEER.outputFile);
-    if (fileName == null) {
+    Statement outputStatement = datasetUri.getProperty(DEER.outputFile);
+    Statement formatStatement = datasetUri.getProperty(DEER.outputFormat);
+    if (outputStatement == null) {
       return null;
     }
-    Statement fileFormat = datasetUri.getProperty(DEER.outputFormat);
-    writer.init(fileFormat == null ? "TTL" : fileFormat.getString(), fileName.getString());
-    return writer;
+    String outputFile = outputStatement.getString();
+    if (formatStatement == null) {
+      return new ModelWriter(outputFile);
+    } else {
+      return new ModelWriter(outputFile, formatStatement.getString());
+    }
   }
 
 }
