@@ -4,7 +4,7 @@
 @prefix dbpedia-owl: <http://dbpedia.org/ontology/> .
 
 :d1		a				:Dataset ;
-		:inputFile		"/home/sherif/JavaProjects/GeoKnow/GeoLift/datasets/4/input.ttl" ;
+		:inputFile		"input.ttl" ;
 		:hasUri			<http://dbpedia.org/resource/Berlin> ;
 		:FromEndPoint	<http://dbpedia.org/sparql> .
 :d2		a				:Dataset .
@@ -12,7 +12,7 @@
 :d4		a				:Dataset .
 :d5		a				:Dataset .
 :d6		a				:Dataset ;
-		:outputFile		"/home/sherif/JavaProjects/GeoKnow/GeoLift/datasets/5/output.ttl" ;
+		:outputFile		"output.ttl" ;
 		:outputFormat	"Turtle" .
 
 :deref	a				:Module, :DereferencingModule  ;
