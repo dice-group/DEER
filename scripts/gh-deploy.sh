@@ -50,7 +50,7 @@ cp -r _book/** ../out
 # exit to higher level
 cd ..
 
-cp -R target/apidocs out/javadoc
+cp -R target/apidocs/ out/javadoc
 
 # Now let's go have some fun with the cloned repo
 cd out
