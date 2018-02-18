@@ -12,6 +12,7 @@ nbactions.xml
 *.iml
 .idea/
 .DS_STORE
+dependency-reduced-pom.xml
 # Markdown Editor Metadata #
 
 .Ulysses*

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>deer</artifactId>
+    <groupId>org.aksw.deer</groupId>
+    <version>1.0.0-alpha1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>deer-core</artifactId>
+
+  <scm>
+    <connection>scm:git:git@github.com:dice-group/deer.git</connection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <repositories>
+
+    <repository>
+      <id>maven.aksw.internal</id>
+      <name>University Leipzig, AKSW Maven2 Internal Repository</name>
+      <url>http://maven.aksw.org/repository/internal/</url>
+    </repository>
+
+    <repository>
+      <id>maven.aksw.snapshots</id>
+      <name>University Leipzig, AKSW Maven2 Snapshot Repository</name>
+      <url>http://maven.aksw.org/repository/snapshots/</url>
+    </repository>
+
+    <repository>
+      <id>maven2-repository.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2/</url>
+      <layout>default</layout>
+    </repository>
+
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+
+  </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>maven.aksw.internal</id>
+      <name>AKSW Internal Release Repository</name>
+      <url>http://maven.aksw.org/archiva/repository/internal</url>
+    </repository>
+    <snapshotRepository>
+      <id>maven.aksw.snapshots</id>
+      <name>AKSW Snapshot Repository</name>
+      <url>http://maven.aksw.org/archiva/repository/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.aksw.limes.core</groupId>
+      <artifactId>limes-core</artifactId>
+      <version>1.1.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.collections</groupId>
+          <artifactId>google-collections</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.matheclipse</groupId>
+          <artifactId>matheclipse-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>eu.medsea.mimeutil</groupId>
+      <artifactId>mime-util</artifactId>
+      <version>2.1.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dllearner</groupId>
+      <artifactId>components-core</artifactId>
+      <version>1.3.0-jena3-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.clarkparsia.pellet</groupId>
+          <artifactId>pellet-jena</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-querybuilder</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.pf4j</groupId>
+      <artifactId>pf4j</artifactId>
+      <version>2.2.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.renespeck</groupId>
+      <artifactId>fox-java</artifactId>
+      <version>e67a2bd475</version>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+  </dependencies>
+
+</project>
