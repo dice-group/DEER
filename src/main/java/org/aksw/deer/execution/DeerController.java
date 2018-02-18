@@ -6,14 +6,15 @@ import java.util.concurrent.TimeUnit;
 import org.aksw.deer.io.ModelReader;
 import org.aksw.deer.server.Server;
 import org.apache.jena.rdf.model.Model;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main class for DEER.
  */
 public class DeerController {
 
-  private static final Logger logger = Logger.getLogger(DeerController.class);
+  private static final Logger logger = LoggerFactory.getLogger(DeerController.class);
   private static final String HELP_MESSAGE =
     "To run DEER from command-line, provide the RDf configuration file as " +
       "the only one parameter for the DEER jar file. \n" +

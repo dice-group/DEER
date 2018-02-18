@@ -9,7 +9,7 @@ import static org.aksw.deer.util.QueryHelper.triple;
 @Deprecated
 public class OldExecution {
 //
-//  private static final Logger logger = Logger.getLogger(OldExecution.class.getName());
+//  private static final Logger logger = LoggerFactory.getLogger(OldExecution.class);
 //
 //
 //

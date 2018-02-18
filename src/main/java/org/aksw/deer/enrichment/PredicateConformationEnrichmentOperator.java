@@ -4,7 +4,8 @@ import com.google.common.collect.Lists;
 import org.aksw.deer.parameter.*;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 
@@ -18,7 +19,7 @@ import java.util.Map;
 @Extension
 public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentOperator {
 
-  private static final Logger logger = Logger.getLogger(AuthorityConformationEnrichmentOperator.class);
+  private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 
   private static final Property SOURCE = DEER.property("source");
   private static final Property TARGET = DEER.property("target");

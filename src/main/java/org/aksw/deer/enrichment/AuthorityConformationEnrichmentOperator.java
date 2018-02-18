@@ -7,8 +7,13 @@ import org.aksw.deer.parameter.Parameter;
 import org.aksw.deer.parameter.ParameterImpl;
 import org.aksw.deer.parameter.ParameterMapImpl;
 import org.aksw.deer.parameter.ParameterMap;
-import org.apache.jena.rdf.model.*;
-import org.apache.log4j.Logger;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 
@@ -21,7 +26,7 @@ import java.util.Objects;
 @Extension
 public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentOperator {
 
-  private static final Logger logger = Logger.getLogger(AuthorityConformationEnrichmentOperator.class);
+  private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 
   private static final Parameter SOURCE_SUBJECT_AUTHORITY = new ParameterImpl("sourceSubjectAuthority");
 

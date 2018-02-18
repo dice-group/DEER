@@ -14,8 +14,15 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
-import org.apache.jena.rdf.model.*;
-import org.apache.log4j.Logger;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 
@@ -34,7 +41,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Extension
 public class NEREnrichmentOperator extends AbstractEnrichmentOperator {
 
-  private static final Logger logger = Logger.getLogger(NEREnrichmentOperator.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(NEREnrichmentOperator.class);
 
   private static final Parameter LITERAL_PROPERTY = new ParameterImpl("literalProperty");
   private static final Parameter IMPORT_PROPERTY = new ParameterImpl("importProperty");
@@ -168,20 +175,15 @@ public class NEREnrichmentOperator extends AbstractEnrichmentOperator {
 
   private Model runFOX(String input) {
     Model namedEntityModel = ModelFactory.createDefaultModel();
-    try {
-      final IFoxApi fox = new FoxApi()
-        .setApiURL(foxUri)
-        .setTask(FoxParameter.TASK.NER)
-        .setOutputFormat(FoxParameter.OUTPUT.TURTLE)
-        .setLang(FoxParameter.LANG.EN)
-        .setInput(input)
+    final IFoxApi fox = new FoxApi()
+      .setApiURL(foxUri)
+      .setTask(FoxParameter.TASK.NER)
+      .setOutputFormat(FoxParameter.OUTPUT.TURTLE)
+      .setLang(FoxParameter.LANG.EN)
+      .setInput(input)
 //        .setLightVersion(FoxParameter.FOXLIGHT.)
-        .send();
-      namedEntityModel.read(new StringReader(fox.responseAsFile().trim()), null, "TTL");
-    } catch (Exception e) {
-      logger.error(e);
-      logger.error(input);
-    }
+      .send();
+    namedEntityModel.read(new StringReader(fox.responseAsFile().trim()), null, "TTL");
     return namedEntityModel;
   }
 

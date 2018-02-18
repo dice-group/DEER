@@ -4,13 +4,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.function.Consumer;
 import org.apache.jena.rdf.model.Model;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  */
 public class ModelWriter implements Consumer<Model> {
 
-  private static final Logger logger = Logger.getLogger(ModelWriter.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(ModelWriter.class);
 
   private String format = "TTL";
   private String outputFile;

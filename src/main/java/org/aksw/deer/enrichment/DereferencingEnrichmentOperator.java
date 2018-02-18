@@ -2,17 +2,34 @@ package org.aksw.deer.enrichment;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.aksw.deer.parameter.*;
+import org.aksw.deer.parameter.DictListParameterConversion;
+import org.aksw.deer.parameter.Parameter;
+import org.aksw.deer.parameter.ParameterImpl;
+import org.aksw.deer.parameter.ParameterMap;
+import org.aksw.deer.parameter.ParameterMapImpl;
 import org.aksw.deer.vocabulary.DEER;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.OWL;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 /**
@@ -76,7 +93,7 @@ import java.util.stream.Collectors;
 @Extension
 public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator {
 
-  private static final Logger logger = Logger.getLogger(DereferencingEnrichmentOperator.class);
+  private static final Logger logger = LoggerFactory.getLogger(DereferencingEnrichmentOperator.class);
 
   // @todo: implement this someday.. requires sparql endpoint discovery
   //  * <blockquote>

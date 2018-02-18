@@ -9,7 +9,7 @@ package org.aksw.deer.learning;
  */
 public class ComplexPipeLineLearner implements PipelineLearner {
 //
-//  private static final Logger logger = Logger.getLogger(ComplexPipeLineLearner.class.getName());
+//  private static final Logger logger = LoggerFactory.getLogger(ComplexPipeLineLearner.class);
 //  public static Model sourceModel = ModelFactory.createDefaultModel();
 //  public static Model targetModel = ModelFactory.createDefaultModel();
 //  public final double CHILDREN_PENALTY_WEIGHT = 1;

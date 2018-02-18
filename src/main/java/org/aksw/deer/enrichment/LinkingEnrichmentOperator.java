@@ -1,7 +1,11 @@
 package org.aksw.deer.enrichment;
 
 import com.google.common.collect.Lists;
-import org.aksw.deer.parameter.*;
+import org.aksw.deer.parameter.Parameter;
+import org.aksw.deer.parameter.ParameterImpl;
+import org.aksw.deer.parameter.ParameterMap;
+import org.aksw.deer.parameter.ParameterMapImpl;
+import org.aksw.deer.parameter.StringParameterConversion;
 import org.aksw.limes.core.controller.Controller;
 import org.aksw.limes.core.io.config.Configuration;
 import org.aksw.limes.core.io.config.reader.xml.XMLConfigurationReader;
@@ -9,7 +13,8 @@ import org.aksw.limes.core.io.mapping.AMapping;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 
@@ -23,7 +28,7 @@ import java.util.List;
 @Extension
 public class LinkingEnrichmentOperator extends AbstractEnrichmentOperator {
 
-  private static final Logger logger = Logger.getLogger(LinkingEnrichmentOperator.class);
+  private static final Logger logger = LoggerFactory.getLogger(LinkingEnrichmentOperator.class);
 
   private static final Parameter SPEC_FILE = new ParameterImpl("specFile");
 

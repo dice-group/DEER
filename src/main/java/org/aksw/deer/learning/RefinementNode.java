@@ -12,14 +12,15 @@ import org.aksw.deer.enrichment.EnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author sherif
  */
 public class RefinementNode implements Comparable<RefinementNode> {
 
-  private static final Logger logger = Logger.getLogger(RefinementNode.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(RefinementNode.class);
 
   public EnrichmentOperator module = null;
   public EnrichmentOperator operator = null;

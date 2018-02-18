@@ -6,7 +6,7 @@ package org.aksw.deer.learning;
 //@todo: change to configbuilder using builder pattern
 public class ConfigBuilder {
 //
-//  private final static Logger logger = Logger.getLogger(ConfigBuilder.class.getName());
+//  private final static Logger logger = LoggerFactory.getLogger(ConfigBuilder.class);
 //  private long moduleNr = 1;
 //  private long parameterNr = 1;
 //

@@ -1,10 +1,19 @@
 package org.aksw.deer.enrichment;
 
 import com.google.common.collect.Lists;
-import org.aksw.deer.parameter.*;
+import org.aksw.deer.parameter.DictListParameterConversion;
+import org.aksw.deer.parameter.Parameter;
+import org.aksw.deer.parameter.ParameterImpl;
+import org.aksw.deer.parameter.ParameterMap;
+import org.aksw.deer.parameter.ParameterMapImpl;
 import org.aksw.deer.vocabulary.DEER;
-import org.apache.jena.rdf.model.*;
-import org.apache.log4j.Logger;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.SimpleSelector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 import java.util.ArrayList;
@@ -17,7 +26,7 @@ import java.util.Map;
 @Extension
 public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
 
-  private static final Logger logger = Logger.getLogger(FilterEnrichmentOperator.class);
+  private static final Logger logger = LoggerFactory.getLogger(FilterEnrichmentOperator.class);
 
   private static final Property SUBJECT = DEER.property("subject");
   private static final Property PREDICATE = DEER.property("predicate");

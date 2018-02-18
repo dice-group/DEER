@@ -12,14 +12,15 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.util.FileManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class ModelReader {
 
-  private static final Logger logger = Logger.getLogger(ModelReader.class);
+  private static final Logger logger = LoggerFactory.getLogger(ModelReader.class);
 
   public Model readModel(String fileNameOrUri) {
     final long startTime = System.currentTimeMillis();

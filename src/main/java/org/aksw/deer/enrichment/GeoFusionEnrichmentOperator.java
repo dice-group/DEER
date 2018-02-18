@@ -1,8 +1,19 @@
 package org.aksw.deer.enrichment;
 
 import com.google.common.collect.Lists;
-import org.aksw.deer.parameter.*;
-import org.apache.jena.rdf.model.*;
+import org.aksw.deer.parameter.Parameter;
+import org.aksw.deer.parameter.ParameterImpl;
+import org.aksw.deer.parameter.ParameterMap;
+import org.aksw.deer.parameter.ParameterMapImpl;
+import org.aksw.deer.parameter.StringParameterConversion;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.vocabulary.OWL;
 import org.jetbrains.annotations.NotNull;
