@@ -6,11 +6,15 @@ import java.util.ListIterator;
 import java.util.concurrent.CompletableFuture;
 import org.aksw.deer.enrichment.EnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A non-linear node in the execution graph, ties together at least three linear nodes.
  */
 class ExecutionHub {
+
+  private static final Logger logger = LoggerFactory.getLogger(ExecutionHub.class);
 
   private List<ExecutionPipeline> inPipes;
   private List<ExecutionPipeline> outPipes;
@@ -48,9 +52,9 @@ class ExecutionHub {
    */
   private synchronized void consume(int i, Model model) {
     inModels.set(i, model);
-    System.out.println("Pipe gives model to hub!");
+    logger.info("Pipe gives model to hub!");
     if (--launchLatch == 0) {
-      System.out.println("Hub executes!");
+      logger.info("Hub executes!");
       execute();
     }
   }

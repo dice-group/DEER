@@ -1,10 +1,12 @@
-package org.aksw.deer.execution;
+package org.aksw.deer.server;
 
 import java.io.IOException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+
+import org.aksw.deer.execution.ExecutionModel;
+import org.aksw.deer.execution.ExecutionModelGenerator;
 import org.aksw.deer.io.ModelReader;
-import org.aksw.deer.server.Server;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

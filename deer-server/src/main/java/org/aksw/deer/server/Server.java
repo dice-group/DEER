@@ -69,11 +69,11 @@ public class Server {
         }
         Process process = new ProcessBuilder()
           .command(
-          "java",
-          "-jar",
-          pathToJar,
-          tempFile.toFile().getAbsolutePath()
-        )
+            "java",
+            "-jar",
+            pathToJar,
+            tempFile.toFile().getAbsolutePath()
+          )
           .directory(workingDir)
           .redirectErrorStream(true).start();
         logStreamMap.put(id, process.getInputStream());

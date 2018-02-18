@@ -4,11 +4,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import org.apache.jena.rdf.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@code ExecutionPipeline} encapsulates a linear sequence of {@code EnrichmentOperator}s
  */
 class ExecutionPipeline implements UnaryOperator<Model> {
+
+  private static final Logger logger = LoggerFactory.getLogger(ExecutionPipeline.class);
 
   private CompletableFuture<Model> trigger;
   private CompletableFuture<Model> result;
@@ -51,7 +55,7 @@ class ExecutionPipeline implements UnaryOperator<Model> {
     if (this.callBack != null) {
       this.callBack.accept(m);
     } else {
-      System.out.println("No callback provided: leaf encountered!");
+      logger.info("No callback provided: leaf encountered!");
     }
   }
 
