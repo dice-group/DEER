@@ -1,5 +1,6 @@
 package org.aksw.deer.parameter;
 
+import org.aksw.deer.parameter.conversion.ParameterConversion;
 import org.apache.jena.rdf.model.Resource;
 
 import java.util.Set;

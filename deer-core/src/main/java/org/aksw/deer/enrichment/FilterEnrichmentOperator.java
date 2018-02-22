@@ -1,6 +1,6 @@
 package org.aksw.deer.enrichment;
 
-import org.aksw.deer.parameter.DictListParameterConversion;
+import org.aksw.deer.parameter.conversion.DictListParameterConversion;
 import org.aksw.deer.parameter.Parameter;
 import org.aksw.deer.parameter.ParameterImpl;
 import org.aksw.deer.parameter.ParameterMap;

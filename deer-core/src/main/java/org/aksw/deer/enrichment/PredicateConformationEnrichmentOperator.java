@@ -2,6 +2,7 @@ package org.aksw.deer.enrichment;
 
 import com.google.common.collect.Lists;
 import org.aksw.deer.parameter.*;
+import org.aksw.deer.parameter.conversion.DictListParameterConversion;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.*;
 import org.slf4j.Logger;

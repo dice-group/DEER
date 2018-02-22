@@ -1,5 +1,7 @@
 package org.aksw.deer.parameter;
 
+import org.aksw.deer.parameter.conversion.ParameterConversion;
+import org.aksw.deer.parameter.conversion.StringParameterConversion;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;

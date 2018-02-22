@@ -42,7 +42,7 @@ class ExecutionPipelineBuilder {
       cfn = cfn.thenApply(writeFirst);
     }
     for (EnrichmentContainer enrichmentContainer : fnStack) {
-      cfn = cfn.thenApply(enrichmentContainer.getFn())
+      cfn = cfn.thenApply(enrichmentContainer.getFn()::apply)
         .thenApply(enrichmentContainer.getWriter());
     }
     return new ExecutionPipeline(trigger, cfn);

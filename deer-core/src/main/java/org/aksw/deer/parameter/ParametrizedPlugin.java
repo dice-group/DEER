@@ -58,4 +58,10 @@ public interface ParametrizedPlugin {
   @NotNull
   ParameterMap getParameterMap();
 
+  /**
+   * Get initialization status
+   * @return  {@code true}, if initialized; {@code false}, else.
+   */
+  boolean isInitialized();
+
 }

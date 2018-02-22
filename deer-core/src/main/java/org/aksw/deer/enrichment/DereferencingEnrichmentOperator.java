@@ -1,8 +1,9 @@
 package org.aksw.deer.enrichment;
 
+import com.github.therapi.runtimejavadoc.RetainJavadoc;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.aksw.deer.parameter.DictListParameterConversion;
+import org.aksw.deer.parameter.conversion.DictListParameterConversion;
 import org.aksw.deer.parameter.Parameter;
 import org.aksw.deer.parameter.ParameterImpl;
 import org.aksw.deer.parameter.ParameterMap;
@@ -50,7 +51,7 @@ import java.util.stream.Collectors;
  *
  * <h3>{@code :operations}</h3>
  *
- * A {@link org.aksw.deer.parameter.DictListParameterConversion DictList}.
+ * A {@link DictListParameterConversion DictList}.
  *
  * Each entry in the {@code DictList} corresponds to one dereferencing operation, allowing multiple
  * dereferencing operations being carried out by a single {@code DereferencingEnrichmentOperator}.
@@ -90,7 +91,7 @@ import java.util.stream.Collectors;
  * <h2>Example</h2>
  *
  */
-@Extension
+@Extension @RetainJavadoc
 public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(DereferencingEnrichmentOperator.class);

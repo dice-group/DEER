@@ -33,6 +33,7 @@
           <encoding>${project.build.sourceEncoding}</encoding>
           <annotationProcessors>
             <annotationProcessor>org.pf4j.processor.ExtensionAnnotationProcessor</annotationProcessor>
+            <annotationProcessor>com.github.therapi.runtimejavadoc.internal.JavadocAnnotationProcessor</annotationProcessor>
           </annotationProcessors>
         </configuration>
       </plugin>

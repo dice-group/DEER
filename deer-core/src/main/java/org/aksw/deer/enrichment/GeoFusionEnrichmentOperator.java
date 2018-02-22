@@ -5,7 +5,7 @@ import org.aksw.deer.parameter.Parameter;
 import org.aksw.deer.parameter.ParameterImpl;
 import org.aksw.deer.parameter.ParameterMap;
 import org.aksw.deer.parameter.ParameterMapImpl;
-import org.aksw.deer.parameter.StringParameterConversion;
+import org.aksw.deer.parameter.conversion.StringParameterConversion;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.NodeIterator;
