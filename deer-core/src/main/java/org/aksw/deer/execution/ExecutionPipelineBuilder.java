@@ -4,23 +4,21 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
+
 import org.aksw.deer.enrichment.EnrichmentOperator;
+import org.aksw.deer.util.CompletableFutureFactory;
 import org.apache.jena.rdf.model.Model;
 
 /**
  */
 class ExecutionPipelineBuilder {
 
-  private Deque<EnrichmentContainer> fnStack;
-  private Consumer<Model> writeFirst;
-
-  ExecutionPipelineBuilder() {
-    this.fnStack = new ArrayDeque<>();
-    this.writeFirst = null;
-  }
+  private Deque<EnrichmentContainer> fnStack = new ArrayDeque<>();
+  private UnaryOperator<Model> writeFirst = null;
 
   ExecutionPipelineBuilder writeFirstUsing(Consumer<Model> writer) {
-    this.writeFirst = writer;
+    this.writeFirst = wrapConsumer(writer);
     return this;
   }
 
@@ -38,37 +36,42 @@ class ExecutionPipelineBuilder {
   }
 
   ExecutionPipeline build() {
-    CompletableFuture<Model> trigger = new CompletableFuture<>();
-    CompletableFuture<Model> cfn = trigger.thenApplyAsync((m)->m);
+    CompletableFuture<Model> trigger = CompletableFutureFactory.get();
+    CompletableFuture<Model> cfn = trigger;
     if (writeFirst != null) {
-      cfn.thenAcceptAsync(writeFirst);
+      cfn = cfn.thenApply(writeFirst);
     }
     for (EnrichmentContainer enrichmentContainer : fnStack) {
-      cfn = cfn.thenApplyAsync(enrichmentContainer.getFn());
-      if (enrichmentContainer.getWriter() != null) {
-        cfn.thenAcceptAsync(enrichmentContainer.getWriter());
-      }
+      cfn = cfn.thenApply(enrichmentContainer.getFn())
+        .thenApply(enrichmentContainer.getWriter());
     }
     return new ExecutionPipeline(trigger, cfn);
   }
 
+  private static UnaryOperator<Model> wrapConsumer(Consumer<Model> x) {
+    if (x == null) {
+      return UnaryOperator.identity();
+    }
+    return m -> {x.accept(m); return m;};
+  }
 
   private static class EnrichmentContainer {
     private EnrichmentOperator fn;
-    private Consumer<Model> writer;
+    private UnaryOperator<Model> writer;
 
-    private EnrichmentContainer(EnrichmentOperator fn, Consumer<Model> writer) {
+    EnrichmentContainer(EnrichmentOperator fn, Consumer<Model> writer) {
       this.fn = fn;
-      this.writer = writer;
+      this.writer = wrapConsumer(writer);
     }
 
-    Consumer<Model> getWriter() {
+    UnaryOperator<Model> getWriter() {
       return writer;
     }
 
     EnrichmentOperator getFn() {
       return fn;
     }
+
   }
 
 }

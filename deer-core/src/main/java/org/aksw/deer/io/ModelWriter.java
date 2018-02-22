@@ -1,5 +1,6 @@
 package org.aksw.deer.io;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -9,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  */
-public class ModelWriter implements Consumer<Model> {
+public class ModelWriter extends WorkingDirectoryInjectedIO implements Consumer<Model> {
 
   private static final Logger logger = LoggerFactory.getLogger(ModelWriter.class);
 
@@ -22,7 +23,7 @@ public class ModelWriter implements Consumer<Model> {
   }
 
   public ModelWriter (String outputFile) {
-    this.outputFile = outputFile;
+    this.outputFile = injectWorkingDirectory(outputFile);
   }
 
   @Override
@@ -30,6 +31,10 @@ public class ModelWriter implements Consumer<Model> {
     try {
       logger.info("Saving dataset to " + outputFile + "...");
       final long starTime = System.currentTimeMillis();
+      File writingDir = new File(outputFile).getParentFile();
+      if (writingDir != null && !writingDir.exists()) {
+        writingDir.mkdirs();
+      }
       model.write(new FileWriter(outputFile), format);
       logger.info("Saving dataset done in " + (System.currentTimeMillis() - starTime) + "ms.");
     } catch (IOException e) {

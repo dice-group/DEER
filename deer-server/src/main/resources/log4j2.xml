@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] [%X{requestId}] %-5level %logger{36} - %msg%n"/>
+    </Console>
+    <Routing name="Routing">
+      <Routes pattern="$${ctx:requestId}">
+        <Route>
+          <RollingFile name="user.log" append="true" fileName="requests/${ctx:requestId}.txt"
+                       filePattern="requests/archive/${ctx:requestId}-%d{MM-dd-yyyy}-%i.txt.gz">
+            <PatternLayout>
+              <pattern>%d{ISO8601} [%t] %p %c %L - %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+              <TimeBasedTriggeringPolicy/>
+              <SizeBasedTriggeringPolicy size="50 MB"/>
+            </Policies>
+          </RollingFile>
+        </Route>
+      </Routes>
+    </Routing>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="Routing" level="info">
+        <ThreadContextMapFilter onMatch="DENY" onMismatch="ACCEPT">
+          <KeyValuePair key="requestId" value="" />
+        </ThreadContextMapFilter>
+      </AppenderRef>
+    </Root>
+  </Loggers>
+</Configuration>

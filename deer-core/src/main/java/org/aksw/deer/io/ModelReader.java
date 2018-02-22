@@ -1,6 +1,5 @@
 package org.aksw.deer.io;
 
-import java.io.InputStream;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.QueryExecution;
@@ -11,39 +10,41 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
-import org.apache.jena.util.FileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 /**
  *
  */
-public class ModelReader {
+public class ModelReader extends WorkingDirectoryInjectedIO {
 
   private static final Logger logger = LoggerFactory.getLogger(ModelReader.class);
 
-  public Model readModel(String fileNameOrUri) {
-    final long startTime = System.currentTimeMillis();
-    Model model = ModelFactory.createDefaultModel();
+  public Model readModel(String locator) {
+    locator = injectWorkingDirectory(locator);
     try {
-      model.read(fileNameOrUri);
-      logger.info(
-        "Loading " + fileNameOrUri + " is done in " +
-          (System.currentTimeMillis() - startTime) + "ms.");
+      Model model = ModelFactory.createDefaultModel();
+      final long startTime = System.currentTimeMillis();
+      model.read(locator);
+      logger.info("Loading {} is done in {}ms.", locator,
+        (System.currentTimeMillis() - startTime));
+      return model;
     } catch (HttpException e) {
-      throw new RuntimeException("Encountered HTTP problem trying to load model from " +
-        fileNameOrUri ,e);
+      throw new RuntimeException("Encountered HTTPException trying to load model from " +
+        locator, e);
     }
-    return model;
-}
+  }
 
-
-  /**
-   * @param endpointUri
-   * @param dataset
-   * @return
-   */
-  public static Model readModelFromEndPoint(Resource dataset, String endpointUri) {
+  public Model readModelFromEndPoint(Resource dataset, String endpointUri) {
     //@todo: implement new parameter for content type
     //@todo refactor for better tests
     Model result;
@@ -77,9 +78,4 @@ public class ModelReader {
     return result;
   }
 
-  public static void main(String[] args) {
-    Model m = ModelFactory.createDefaultModel().read("./examples/demo.ttl");
-    m.listStatements().forEachRemaining(s->System.out.println(s.toString()));
-
-  }
 }

@@ -43,6 +43,8 @@ public class ParametrizedPluginFactory<T extends ParametrizedPlugin> {
    */
   public ParametrizedPluginFactory(Class<T> clazz) {
     this.clazz = clazz;
+    pluginManager.loadPlugins();
+    pluginManager.startPlugins();
     this.factory = pluginManager.getExtensionFactory();
     this.classMap = createClassMap();
   }

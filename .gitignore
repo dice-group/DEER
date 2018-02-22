@@ -5,6 +5,7 @@
 *.war
 *.ear
 /target/
+/out/
 /log/
 nbactions.xml
 

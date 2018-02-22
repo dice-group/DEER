@@ -10,6 +10,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
  */
 public class ExecutionModelGenerator {
 
-  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ExecutionModelGenerator.class);
+  private static final Logger logger = LoggerFactory.getLogger(ExecutionModelGenerator.class);
 
   private ExecutionGraph executionGraph;
   private List<ExecutionPipelineBuilder> pipeBuilders;
@@ -141,8 +143,8 @@ public class ExecutionModelGenerator {
       parameterMap.init(operatorHub);
       operator.init(parameterMap, operatorInputs.size(), operatorOutputs.size());
       Function<List<Resource>, List<ExecutionPipeline>> getPipes = l -> l.stream()
-          .map(r -> pipes.get(executionGraph.getSubGraphId(r)))
-          .collect(Collectors.toList());
+        .map(r -> pipes.get(executionGraph.getSubGraphId(r)))
+        .collect(Collectors.toList());
       new ExecutionHub(operator, getPipes.apply(operatorInputs), getPipes.apply(operatorOutputs));
     }
     ExecutionModel executionModel = new ExecutionModel();
@@ -157,27 +159,23 @@ public class ExecutionModelGenerator {
    * @param dataset
    * @return dataset model from file/uri/endpoint
    */
-  @SuppressWarnings("Duplicates")
-  private Model readDataset(Resource dataset) {
-    Model model;
+  private Supplier<Model> readDataset(Resource dataset) {
+    ModelReader modelReader = new ModelReader();
+    final String s;
     if (dataset.hasProperty(DEER.fromEndPoint)) {
-      model = ModelReader
-        .readModelFromEndPoint(dataset, dataset.getProperty(DEER.fromEndPoint).getObject().toString());
+      s = dataset.getProperty(DEER.fromEndPoint).getObject().toString();
+      return () -> modelReader.readModelFromEndPoint(dataset, s);
+    } else if (dataset.hasProperty(DEER.hasUri)) {
+      s = dataset.getProperty(DEER.hasUri).getObject().toString();
+    } else if (dataset.hasProperty(DEER.inputFile)) {
+      s = dataset.getProperty(DEER.inputFile).getObject().toString();
     } else {
-      String s = null;
-      if (dataset.hasProperty(DEER.hasUri)) {
-        s = dataset.getProperty(DEER.hasUri).getObject().toString();
-      } else if (dataset.hasProperty(DEER.inputFile)) {
-        s = dataset.getProperty(DEER.inputFile).getObject().toString();
-      }
-      if (s == null) {
-        //@todo: introduce MalformedConfigurationException
-        throw new RuntimeException("Encountered root dataset without source declaration: " + dataset);
-      }
-      model = new ModelReader().readModel(s);
+      //@todo: introduce MalformedConfigurationException
+      throw new RuntimeException("Encountered root dataset without source declaration: " + dataset);
     }
-    return model;
+    return () -> modelReader.readModel(s);
   }
+
 
   /**
    *

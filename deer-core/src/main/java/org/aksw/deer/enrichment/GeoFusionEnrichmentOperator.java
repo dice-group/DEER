@@ -170,7 +170,7 @@ public class GeoFusionEnrichmentOperator extends AbstractEnrichmentOperator {
     CandidateGeometry selectedCandidateGeometry = selectCandidateGeometry(model, candidateGeometries, subject,
       action);
     if (selectedCandidateGeometry != null) {
-      logger.info("Selected candidate geometry: {}", selectedCandidateGeometry);
+//      logger.info("Selected candidate geometry: {}", selectedCandidateGeometry);
     }
     // if not all geometries are taken, compute dropped geometries
     Model droppedGeometries = action.equals(GeoFusionAction.takeAll) ? ModelFactory.createDefaultModel()

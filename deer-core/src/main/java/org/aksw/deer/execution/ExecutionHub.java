@@ -1,13 +1,14 @@
 package org.aksw.deer.execution;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.concurrent.CompletableFuture;
 import org.aksw.deer.enrichment.EnrichmentOperator;
+import org.aksw.deer.util.CompletableFutureFactory;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A non-linear node in the execution graph, ties together at least three linear nodes.
@@ -16,12 +17,13 @@ class ExecutionHub {
 
   private static final Logger logger = LoggerFactory.getLogger(ExecutionHub.class);
 
-  private List<ExecutionPipeline> inPipes;
   private List<ExecutionPipeline> outPipes;
-  private List<Model> inModels;
-  private List<Model> outModels;
+  private List<Model> inModels = new ArrayList<>();
+  private List<Model> outModels = new ArrayList<>();
   private EnrichmentOperator operator;
   private int launchLatch;
+  private CompletableFuture<Void> trigger = CompletableFutureFactory.get();
+  private CompletableFuture<Model> completion = CompletableFutureFactory.getCompleted(null);
 
   /**
    * Constructor.
@@ -32,15 +34,25 @@ class ExecutionHub {
    */
   ExecutionHub(EnrichmentOperator operator, List<ExecutionPipeline> inPipes, List<ExecutionPipeline> outPipes) {
     this.operator = operator;
-    this.inPipes = inPipes;
     this.outPipes = outPipes;
-    this.inModels = new ArrayList<>();
-    this.outModels = new ArrayList<>();
     this.launchLatch = inPipes.size();
     for (int i = 0; i < inPipes.size(); i++) {
-      int finalI = i;
-      inPipes.get(i).setCallback(m -> this.consume(finalI, m));
+      int j = i;
+      inPipes.get(i).setCallback(m -> this.consume(j, m));
       inModels.add(null);
+    }
+    boolean first = true;
+    CompletableFuture<Model> x;
+    for (int i = 0; i < outPipes.size(); i++) {
+      final int j = i;
+      if (first) {
+        first = false;
+        x = trigger.thenApply($ -> outModels.get(j)).thenCompose(outPipes.get(i));
+        completion = completion.thenCombine(x, (a, b) -> b);
+      } else {
+        x = trigger.thenApplyAsync($ -> outModels.get(j)).thenCompose(outPipes.get(i));
+        completion = completion.thenCombine(x, (a, b) -> b);
+      }
     }
   }
 
@@ -50,14 +62,17 @@ class ExecutionHub {
    * @param i  index the consumed model should be assigned
    * @param model  model to be consumed
    */
-  private synchronized void consume(int i, Model model) {
+  private synchronized CompletableFuture<Model> consume(int i, Model model) {
     inModels.set(i, model);
     logger.info("Pipe gives model to hub!");
     if (--launchLatch == 0) {
       logger.info("Hub executes!");
       execute();
+      return completion;
     }
+    return CompletableFutureFactory.getCompleted(null);
   }
+
 
   /**
    * Execute this {@code ExecutionHub}, passing all the input models to the
@@ -71,18 +86,7 @@ class ExecutionHub {
         + operator.getClass().getSimpleName() + "(Expected: " + outPipes.size() + ", Actual: "
         + outModels.size() + ")");
     }
-    CompletableFuture<Void> trigger = new CompletableFuture<>();
-    List<CompletableFuture<Model>> lst = new ArrayList<>();
-    ListIterator<ExecutionPipeline> pipeIt = outPipes.listIterator();
-    for (Model outModel : outModels) {
-      ExecutionPipeline outPipe = pipeIt.next();
-      lst.add(trigger.thenApplyAsync($ -> outModel).thenApplyAsync(outPipe));
-    }
     trigger.complete(null);
-    //@todo: really necessary? if yes, need to extend?
-//    for (CompletableFuture<Model> cf : lst) {
-//      cf.join();
-//    }
   }
 
 }

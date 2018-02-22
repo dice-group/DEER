@@ -1,6 +1,5 @@
 package org.aksw.deer.enrichment;
 
-import com.google.common.collect.Lists;
 import org.aksw.deer.parameter.DictListParameterConversion;
 import org.aksw.deer.parameter.Parameter;
 import org.aksw.deer.parameter.ParameterImpl;
@@ -45,7 +44,7 @@ public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
 
   @Override
   protected List<Model> process() {
-    return Lists.newArrayList(filterModel(models.get(0)));
+    return List.of(filterModel(models.get(0)));
   }
 
   private Model filterModel(Model model) {

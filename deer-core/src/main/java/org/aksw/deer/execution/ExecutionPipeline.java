@@ -1,22 +1,23 @@
 package org.aksw.deer.execution;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
+import org.aksw.deer.util.CompletableFutureFactory;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+
 /**
  * An {@code ExecutionPipeline} encapsulates a linear sequence of {@code EnrichmentOperator}s
  */
-class ExecutionPipeline implements UnaryOperator<Model> {
+class ExecutionPipeline implements Function<Model, CompletableFuture<Model>> {
 
   private static final Logger logger = LoggerFactory.getLogger(ExecutionPipeline.class);
 
   private CompletableFuture<Model> trigger;
   private CompletableFuture<Model> result;
-  private Consumer<Model> callBack;
+  private Function<Model, CompletableFuture<Model>> callBack;
 
   /**
    * Construct an {@code ExecutionPipeline}
@@ -27,9 +28,8 @@ class ExecutionPipeline implements UnaryOperator<Model> {
    */
   ExecutionPipeline(CompletableFuture<Model> trigger, CompletableFuture<Model> result) {
     this.trigger = trigger;
-    this.result = result;
     this.callBack = null;
-    result.thenAcceptAsync(this::callBack);
+    this.result = result.thenCompose(this::callBack);
   }
 
   /**
@@ -41,7 +41,7 @@ class ExecutionPipeline implements UnaryOperator<Model> {
    * @param cb the callback method reference, must satisfy the {@code Consumer<Model>} functional
    *           interface
    */
-  void setCallback(Consumer<Model> cb) {
+  void setCallback(Function<Model, CompletableFuture<Model>> cb) {
     this.callBack = cb;
   }
 
@@ -51,12 +51,13 @@ class ExecutionPipeline implements UnaryOperator<Model> {
    *
    * @param m  resulting model from this {@code ExecutionPipeline}s execution
    */
-  private void callBack(Model m) {
+  private CompletableFuture<Model> callBack(Model m) {
     if (this.callBack != null) {
-      this.callBack.accept(m);
+      return this.callBack.apply(m);
     } else {
       logger.info("No callback provided: leaf encountered!");
     }
+    return CompletableFutureFactory.getCompleted(m);
   }
 
   /**
@@ -66,8 +67,8 @@ class ExecutionPipeline implements UnaryOperator<Model> {
    * @return  resulting Model
    */
   @Override
-  public Model apply(Model model) {
+  public CompletableFuture<Model> apply(Model model) {
     trigger.complete(model);
-    return result.join();
+    return result;
   }
 }
