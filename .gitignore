@@ -6,7 +6,8 @@
 *.ear
 /target/
 /out/
-/log/
+/logs/
+/requests/
 nbactions.xml
 
 # IntelliJ IDEA #
