@@ -1,13 +1,13 @@
 package org.aksw.deer.server;
 
-import org.aksw.deer.execution.ExecutionModel;
-import org.aksw.deer.execution.ExecutionModelGenerator;
-import org.aksw.deer.io.ModelReader;
-import org.aksw.deer.util.CompletableFutureFactory;
+import org.aksw.deer.Deer;
 import org.aksw.deer.logging.MdcCompletableFuture;
 import org.apache.commons.cli.*;
-import org.apache.commons.lang3.time.StopWatch;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.pf4j.DefaultPluginManager;
+import org.pf4j.PluginManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -39,6 +39,12 @@ public class DeerController {
       .longOpt("port").desc("set port for server to listen on")
       .hasArg().argName("port_number").type(Number.class).build())
     ;
+
+  private static final PluginManager pluginManager = new DefaultPluginManager();
+  static {
+    pluginManager.loadPlugins();
+    pluginManager.startPlugins();
+  }
 
   public static void main(String args[]) {
     CommandLine cl = parseCommandLine(args);
@@ -81,27 +87,24 @@ public class DeerController {
 
   private static void runDeerServer(int port) {
     logger.info("Trying to start DEER server on 0.0.0.0:{} ...", port);
-    CompletableFutureFactory.setImplementation(MdcCompletableFuture.Factory.INSTANCE);
     Server.run(port);
   }
 
   static void runDeer(String fileName) {
     logger.info("Trying to read DEER configuration from file {}...", fileName);
-    runDeer(new ModelReader().readModel(fileName));
+    try {
+      Model model = ModelFactory.createDefaultModel();
+      final long startTime = System.currentTimeMillis();
+      model.read(fileName);
+      logger.info("Loading {} is done in {}ms.", fileName, (System.currentTimeMillis() - startTime));
+      runDeer(model);
+    } catch (HttpException e) {
+      throw new RuntimeException("Encountered HTTPException trying to load model from " + fileName, e);
+    }
   }
 
   private static void runDeer(Model configurationModel) {
-    StopWatch time = new StopWatch();
-    logger.info("Building execution model...");
-    time.start();
-    ExecutionModelGenerator executionModelGenerator = new ExecutionModelGenerator(configurationModel);
-    ExecutionModel executionModel = executionModelGenerator.generate();
-    time.split();
-    logger.info("Execution model built after {}ms.", time.getSplitTime());
-    logger.info("Starting enrichment execution...");
-    executionModel.execute();
-    time.split();
-    logger.info("Enrichment finished after {}ms", time.getSplitTime());
+    new Deer().run(configurationModel, pluginManager, MdcCompletableFuture.Factory.INSTANCE);
   }
 
 }

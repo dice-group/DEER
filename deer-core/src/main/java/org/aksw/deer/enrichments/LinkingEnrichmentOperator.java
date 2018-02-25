@@ -1,11 +1,11 @@
-package org.aksw.deer.enrichment;
+package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
-import org.aksw.deer.parameter.Parameter;
-import org.aksw.deer.parameter.ParameterImpl;
-import org.aksw.deer.parameter.ParameterMap;
-import org.aksw.deer.parameter.ParameterMapImpl;
-import org.aksw.deer.parameter.conversion.StringParameterConversion;
+import org.aksw.faraday_cage.parameter.Parameter;
+import org.aksw.faraday_cage.parameter.ParameterImpl;
+import org.aksw.faraday_cage.parameter.ParameterMap;
+import org.aksw.faraday_cage.parameter.ParameterMapImpl;
+import org.aksw.faraday_cage.parameter.conversions.StringParameterConversion;
 import org.aksw.limes.core.controller.Controller;
 import org.aksw.limes.core.io.config.Configuration;
 import org.aksw.limes.core.io.config.reader.xml.XMLConfigurationReader;
@@ -26,7 +26,7 @@ import java.util.List;
  * The {@code LinkingEnrichmentOperator} ...
  */
 @Extension
-public class LinkingEnrichmentOperator extends AbstractEnrichmentOperator {
+public class LinkingEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(LinkingEnrichmentOperator.class);
 
@@ -48,7 +48,7 @@ public class LinkingEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  public void init(@NotNull ParameterMap params) {
+  public void validateAndAccept(@NotNull ParameterMap params) {
     this.linksPart = DATASET_PART.valueOf(params.getValue(LINKS_PART, "source").toUpperCase());
   }
 
@@ -59,9 +59,10 @@ public class LinkingEnrichmentOperator extends AbstractEnrichmentOperator {
 
   /**
    * @return model enriched with links generated from a org.aksw.deer.resources.linking tool
+   * @param models
    */
 
-  protected List<Model> process() {
+  protected List<Model> safeApply(List<Model> models) {
     //@todo: Where does data come from?
     //@todo: implement ability to link internal datasets
     Model model = setPrefixes(models.get(0));

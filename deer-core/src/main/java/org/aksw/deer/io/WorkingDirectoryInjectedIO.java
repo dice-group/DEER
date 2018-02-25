@@ -1,5 +1,13 @@
 package org.aksw.deer.io;
 
+import org.aksw.deer.DeerPlugin;
+import org.aksw.deer.vocabulary.DEER;
+import org.aksw.faraday_cage.nodes.AbstractParametrizedNode;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -11,7 +19,7 @@ import java.util.function.Supplier;
  *
  *
  */
-public abstract class WorkingDirectoryInjectedIO {
+public abstract class WorkingDirectoryInjectedIO extends AbstractParametrizedNode.WithImplicitCloning<Model> implements DeerPlugin {
 
   private static Supplier<String> workingDirectorySupplier = () -> "";
 
@@ -42,5 +50,14 @@ public abstract class WorkingDirectoryInjectedIO {
   }
 
 
+  @Override
+  protected Model deepCopy(Model data) {
+    return ModelFactory.createDefaultModel().add(data);
+  }
 
+  @NotNull
+  @Override
+  public Resource getType() {
+    return DEER.resource(this.getClass().getSimpleName());
+  }
 }

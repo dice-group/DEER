@@ -3,42 +3,45 @@
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-:d1           a                  :Dataset ;
-		          :hasUri			       <http://dbpedia.org/resource/Paderborn> ;
-		          :fromEndPoint	     <http://dbpedia.org/sparql> ;
+:node_reader1
+              :implementedIn     :DefaultModelReader ;
+		          :fromUri			       <http://dbpedia.org/resource/Paderborn> ;
+		          :useEndpoint	     <http://dbpedia.org/sparql> ;
 		          :outputFile		     "input_dbp.ttl" ;
-		          :outputFormat	     "Turtle" .
-:d2           a                  :Dataset ;
-              :hasUri			       <http://dbpedia.org/resource/Paderborn> ;
-              :fromEndPoint	     <http://dbpedia.org/sparql> ;
+		          :outputFormat	     "Turtle" ;
+		          :hasOutput         ( :node_conf ) .
+:node_reader2
+              :implementedIn     :DefaultModelReader ;
+              :fromUri			       <http://dbpedia.org/resource/Paderborn> ;
+              :useEndpoint	     <http://dbpedia.org/sparql> ;
               :outputFile		     "input_lgd.ttl" ;
-              :outputFormat	     "Turtle" .
-:d3           a                  :Dataset .
-:d4           a                  :Dataset .
-:d5	          a                  :Dataset ;
+              :outputFormat	     "Turtle" ;
+              :hasOutput         ( :node_merge ) .
+:node_writer
+              :implementedIn     :DefaultModelWriter ;
 		          :outputFile		     "output_demo.ttl" ;
-		          :outputFormat	     "Turtle" .
-:merge        a                  :Operator ;
+		          :outputFormat	     "Turtle" ;
+		          :hasInput          ( :node_filter ) .
+:node_merge
               :implementedIn     :GeoFusionEnrichmentOperator ;
-              :hasInput          ( :d3 :d2 ) ;
-              :hasOutput         ( :d4 ) ;
+              :hasInput          ( :node_conf :node_reader2 ) ;
+              :hasOutput         ( :node_filter ) ;
               :fusionAction      "takeAll" ;
               :mergeOtherStatements
                                  "true" .
-:filter       a                  :Operator ;
+:node_filter
               :implementedIn     :FilterEnrichmentOperator ;
-              :hasInput          ( :d4 ) ;
-              :hasOutput         ( :d5 ) ;
+              :hasInput          ( :node_merge ) ;
+              :hasOutput         ( :node_writer ) ;
               :selectors         (
                     [ :predicate geo:lat ]
                     [ :predicate geo:long ]
                     [ :predicate rdfs:label ]
                     [ :predicate owl:sameAs ]
               ) .
-:conf         a                  :Operator ;
+:node_conf
               :implementedIn     :AuthorityConformationEnrichmentOperator ;
-		          rdfs:label		     "Conformation" ;
-		          :hasInput		       ( :d1 ) ;
-		          :hasOutput		     ( :d3 ) ;
+		          :hasInput		       ( :node_reader1 ) ;
+		          :hasOutput		     ( :node_merge ) ;
 		          :sourceSubjectAuthority  "http://dbpedia.org" ;
 		          :targetSubjectAuthority  "http://deer.org" .

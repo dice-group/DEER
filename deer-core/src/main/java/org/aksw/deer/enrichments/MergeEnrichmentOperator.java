@@ -1,24 +1,21 @@
-package org.aksw.deer.enrichment;
+package org.aksw.deer.enrichments;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.aksw.deer.enrichment.ParameterlessEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.pf4j.Extension;
 
+import java.util.List;
+
 @Extension
-public class MergeEnrichmentOperator extends ParameterlessEnrichmentOperator {
+public class MergeEnrichmentOperator extends AbstractEnrichmentOperator {
 
   @Override
-  protected List<Model> process() {
-    List<Model> result = new ArrayList<>();
+  protected List<Model> safeApply(List<Model> models) {
     Model merge = ModelFactory.createDefaultModel();
     for (Model model : models) {
       merge.add(model);
     }
-    result.add(merge);
-    return result;
+    return List.of(merge);
   }
 
   @Override

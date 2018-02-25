@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.aksw.deer</groupId>
   <artifactId>deer</artifactId>
-  <version>1.0.0-alpha1</version>
+  <version>1.0.0-alpha2</version>
   <name>DEER</name>
   <description>DEER - RDF Dataset Enrichment Framework</description>
   <url>http://github.com/dice-group/DEER</url>
@@ -18,7 +18,52 @@
   <modules>
     <module>deer-core</module>
     <module>deer-server</module>
+    <!--<module>faraday-cage</module>-->
   </modules>
+
+  <repositories>
+
+    <repository>
+      <id>maven.aksw.internal</id>
+      <name>University Leipzig, AKSW Maven2 Internal Repository</name>
+      <url>http://maven.aksw.org/repository/internal/</url>
+    </repository>
+
+    <repository>
+      <id>maven.aksw.snapshots</id>
+      <name>University Leipzig, AKSW Maven2 Snapshot Repository</name>
+      <url>http://maven.aksw.org/repository/snapshots/</url>
+    </repository>
+
+    <repository>
+      <id>maven2-repository.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2/</url>
+      <layout>default</layout>
+    </repository>
+
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>jcenter</id>
+      <url>http://jcenter.bintray.com</url>
+    </repository>
+
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+
+  </repositories>
 
   <build>
     <plugins>
@@ -93,6 +138,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -105,6 +151,18 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.25</version>
+    </dependency>
+
+    <!--<dependency>-->
+      <!--<groupId>org.aksw.faraday_cage</groupId>-->
+      <!--<artifactId>faraday-cage</artifactId>-->
+      <!--<version>0.0.1</version>-->
+    <!--</dependency>-->
+
+    <dependency>
+      <groupId>com.github.dice-group</groupId>
+      <artifactId>faraday-cage</artifactId>
+      <version>0.0.2</version>
     </dependency>
 
   </dependencies>

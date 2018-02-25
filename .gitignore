@@ -8,6 +8,7 @@
 /out/
 /logs/
 /requests/
+/faraday-cage/
 nbactions.xml
 
 # IntelliJ IDEA #

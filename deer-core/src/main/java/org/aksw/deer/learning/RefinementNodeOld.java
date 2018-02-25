@@ -5,7 +5,7 @@ package org.aksw.deer.learning;
 
 
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.deer.enrichment.EnrichmentOperator;
+import org.aksw.deer.enrichments.ParametrizedEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -16,7 +16,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
  */
 public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
 
-  public EnrichmentOperator module = null;
+  public ParametrizedEnrichmentOperator module = null;
   public double fitness = -Double.MAX_VALUE;
   public Model inputModel = ModelFactory.createDefaultModel();
   public Model outputModel = ModelFactory.createDefaultModel();
@@ -41,8 +41,8 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
   /**
    * @author sherif
    */
-  public RefinementNodeOld(EnrichmentOperator module, double fitness, Model inputModel, Model outputModel,
-    Resource inputDataset, Resource outputDataset, Model configModel) {
+  public RefinementNodeOld(ParametrizedEnrichmentOperator module, double fitness, Model inputModel, Model outputModel,
+                           Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     this.module = module;
     this.fitness = fitness;
@@ -60,8 +60,8 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
   }
 
 
-  public RefinementNodeOld(EnrichmentOperator operator, Model inputModel, Model outputModel,
-    Resource inputDataset, Resource outputDataset, Model configModel) {
+  public RefinementNodeOld(ParametrizedEnrichmentOperator operator, Model inputModel, Model outputModel,
+                           Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     if (fitness == -2) {
       status = NodeStatus.DEAD;

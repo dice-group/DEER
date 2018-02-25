@@ -1,12 +1,12 @@
-package org.aksw.deer.enrichment;
+package org.aksw.deer.enrichments;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
-import org.aksw.deer.parameter.Parameter;
-import org.aksw.deer.parameter.ParameterImpl;
-import org.aksw.deer.parameter.ParameterMapImpl;
-import org.aksw.deer.parameter.ParameterMap;
+import org.aksw.faraday_cage.parameter.Parameter;
+import org.aksw.faraday_cage.parameter.ParameterImpl;
+import org.aksw.faraday_cage.parameter.ParameterMapImpl;
+import org.aksw.faraday_cage.parameter.ParameterMap;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
@@ -24,7 +24,7 @@ import java.util.Objects;
  * 
  */
 @Extension
-public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentOperator {
+public class AuthorityConformationEnrichmentOperator extends AbstractParametrizedEnrichmentOperator implements ParametrizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 
@@ -42,7 +42,7 @@ public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentO
   }
 
   @Override
-  protected List<Model> process() {
+  protected List<Model> safeApply(List<Model> models) {
     Model input = models.get(0);
     Model output = ModelFactory.createDefaultModel();
     input.listStatements().forEachRemaining(stmt -> {
@@ -110,7 +110,7 @@ public class AuthorityConformationEnrichmentOperator extends AbstractEnrichmentO
   }
 
   @Override
-  public void init(@NotNull ParameterMap params) {
+  public void validateAndAccept(@NotNull ParameterMap params) {
     this.sourceSubjectAuthority = params.getValue(SOURCE_SUBJECT_AUTHORITY);
     this.targetSubjectAuthority = params.getValue(TARGET_SUBJECT_AUTHORITY);
   }

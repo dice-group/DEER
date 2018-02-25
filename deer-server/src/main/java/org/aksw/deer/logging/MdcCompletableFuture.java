@@ -1,6 +1,6 @@
 package org.aksw.deer.logging;
 
-import org.aksw.deer.util.CompletableFutureFactory;
+import org.aksw.faraday_cage.CompletableFutureFactory;
 import org.slf4j.MDC;
 
 import java.util.HashMap;

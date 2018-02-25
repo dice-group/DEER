@@ -51,7 +51,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //  }
 //
 //  /**
-//   * Learn specification with both enrichment (enrichment functions) and operator
+//   * Learn specification with both enrichments (enrichments functions) and operator
 //   *
 //   * @return the RefinementNode containing the best found solution of the refinement tree
 //   * @author sherif
@@ -215,7 +215,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //  }
 //
 //  /**
-//   * Learn specification with only enrichment (enrichment functions)
+//   * Learn specification with only enrichments (enrichments functions)
 //   *
 //   * @return the RefinementNode containing the best found solution of the refinement tree
 //   * @author sherif
@@ -572,7 +572,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //  }
 //
 //  /**
-//   * Get lift and right nodes without re-evaluating the enrichment,
+//   * Get lift and right nodes without re-evaluating the enrichments,
 //   * i.e, just fix the left and right node to the input root
 //   *
 //   * @author sherif

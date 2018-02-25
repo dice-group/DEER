@@ -11,7 +11,7 @@
   <parent>
     <artifactId>deer</artifactId>
     <groupId>org.aksw.deer</groupId>
-    <version>1.0.0-alpha1</version>
+    <version>1.0.0-alpha2</version>
   </parent>
 
   <artifactId>deer-server</artifactId>
@@ -22,6 +22,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>3.0.2</version>
         <configuration>
           <archive>
             <manifest>
@@ -70,7 +71,7 @@
     <dependency>
       <groupId>org.aksw.deer</groupId>
       <artifactId>deer-core</artifactId>
-      <version>1.0.0-alpha1</version>
+      <version>1.0.0-alpha2</version>
       <scope>compile</scope>
     </dependency>
 

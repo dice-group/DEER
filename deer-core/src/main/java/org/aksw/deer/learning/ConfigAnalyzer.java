@@ -1,29 +1,12 @@
 package org.aksw.deer.learning;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.aksw.deer.vocabulary.DEER;
-import org.aksw.deer.io.ModelReader;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.vocabulary.RDF;
-
 /**
  * @author sherif
  */
 public class ConfigAnalyzer {
 //
 //  /**
-//   * @return all enrichment n the input configModel
+//   * @return all enrichments n the input configModel
 //   * @author sherif
 //   */
 //  public static Set<Resource> getModules(Model configModel) {
@@ -63,7 +46,7 @@ public class ConfigAnalyzer {
 //  }
 //
 //  /**
-//   * @return The total number of enrichment and operator included in the configModel
+//   * @return The total number of enrichments and operator included in the configModel
 //   * @author sherif
 //   */
 //  public static long size(Model configModel) {
@@ -105,8 +88,8 @@ public class ConfigAnalyzer {
 //  public static void main(String args[]) {
 //    Model m = (new ModelReader()).readModel(args[0]);
 //    Set<Resource> modules = getModules(m);
-//    System.out.println("enrichment: " + modules);
-//    System.out.println("enrichment.size(): " + modules.size());
+//    System.out.println("enrichments: " + modules);
+//    System.out.println("enrichments.size(): " + modules.size());
 //    System.out.println("size(): " + size(m));
 //
 //  }

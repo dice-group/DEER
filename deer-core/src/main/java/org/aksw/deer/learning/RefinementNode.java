@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.deer.enrichment.EnrichmentOperator;
+import org.aksw.deer.enrichments.ParametrizedEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -22,8 +22,8 @@ public class RefinementNode implements Comparable<RefinementNode> {
 
   private static final Logger logger = LoggerFactory.getLogger(RefinementNode.class);
 
-  public EnrichmentOperator module = null;
-  public EnrichmentOperator operator = null;
+  public ParametrizedEnrichmentOperator module = null;
+  public ParametrizedEnrichmentOperator operator = null;
   public double fitness = -Double.MAX_VALUE;
   public List<Model> inputModels = new ArrayList<Model>();
   public List<Model> outputModels = new ArrayList<Model>();
@@ -36,14 +36,14 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(EnrichmentOperator module, EnrichmentOperator operator, double fitness,
-    List<Model> inputModels,
-    List<Model> outputModels, Model configModel, List<Resource> inputDatasets,
-    List<Resource> outputDatasets) {
+  private RefinementNode(ParametrizedEnrichmentOperator module, ParametrizedEnrichmentOperator operator, double fitness,
+                         List<Model> inputModels,
+                         List<Model> outputModels, Model configModel, List<Resource> inputDatasets,
+                         List<Resource> outputDatasets) {
     super();
     if (module != null && operator != null) {
       logger.error(
-        "RefinementNodeX can contain either a enrichment or an operator not both. Exit with error!");
+        "RefinementNodeX can contain either a enrichments or an operator not both. Exit with error!");
       System.exit(1);
     }
     this.module = module;
@@ -61,7 +61,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
 
 //	/**
 //	 * Create a DeerModule refinement node
-//	 * @param enrichment
+//	 * @param enrichments
 //	 * @param fitness
 //	 * @param inputModels
 //	 * @param outputModels
@@ -70,9 +70,9 @@ public class RefinementNode implements Comparable<RefinementNode> {
 //	 * @param outputDatasets
 //	 *@author sherif
 //	 */
-//	public RefinementNode(DeerModule enrichment, double fitness, List<Model> inputModels, List<Model> outputModels,
+//	public RefinementNode(DeerModule enrichments, double fitness, List<Model> inputModels, List<Model> outputModels,
 //			Model configModel, List<Resource> inputDatasets, List<Resource> outputDatasets) {
-//		this(enrichment, null, fitness, inputModels, outputModels, configModel, inputDatasets, outputDatasets);
+//		this(enrichments, null, fitness, inputModels, outputModels, configModel, inputDatasets, outputDatasets);
 //	}
 
 
@@ -81,9 +81,9 @@ public class RefinementNode implements Comparable<RefinementNode> {
    *
    * @author sherif
    */
-  public RefinementNode(EnrichmentOperator operator, double fitness, List<Model> inputModels,
-    List<Model> outputModels,
-    Model configModel, List<Resource> inputDatasets, List<Resource> outputDatasets) {
+  public RefinementNode(ParametrizedEnrichmentOperator operator, double fitness, List<Model> inputModels,
+                        List<Model> outputModels,
+                        Model configModel, List<Resource> inputDatasets, List<Resource> outputDatasets) {
     this(null, operator, fitness, inputModels, outputModels, configModel, inputDatasets,
       outputDatasets);
   }
@@ -92,12 +92,12 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(EnrichmentOperator module, EnrichmentOperator operator, double fitness, Model inputModel,
-    Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
+  private RefinementNode(ParametrizedEnrichmentOperator module, ParametrizedEnrichmentOperator operator, double fitness, Model inputModel,
+                         Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
     super();
     if (module != null && operator != null) {
       logger.error(
-        "RefinementNodeX can contain either a enrichment or an operator not both. Exit with error!");
+        "RefinementNodeX can contain either a enrichments or an operator not both. Exit with error!");
       System.exit(1);
     }
     this.module = module;
@@ -119,8 +119,8 @@ public class RefinementNode implements Comparable<RefinementNode> {
    *
    * @author sherif
    */
-  public RefinementNode(EnrichmentOperator module, double fitness, Model inputModel,
-    Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
+  public RefinementNode(ParametrizedEnrichmentOperator module, double fitness, Model inputModel,
+                        Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
     this(module, null, fitness, inputModel, outputModel, configModel, inputDataset, outputDataset);
   }
 

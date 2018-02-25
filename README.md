@@ -30,9 +30,9 @@ java -jar path_to_config.ttl
 ```
 <dependencies>
   <dependency>
-    <groupId>com.github.dice-group</groupId>
-    <artifactId>deer</artifactId>
-    <version>1.0.0-alpha1</version>
+    <groupId>com.github.dice-group.deer</groupId>
+    <artifactId>deer-core</artifactId>
+    <version>1.0.0-alpha2</version>
   </dependency>
 </dependencies>
 
