@@ -7,16 +7,11 @@
     <Routing name="Routing">
       <Routes pattern="$${ctx:requestId}">
         <Route>
-          <RollingFile name="user.log" append="true" fileName="requests/${ctx:requestId}.txt"
-                       filePattern="requests/archive/${ctx:requestId}-%d{MM-dd-yyyy}-%i.txt.gz">
+          <RandomAccessFile name="user.log" append="false" fileName=".server-storage/logs/${ctx:requestId}.log">
             <PatternLayout>
               <pattern>%d{ISO8601} [%t] %p %c %L - %m%n</pattern>
             </PatternLayout>
-            <Policies>
-              <TimeBasedTriggeringPolicy/>
-              <SizeBasedTriggeringPolicy size="50 MB"/>
-            </Policies>
-          </RollingFile>
+          </RandomAccessFile>
         </Route>
       </Routes>
     </Routing>

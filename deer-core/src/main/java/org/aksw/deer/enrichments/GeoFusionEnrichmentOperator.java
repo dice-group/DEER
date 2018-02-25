@@ -1,11 +1,11 @@
-package org.aksw.deer.enrichment;
+package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
-import org.aksw.deer.parameter.Parameter;
-import org.aksw.deer.parameter.ParameterImpl;
-import org.aksw.deer.parameter.ParameterMap;
-import org.aksw.deer.parameter.ParameterMapImpl;
-import org.aksw.deer.parameter.StringParameterConversion;
+import org.aksw.faraday_cage.parameter.Parameter;
+import org.aksw.faraday_cage.parameter.ParameterImpl;
+import org.aksw.faraday_cage.parameter.ParameterMap;
+import org.aksw.faraday_cage.parameter.ParameterMapImpl;
+import org.aksw.faraday_cage.parameter.conversions.StringParameterConversion;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.NodeIterator;
@@ -28,7 +28,7 @@ import java.util.List;
  *
  */
 @Extension
-public class GeoFusionEnrichmentOperator extends AbstractEnrichmentOperator {
+public class GeoFusionEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(GeoFusionEnrichmentOperator.class);
 
@@ -92,7 +92,7 @@ public class GeoFusionEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  protected List<Model> process() {
+  protected List<Model> safeApply(List<Model> models) {
     logger.info("Invoking GeoFusionOperator of {} models with fusionAction {} and mergeOtherStatements {}", models.size(), fusionAction, mergeOtherStatements);
 
     try {
@@ -148,7 +148,7 @@ public class GeoFusionEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  public void init(@NotNull ParameterMap params) {
+  public void validateAndAccept(@NotNull ParameterMap params) {
     this.fusionAction = GeoFusionAction.valueOf(params.getValue(FUSION_ACTION));
     this.mergeOtherStatements = Boolean.valueOf(params.getValue(MERGE_OTHER_STATEMENTS, "true"));
   }

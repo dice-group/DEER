@@ -1,10 +1,10 @@
-package org.aksw.deer.enrichment;
+package org.aksw.deer.enrichments;
 
-import org.aksw.deer.parameter.DictListParameterConversion;
-import org.aksw.deer.parameter.Parameter;
-import org.aksw.deer.parameter.ParameterImpl;
-import org.aksw.deer.parameter.ParameterMap;
-import org.aksw.deer.parameter.ParameterMapImpl;
+import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
+import org.aksw.faraday_cage.parameter.Parameter;
+import org.aksw.faraday_cage.parameter.ParameterImpl;
+import org.aksw.faraday_cage.parameter.ParameterMap;
+import org.aksw.faraday_cage.parameter.ParameterMapImpl;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  */
 @Extension
-public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
+public class FilterEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(FilterEnrichmentOperator.class);
 
@@ -43,7 +43,7 @@ public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  protected List<Model> process() {
+  protected List<Model> safeApply(List<Model> models) {
     return List.of(filterModel(models.get(0)));
   }
 
@@ -69,7 +69,7 @@ public class FilterEnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  public void init(@NotNull ParameterMap params) {
+  public void validateAndAccept(@NotNull ParameterMap params) {
     selectors = params.getValue(SELECTORS);
     if (selectors.size() == 0) {
       // empty HashMap will select everything - equivalent to "?s ?p ?o"

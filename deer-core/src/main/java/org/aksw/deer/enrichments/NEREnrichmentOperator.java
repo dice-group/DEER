@@ -1,10 +1,10 @@
-package org.aksw.deer.enrichment;
+package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
-import org.aksw.deer.parameter.Parameter;
-import org.aksw.deer.parameter.ParameterImpl;
-import org.aksw.deer.parameter.ParameterMap;
-import org.aksw.deer.parameter.ParameterMapImpl;
+import org.aksw.faraday_cage.parameter.Parameter;
+import org.aksw.faraday_cage.parameter.ParameterImpl;
+import org.aksw.faraday_cage.parameter.ParameterMap;
+import org.aksw.faraday_cage.parameter.ParameterMapImpl;
 import org.aksw.deer.vocabulary.DBpedia;
 import org.aksw.deer.vocabulary.SCMSANN;
 import org.aksw.fox.binding.FoxApi;
@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  */
 @Extension
-public class NEREnrichmentOperator extends AbstractEnrichmentOperator {
+public class NEREnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(NEREnrichmentOperator.class);
 
@@ -73,7 +73,7 @@ public class NEREnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  public void init(@NotNull ParameterMap params) {
+  public void validateAndAccept(@NotNull ParameterMap params) {
     this.literalProperty = params.getValue(LITERAL_PROPERTY) == null ?
       null : ResourceFactory.createProperty(params.getValue(LITERAL_PROPERTY));
     this.importProperty = ResourceFactory.createProperty(params.getValue(IMPORT_PROPERTY, DEFAULT_IMPORT_PROPERTY));
@@ -99,7 +99,7 @@ public class NEREnrichmentOperator extends AbstractEnrichmentOperator {
   }
 
   @Override
-  protected List<Model> process() {
+  protected List<Model> safeApply(List<Model> models) {
     Model model = models.get(0);
     Model resultModel = ModelFactory.createDefaultModel();
     resultModel.add(model);

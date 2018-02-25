@@ -1,7 +1,8 @@
-package org.aksw.deer.enrichment;
+package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
-import org.aksw.deer.parameter.*;
+import org.aksw.faraday_cage.parameter.*;
+import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.*;
 import org.slf4j.Logger;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  */
 @Extension
-public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentOperator {
+public class PredicateConformationEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 
@@ -58,7 +59,7 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
   }
 
   @Override
-  protected List<Model> process() {
+  protected List<Model> safeApply(List<Model> models) {
     Model model = models.get(0);
     //Conform Model
     Model conformModel = ModelFactory.createDefaultModel();
@@ -87,7 +88,7 @@ public class PredicateConformationEnrichmentOperator extends AbstractEnrichmentO
   }
 
   @Override
-  public void init(@NotNull ParameterMap parameterMap) {
+  public void validateAndAccept(@NotNull ParameterMap parameterMap) {
     this.propertyMapping = parameterMap.getValue(PROPERTY_MAPPING);
   }
 

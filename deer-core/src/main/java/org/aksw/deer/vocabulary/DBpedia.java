@@ -8,8 +8,8 @@ import org.apache.jena.rdf.model.ResourceFactory;
 
 public class DBpedia {
 
-  public static final String endPoint = "http://dbpedia.org/sparql";
-  public static final String liveEndPoint = "http://live.dbpedia.org/sparql";
+  public static final String endPoint = "http://dbpedia.org/util";
+  public static final String liveEndPoint = "http://live.dbpedia.org/util";
   public static final String uri = "http://dbpedia.org/";
   public static final String resourceUri = "http://dbpedia.org/resource/";
   public static final String ontologyUri = "http://dbpedia.org/ontology/";

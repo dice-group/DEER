@@ -1,12 +1,13 @@
-package org.aksw.deer.enrichment;
+package org.aksw.deer.enrichments;
 
+import com.github.therapi.runtimejavadoc.RetainJavadoc;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.aksw.deer.parameter.DictListParameterConversion;
-import org.aksw.deer.parameter.Parameter;
-import org.aksw.deer.parameter.ParameterImpl;
-import org.aksw.deer.parameter.ParameterMap;
-import org.aksw.deer.parameter.ParameterMapImpl;
+import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
+import org.aksw.faraday_cage.parameter.Parameter;
+import org.aksw.faraday_cage.parameter.ParameterImpl;
+import org.aksw.faraday_cage.parameter.ParameterMap;
+import org.aksw.faraday_cage.parameter.ParameterMapImpl;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -50,7 +51,7 @@ import java.util.stream.Collectors;
  *
  * <h3>{@code :operations}</h3>
  *
- * A {@link org.aksw.deer.parameter.DictListParameterConversion DictList}.
+ * A {@link DictListParameterConversion DictList}.
  *
  * Each entry in the {@code DictList} corresponds to one dereferencing operation, allowing multiple
  * dereferencing operations being carried out by a single {@code DereferencingEnrichmentOperator}.
@@ -90,12 +91,12 @@ import java.util.stream.Collectors;
  * <h2>Example</h2>
  *
  */
-@Extension
-public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator {
+@Extension @RetainJavadoc
+public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(DereferencingEnrichmentOperator.class);
 
-  // @todo: implement this someday.. requires sparql endpoint discovery
+  // @todo: implement this someday.. requires util endpoint discovery
   //  * <blockquote>
   //  *     <b>{@code :lookUpProperty} [required]</b>
   //  *     <i>range: resource</i>
@@ -156,13 +157,13 @@ public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator 
   }
 
   @Override
-  public void init(@NotNull ParameterMap params) {
+  public void validateAndAccept(@NotNull ParameterMap params) {
     this.operations = params.getValue(OPERATIONS);
 
   }
 
   @Override
-  protected List<Model> process() {
+  protected List<Model> safeApply(List<Model> models) {
     model = ModelFactory.createDefaultModel().add(models.get(0));
     operations.forEach(this::runOperation);
     return Lists.newArrayList(model);
@@ -187,7 +188,7 @@ public class DereferencingEnrichmentOperator extends AbstractEnrichmentOperator 
   }
 
   private List<Resource> getCandidateNodesByPrefix (String lookupPrefix) {
-    // old way with sparql:
+    // old way with util:
     //      "SELECT * " +
     //      "WHERE { ?s ?p ?o . FILTER (isURI(?o)) . " +
     //      "FILTER (STRSTARTS(STR(?o), \"" + lookupPrefix + "\"))}";

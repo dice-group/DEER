@@ -12,7 +12,7 @@ public class ConfigBuilder {
 //
 //
 //  /**
-//   * @return add configuration for the input enrichment to the input configuration model, the returned
+//   * @return add configuration for the input enrichments to the input configuration model, the returned
 //   * configuration model  is independent of the input configuration model
 //   * @author sherif
 //   */
