@@ -2,57 +2,48 @@ package org.aksw.deer.server;
 
 import eu.medsea.mimeutil.MimeType;
 import eu.medsea.mimeutil.MimeUtil;
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.aksw.deer.io.WorkingDirectoryInjectedIO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import spark.Request;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.ByteBuffer;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static spark.Spark.post;
-import static spark.Spark.threadPool;
-import static spark.Spark.get;
-import static spark.Spark.awaitInitialization;
+import static spark.Spark.*;
 
 /**
  */
 public class Server {
 
-  private static final String STORAGE_DIR_PATH = "./temp/";
+  private static final Logger logger = LoggerFactory.getLogger(Server.class);
+
+  private static final String STORAGE_DIR_PATH = "./.server-storage/";
+  private static final String LOG_DIR_PATH = STORAGE_DIR_PATH + "logs/";
   private static final String CONFIG_FILE_PREFIX = "deer_cfg_";
   private static final String CONFIG_FILE_SUFFIX = ".ttl";
-  private static Map<String, InputStream> logStreamMap = new HashMap<>();
+  private static Map<String, CompletableFuture<Void>> requests = new HashMap<>();
 
-  public static void main(String[] args) {
-    threadPool(4, 1, 30000);
-    final String pathToJar = args[0];
+  public static void run(int port) {
     File uploadDir = new File(STORAGE_DIR_PATH);
-    uploadDir.mkdir();
-
-//    webSocket("/log", LogSocket.class);
-
+    if (!uploadDir.exists()) {
+      uploadDir.mkdir();
+    }
+    WorkingDirectoryInjectedIO.takeWorkingDirectoryFrom(()-> STORAGE_DIR_PATH + MDC.get("requestId") + "/");
+    threadPool(8, 1, 30000);
+    port(port);
+    init();
     post("/submit", (req, res) -> {
       try {
         Path tempFile = Files
@@ -69,31 +60,41 @@ public class Server {
         if (!workingDir.mkdir()) {
           throw new RuntimeException("Not able to create directory " + workingDir.getAbsolutePath());
         }
-        Process process = new ProcessBuilder()
-          .command(
-            "java",
-            "-jar",
-            pathToJar,
-            tempFile.toFile().getAbsolutePath()
-          )
-          .directory(workingDir)
-          .redirectErrorStream(true).start();
-        logStreamMap.put(id, process.getInputStream());
+        final String requestId = id;
+        requests.put(requestId, CompletableFuture.completedFuture(null).thenAcceptAsync($->{
+          MDC.put("requestId", requestId);
+          DeerController.runDeer(tempFile.toString());
+        }));
         return id;
       } catch (Exception e) {
         e.printStackTrace();
         return e.getMessage();
       }
     });
-
+    get("/result/:id", (req, res) -> {
+      String id = sanitizeId(req.params("id"));
+      File dir = new File(STORAGE_DIR_PATH + id);
+      if (dir.exists() && dir.isDirectory()) {
+        return Arrays.stream(dir.listFiles())
+          .map(File::getName)
+          .reduce("", (s, s2) -> s + ", " + s2)
+          .substring(2);
+      } else {
+        // 404 - Not Found
+        res.status(404);
+        return "404 - request id not found";
+      }
+    });
     get("/result/:id/:file", (req, res) -> {
-      File requestedFile = new File(STORAGE_DIR_PATH + req.params("id") + "/" + req.params("file"));
+      String id = sanitizeId(req.params("id"));
+      File file = new File(req.params("file"));
+      File requestedFile = new File(STORAGE_DIR_PATH + id + "/" + file.getName());
       // is the file available?
       if (requestedFile.exists()) {
         MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
         Collection mimeTypes = MimeUtil.getMimeTypes(requestedFile, new MimeType("text/plain"));
         res.type(mimeTypes.iterator().next().toString());
-        res.header("Content-Disposition", "attachment; filename=" + req.params("file"));
+        res.header("Content-Disposition", "attachment; filename=" + file.getName());
         res.status(200);
         OutputStream os = res.raw().getOutputStream();
         FileInputStream fs = new FileInputStream(requestedFile);
@@ -112,56 +113,42 @@ public class Server {
         return "404 - file not found";
       }
     });
-
+    get("/logs/:id", (req, res) -> {
+      String id = sanitizeId(req.params("id"));
+      File requestedFile = new File(LOG_DIR_PATH + id + ".log");
+      // is the file available?
+      if (requestedFile.exists()) {
+        res.type("text/plain");
+        res.header("Content-Disposition", "attachment; filename=log.txt");
+        res.status(200);
+        OutputStream os = res.raw().getOutputStream();
+        FileInputStream fs = new FileInputStream(requestedFile);
+        final byte[] buffer = new byte[1024];
+        int count;
+        while ((count = fs.read(buffer)) >= 0) {
+          os.write(buffer, 0, count);
+        }
+        os.flush();
+        fs.close();
+        os.close();
+        return "";
+      } else {
+        // 404 - Not Found
+        res.status(404);
+        return "404 - log file not found";
+      }
+    });
     awaitInitialization();
   }
 
-  public static void run(int port) {
-    CompletableFuture<Void> x = new CompletableFuture<>();
-    CompletableFuture<Void> y = x.thenAcceptAsync($ -> {
-      MDC.put("requestId", "jf98hf93h923hf");
-      DeerController.runDeer("examples/demo.ttl");
-    });
-    CompletableFuture<Void> z = x.thenAcceptAsync($->{
-      MDC.put("requestId", "k239fb9238fb93");
-      DeerController.runDeer("examples/demo.ttl");
-    });
-    x.complete(null);
-    DeerController.runDeer("examples/demo.ttl");
-  }
-
-  @WebSocket
-  public static class LogSocket {
-
-    private InputStream inputStream;
-
-    @OnWebSocketConnect
-    public void onConnect(Session user) throws Exception {
-      Map<String, List<String>> parameterMap = user.getUpgradeRequest().getParameterMap();
-      inputStream = logStreamMap.get(parameterMap.get("id").get(0));
-      ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * 1024);
-      user.getRemote().sendBytesByFuture(byteBuffer);
-
-    }
-
-    @OnWebSocketClose
-    public void onClose(Session user, int statusCode, String reason) {
-
-    }
-
-    @OnWebSocketMessage
-    public void onMessage(Session user, String message) {
-
-    }
-
-
+  private static String sanitizeId(String id) {
+    return id.replaceAll("[^\\d]", "");
   }
 
   // methods used for logging
   private static void logInfo(Request req, Path tempFile) throws IOException, ServletException {
-    System.out.println(
-      "Uploaded file '" + getFileName(req.raw().getPart("config_file")) + "' saved as '" +
-        tempFile.toAbsolutePath() + "'");
+    logger.info("Uploaded file '{}' saved as '{}'", getFileName(req.raw().getPart("config_file")),
+      tempFile.toAbsolutePath());
   }
 
   private static String getFileName(Part part) {

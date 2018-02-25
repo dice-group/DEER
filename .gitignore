@@ -4,11 +4,10 @@
 *.jar
 *.war
 *.ear
+/.server-storage/
 /target/
-/out/
-/logs/
-/requests/
 /faraday-cage/
+/out/
 nbactions.xml
 
 # IntelliJ IDEA #
