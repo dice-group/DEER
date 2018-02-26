@@ -5,13 +5,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <maven.jar.mainClass>org.aksw.deer.server.DeerController</maven.jar.mainClass>
+    <maven.jar.mainClass>org.aksw.deer.DeerController</maven.jar.mainClass>
   </properties>
 
   <parent>
     <artifactId>deer</artifactId>
     <groupId>org.aksw.deer</groupId>
-    <version>1.0.0-alpha2</version>
+    <version>1.0.0-alpha3-SNAPSHOT</version>
   </parent>
 
   <artifactId>deer-server</artifactId>
@@ -71,7 +71,7 @@
     <dependency>
       <groupId>org.aksw.deer</groupId>
       <artifactId>deer-core</artifactId>
-      <version>1.0.0-alpha2</version>
+      <version>1.0.0-alpha3-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
 
@@ -103,6 +103,12 @@
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
       <version>1.17</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.2</version>
     </dependency>
 
   </dependencies>

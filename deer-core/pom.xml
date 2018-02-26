@@ -5,7 +5,7 @@
   <parent>
     <artifactId>deer</artifactId>
     <groupId>org.aksw.deer</groupId>
-    <version>1.0.0-alpha2</version>
+    <version>1.0.0-alpha3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

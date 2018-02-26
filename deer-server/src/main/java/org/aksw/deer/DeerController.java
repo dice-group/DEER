@@ -1,7 +1,7 @@
-package org.aksw.deer.server;
+package org.aksw.deer;
 
-import org.aksw.deer.Deer;
 import org.aksw.deer.logging.MdcCompletableFuture;
+import org.aksw.deer.server.Server;
 import org.apache.commons.cli.*;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.rdf.model.Model;
@@ -11,9 +11,6 @@ import org.pf4j.PluginManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import static org.fusesource.jansi.Ansi.Color.RED;
 import static org.fusesource.jansi.Ansi.ansi;
@@ -90,10 +87,10 @@ public class DeerController {
 
   private static void runDeerServer(int port) {
     logger.info("Trying to start DEER server on 0.0.0.0:{} ...", port);
-    Server.run(port);
+    Server.getInstance().run(port);
   }
 
-  static void runDeer(String fileName) {
+  public static void runDeer(String fileName) {
     logger.info("Trying to read DEER configuration from file {}...", fileName);
     try {
       Model model = ModelFactory.createDefaultModel();
@@ -109,5 +106,6 @@ public class DeerController {
   private static void runDeer(Model configurationModel) {
     new Deer().run(configurationModel, pluginManager, MdcCompletableFuture.Factory.INSTANCE);
   }
+
 
 }

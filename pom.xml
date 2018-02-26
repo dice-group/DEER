@@ -3,10 +3,16 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.aksw.deer</groupId>
   <artifactId>deer</artifactId>
-  <version>1.0.0-alpha2</version>
+  <version>1.0.0-alpha3-SNAPSHOT</version>
   <name>DEER</name>
   <description>DEER - RDF Dataset Enrichment Framework</description>
   <url>http://github.com/dice-group/DEER</url>
+
+  <scm>
+    <url>https://github.com/dice-group/deer</url>
+    <connection>scm:git:https://github.com/dice-group/deer.git</connection>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
     <maven.compiler.source>9</maven.compiler.source>
@@ -18,8 +24,19 @@
   <modules>
     <module>deer-core</module>
     <module>deer-server</module>
-    <!--<module>faraday-cage</module>-->
   </modules>
+
+  <distributionManagement>
+    <repository>
+      <id>maven.aksw.internal</id>
+      <url>http://maven.aksw.org/archiva/repository/internal</url>
+    </repository>
+    <snapshotRepository>
+      <id>maven.aksw.snapshots</id>
+      <name>AKSW Snapshot Repository</name>
+      <url>http://maven.aksw.org/archiva/repository/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <repositories>
 
@@ -81,6 +98,27 @@
             <annotationProcessor>com.github.therapi.runtimejavadoc.internal.JavadocAnnotationProcessor</annotationProcessor>
           </annotationProcessors>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
+        <configuration>
+          <tag>${releaseVersion}</tag>
+          <tagNameFormat>@{project.version}</tagNameFormat>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <!-- releaseProfiles configuration will actually force a Maven profile
+                        – the `releases` profile – to become active during the Release process. -->
+          <releaseProfiles>releases</releaseProfiles>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-scm-plugin</artifactId>
+            <version>1.9.5</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
@@ -153,17 +191,17 @@
       <version>1.7.25</version>
     </dependency>
 
-    <!--<dependency>-->
-      <!--<groupId>org.aksw.faraday_cage</groupId>-->
-      <!--<artifactId>faraday-cage</artifactId>-->
-      <!--<version>0.0.1</version>-->
-    <!--</dependency>-->
-
     <dependency>
-      <groupId>com.github.dice-group</groupId>
+      <groupId>org.aksw.faraday_cage</groupId>
       <artifactId>faraday-cage</artifactId>
-      <version>0.0.2</version>
+      <version>0.0.3</version>
     </dependency>
+
+    <!--<dependency>-->
+      <!--<groupId>com.github.dice-group</groupId>-->
+      <!--<artifactId>faraday-cage</artifactId>-->
+      <!--<version>0.0.3</version>-->
+    <!--</dependency>-->
 
   </dependencies>
 
