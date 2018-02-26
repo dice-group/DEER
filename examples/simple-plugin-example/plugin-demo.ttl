@@ -1,0 +1,25 @@
+@prefix : <http://aksw.org/deer/ontology#> .
+@prefix deer: <http://aksw.org/deer/ontology#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+:reader       :implementedIn       :DefaultModelReader ;
+		          :fromUri			       <http://dbpedia.org/resource/Paderborn> ;
+		          :useEndPoint	       <http://dbpedia.org/sparql> ;
+		          :hasOutput           ( :filter ) .
+
+:filter       :implementedIn       :FilterEnrichmentOperator ;
+              :hasInput            ( :reader ) ;
+              :hasOutput           ( :example ) ;
+              :selectors       (
+                                  [ :predicate rdfs:label ]
+                                  [ :predicate owl:sameAs ]
+                               ) .
+
+:example      :implementedIn       :ExampleEnrichmentOperator ;
+              :hasInput            ( :filter ) ;
+              :hasOutput           ( :writer ) .
+
+:writer       :implementedIn       :DefaultModelWriter ;
+              :outputFile          "output.ttl" ;
+              :hasInput            ( :example ) .
