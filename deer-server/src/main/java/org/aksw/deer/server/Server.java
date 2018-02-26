@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import eu.medsea.mimeutil.MimeType;
 import eu.medsea.mimeutil.MimeUtil;
 import org.aksw.deer.DeerController;
-import org.aksw.deer.io.WorkingDirectoryInjectedIO;
+import org.aksw.deer.io.AbstractModelIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -13,7 +13,6 @@ import spark.Request;
 import spark.Response;
 
 import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletException;
 import javax.servlet.http.Part;
 import java.io.*;
 import java.nio.file.Files;
@@ -56,7 +55,7 @@ public class Server {
     } else {
       this.port = port;
     }
-    WorkingDirectoryInjectedIO.takeWorkingDirectoryFrom(()-> STORAGE_DIR_PATH + MDC.get("requestId") + "/");
+    AbstractModelIO.takeWorkingDirectoryFrom(()-> STORAGE_DIR_PATH + MDC.get("requestId") + "/");
     if (!uploadDir.exists()) {
       uploadDir.mkdir();
     }
