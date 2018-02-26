@@ -1,7 +1,7 @@
 package org.aksw.deer.io;
 
-import org.aksw.deer.DeerPlugin;
-import org.aksw.deer.vocabulary.DEER;
+import org.aksw.deer.ParametrizedDeerPlugin;
+import org.aksw.faraday_cage.Vocabulary;
 import org.aksw.faraday_cage.nodes.AbstractParametrizedNode;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
  *
  *
  */
-public abstract class WorkingDirectoryInjectedIO extends AbstractParametrizedNode.WithImplicitCloning<Model> implements DeerPlugin {
+public abstract class AbstractModelIO extends AbstractParametrizedNode.WithImplicitCloning<Model> implements ParametrizedDeerPlugin {
 
   private static Supplier<String> workingDirectorySupplier = () -> "";
 
@@ -58,6 +58,6 @@ public abstract class WorkingDirectoryInjectedIO extends AbstractParametrizedNod
   @NotNull
   @Override
   public Resource getType() {
-    return DEER.resource(this.getClass().getSimpleName());
+    return Vocabulary.resource(this.getClass().getSimpleName());
   }
 }

@@ -3,6 +3,7 @@ package org.aksw.deer.enrichments;
 import com.github.therapi.runtimejavadoc.RetainJavadoc;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.aksw.faraday_cage.Vocabulary;
 import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
 import org.aksw.faraday_cage.parameter.Parameter;
 import org.aksw.faraday_cage.parameter.ParameterImpl;
@@ -104,13 +105,13 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
   //  *     Determines the starting resources {@code ?x} as all objects of triples having
   //  *     the value of {@code :lookUpProperty} as predicate.
   //  * </blockquote>
-  //  private static final Property LOOKUP_PROPERTY = DEER.property("lookUpProperty");
+  //  private static final Property LOOKUP_PROPERTY = Vocabulary.property("lookUpProperty");
 
-  private static final Property LOOKUP_PREFIX = DEER.property("lookUpPrefix");
+  private static final Property LOOKUP_PREFIX = Vocabulary.property("lookUpPrefix");
 
-  private static final Property DEREFERENCING_PROPERTY = DEER.property("dereferencingProperty");
+  private static final Property DEREFERENCING_PROPERTY = Vocabulary.property("dereferencingProperty");
 
-  private static final Property IMPORT_PROPERTY = DEER.property("importProperty");
+  private static final Property IMPORT_PROPERTY = Vocabulary.property("importProperty");
 
   private static final Parameter OPERATIONS = new ParameterImpl("operations",
     new DictListParameterConversion(LOOKUP_PREFIX, DEREFERENCING_PROPERTY,
@@ -131,6 +132,9 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
   /**
    * Self configuration
    * Find source/target URI as the most redundant URIs
+   *
+   * @param source source
+   * @param target target
    *
    * @return Map of (key, value) pairs of self configured parameters
    */

@@ -1,6 +1,7 @@
 package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
+import org.aksw.faraday_cage.Vocabulary;
 import org.aksw.faraday_cage.parameter.*;
 import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
 import org.aksw.deer.vocabulary.DEER;
@@ -22,8 +23,8 @@ public class PredicateConformationEnrichmentOperator extends AbstractParametrize
 
   private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 
-  private static final Property SOURCE = DEER.property("source");
-  private static final Property TARGET = DEER.property("target");
+  private static final Property SOURCE = Vocabulary.property("source");
+  private static final Property TARGET = Vocabulary.property("target");
 
   private static final Parameter PROPERTY_MAPPING = new ParameterImpl("propertyMapping",
     new DictListParameterConversion(SOURCE, TARGET), true);

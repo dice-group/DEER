@@ -18,7 +18,7 @@ public class Deer {
   private static final Logger logger = LoggerFactory.getLogger(Deer.class);
 
   public void run(Model config, PluginManager pluginManager, CompletableFutureFactory futureFactory) {
-    Vocabulary.setURI(DEER.getURI());
+    Vocabulary.setDefaultURI(DEER.getURI());
     StopWatch time = new StopWatch();
     logger.info("Building execution model...");
     time.start();

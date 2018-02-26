@@ -1,5 +1,6 @@
 package org.aksw.deer.enrichments;
 
+import org.aksw.faraday_cage.Vocabulary;
 import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
 import org.aksw.faraday_cage.parameter.Parameter;
 import org.aksw.faraday_cage.parameter.ParameterImpl;
@@ -27,9 +28,9 @@ public class FilterEnrichmentOperator extends AbstractParametrizedEnrichmentOper
 
   private static final Logger logger = LoggerFactory.getLogger(FilterEnrichmentOperator.class);
 
-  private static final Property SUBJECT = DEER.property("subject");
-  private static final Property PREDICATE = DEER.property("predicate");
-  private static final Property OBJECT = DEER.property("object");
+  private static final Property SUBJECT = Vocabulary.property("subject");
+  private static final Property PREDICATE = Vocabulary.property("predicate");
+  private static final Property OBJECT = Vocabulary.property("object");
 
   private static final Parameter SELECTORS = new ParameterImpl(
     "selectors",
