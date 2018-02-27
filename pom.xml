@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.aksw.deer</groupId>
-  <artifactId>deer</artifactId>
+  <artifactId>deer-parent</artifactId>
   <version>1.0.0-alpha3-SNAPSHOT</version>
   <name>DEER</name>
   <description>DEER - RDF Dataset Enrichment Framework</description>
@@ -23,8 +23,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>deer-core</module>
-    <module>deer-server</module>
-    <module>faraday-cage</module>
+    <module>deer-cli</module>
   </modules>
 
   <distributionManagement>
@@ -195,7 +194,7 @@
     <dependency>
       <groupId>org.aksw.faraday_cage</groupId>
       <artifactId>faraday-cage</artifactId>
-      <version>0.0.5-SNAPSHOT</version>
+      <version>0.0.5</version>
     </dependency>
 
   </dependencies>

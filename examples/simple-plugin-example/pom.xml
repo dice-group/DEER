@@ -9,7 +9,7 @@
 
   <parent>
     <groupId>org.aksw.deer</groupId>
-    <artifactId>deer</artifactId>
+    <artifactId>deer-parent</artifactId>
     <version>1.0.0-alpha3-SNAPSHOT</version>
   </parent>
 

@@ -30,16 +30,23 @@ java -jar path_to_config.ttl
 ```
 <dependencies>
   <dependency>
-    <groupId>com.github.dice-group.deer</groupId>
+    <groupId>org.aksw.deer</groupId>
     <artifactId>deer-core</artifactId>
-    <version>1.0.0-alpha2</version>
+    <version>{insert version here}</version>
   </dependency>
 </dependencies>
 
 <repositories>
+ <repository>
+      <id>maven.aksw.internal</id>
+      <name>University Leipzig, AKSW Maven2 Internal Repository</name>
+      <url>http://maven.aksw.org/repository/internal/</url>
+    </repository>
+
     <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
+      <id>maven.aksw.snapshots</id>
+      <name>University Leipzig, AKSW Maven2 Snapshot Repository</name>
+      <url>http://maven.aksw.org/repository/snapshots/</url>
     </repository>
 </repositories>
 ```
