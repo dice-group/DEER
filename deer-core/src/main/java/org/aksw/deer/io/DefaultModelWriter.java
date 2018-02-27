@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  */
 @Extension
-public class DefaultModelWriter extends WorkingDirectoryInjectedIO {
+public class DefaultModelWriter extends AbstractModelIO {
 
   private static final Logger logger = LoggerFactory.getLogger(DefaultModelWriter.class);
 
@@ -61,11 +61,6 @@ public class DefaultModelWriter extends WorkingDirectoryInjectedIO {
         outputFile, e);
     }
     return model;
-  }
-
-  @Override
-  public DegreeBounds getDegreeBounds() {
-    return new DegreeBounds(1,1,0,1);
   }
 
 }

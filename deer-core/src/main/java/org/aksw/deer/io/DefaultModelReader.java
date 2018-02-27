@@ -24,7 +24,7 @@ import java.util.List;
  *
  */
 @Extension
-public class DefaultModelReader extends WorkingDirectoryInjectedIO {
+public class DefaultModelReader extends AbstractModelIO {
 
   private static final Logger logger = LoggerFactory.getLogger(DefaultModelReader.class);
 
@@ -55,11 +55,6 @@ public class DefaultModelReader extends WorkingDirectoryInjectedIO {
   protected List<Model> safeApply(List<Model> data) {
     return Execution.toMultiExecution((Model m) ->
       useEndpoint != null ? readModelFromEndPoint() : readModel(fromUri)).apply(data);
-  }
-
-  @Override
-  public DegreeBounds getDegreeBounds() {
-    return new DegreeBounds(0,0,1,1);
   }
 
   private Model readModel(String locator) {

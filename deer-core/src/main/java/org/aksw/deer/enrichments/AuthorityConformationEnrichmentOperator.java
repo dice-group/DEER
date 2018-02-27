@@ -3,6 +3,7 @@ package org.aksw.deer.enrichments;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
+import org.aksw.deer.ParametrizedDeerPlugin;
 import org.aksw.faraday_cage.parameter.Parameter;
 import org.aksw.faraday_cage.parameter.ParameterImpl;
 import org.aksw.faraday_cage.parameter.ParameterMapImpl;
@@ -24,7 +25,7 @@ import java.util.Objects;
  * 
  */
 @Extension
-public class AuthorityConformationEnrichmentOperator extends AbstractParametrizedEnrichmentOperator implements ParametrizedEnrichmentOperator {
+public class AuthorityConformationEnrichmentOperator extends AbstractParametrizedEnrichmentOperator implements ParametrizedDeerPlugin {
 
   private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 

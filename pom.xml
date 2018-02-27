@@ -24,6 +24,7 @@
   <modules>
     <module>deer-core</module>
     <module>deer-server</module>
+    <module>faraday-cage</module>
   </modules>
 
   <distributionManagement>
@@ -194,7 +195,7 @@
     <dependency>
       <groupId>org.aksw.faraday_cage</groupId>
       <artifactId>faraday-cage</artifactId>
-      <version>0.0.4</version>
+      <version>0.0.5-SNAPSHOT</version>
     </dependency>
 
   </dependencies>

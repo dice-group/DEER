@@ -25,5 +25,7 @@
         </ThreadContextMapFilter>
       </AppenderRef>
     </Root>
+    <Logger name="org.pf4j" level="fatal">
+    </Logger>
   </Loggers>
 </Configuration>

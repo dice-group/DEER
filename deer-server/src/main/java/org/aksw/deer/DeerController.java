@@ -2,15 +2,24 @@ package org.aksw.deer;
 
 import org.aksw.deer.logging.MdcCompletableFuture;
 import org.aksw.deer.server.Server;
+import org.aksw.deer.util.JavadocPrinter;
+import org.aksw.deer.vocabulary.DEER;
+import org.aksw.faraday_cage.PluginFactory;
+import org.aksw.faraday_cage.Vocabulary;
 import org.apache.commons.cli.*;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.fusesource.jansi.Ansi.Color.RED;
 import static org.fusesource.jansi.Ansi.ansi;
@@ -33,6 +42,11 @@ public class DeerController {
   private static final Options OPTIONS = new Options()
     .addOption(Option.builder("h")
       .longOpt("help").desc("show help message").build())
+    .addOption(Option.builder("l")
+      .longOpt("list").desc("list available deer plugins").build())
+    .addOption(Option.builder("e")
+      .longOpt("explain").desc("show deer plugin documentation")
+      .hasArg().argName("plugin_id").build())
     .addOption(Option.builder("s")
       .longOpt("server").desc("launch server").build())
     .addOption(Option.builder("p")
@@ -41,15 +55,35 @@ public class DeerController {
     ;
 
   private static final PluginManager pluginManager = new DefaultPluginManager();
+
   static {
-    pluginManager.loadPlugins();
-    pluginManager.startPlugins();
+    File plugins = new File("./plugins/");
+    if (plugins.exists() && plugins.isDirectory()) {
+      pluginManager.loadPlugins();
+      pluginManager.startPlugins();
+    }
   }
 
   public static void main(String args[]) {
+    Vocabulary.setDefaultURI(DEER.uri);
+    Vocabulary.addNSPrefix("", DEER.uri);
     CommandLine cl = parseCommandLine(args);
     if (cl.hasOption('h')) {
       printHelp();
+    } else if (cl.hasOption('l')) {
+      PluginFactory<DeerPlugin, Model> factory = new PluginFactory<>(DeerPlugin.class, pluginManager);
+      factory.listAvailable().forEach(System.out::println);
+    } else if (cl.hasOption('e')) {
+      PluginFactory<DeerPlugin, Model> factory = new PluginFactory<>(DeerPlugin.class, pluginManager);
+      Resource pluginId = Vocabulary.resource(cl.getOptionValue('e'));
+      List<Resource> filteredPluginId = factory.listAvailable().stream()
+        .filter(r -> r.equals(pluginId)).collect(Collectors.toList());
+      if (filteredPluginId.size() == 1) {
+        DeerPlugin plugin = factory.create(filteredPluginId.get(0));
+        JavadocPrinter.printJavadoc(plugin.getClass().getCanonicalName());
+      } else {
+        exitWithError("Could not find deer plugin " + pluginId + ", please use -l option to list all available.");
+      }
     } else if (cl.hasOption('s')) {
       Object port = cl.hasOption('p') ? cl.getOptionObject('p') : DEFAULT_PORT;
       if (port == null) {
