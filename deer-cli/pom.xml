@@ -9,12 +9,12 @@
   </properties>
 
   <parent>
-    <artifactId>deer</artifactId>
+    <artifactId>deer-parent</artifactId>
     <groupId>org.aksw.deer</groupId>
     <version>1.0.0-alpha3-SNAPSHOT</version>
   </parent>
 
-  <artifactId>deer-server</artifactId>
+  <artifactId>deer-cli</artifactId>
 
   <build>
     <plugins>
