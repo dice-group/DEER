@@ -1,4 +1,4 @@
-@prefix : <http://aksw.org/deer/ontology#> .
+@prefix : <http://deer.aksw.org/vocabulary/#> .
 @prefix deer: <http://aksw.org/deer/ontology#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
