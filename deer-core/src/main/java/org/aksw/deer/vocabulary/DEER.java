@@ -7,7 +7,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
 @Deprecated
 public class DEER {
 
-  public static final String uri = "http://aksw.org/deer/ontology#";
+  public static final String uri = "http://deer.aksw.org/vocabulary/#";
   public static final String prefix = ":";
   public static final Property hasUri = property("hasUri");
   public static final Property fromGraph = property("fromGraph");
