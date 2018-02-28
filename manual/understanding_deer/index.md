@@ -2,7 +2,7 @@
 
 ## Architecture
 
-<img src="./deer_stack.png" style="float:right; margin:0em 0em 2em 2em"/>
+<img src="./stack.svg" style="float:right; margin:0em 0em 2em 2em"/>
 
 DEERs former execution engine has been outsourced to FARADAY-CAGE, a framework that provides
 abstractions for nodes in a directed acyclic graph that represent computation steps on more or
@@ -15,7 +15,7 @@ graph is performed by a plugin that is dynamically loaded and automatically para
 the RDF configuration.
 FARADAY-CAGE will also automatically parallelize plugins based on the graphs structure.
 
-DEER itself consists of two modules: deer-core and deer-server.
+DEER itself consists of two modules: deer-core and  deer-cli.
 The first is a library that implements a domain model for dataset enrichment on top of FARADAY-CAGE
 while the latter provides a CLI that can either run a single configuration or spawn a server to 
 submit tasks over a RESTful API. In a future release, the API will be accompanied by a web app
