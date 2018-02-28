@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.aksw.deer</groupId>
     <artifactId>deer-parent</artifactId>
-    <version>1.0.0-alpha3</version>
+    <version>1.0.0</version>
   </parent>
 
   <properties>
@@ -101,7 +101,7 @@
     <dependency>
       <groupId>org.aksw.deer</groupId>
       <artifactId>deer-core</artifactId>
-      <version>1.0.0-alpha3</version>
+      <version>1.0.0</version>
       <!-- !!! VERY IMPORTANT -->
       <scope>provided</scope>
     </dependency>
