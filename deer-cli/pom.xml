@@ -9,7 +9,7 @@
   <parent>
     <artifactId>deer-parent</artifactId>
     <groupId>org.aksw.deer</groupId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>deer-cli</artifactId>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>org.aksw.deer</groupId>
       <artifactId>deer-core</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
 
