@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.aksw.deer</groupId>
   <artifactId>deer-parent</artifactId>
-  <version>1.0.0-alpha4-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>DEER</name>
   <description>DEER - RDF Dataset Enrichment Framework</description>
   <url>http://github.com/dice-group/DEER</url>
@@ -10,7 +10,7 @@
   <scm>
     <url>https://github.com/dice-group/deer</url>
     <connection>scm:git:https://github.com/dice-group/deer.git</connection>
-    <tag>HEAD</tag>
+    <tag>1.0.0</tag>
   </scm>
 
   <properties>
