@@ -22,7 +22,7 @@ mvn clean package shade:shade -Dmaven.test.skip=true
 Then execute it using
 
 ```
-java -jar path_to_config.ttl
+java -jar deer-cli/target/deer-cli-1.0.0.jar path_to_config.ttl
 ```
 
 ## Maven
