@@ -41,6 +41,15 @@ The following example configuration demonstrates the configuration of the filter
 
 # GeoFusion Enrichment Operator
 
+The idea of the geo-fusion enrichment operator is to merge two or more input datasets into one fused output dataset.
+In addtion to the common parameters, the geo-fusion operator have the following additional parameter:
+- The `:fusionAction` is used to specify the how to fuse geo-spatial properties (by default the `geo:lat` and `geo:long`), the available fusion actions are:
+    * "takeA" always use geometry from first dataset
+    * "takeB" always use geometry from second dataset
+    * "takeAll" merge all geometries</li>
+    * "takeMostDetailed" use most detailed geometry from any model, e.g., in terms of lexical length of latitude and longitude values
+ - The `:mergeOtherStatements` parameter is used to enable the merge of all other non geo-spacial properties from all input dataset to the output dataset
+
 ```turtle
 @prefix : <http://deer.aksw.org/vocabulary/#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -60,9 +69,9 @@ The following example configuration demonstrates the configuration of the filter
 
 # Authority Conformation Enrichment Operator
 
-The idea of the authority conformation operator is to change a specified source URI authority to a specified target URI authority. In addition to the common parameters, the authority conformation enrichment operator accepts the two basic parameters of `:sourceSubjectAuthority` and `:targetSubjectAuthority` for specifying the source and target authorities respectively. In the following example, we use the `:sourceSubjectAuthority` of `http://dbpedia.org` and the `:targetSubjectAuthority` of `http://deer.org`. Such configuration will change a resource like `http://dbpedia.org/Berlin` to `http://deer.org/Berlin`. 
+The idea of the authority conformation operator is to change a specified source URI authority to a specified target URI authority. In addition to the common parameters, the authority conformation enrichment operator accepts the two basic parameters of `:sourceSubjectAuthority` and `:targetSubjectAuthority` for specifying the source and target authorities respectively. 
 
-
+In the following example, we use the `:sourceSubjectAuthority` of `http://dbpedia.org` and the `:targetSubjectAuthority` of `http://deer.org`. Such configuration will change a resource like `http://dbpedia.org/Berlin` to `http://deer.org/Berlin`. 
 
 ```turtle
 @prefix : <http://deer.aksw.org/vocabulary/#> .
