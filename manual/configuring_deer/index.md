@@ -32,33 +32,36 @@ The following example configuration demonstrates how the predefined vocabulary w
 
 :node_reader1
               :implementedIn     :DefaultModelReader ;
-              :fromUri           <http://dbpedia.org/resource/Paderborn> ;
-              :useEndpoint       <http://dbpedia.org/sparql> ;
-              :outputFile        "input_dbp.ttl" ;
-              :outputFormat      "Turtle" ;
+              :fromUri           <http://de.dbpedia.org/resource/Paderborn> ;
+              :useEndpoint       <http://de.dbpedia.org/sparql> ;
               :hasOutput         ( :node_conf ) .
+
 :node_reader2
               :implementedIn     :DefaultModelReader ;
               :fromUri           <http://dbpedia.org/resource/Paderborn> ;
               :useEndpoint       <http://dbpedia.org/sparql> ;
-              :outputFile        "input_lgd.ttl" ;
-              :outputFormat      "Turtle" ;
-              :hasOutput         ( :node_merge ) .
-:node_writer
-              :implementedIn     :DefaultModelWriter ;
-              :outputFile        "output_demo.ttl" ;
-              :outputFormat      "Turtle" ;
-              :hasInput          ( :node_filter ) .
-:node_merge
+              :hasOutput         ( :node_geofusion ) .
+
+:node_conf
+              :implementedIn     :AuthorityConformationEnrichmentOperator ;
+              :hasInput          ( :node_reader1 ) ;
+              :hasOutput         ( :node_geofusion ) ;
+              :sourceSubjectAuthority
+                                 "http://dbpedia.org" ;
+              :targetSubjectAuthority
+                                 "http://deer.org" .
+
+:node_geofusion
               :implementedIn     :GeoFusionEnrichmentOperator ;
               :hasInput          ( :node_conf :node_reader2 ) ;
               :hasOutput         ( :node_filter ) ;
               :fusionAction      "takeAll" ;
               :mergeOtherStatements
                                  "true" .
+
 :node_filter
               :implementedIn     :FilterEnrichmentOperator ;
-              :hasInput          ( :node_merge ) ;
+              :hasInput          ( :node_geofusion ) ;
               :hasOutput         ( :node_writer ) ;
               :selectors         (
                     [ :predicate geo:lat ]
@@ -66,12 +69,10 @@ The following example configuration demonstrates how the predefined vocabulary w
                     [ :predicate rdfs:label ]
                     [ :predicate owl:sameAs ]
               ) .
-:node_conf
-              :implementedIn     :AuthorityConformationEnrichmentOperator ;
-              :hasInput          ( :node_reader1 ) ;
-              :hasOutput         ( :node_merge ) ;
-              :sourceSubjectAuthority 
-                                 "http://dbpedia.org" ;
-              :targetSubjectAuthority 
-                                 "http://deer.org" .
+
+:node_writer
+              :implementedIn     :DefaultModelWriter ;
+              :outputFile        "output_demo.ttl" ;
+              :outputFormat      "Turtle" ;
+:hasInput ( :node_filter ) .
 ```
