@@ -31,13 +31,58 @@ The following example configuration demonstrates the configuration of the filter
 
 # Linking Enrichment Operator
 
+The idea of the linking enrichment operator is to enrich models with links discovered using LIMES. 
+In addition to the common parameters, the linking enrchment operator accepts the two more parameters of:
+  - `:specFile` which is a path for LIMES specification file
+  - `:linksPart` which is determine which of the "source" or "target" dataset to be enriched, i.e. which dataset to be the source of the discovered links
+  
+ In the following example, the linking enrichment operator is used based on the LIMES configuration file "limes_specs.xml" and the source dataset is the one to be enriched.
+  
+  ```turtle
+@prefix : <http://deer.aksw.org/vocabulary/#> .
+
+:node_linking
+              :implementedIn     :LinkingEnrichmentOperator ;
+              :hasInput          ( :node_1 ) ;
+              :hasOutput         ( :node_2 ) ;
+              :specFile          "limes_specs.xml" ;
+              :linksPart         "source" .
+```
+
 # Dereferencing Enrichment Operator
 
 # NER Enrichment Operator
 
 # Clone Enrichment Operator
 
+The idea behind the clone operator is to enable parallel enrichment of multiple copies of the same dataset. The clone operator takes one dataset as input and produces n ≥ 2 output datasets, which are all identical to the input dataset. 
+
+In the following example, the clone operator is used to make 2 copies of the input dataset from `:node_1` into `:node_1_clone_1` and `:node_1_clone_2`
+
+  ```turtle
+@prefix : <http://deer.aksw.org/vocabulary/#> .
+
+:node_clone
+              :implementedIn     :CloneEnrichmentOperator 
+              :hasInput          ( :node_1 ) ;
+              :hasOutput         ( :node_1_clone_1  :node_1_clone_2) .
+```
+
 # Merge Enrichment Operator
+
+The idea behind the merge operator is to enable combining datasets. The merge operator takes a set of n ≥ 2 input datasets and merges them into one output dataset containing all the input datasets’ triples. 
+
+In the following example, the merge operator is used to combine the 2 input datasets of `:node_1` and `:node_2` into `:node_3`
+
+
+  ```turtle
+@prefix : <http://deer.aksw.org/vocabulary/#> .
+
+:node_merge
+              :implementedIn     :MergeEnrichmentOperator ;
+              :hasInput          ( :node_1 :node_2) ;
+              :hasOutput         ( :node_3) .
+```
 
 # GeoFusion Enrichment Operator
 
@@ -75,14 +120,11 @@ In the following example, we use the `:sourceSubjectAuthority` of `http://dbpedi
 
 ```turtle
 @prefix : <http://deer.aksw.org/vocabulary/#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-:node_conf
+:node_a_conf
               :implementedIn     :AuthorityConformationEnrichmentOperator ;
-              :hasInput          ( :node_reader1 ) ;
-              :hasOutput         ( :node_geofusion ) ;
+              :hasInput          ( :node_1 ) ;
+              :hasOutput         ( :node_2 ) ;
               :sourceSubjectAuthority
                                  "http://dbpedia.org" ;
               :targetSubjectAuthority
@@ -90,3 +132,22 @@ In the following example, we use the `:sourceSubjectAuthority` of `http://dbpedi
 ```
 
 # Predicate Conformation Enrichment Operator
+
+The idea of the predicate conformation operator is to replace all instances of specified source property to a specified target predicated with the same object and subject values. In addition to the common parameters, the predicate conformation enrichment operator accepts the basic parameters of `:propertyMapping` for specifying the `:source` and `:target` predicates as a list. 
+
+In the following example, we use the predicate conformation enrichment operator to change all instances of `rdf:label` to `SKOS:prefLabel`. For example, a triple as  `dbp:Berlin rdf:label "Berlin"` to `dbp:Berlin skos:prefLabel "Berlin"`. 
+
+```turtle
+@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+:node_p_conf
+              :implementedIn     :PredicateConformationEnrichmentOperator ;
+              :hasInput          ( :node_1 ) ;
+              :hasOutput         ( :node_2 ) ;
+              :propertyMapping    (
+                    [ :source rdf:label ]
+                    [ :target skos:prefLabel ]
+              ) .
+```
