@@ -49,6 +49,7 @@ public class LinkingEnrichmentOperator extends AbstractParametrizedEnrichmentOpe
 
   @Override
   public void validateAndAccept(@NotNull ParameterMap params) {
+    this.specFile = params.getValue(SPEC_FILE);
     this.linksPart = DATASET_PART.valueOf(params.getValue(LINKS_PART, "source").toUpperCase());
   }
 
