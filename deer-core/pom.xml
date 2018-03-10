@@ -3,7 +3,7 @@
   <parent>
     <artifactId>deer-parent</artifactId>
     <groupId>org.aksw.deer</groupId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -11,7 +11,7 @@
 
   <scm>
     <connection>scm:git:git@github.com:dice-group/deer.git</connection>
-    <tag>1.0.2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
