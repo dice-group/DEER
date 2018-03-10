@@ -183,24 +183,22 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
       ? dereferencingProperty : op.get(IMPORT_PROPERTY).as(Property.class);
     // execute this operation
     if (dereferencingProperty != null) {
-      for (Resource s : getCandidateNodesByPrefix(lookUpPrefix)) {
-        for (RDFNode o : getEnrichmentValuesFor(s, dereferencingProperty)) {
-          s.addProperty(importProperty, o);
+      for (Statement statement : getCandidateNodesByPrefix(lookUpPrefix)) {
+        for (RDFNode o : getEnrichmentValuesFor(statement.getObject().asResource(), dereferencingProperty)) {
+          statement.getSubject().addProperty(importProperty, o);
         }
       }
     }
   }
 
-  private List<Resource> getCandidateNodesByPrefix (String lookupPrefix) {
+  private List<Statement> getCandidateNodesByPrefix (String lookupPrefix) {
     // old way with util:
     //      "SELECT * " +
     //      "WHERE { ?s ?p ?o . FILTER (isURI(?o)) . " +
     //      "FILTER (STRSTARTS(STR(?o), \"" + lookupPrefix + "\"))}";
     return model.listStatements()
-      .mapWith(Statement::getObject)
-      .filterKeep(RDFNode::isURIResource)
-      .mapWith(RDFNode::asResource)
-      .filterKeep(o -> o.getURI().startsWith(lookupPrefix))
+      .filterKeep(statement -> statement.getObject().isURIResource() &&
+        statement.getObject().asResource().getURI().startsWith(lookupPrefix))
       .toList();
   }
 
@@ -214,8 +212,9 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
         .read(conn.getInputStream(), null)
         .listStatements(resource, dereferencingProperty, (RDFNode) null)
         .mapWith(Statement::getObject)
-        .filterDrop(v -> v.isLiteral() && !Arrays.asList("en","")
-          .contains(v.asLiteral().getLanguage().toLowerCase()))
+//        @todo: implement this somewhere else. should be configurable.
+//        .filterDrop(v -> v.isLiteral() && !Arrays.asList("en","de","")
+//          .contains(v.asLiteral().getLanguage().toLowerCase()))
         .toList();
     } catch (Exception e) {
       e.printStackTrace();
