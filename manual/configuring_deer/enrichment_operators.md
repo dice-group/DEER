@@ -56,10 +56,11 @@ For datasets which contain similarity properties links (e.g. `owl:sameAs`), the 
   - `:dereferencingProperty` interesting property to extract from the external dataset 
   - `importProperty` for renaming of the `:dereferencingProperty` in the output dataset
   
-  
+In the following example, the dereferencing enrichment operator is used to find `dbo:abstract` from external dataset of DBpedia and export them using the `dcterms:description`.
 
   ```turtle
  @prefix : <http://deer.aksw.org/vocabulary/#> .
+ @prefix dbo: <http://dbpedia.org/property/> .
  @prefix dcterms: <http://purl.org/dc/terms/> .
   
 :dereferencing_dbp
@@ -74,6 +75,14 @@ For datasets which contain similarity properties links (e.g. `owl:sameAs`), the 
 ```
 
 # NER Enrichment Operator
+
+
+The enrichment information hidden in datatype properties is retrieved by using Named Entity Recognition (NER) enrichment operator.
+In the current version of DEER, we rely on the FOX framework. In the following, we provides details about the NER operator parameters:
+	- `:literalProperty` Literal property used by FOX for NER. If not set, the top ranked literal property will be pecked automatically by DEER, which ranks the lateral properties of a model according to the average size of each literal property divided by the number of instances of such property.
+	- `:importProperty` Property added to be added into the input dataset.
+	- `:neType` Force FOX to look for a specific NE’s types only. Available types are: `:location` (default value), `:person:`, `:organization`, and `:all` to retrieve the all the previous three types.
+	- `:askEndpoint` Ask the DBpedia endpoint for each location returned by FOX (setting it generates slower execution time but more accurate results). By default this parameter is set to false.
 
 # Clone Enrichment Operator
 
