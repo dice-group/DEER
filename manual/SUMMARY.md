@@ -7,6 +7,7 @@
 ### Manual
   * [About DEER](./understanding_deer/index.md)
   * [Configuring DEER](./configuring_deer/index.md)
+  * [Predefined enrichment operators](./configuring_deer/enrichment_operators.md)
   * [Extending DEER](./extending_deer/index.md)
   
 ### References

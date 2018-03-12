@@ -9,7 +9,7 @@ There are just three predefined predicates that DEER inherits from FARADAY-CAGE:
 * `<http://deer.aksw.org/vocabulary/#hasInput>`
 * `<http://deer.aksw.org/vocabulary/#hasOutput>`
 
-Plugins are associated with unique resources. The default plugins that ship with deer-core live in
+Plugins are associated with unique resources. The [default plugins](./configuring_deer/enrichment_operators.md) that ship with deer-core live in
 the deer namespace and have just their class name as local part, e.g.: 
 
 * `<http://deer.aksw.org/vocabulary/#DefaultModelReader>`
@@ -19,8 +19,7 @@ the deer namespace and have just their class name as local part, e.g.:
 Custom plugins should be identified by resources outside of the default namespace to prevent
 naming collisions.
 
-Plugins define their own configuration vocabulary. In the final 1.0.0 release, it will be possible to
-get an accurate description of the available parameters of a given plugin using the CLI.
+Plugins define their own configuration vocabulary. [Here] (./configuring_deer/enrichment_operators.md), you would find an accurate description of the available parameters of all the predefined enrichment operators in the current release.
 
 The following example configuration demonstrates how the predefined vocabulary works:  
 
