@@ -19,7 +19,7 @@ the deer namespace and have just their class name as local part, e.g.:
 Custom plugins should be identified by resources outside of the default namespace to prevent
 naming collisions.
 
-Plugins define their own configuration vocabulary. [Here] (./configuring_deer/enrichment_operators.md), you would find an accurate description of the available parameters of all the predefined enrichment operators in the current release.
+Plugins define their own configuration vocabulary. [Here](./configuring_deer/enrichment_operators.md), you would find an accurate description of the available parameters of all the predefined enrichment operators in the current release.
 
 The following example configuration demonstrates how the predefined vocabulary works:  
 
