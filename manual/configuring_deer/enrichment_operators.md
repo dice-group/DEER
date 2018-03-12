@@ -19,8 +19,8 @@ The following example configuration demonstrates the configuration of the filter
 
 :node_filter
               :implementedIn     :FilterEnrichmentOperator ;
-              :hasInput          ( :node_geofusion ) ;
-              :hasOutput         ( :node_writer ) ;
+              :hasInput          ( :node_in ) ;
+              :hasOutput         ( :node_out ) ;
               :selectors         (
                     [ :predicate geo:lat ]
                     [ :predicate geo:long ]
@@ -36,20 +36,42 @@ In addition to the common parameters, the linking enrchment operator accepts the
   - `:specFile` which is a path for LIMES specification file
   - `:linksPart` which is determine which of the "source" or "target" dataset to be enriched, i.e. which dataset to be the source of the discovered links
   
- In the following example, the linking enrichment operator is used based on the LIMES configuration file "limes_specs.xml" and the source dataset is the one to be enriched.
+In the following example, the linking enrichment operator is used based on the LIMES configuration file "limes_specs.xml" and the source dataset is the one to be enriched.
   
   ```turtle
 @prefix : <http://deer.aksw.org/vocabulary/#> .
 
 :node_linking
               :implementedIn     :LinkingEnrichmentOperator ;
-              :hasInput          ( :node_1 ) ;
-              :hasOutput         ( :node_2 ) ;
+              :hasInput          ( :node_in ) ;
+              :hasOutput         ( :node_out ) ;
               :specFile          "limes_specs.xml" ;
               :linksPart         "source" .
 ```
 
 # Dereferencing Enrichment Operator
+
+For datasets which contain similarity properties links (e.g. `owl:sameAs`), the idea dereferencing enrichment operator is to deference all links from an externally linked dataset to our input dataset by using a content negotiation on HTTP. This process returns a set of triples that need to be filtered for relevant information. In addition to the common parameters, the dereferencing operator uses the  parameter `operations`, which is a list of the following configurations:
+  - `:lookUpPrefix` interesting resources from the external dataset
+  - `:dereferencingProperty` interesting property to extract from the external dataset 
+  - `importProperty` for renaming of the `:dereferencingProperty` in the output dataset
+  
+  
+
+  ```turtle
+ @prefix : <http://deer.aksw.org/vocabulary/#> .
+ @prefix dcterms: <http://purl.org/dc/terms/> .
+  
+:dereferencing_dbp
+              :implementedIn    :DereferencingEnrichmentOperator ;
+              :hasInput         ( :node_in ) ;
+              :hasOutput        ( :node_out ) ;
+              :operations       (
+                    [ :lookUpPrefix "http://de.dbpedia.org/resource" ;
+                      :dereferencingProperty dbo:abstract ;
+                      :importProperty dcterms:description ]
+              ) .
+```
 
 # NER Enrichment Operator
 
@@ -64,8 +86,8 @@ In the following example, the clone operator is used to make 2 copies of the inp
 
 :node_clone
               :implementedIn     :CloneEnrichmentOperator 
-              :hasInput          ( :node_1 ) ;
-              :hasOutput         ( :node_1_clone_1  :node_1_clone_2) .
+              :hasInput          ( :node_in ) ;
+              :hasOutput         ( :node_in_clone_1  :node_in_clone_2) .
 ```
 
 # Merge Enrichment Operator
@@ -80,8 +102,8 @@ In the following example, the merge operator is used to combine the 2 input data
 
 :node_merge
               :implementedIn     :MergeEnrichmentOperator ;
-              :hasInput          ( :node_1 :node_2) ;
-              :hasOutput         ( :node_3) .
+              :hasInput          ( :node_in_1 :node_in_2) ;
+              :hasOutput         ( :node_out) .
 ```
 
 # GeoFusion Enrichment Operator
@@ -103,14 +125,12 @@ In addtion to the common parameters, the geo-fusion operator have the following 
 
 :node_geofusion
               :implementedIn     :GeoFusionEnrichmentOperator ;
-              :hasInput          ( :node_conf :node_reader2 ) ;
-              :hasOutput         ( :node_filter ) ;
+              :hasInput          ( :node_in_1 :node_in_2 ) ;
+              :hasOutput         ( :node_out ) ;
               :fusionAction      "takeAll" ;
               :mergeOtherStatements
                                  "true" .
 ```
-
-# NLP Enrichment Operator
 
 # Authority Conformation Enrichment Operator
 
@@ -123,8 +143,8 @@ In the following example, we use the `:sourceSubjectAuthority` of `http://dbpedi
 
 :node_a_conf
               :implementedIn     :AuthorityConformationEnrichmentOperator ;
-              :hasInput          ( :node_1 ) ;
-              :hasOutput         ( :node_2 ) ;
+              :hasInput          ( :node_in ) ;
+              :hasOutput         ( :node_out ) ;
               :sourceSubjectAuthority
                                  "http://dbpedia.org" ;
               :targetSubjectAuthority
@@ -144,8 +164,8 @@ In the following example, we use the predicate conformation enrichment operator 
 
 :node_p_conf
               :implementedIn     :PredicateConformationEnrichmentOperator ;
-              :hasInput          ( :node_1 ) ;
-              :hasOutput         ( :node_2 ) ;
+              :hasInput          ( :node_in ) ;
+              :hasOutput         ( :node_out ) ;
               :propertyMapping    (
                     [ :source rdf:label ]
                     [ :target skos:prefLabel ]
