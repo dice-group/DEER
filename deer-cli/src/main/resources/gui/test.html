@@ -1,13 +1,101 @@
 <!DOCTYPE HTML>
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<title> DEER | WEB GUI </title>
   <head>
-    <link rel="stylesheet" href="css/graph.css" />
-  </head>
+    <link rel="stylesheet" href="css/graph.css" />    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+        <script src="//d3js.org/d3.v3.js" charset="utf-8"></script>
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        
+  </head>	
+  
 
-  <body>
-    <script src="//d3js.org/d3.v3.js" charset="utf-8"></script>    
-        <button>Click</button>
-    <script src="js/graphs.js"></script>
-  </body>
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+<div>
 
-</html>
+ <form class="node_details">
+   <h3 class="whiteTextOverride">Select Node Type</h3>
+  <input type="radio" name="gender" value="Operator"> <font color="white">Operator</font><br>
+  <input type="radio" name="gender" value="Reader"> <font color="white">Reader</font><br>
+  <input type="radio" name="gender" value="Writer"> <font color="white">Writer</font><br><br>  
+
+   <h3 class="whiteTextOverride">Enter Node Name</h3>
+
+  <input type="text" class="operator_name" required="" placeholder="Enter Name">
+  <h3 class="whiteTextOverride op_type_heading" style="display:none">Select Operation<h3>
+
+   <select style="display:none" id="operator_type">
+   <option disabled selected>Select Node Operator</option>
+   <option value="DefaultModelReader">DefaultModelReader</option>
+   <option value="DefaultModelWriter">DefaultModelWriter</option>
+   <option value="GeoFusionEnrichmentOperator">GeoFusionEnrichmentOperator</option>
+   <option value="CloneEnrichmentOperator">CloneEnrichmentOperator</option>
+      <option value="MergeEnrichmentOperator">MergeEnrichmentOperator</option>
+         <option value="LinkingEnrichmentOperator">LinkingEnrichmentOperator</option>
+         
+            <option value="DereferencingEnrichmentOperator">DereferencingEnrichmentOperator</option>
+            <option value="NEREnrichmentOperator">NEREnrichmentOperator</option>
+            <option value="PredicateConformationEnrichmentOperator">PredicateConformationEnrichmentOperator</option>
+   
+               <option value="AuthorityConformationEnrichmentOperator">AuthorityConformationEnrichmentOperator</option>
+               <option value="FilterEnrichmentOperator">FilterEnrichmentOperator</option>
+   
+   
+</select></br></br>
+ <button type="button" class="btn btn-primary add_details"  style="display:none" data-toggle="modal" data-target="#myModal">Add Operator Details</button></br></br>
+  <button type="button" class="btn btn-success" id="save_data">Save</button>
+
+</form> 
+</div></br>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+               
+               
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>                
+				<button type="button" class="btn btn-warning close_detail_popup" data-toggle="modal" data-target="#myModal">Close</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <body>   
+          <script src="js/graphs.js"></script>
+
+
+
+
