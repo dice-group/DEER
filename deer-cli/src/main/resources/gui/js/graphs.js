@@ -2,13 +2,19 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 	var id ="";
 	var selected_node_id= "";
 	var save_node_data = "#save_data";
-	var selected_node = "";
+	var selected_node_type = "";
 	var operator_name_field = ".operator_name";
 	var node_reference = "";
 	var node_reference2 = "";
-	var operator_name  = "";
+	var node_name  = "";
 	var node_id = "";
 	var operator_type= "#operator_type";
+	var upload_reader_url = ".upload_reader_url";
+	var upload_writer_url = ".upload_writer_url";
+	var nodes_details = new Array();
+	var total_operators = parseInt("0");
+	var total_readers = parseInt("0");
+	var total_writers = parseInt("0");
     id = parseInt("-1");
 
   "use strict";
@@ -403,7 +409,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         // clicked, not dragged
 
 	svg.on('click', function() {
-		console.log(d.id);
+
+
 		selected_node_id = d.id;			
 		openNav();
     		});
@@ -640,14 +647,39 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       graph.setIdCt(1);
   graph.updateGraph();
 
-
-
-
-
-
-
-
 function openNav() {
+
+
+var check_existence_for_population = false;
+    $('.operator_name').val('');
+$('input[name="operator"]').prop('checked', false);
+    $('input[name="reader"]').prop('checked', false);
+    $('input[name="writer"]').prop('checked', false);
+    $(operator_name_field).attr('placeholder','Enter Node Name');
+
+nodes_details.forEach(function(element,index,object) {
+
+
+if((selected_node_id == element[1])){
+		check_existence_for_population = true;
+      $(operator_name_field).val(element[0]);
+	console.log(selected_node_type);
+	if(element[2]=="Operator"){
+	$('input[name="operator"]').prop('checked', true);
+	}
+else if (element[2]=="Reader")
+{
+	$('input[name="reader"]').prop('checked', true);
+}
+
+else {
+	$('input[name="writer"]').prop('checked', true);
+}
+
+}
+
+});
+
 
     document.getElementById("mySidenav").style.width = "250px";
 }
@@ -655,26 +687,46 @@ function openNav() {
 
 
 $("form input:radio").change(function () {
-
-   
 	                $(".op_type_heading").fadeOut();
+	                $(".reader_url_field").fadeOut();
+	                $(".writer_url_field").fadeOut();
+	                $(".add_details").fadeOut();
+                        
+
 		$(operator_type).hide();
-   selected_node = $(this).val();
+   selected_node_type = $(this).val();
    var selected_node_property = null;
-   populate_values(selected_node_id,selected_node,selected_node_property)
+   populate_fields(selected_node_id,selected_node_type,selected_node_property)
 });
 
-function populate_values(id,type,property) {
 
 
+function populate_fields(id,type,property) {
+	
+	
 	if(type=="Operator"){
-
-
+	$('input[name=reader]').removeAttr('checked'	);
+  	$('input[name=writer]').removeAttr('checked');
+			var opr_count = total_operators + 1;
+			$(operator_name_field).attr('placeholder','Name for Operator '+ opr_count);
 	                $(".op_type_heading").fadeIn();
 	                $(operator_type).show().attr('style','width:200px');
-
 			}
+	if(type=="Reader"){
+  	$('input[name=operator]').removeAttr('checked'	);
+  	$('input[name=writer]').removeAttr('checked');
 
+		var rdr_count= total_readers + 1;
+			$(operator_name_field).attr('placeholder','Name for Reader '+ rdr_count);
+	                $(".reader_url_field").fadeIn();
+			}
+	if(type=="Writer"){
+		$('input[name=operator]').removeAttr('checked'	);
+  		$('input[name=reader]').removeAttr('checked');
+			var wrt_count= total_writers + 1;
+			$(operator_name_field).attr('placeholder','Name for Writer '+ wrt_count);
+	                $(".writer_url_field").fadeIn();
+			}
 		}
 
 
@@ -688,7 +740,6 @@ $('#myModal').modal('hide');
 
 
 
-
 $(operator_type).change(function() {
 $(this).parent().find(".add_details").fadeIn();
 
@@ -697,22 +748,136 @@ $(this).parent().find(".add_details").fadeIn();
 
 
 
+$(upload_reader_url).click(function(){
+var reader_url = $(this).parent().find(".reader_url").val();
+if(reader_url !== "")
+{
+$(upload_reader_url).find("input").removeAttr("type");
+$(this).attr("disabled","disabled");
+}
+else{
+$(upload_reader_url).find("input").attr("type","file");
+$(this).removeAttr("disabled");
+
+}
+});
+
+$(upload_writer_url).click(function(){
+var writer_url = $(this).parent().find(".writer_url").val();
+if(writer_url !== "")
+{
+$(upload_writer_url).find("input").removeAttr("type");
+$(this).attr("disabled","disabled");
+}
+else{
+$(upload_writer_url).find("input").attr("type","file");
+$(this).removeAttr("disabled");
+
+}
+});
+
+
+
+
+
+
+
+
 
 
 $("#save_data").click(function(){
+var element_exist = false;
 
-operator_name = $(this).parent().parent().find(operator_name_field).val();
-
-
+node_name = $(this).parent().parent().find(operator_name_field).val();
 node_id = selected_node_id.toString();
-
 node_reference = $(this).parent().parent().parent().parent().parent().parent().find("svg").find("[id='" + node_id + "']").find("text").find("tspan");
-node_reference.text(selected_node +": ");
+node_reference.text(selected_node_type +": ");
 node_reference2 = $(this).parent().parent().parent().parent().parent().parent().find("svg").find("[id='" + node_id + "']").find("text").find("tspan[x='0']");
-node_reference2.text(operator_name);
+node_reference2.text(node_name);
 
+
+
+
+nodes_details.forEach(function(element,index,object) {
+
+
+
+console.log(element[1]);
+console.log(selected_node_id);
+console.log(element_exist);
+if((selected_node_id == element[1]) && (selected_node_type == element[2]) && (node_name == element[0])){
+element_exist = true;
+}
+else if((selected_node_id == element[1]) && ((selected_node_type != element[2]) || (node_name != element[0]))){
+
+
+if((selected_node_type=="Operator") && element[2] == "Reader"){
+total_readers--;
+
+}
+else if((selected_node_type=="Operator") && element[2] == "Writer"){
+total_writers--;
+}
+
+
+if((selected_node_type=="Reader") && element[2] == "Operator"){
+total_operators--;
+
+}
+else if((selected_node_type=="Reader") && element[2] == "Writer"){
+total_writers--;
+}
+
+
+
+if((selected_node_type=="Writer") && element[2] == "Reader"){
+total_readers--;
+
+}
+else if((selected_node_type=="Writer") && element[2] == "Operator"){
+total_operators--;
+}
+object.splice(index, 1);
+element_exist = false;
+}
+});
+
+if(element_exist !=true){
+if(selected_node_type=="Operator"){
+var operator_details = new Array();
+operator_details.push(node_name);
+operator_details.push(node_id);
+operator_details.push(selected_node_type);
+nodes_details.push(operator_details);
+total_operators++;
+
+}
+else if(selected_node_type=="Reader"){
+var reader_details = new Array();
+console.log("in reader");
+reader_details.push(node_name);
+reader_details.push(node_id);
+reader_details.push(selected_node_type);
+nodes_details.push(reader_details);
+total_readers++;
+}
+else if (selected_node_type=="Writer"){
+console.log("in writer");
+var writer_details = new Array();
+writer_details.push(node_name);
+writer_details.push(node_id);
+writer_details.push(selected_node_type);
+nodes_details.push(writer_details);
+total_writers++;
+ }
+}
+else{
+console.log("element exist")
+}
+console.log(nodes_details);
 
 });
+
 
 
 
@@ -731,15 +896,10 @@ return true;
 }
 
 
-})(window.d3, window.saveAs, window.Blob);
 
+
+})(window.d3, window.saveAs, window.Blob);
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }
-
-
-
-
-
-
 

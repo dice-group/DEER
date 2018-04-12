@@ -21,9 +21,9 @@
 
  <form class="node_details">
    <h3 class="whiteTextOverride">Select Node Type</h3>
-  <input type="radio" name="gender" value="Operator"> <font color="white">Operator</font><br>
-  <input type="radio" name="gender" value="Reader"> <font color="white">Reader</font><br>
-  <input type="radio" name="gender" value="Writer"> <font color="white">Writer</font><br><br>  
+  <input type="radio" name="operator" value="Operator"> <font color="white">Operator</font><br>
+  <input type="radio" name="reader" value="Reader"> <font color="white">Reader</font><br>
+  <input type="radio" name="writer" value="Writer"> <font color="white">Writer</font><br><br>  
 
    <h3 class="whiteTextOverride">Enter Node Name</h3>
 
@@ -44,12 +44,26 @@
             <option value="PredicateConformationEnrichmentOperator">PredicateConformationEnrichmentOperator</option>
    
                <option value="AuthorityConformationEnrichmentOperator">AuthorityConformationEnrichmentOperator</option>
-               <option value="FilterEnrichmentOperator">FilterEnrichmentOperator</option>
-   
-   
-</select></br></br>
+               <option value="FilterEnrichmentOperator">FilterEnrichmentOperator</option>   
+</select>
+       <div class="reader_url_field col-lg-6 col-sm-6 col-12" style="display: none;">
+        <input type="text" class="reader_url" placeholder="Enter Reader Url"></br>
+               <h4 class="whiteTextOverride"> Or </h4>
+            <label class="btn btn-primary upload_reader_url">
+                Browse <input type="file" style="display: none;">
+            </label>
+        </div>
+        
+        <div class="writer_url_field col-lg-6 col-sm-6 col-12" style="display: none;">
+        <input type="text" class="writer_url" placeholder="Enter Writer Url"></br>
+               <h4 class="whiteTextOverride"> Or </h4>
+            <label class="btn btn-primary upload_writer_url">
+                Browse <input type="file" style="display: none;">
+            </label>
+        </div>
+</br></br>
  <button type="button" class="btn btn-primary add_details"  style="display:none" data-toggle="modal" data-target="#myModal">Add Operator Details</button></br></br>
-  <button type="button" class="btn btn-success" id="save_data">Save</button>
+ <button type="button" class="btn btn-success" id="save_data">Save</button>
 
 </form> 
 </div></br>
@@ -66,9 +80,7 @@
                 <h4 class="modal-title" id="myModalLabel">Modal title</h4>
             </div>
             <div class="modal-body">
-               
-               
-               
+      
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary">Save changes</button>                
@@ -81,20 +93,8 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   <body>   
-          <script src="js/graphs.js"></script>
+<script src="js/graphs.js"></script>
 
 
 
