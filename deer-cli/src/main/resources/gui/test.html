@@ -8,17 +8,14 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    
         <script src="//d3js.org/d3.v3.js" charset="utf-8"></script>
         <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-        
   </head>	
   
 
-<div id="mySidenav" class="sidenav">
+<div id="mySidenav" class="sidenav" style="margin-top:51px">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-<div>
-
+<div style="padding-left: 17px;">
  <form class="node_details">
    <h3 class="whiteTextOverride">Select Node Type</h3>
   <input type="radio" name="operator" value="Operator"> <font color="white">Operator</font><br>
@@ -46,16 +43,16 @@
                <option value="AuthorityConformationEnrichmentOperator">AuthorityConformationEnrichmentOperator</option>
                <option value="FilterEnrichmentOperator">FilterEnrichmentOperator</option>   
 </select>
-       <div class="reader_url_field col-lg-6 col-sm-6 col-12" style="display: none;">
-        <input type="text" class="reader_url" placeholder="Enter Reader Url"></br>
+       <div class="reader_url_field col-lg-6 col-sm-6 col-12" style="padding-left: 1px;display: none;">
+        <input type="text" class="reader_url" placeholder="Enter Reader Url" style="width:195px"></br>
                <h4 class="whiteTextOverride"> Or </h4>
             <label class="btn btn-primary upload_reader_url">
                 Browse <input type="file" style="display: none;">
             </label>
         </div>
         
-        <div class="writer_url_field col-lg-6 col-sm-6 col-12" style="display: none;">
-        <input type="text" class="writer_url" placeholder="Enter Writer Url"></br>
+        <div class="writer_url_field col-lg-6 col-sm-6 col-12" style="padding-left: 1px; display: none;">
+        <input type="text" class="writer_url" placeholder="Enter Writer Url" style="width:190px"></br>
                <h4 class="whiteTextOverride"> Or </h4>
             <label class="btn btn-primary upload_writer_url">
                 Browse <input type="file" style="display: none;">
@@ -63,15 +60,10 @@
         </div>
 </br></br>
  <button type="button" class="btn btn-primary add_details"  style="display:none" data-toggle="modal" data-target="#myModal">Add Operator Details</button></br></br>
- <button type="button" class="btn btn-success" id="save_data">Save</button>
-
+ <button type="button" class="btn btn-success" id="save_data"style="width:88px">Save</button>
 </form> 
-</div></br>
 </div>
-
-
-
-
+</div>
 <!-- Modal -->
 <div class="modal fade" id="myModal">
     <div class="modal-dialog">
@@ -91,6 +83,20 @@
     </div>
 </div>
 
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Deer</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
+      <li><a href="#" id="help_manue" class="help_btn"><span class="glyphicon glyphicon-user"></span> Help</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+    </ul>
+  </div>
+</nav>
 
 
   <body>   

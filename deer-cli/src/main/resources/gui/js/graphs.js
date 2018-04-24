@@ -8,6 +8,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 	var node_reference2 = "";
 	var node_name  = "";
 	var node_id = "";
+	var close_detail_popup = ".close_detail_popup";
+	var add_details = ".add_details";
 	var operator_type= "#operator_type";
 	var upload_reader_url = ".upload_reader_url";
 	var upload_writer_url = ".upload_writer_url";
@@ -16,6 +18,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 	var total_readers = parseInt("0");
 	var total_writers = parseInt("0");
     id = parseInt("-1");
+    var myModal = "#myModal";
 
   "use strict";
 
@@ -679,9 +682,8 @@ else {
 }
 
 });
-
-
     document.getElementById("mySidenav").style.width = "250px";
+    
 }
 
 
@@ -730,12 +732,12 @@ function populate_fields(id,type,property) {
 		}
 
 
-$(".add_details").click(function(){
-
-$("#myModal").modal('show'); 
+$(add_details).click(function(){
+$(myModal).modal('show'); 
 });
-$(".close_detail_popup").click(function(){
-$('#myModal').modal('hide');
+
+$(close_detail_popup).click(function(){
+$(myModal).modal('hide');
 });
 
 
@@ -776,15 +778,6 @@ $(this).removeAttr("disabled");
 }
 });
 
-
-
-
-
-
-
-
-
-
 $("#save_data").click(function(){
 var element_exist = false;
 
@@ -795,13 +788,7 @@ node_reference.text(selected_node_type +": ");
 node_reference2 = $(this).parent().parent().parent().parent().parent().parent().find("svg").find("[id='" + node_id + "']").find("text").find("tspan[x='0']");
 node_reference2.text(node_name);
 
-
-
-
 nodes_details.forEach(function(element,index,object) {
-
-
-
 console.log(element[1]);
 console.log(selected_node_id);
 console.log(element_exist);
@@ -878,9 +865,6 @@ console.log(nodes_details);
 
 });
 
-
-
-
 function validate_values() {
 if(operator_name ==""){
 $(operator_name_field).css('border-color', 'red');
@@ -894,9 +878,6 @@ return true;
 }
 
 }
-
-
-
 
 })(window.d3, window.saveAs, window.Blob);
 function closeNav() {
