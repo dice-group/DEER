@@ -5,15 +5,15 @@
 
 :node_reader1
               :implementedIn     :DefaultModelReader ;
-              :fromUri           <http://de.dbpedia.org/resource/Paderborn> ;
-              :useEndpoint       <http://de.dbpedia.org/sparql> ;
-              :hasOutput         ( :node_conf ) .
-
-:node_reader2
-              :implementedIn     :DefaultModelReader ;
               :fromUri           <http://dbpedia.org/resource/Paderborn> ;
               :useEndpoint       <http://dbpedia.org/sparql> ;
               :hasOutput         ( :node_geofusion ) .
+
+:node_reader2
+              :implementedIn     :DefaultModelReader ;
+              :fromUri           <http://linkedgeodata.org/triplify/node240114473> ;
+              :useEndpoint       <http://linkedgeodata.org/sparql> ;
+              :hasOutput         ( :node_conf ) .
 
 :node_conf
               :implementedIn     :AuthorityConformationEnrichmentOperator ;
