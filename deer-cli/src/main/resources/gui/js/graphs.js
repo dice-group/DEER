@@ -412,8 +412,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         // clicked, not dragged
 
 	svg.on('click', function() {
-
-
 		selected_node_id = d.id;			
 		openNav();
     		});
@@ -698,7 +696,7 @@ $("form input:radio").change(function () {
 		$(operator_type).hide();
    selected_node_type = $(this).val();
    var selected_node_property = null;
-   populate_fields(selected_node_id,selected_node_type,selected_node_property)
+   populate_fields(selected_node_id,selected_node_type,selected_node_property);
 });
 
 
@@ -731,15 +729,13 @@ function populate_fields(id,type,property) {
 			}
 		}
 
-
 $(add_details).click(function(){
-$(myModal).modal('show'); 
+$(myModal).fadeIn(); 
 });
 
 $(close_detail_popup).click(function(){
-$(myModal).modal('hide');
+$(myModal).fadeOut();
 });
-
 
 
 $(operator_type).change(function() {
@@ -878,6 +874,18 @@ return true;
 }
 
 }
+
+
+$("#help_manue").popover({
+        html : true, 
+        content: function() {
+          return $('#popoverExampleTwoHiddenContent').html();
+        },
+        title: function() {
+          return $('#popoverExampleTwoHiddenTitle').html();
+        }
+    });
+
 
 })(window.d3, window.saveAs, window.Blob);
 function closeNav() {
