@@ -9,7 +9,6 @@ import org.aksw.faraday_cage.parameter.Parameter;
 import org.aksw.faraday_cage.parameter.ParameterImpl;
 import org.aksw.faraday_cage.parameter.ParameterMap;
 import org.aksw.faraday_cage.parameter.ParameterMapImpl;
-import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -59,13 +58,21 @@ import java.util.stream.Collectors;
  * Each entry may contain the following properties:
  *
  * <blockquote>
+ *     <b>{@code :lookUpProperty}</b>
+ *     <i>range: resource</i>
+ *     <br>
+ *     Determines the starting resources {@code ?x} as all objects of triples having
+ *     the value of {@code :lookUpProperty} as predicate.
+ * </blockquote>
+ *
+ * <blockquote>
  *     <b>{@code :lookUpPrefix} [required]</b>
  *     <i>range: string</i>
  *     <br>
  *     Determines the starting resources {@code ?x} as all objects of triples having
  *     the value of {@code :lookUpProperty} as predicate.
  * </blockquote>
-
+ *
  * <blockquote>
  *     <b>{@code :dereferencingProperty} [required]</b>
  *     <i>range: resource</i>
@@ -81,13 +88,6 @@ import java.util.stream.Collectors;
  *     Add looked up values to starting resources using the value of :importProperty.
  * </blockquote>
  *
- * <blockquote>
- *     <b>{@code :endpoint} </b>
- *     <i>range: string</i>
- *     <br>
- *     URL of the SPARQL endpoint to use for this dereferencing operation.
- *     If not given, this operator tries to infer the endpoint from the starting resources URIs.
- * </blockquote>
  *
  * <h2>Example</h2>
  *
@@ -95,17 +95,19 @@ import java.util.stream.Collectors;
 @Extension @RetainJavadoc
 public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
 
+//   * <blockquote>
+//   *     <b>{@code :endpoint} </b>
+//   *     <i>range: string</i>
+//   *     <br>
+//   *     URL of the SPARQL endpoint to use for this dereferencing operation.
+//   *     If not given, this operator tries to infer the endpoint from the starting resources URIs.
+//   * </blockquote>
+
+
+
   private static final Logger logger = LoggerFactory.getLogger(DereferencingEnrichmentOperator.class);
 
-  // @todo: implement this someday.. requires util endpoint discovery
-  //  * <blockquote>
-  //  *     <b>{@code :lookUpProperty} [required]</b>
-  //  *     <i>range: resource</i>
-  //  *     <br>
-  //  *     Determines the starting resources {@code ?x} as all objects of triples having
-  //  *     the value of {@code :lookUpProperty} as predicate.
-  //  * </blockquote>
-  //  private static final Property LOOKUP_PROPERTY = Vocabulary.property("lookUpProperty");
+  private static final Property LOOKUP_PROPERTY = Vocabulary.property("lookUpProperty");
 
   private static final Property LOOKUP_PREFIX = Vocabulary.property("lookUpPrefix");
 
@@ -114,7 +116,7 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
   private static final Property IMPORT_PROPERTY = Vocabulary.property("importProperty");
 
   private static final Parameter OPERATIONS = new ParameterImpl("operations",
-    new DictListParameterConversion(LOOKUP_PREFIX, DEREFERENCING_PROPERTY,
+    new DictListParameterConversion(LOOKUP_PREFIX, LOOKUP_PROPERTY, DEREFERENCING_PROPERTY,
       IMPORT_PROPERTY), true);
 
   private static final String DEFAULT_LOOKUP_PREFIX = "http://dbpedia.org/resource";
@@ -177,13 +179,15 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
     // get configuration for this operation
     String lookUpPrefix = op.get(LOOKUP_PREFIX) == null
       ? DEFAULT_LOOKUP_PREFIX : op.get(LOOKUP_PREFIX).toString();
+    Property lookUpProperty = op.get(LOOKUP_PROPERTY) == null
+      ? null : op.get(LOOKUP_PROPERTY).as(Property.class);
     Property dereferencingProperty = op.get(DEREFERENCING_PROPERTY) == null
       ? null : op.get(DEREFERENCING_PROPERTY).as(Property.class);
     Property importProperty = op.get(IMPORT_PROPERTY) == null
       ? dereferencingProperty : op.get(IMPORT_PROPERTY).as(Property.class);
     // execute this operation
     if (dereferencingProperty != null) {
-      for (Statement statement : getCandidateNodesByPrefix(lookUpPrefix)) {
+      for (Statement statement : getCandidateNodes(lookUpPrefix, lookUpProperty)) {
         for (RDFNode o : getEnrichmentValuesFor(statement.getObject().asResource(), dereferencingProperty)) {
           statement.getSubject().addProperty(importProperty, o);
         }
@@ -191,14 +195,15 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
     }
   }
 
-  private List<Statement> getCandidateNodesByPrefix (String lookupPrefix) {
+  private List<Statement> getCandidateNodes(String lookupPrefix, Property lookUpProperty) {
     // old way with util:
     //      "SELECT * " +
     //      "WHERE { ?s ?p ?o . FILTER (isURI(?o)) . " +
     //      "FILTER (STRSTARTS(STR(?o), \"" + lookupPrefix + "\"))}";
     return model.listStatements()
       .filterKeep(statement -> statement.getObject().isURIResource() &&
-        statement.getObject().asResource().getURI().startsWith(lookupPrefix))
+        statement.getObject().asResource().getURI().startsWith(lookupPrefix) &&
+        (lookUpProperty == null || statement.getPredicate().equals(lookUpProperty)))
       .toList();
   }
 
