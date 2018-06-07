@@ -17,7 +17,7 @@
 
 :node_conf
               :implementedIn     :AuthorityConformationEnrichmentOperator ;
-              :hasInput          ( :node_reader1 ) ;
+              :hasInput          ( :node_reader2 ) ;
               :hasOutput         ( :node_geofusion ) ;
               :sourceSubjectAuthority
                                  "http://dbpedia.org" ;
@@ -26,7 +26,7 @@
 
 :node_geofusion
               :implementedIn     :GeoFusionEnrichmentOperator ;
-              :hasInput          ( :node_conf :node_reader2 ) ;
+              :hasInput          ( :node_conf :node_reader1 ) ;
               :hasOutput         ( :node_filter ) ;
               :fusionAction      "takeAll" ;
               :mergeOtherStatements

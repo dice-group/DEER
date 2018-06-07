@@ -1,0 +1,191 @@
+@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix geos: <http://www.opengis.net/ont/geosparql#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix dbp: <http://dbpedia.org/property/> .
+@prefix slipo: <http://slipo.eu/def#> .
+
+####
+# Input Nodes
+####
+
+:fullInput
+              :implementedIn     :DefaultModelReader ;
+              :fromUri      "slipo-bucharest-input.ttl" ;
+              :hasOutput         ( :mergeFull ) .
+
+:malls
+              :implementedIn     :DefaultModelReader ;
+              :fromUri      "slipo-bucharest-input.ttl" ;
+              :useSparqlConstruct '''PREFIX geos: <http://www.opengis.net/ont/geosparql#>
+                                     PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+                                      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                                      PREFIX slipo: <http://slipo.eu/def#>
+                                      CONSTRUCT {?s rdfs:label ?x . ?s geo:lat ?lat . ?s geo:long ?long . ?s geo:geometry ?geometry . } WHERE {
+                                      {
+                                        ?s geo:long ?long .
+                                        ?s geo:lat ?lat .
+                                        ?s geos:hasGeometry/geos:asWKT ?geometry .
+                                        ?s slipo:name/slipo:nameValue ?x .
+                                        FILTER regex(str(?x),'Mall')
+                                      } UNION {
+                                        ?s geo:long ?long .
+                                        ?s geo:lat ?lat .
+                                        ?s geos:hasGeometry/geos:asWKT ?geometry .
+                                        ?s slipo:name/slipo:nameValue ?x .
+                                        ?s slipo:category/slipo:value ?y.
+                                        FILTER regex(str(?y),'Shopping Center')
+                                      }
+                                     }''' ;
+              :hasOutput         ( :linkMalls ) .
+
+:non_malls
+              :implementedIn     :DefaultModelReader ;
+              :fromUri      "slipo-bucharest-input.ttl" ;
+              :useSparqlConstruct '''
+              PREFIX geos: <http://www.opengis.net/ont/geosparql#>
+              PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+                                                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                                                    PREFIX slipo: <http://slipo.eu/def#>
+              CONSTRUCT {?s rdfs:label ?x . ?s geo:lat ?lat . ?s geo:long ?long . ?s geo:geometry ?geometry . } WHERE {
+                                      {
+                                        ?s geo:long ?long .
+                                        ?s geo:lat ?lat .
+                                        ?s geos:hasGeometry/geos:asWKT ?geometry .
+                                        ?s slipo:name/slipo:nameValue ?x .
+                                        ?s slipo:category/slipo:value ?y.
+                                        FILTER regex(str(?x), '^((?!Mall).)*$') .
+                                        FILTER regex(str(?y), '^((?!Shopping Center).)*$') .
+                                      }
+                                     }''' ;
+              :hasOutput         ( :linkNonMalls ) .
+
+:dbp_malls
+              :implementedIn     :DefaultModelReader ;
+              :useEndpoint       <http://dbpedia.org/sparql> ;
+              :useSparqlConstruct '''
+              PREFIX geos: <http://www.opengis.net/ont/geosparql#>
+              PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+                                                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                                                    PREFIX slipo: <http://slipo.eu/def#>
+                                                    PREFIX dbo: <http://dbpedia.org/ontology/>
+                                                    PREFIX dbr: <http://dbpedia.org/resource/>
+                                                    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              construct {?mall rdfs:label ?label . ?mall geo:lat ?lat . ?mall geo:long ?long . ?mall geo:geometry ?geometry . } where {?mall rdf:type dbo:ShoppingMall . ?mall dbo:location dbr:Bucharest . ?mall rdfs:label ?label .
+                                     ?mall geo:lat ?lat .
+                                     ?mall geo:long ?long .
+                                     ?mall geo:geometry ?geometry .
+                                     } LIMIT 10000''' ;
+              :hasOutput         ( :linkMalls :linkNonMalls :debug ) .
+
+:dbp_buildings
+              :implementedIn     :DefaultModelReader ;
+              :useEndpoint       <http://dbpedia.org/sparql> ;
+              :useSparqlConstruct '''
+              PREFIX geos: <http://www.opengis.net/ont/geosparql#>
+              PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+                                                                  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                                                                  PREFIX slipo: <http://slipo.eu/def#>
+                                                                  PREFIX dbo: <http://dbpedia.org/ontology/>
+                                                                  PREFIX dbr: <http://dbpedia.org/resource/>
+                                                                  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              construct {?building rdfs:label ?label . ?building geo:lat ?lat . ?building geo:long ?long . ?building geo:geometry ?geometry . } where {?building rdf:type dbo:Building . ?building dbo:location dbr:Bucharest . ?building rdfs:label ?label .
+                                   ?building geo:lat ?lat .
+                                   ?building geo:long ?long .
+                                   ?building geo:geometry ?geometry .
+                                   FILTER NOT EXISTS { ?building rdf:type dbo:ShoppingMall . }
+                                   } LIMIT 10000''' ;
+              :hasOutput         ( :linkBuildings ) .
+
+####
+# Enrichment Nodes
+####
+
+:linkMalls
+              :implementedIn     :LinkingEnrichmentOperator ;
+              :hasInput          ( :malls :dbp_malls ) ;
+              :hasOutput         ( :mergeLinks ) ;
+              :selectMode        "best1toN" ;
+              :linkingPredicate  owl:sameAs ;
+              :linkSpecification "mongeelkan(y.http://www.w3.org/2000/01/rdf-schema#label, x.http://www.w3.org/2000/01/rdf-schema#label)" ;
+              :threshold 0.3 .
+:linkNonMalls
+              :implementedIn     :LinkingEnrichmentOperator ;
+              :hasInput          ( :non_malls :dbp_malls ) ;
+              :hasOutput         ( :distanceToMalls ) ;
+              :selectMode        "best1toN" ;
+              :linkingPredicate  slipo:nearestMall ;
+              :linkSpecification "geo_hausdorff(x.http://www.w3.org/2003/01/geo/wgs84_pos#geometry,y.http://www.w3.org/2003/01/geo/wgs84_pos#geometry)" ;
+              :threshold          0.999016689 .
+
+:distanceToMalls
+              :implementedIn     :GeoDistanceEnrichmentOperator ;
+              :hasInput          ( :linkNonMalls ) ;
+              :hasOutput         ( :mergeLinks ) ;
+              :selectPredicate  slipo:nearestMall ;
+              :distancePredicate slipo:distanceToNearestMall .
+
+:mergeLinks
+            :implementedIn       :MergeEnrichmentOperator ;
+            :hasInput          ( :linkMalls :distanceToMalls ) ;
+            :hasOutput         ( :linkBuildings ) .
+
+:linkBuildings
+              :implementedIn     :LinkingEnrichmentOperator ;
+              :hasInput          ( :mergeLinks :dbp_buildings ) ;
+              :hasOutput         ( :distanceToBuildings ) ;
+              :selectMode        "best1toN" ;
+              :linkingPredicate  slipo:nearestBuilding ;
+              :linkSpecification "geo_hausdorff(x.http://www.w3.org/2003/01/geo/wgs84_pos#geometry,y.http://www.w3.org/2003/01/geo/wgs84_pos#geometry)" ;
+              :threshold          0.999016689 .
+
+:distanceToBuildings
+              :implementedIn     :GeoDistanceEnrichmentOperator ;
+              :hasInput          ( :linkBuildings ) ;
+              :hasOutput         ( :dereferencing ) ;
+              :selectPredicate  slipo:nearestBuilding ;
+              :distancePredicate slipo:distanceToNearestBuilding .
+
+:dereferencing
+              :implementedIn     :DereferencingEnrichmentOperator ;
+              :hasInput          ( :distanceToBuildings ) ;
+              :hasOutput         ( :mergeFull ) ;
+              :operations        (
+                                  [ :lookUpProperty owl:sameAs ; :dereferencingProperty dbo:openingDate ; :importProperty slipo:openingDate ]
+                                  [ :lookUpProperty owl:sameAs ; :dereferencingProperty dbp:numberOfStores ; :importProperty slipo:numberOfStores ]
+                                  [ :lookUpProperty owl:sameAs ; :dereferencingProperty dbp:parking ; :importProperty slipo:parkingSlots ]
+                                  [ :lookUpProperty slipo:nearestMall ; :dereferencingProperty dbo:openingDate ; :importProperty slipo:nearestMallOpeneningDate ]
+                                  [ :lookUpProperty slipo:nearestMall ; :dereferencingProperty dbp:numberOfStores ; :importProperty slipo:nearestMallNumberOfStores ]
+                                  [ :lookUpProperty slipo:nearestMall ; :dereferencingProperty dbp:parking ; :importProperty slipo:nearestMallParkingSlots ]
+                                  [ :lookUpProperty slipo:nearestMall ; :dereferencingProperty rdfs:label ; :importProperty slipo:nearestMallName ]
+                                  [ :lookUpProperty slipo:nearestBuilding ; :dereferencingProperty dbo:openingDate ; :importProperty slipo:nearestBuildingOpeningDate ]
+                                  [ :lookUpProperty slipo:nearestBuilding ; :dereferencingProperty dbp:status ; :importProperty slipo:nearestBuildingStatus ]
+                                  [ :lookUpProperty slipo:nearestBuilding ; :dereferencingProperty dbo:floorArea ; :importProperty slipo:nearestBuildingFloorArea ]
+                                  [ :lookUpProperty slipo:nearestBuilding ; :dereferencingProperty dbo:floorCount ; :importProperty slipo:nearestBuildingFloorCount ]
+                                  [ :lookUpProperty slipo:nearestBuilding ; :dereferencingProperty rdfs:label ; :importProperty slipo:nearestBuildingName ]
+                                 ) .
+
+:mergeFull
+            :implementedIn       :MergeEnrichmentOperator ;
+            :hasInput          ( :fullInput :dereferencing ) ;
+            :hasOutput         ( :output_node ) .
+
+
+####
+# Output Nodes
+####
+
+:output_node
+              :implementedIn     :DefaultModelWriter ;
+              :outputFile        "slipo-bucharest-enriched.ttl" ;
+              :outputFormat      "Turtle" ;
+              :hasInput          ( :mergeFull ) .
+
+:debug
+              :implementedIn     :DefaultModelWriter ;
+              :outputFile        "slipo-debug.ttl" ;
+              :outputFormat      "Turtle" ;
+              :hasInput          ( :dbp_malls ) .
