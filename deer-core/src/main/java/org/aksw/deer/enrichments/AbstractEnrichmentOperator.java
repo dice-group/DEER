@@ -8,6 +8,8 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  */
 public abstract class AbstractEnrichmentOperator extends AbstractNode.WithImplicitCloning<Model> implements DeerPlugin {
@@ -27,4 +29,13 @@ public abstract class AbstractEnrichmentOperator extends AbstractNode.WithImplic
     return Vocabulary.resource(this.getClass().getSimpleName());
   }
 
+  @Override
+  protected void writeInputAnalytics(List<Model> data) {
+
+  }
+
+  @Override
+  protected void writeOutputAnalytics(List<Model> data) {
+
+  }
 }

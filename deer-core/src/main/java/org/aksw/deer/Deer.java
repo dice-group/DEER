@@ -22,7 +22,7 @@ public class Deer {
     StopWatch time = new StopWatch();
     logger.info("Building execution model...");
     time.start();
-    IdentifiableExecutionFactory<Model> deerFactory = new PluginFactory<>(DeerPlugin.class, pluginManager);
+    ExecutionFactory<Model> deerFactory = new PluginFactory<>(DeerPlugin.class, pluginManager);
     ExecutionGraphBuilder<Model> executionGraphBuilder
       = new DefaultExecutionGraphBuilder<>(futureFactory);
     ExecutionGraphGenerator<Model> executionGraphGenerator
@@ -32,8 +32,10 @@ public class Deer {
     logger.info("Execution model built after {}ms.", time.getSplitTime());
     logger.info("Starting execution of enrichment...");
     executionGraph.run();
+    Analytics analytics = executionGraph.getAnalytics();
     time.split();
     logger.info("Enrichment finished after {}ms", time.getSplitTime());
+    logger.info("Analytics information:\n------------------------------------------\n{}", analytics.toString());
   }
 
 }
