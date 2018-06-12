@@ -31,11 +31,15 @@ public abstract class AbstractEnrichmentOperator extends AbstractNode.WithImplic
 
   @Override
   protected void writeInputAnalytics(List<Model> data) {
-
+    if (getInDegree() > 0) {
+      writeAnalytics("input sizes", data.stream().map(m -> String.valueOf(m.size())).reduce("( ", (a, b) -> a + b + " ") + ")");
+    }
   }
 
   @Override
   protected void writeOutputAnalytics(List<Model> data) {
-
+    if (getOutDegree() > 0) {
+      writeAnalytics("output sizes", data.stream().map(m->String.valueOf(m.size())).reduce("( ", (a, b) -> a + b + " ") + ")");
+    }
   }
 }

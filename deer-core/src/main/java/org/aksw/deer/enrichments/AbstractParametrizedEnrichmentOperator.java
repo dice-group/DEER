@@ -9,6 +9,8 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  */
 public abstract class AbstractParametrizedEnrichmentOperator extends AbstractParametrizedNode.WithImplicitCloning<Model> implements ParametrizedDeerPlugin, SelfConfigurator {
@@ -27,4 +29,20 @@ public abstract class AbstractParametrizedEnrichmentOperator extends AbstractPar
   public Resource getType() {
     return Vocabulary.resource(this.getClass().getSimpleName());
   }
+
+
+  @Override
+  protected void writeInputAnalytics(List<Model> data) {
+    if (getInDegree() > 0) {
+      writeAnalytics("input sizes", data.stream().map(m -> String.valueOf(m.size())).reduce("( ", (a, b) -> a + b + " ") + ")");
+    }
+  }
+
+  @Override
+  protected void writeOutputAnalytics(List<Model> data) {
+    if (getOutDegree() > 0) {
+      writeAnalytics("output sizes", data.stream().map(m->String.valueOf(m.size())).reduce("( ", (a, b) -> a + b + " ") + ")");
+    }
+  }
+
 }

@@ -23,16 +23,16 @@ public class Deer {
     logger.info("Building execution model...");
     time.start();
     ExecutionFactory<Model> deerFactory = new PluginFactory<>(DeerPlugin.class, pluginManager);
-    ExecutionGraphBuilder<Model> executionGraphBuilder
-      = new DefaultExecutionGraphBuilder<>(futureFactory);
-    ExecutionGraphGenerator<Model> executionGraphGenerator
-      = new ExecutionGraphGenerator<>(config, executionGraphBuilder, deerFactory);
-    ExecutionGraph executionGraph = executionGraphGenerator.generate();
     time.split();
-    logger.info("Execution model built after {}ms.", time.getSplitTime());
+    logger.trace("Factory initialized after {}ms.", time.getSplitTime());
+    ExecutionGraph executionGraph = new ExecutionGraphGenerator(config).generate();
+    time.split();
+    logger.trace("Execution graph built after {}ms.", time.getSplitTime());
+    executionGraph.compile(deerFactory, futureFactory);
+    time.split();
+    logger.info("Execution graph compiled after {}ms.", time.getSplitTime());
     logger.info("Starting execution of enrichment...");
-    executionGraph.run();
-    Analytics analytics = executionGraph.getAnalytics();
+    Analytics analytics = executionGraph.execute();
     time.split();
     logger.info("Enrichment finished after {}ms", time.getSplitTime());
     logger.info("Analytics information:\n------------------------------------------\n{}", analytics.toString());
