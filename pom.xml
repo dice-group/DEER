@@ -193,7 +193,7 @@
     <dependency>
       <groupId>org.aksw.faraday_cage</groupId>
       <artifactId>faraday-cage</artifactId>
-      <version>0.1.0</version>
+      <version>0.1.1</version>
     </dependency>
 
   </dependencies>
