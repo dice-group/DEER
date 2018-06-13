@@ -49,7 +49,7 @@ gitbook build
 cp -r _book/** ../out
 # exit to higher level
 cd ..
-
+mvn javadoc:aggregate
 rm -rf out/javadoc
 mv target/apidocs out/javadoc
 
