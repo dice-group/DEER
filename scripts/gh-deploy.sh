@@ -51,7 +51,7 @@ cp -r _book/** ../out
 cd ..
 
 rm -rf out/javadoc
-mv deer-core/target/apidocs out/javadoc
+mv target/apidocs out/javadoc
 
 # Now let's go have some fun with the cloned repo
 cd out

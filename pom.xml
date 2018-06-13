@@ -103,13 +103,11 @@
         <artifactId>maven-release-plugin</artifactId>
         <version>2.5.3</version>
         <configuration>
-        <tag>${releaseVersion}</tag>
-        <tagNameFormat>@{project.version}</tagNameFormat>
-        <autoVersionSubmodules>true</autoVersionSubmodules>
-        <!--<releaseProfiles>releases</releaseProfiles>-->
-        <arguments>-P!source-artifacts</arguments>
-        <useReleaseProfile>false</useReleaseProfile>
-        <goals>-Dmaven.test.skip=true deploy</goals>
+          <tagNameFormat>@{project.version}</tagNameFormat>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <arguments>-P!source-artifacts</arguments>
+          <useReleaseProfile>false</useReleaseProfile>
+          <goals>-Dmaven.test.skip=true deploy</goals>
         </configuration>
         <dependencies>
           <dependency>
@@ -123,7 +121,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.2.1</version>
+        <version>3.0.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -138,18 +136,25 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <links>
-            <link>https://jena.apache.org/documentation/javadoc/jena/</link>
-          </links>
-        </configuration>
+        <version>3.0.1</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
+            <phase>package</phase>
             <goals>
-              <goal>jar</goal>
+              <goal>aggregate-jar</goal>
             </goals>
+            <configuration>
+              <!--switch on dependency-driven aggregation-->
+              <includeDependencySources>true</includeDependencySources>
+              <dependencySourceIncludes>
+                <!-- include ONLY dependencies I control -->
+                <dependencySourceInclude>org.aksw.faraday_cage:*</dependencySourceInclude>
+              </dependencySourceIncludes>
+              <links>
+                <link>https://jena.apache.org/documentation/javadoc/jena</link>
+              </links>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -157,7 +162,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
+        <version>2.20.1</version>
         <configuration>
           <forkMode>pertest</forkMode>
           <argLine>@{argLine} -Xms256m -Xmx512m</argLine>

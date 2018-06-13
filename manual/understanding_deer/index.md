@@ -21,14 +21,24 @@ while the latter provides a CLI that can either run a single configuration or sp
 submit tasks over a RESTful API. In a future release, the API will be accompanied by a web app
 to build configurations graphically in the browser.
 
-## Plugin Types
+## DEER Plugin characteristics
+
+All DEER plugins implement the `Node` interface from **FARADAY-CAGE**.
+As such, they have so called **degree bounds**, which restrict the number of datasets they can accept and emit.
+Degree bounds are notated as `(minIn, maxIn, minOut, maxOut)`, where
+  * minIn is the minimum number of accepted datasets
+  * maxIn is the maximum number of accepted datasets
+  * minIn is the minimum number of emitted datasets
+  * maxIn is the maximum number of emitted datasets
+
+## DEER Plugin Types
 
 DEERs domain model specifies three basic plugin types:
 
-* A **ModelReader** is the only plugin that can be a root node in the execution graph and likewise it
+* A **ModelReader** `(0,0,1,1)` is the only plugin that can be a root node in the execution graph and likewise it
 must be a root node. It is responsible for reading one RDF dataset from a dedicated source to feed it into 
 the exxecution graph.  
-* A **ModelWriter** can be an intermediary or a leaf node and it will write one RDF dataset to an external channel,
+* A **ModelWriter** `(1,1,0,1)` can be an intermediary or a leaf node and it will write one RDF dataset to an external channel,
 e.g. a file or a triplestore.  
-* An **EnrichmentOperator** is an intermediary node that takes one or more RDF datasets as input,
+* An **EnrichmentOperator** `(1,N,1,M)` is an intermediary node that takes one or more RDF datasets as input,
 executes arbitrary transformations on them and outputs the result as one or more RDF datasets.
