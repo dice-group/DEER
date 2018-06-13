@@ -18,6 +18,7 @@
       * [GeoFusion Enrichment Operator](./configuring_deer/enrichment_operators.md#geofusion)
       * [Authority Conformation Enrichment Operator](./configuring_deer/enrichment_operators.md#aconf)
       * [Predicate Conformation Enrichment Operator](./configuring_deer/enrichment_operators.md#pconf)
+      * [GeoDistance Enrichment Operator](./configuring_deer/enrichment_operators.md#geodistance)
   * [Extending DEER](./extending_deer/index.md)
   
 ### References
