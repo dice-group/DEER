@@ -5,10 +5,7 @@ import org.aksw.faraday_cage.parameter.ParameterImpl;
 import org.aksw.faraday_cage.parameter.ParameterMap;
 import org.aksw.faraday_cage.parameter.ParameterMapImpl;
 import org.aksw.limes.core.measures.mapper.pointsets.OrthodromicDistance;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -57,8 +54,8 @@ public class GeoDistanceEnrichmentOperator extends AbstractParametrizedEnrichmen
    * @return model enriched with distances
    */
   protected List<Model> safeApply(List<Model> models) {
-    models.get(0).listStatements()
-      .filterKeep(stmt -> stmt.getPredicate().equals(selectPredicate) && stmt.getObject().isResource()).toList()
+    models.get(0).listStatements(null, selectPredicate, (RDFNode) null)
+      .filterKeep(stmt -> stmt.getObject().isResource()).toList()
       .forEach(stmt -> enrichWithDistance(stmt, models.get(0)));
     return models;
   }
