@@ -15,12 +15,11 @@
 :fullInput
               :implementedIn     :DefaultModelReader ;
               :fromUri      "slipo-bucharest-input.ttl" ;
-              :hasOutput         ( :mergeFull ) .
+              :hasOutput         ( :malls :non_malls :mergeFull ) .
 
 :malls
-              :implementedIn     :DefaultModelReader ;
-              :fromUri      "slipo-bucharest-input.ttl" ;
-              :useSparqlConstruct '''PREFIX geos: <http://www.opengis.net/ont/geosparql#>
+              :implementedIn     :FilterEnrichmentOperator ;
+              :sparqlConstructQuery '''PREFIX geos: <http://www.opengis.net/ont/geosparql#>
                                      PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
                                       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                                       PREFIX slipo: <http://slipo.eu/def#>
@@ -43,24 +42,21 @@
               :hasOutput         ( :linkMalls ) .
 
 :non_malls
-              :implementedIn     :DefaultModelReader ;
-              :fromUri      "slipo-bucharest-input.ttl" ;
-              :useSparqlConstruct '''
+              :implementedIn     :FilterEnrichmentOperator ;
+              :sparqlConstructQuery '''
               PREFIX geos: <http://www.opengis.net/ont/geosparql#>
               PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
                                                     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                                                     PREFIX slipo: <http://slipo.eu/def#>
-              CONSTRUCT {?s rdfs:label ?x . ?s geo:lat ?lat . ?s geo:long ?long . ?s geo:geometry ?geometry . } WHERE {
-                                      {
-                                        ?s geo:long ?long .
-                                        ?s geo:lat ?lat .
-                                        ?s geos:hasGeometry/geos:asWKT ?geometry .
-                                        ?s slipo:name/slipo:nameValue ?x .
-                                        ?s slipo:category/slipo:value ?y.
-                                        FILTER regex(str(?x), '^((?!Mall).)*$') .
-                                        FILTER regex(str(?y), '^((?!Shopping Center).)*$') .
-                                      }
-                                     }''' ;
+                                                    CONSTRUCT {?s rdfs:label ?x . ?s geo:lat ?lat . ?s geo:long ?long . ?s geo:geometry ?geometry . } WHERE {
+                                                      ?s geo:long ?long .
+                                                      ?s geo:lat ?lat .
+                                                      ?s geos:hasGeometry/geos:asWKT ?geometry .
+                                                      ?s slipo:name/slipo:nameValue ?x .
+                                                      FILTER regex(str(?x), '^((?!Mall).)*$') .
+                                                      OPTIONAL { ?s slipo:category/slipo:value ?y .
+                                                      FILTER regex(str(?y), '^((?!Shopping Center).)*$') . }
+                                                    } ''' ;
               :hasOutput         ( :linkNonMalls ) .
 
 :dbp_malls
@@ -79,7 +75,7 @@
                                      ?mall geo:long ?long .
                                      ?mall geo:geometry ?geometry .
                                      } LIMIT 10000''' ;
-              :hasOutput         ( :linkMalls :linkNonMalls :debug ) .
+              :hasOutput         ( :linkMalls :linkNonMalls ) .
 
 :dbp_buildings
               :implementedIn     :DefaultModelReader ;
@@ -119,7 +115,7 @@
               :selectMode        "best1toN" ;
               :linkingPredicate  slipo:nearestMall ;
               :linkSpecification "geo_hausdorff(x.http://www.w3.org/2003/01/geo/wgs84_pos#geometry,y.http://www.w3.org/2003/01/geo/wgs84_pos#geometry)" ;
-              :threshold          0.999016689 .
+              :threshold          0.333 .
 
 :distanceToMalls
               :implementedIn     :GeoDistanceEnrichmentOperator ;
@@ -140,7 +136,7 @@
               :selectMode        "best1toN" ;
               :linkingPredicate  slipo:nearestBuilding ;
               :linkSpecification "geo_hausdorff(x.http://www.w3.org/2003/01/geo/wgs84_pos#geometry,y.http://www.w3.org/2003/01/geo/wgs84_pos#geometry)" ;
-              :threshold          0.999016689 .
+              :threshold          0.333 .
 
 :distanceToBuildings
               :implementedIn     :GeoDistanceEnrichmentOperator ;
@@ -181,11 +177,4 @@
 :output_node
               :implementedIn     :DefaultModelWriter ;
               :outputFile        "slipo-bucharest-enriched.ttl" ;
-              :outputFormat      "Turtle" ;
-              :hasInput          ( :mergeFull ) .
-
-:debug
-              :implementedIn     :DefaultModelWriter ;
-              :outputFile        "slipo-debug.ttl" ;
-              :outputFormat      "Turtle" ;
-              :hasInput          ( :dbp_malls ) .
+              :outputFormat      "Turtle" .
