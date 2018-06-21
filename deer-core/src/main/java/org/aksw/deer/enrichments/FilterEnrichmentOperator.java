@@ -7,6 +7,8 @@ import org.aksw.faraday_cage.parameter.ParameterImpl;
 import org.aksw.faraday_cage.parameter.ParameterMap;
 import org.aksw.faraday_cage.parameter.ParameterMapImpl;
 import org.aksw.deer.vocabulary.DEER;
+import org.aksw.faraday_cage.parameter.conversions.StringParameterConversion;
+import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -16,10 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 /**
  */
@@ -37,7 +37,11 @@ public class FilterEnrichmentOperator extends AbstractParametrizedEnrichmentOper
     new DictListParameterConversion(SUBJECT, PREDICATE, OBJECT), false
   );
 
+  private static final Parameter SPARQL_CONSTRUCT_QUERY = new ParameterImpl(
+    "sparqlConstructQuery", StringParameterConversion.getInstance(), false);
+
   private List<Map<Property, RDFNode>> selectors = new ArrayList<>();
+  private String sparqlQuery;
 
   public FilterEnrichmentOperator() {
     super();
@@ -50,15 +54,19 @@ public class FilterEnrichmentOperator extends AbstractParametrizedEnrichmentOper
 
   private Model filterModel(Model model) {
     Model resultModel = ModelFactory.createDefaultModel();
-    for (Map<Property, RDFNode> selectorMap : selectors) {
-      RDFNode s = selectorMap.get(SUBJECT);
-      RDFNode p = selectorMap.get(PREDICATE);
-      SimpleSelector selector = new SimpleSelector(
-        s == null ? null : s.asResource(),
-        p == null ? null : p.as(Property.class),
-        selectorMap.get(OBJECT)
-      );
-      resultModel.add(model.listStatements(selector));
+    if (sparqlQuery != null) {
+      resultModel = QueryExecutionFactory.create(sparqlQuery, model).execConstruct();
+    } else {
+      for (Map<Property, RDFNode> selectorMap : selectors) {
+        RDFNode s = selectorMap.get(SUBJECT);
+        RDFNode p = selectorMap.get(PREDICATE);
+        SimpleSelector selector = new SimpleSelector(
+          s == null ? null : s.asResource(),
+          p == null ? null : p.as(Property.class),
+          selectorMap.get(OBJECT)
+        );
+        resultModel.add(model.listStatements(selector));
+      }
     }
     return resultModel;
   }
@@ -66,12 +74,13 @@ public class FilterEnrichmentOperator extends AbstractParametrizedEnrichmentOper
   @NotNull
   @Override
   public ParameterMap createParameterMap() {
-    return new ParameterMapImpl(SELECTORS);
+    return new ParameterMapImpl(SELECTORS, SPARQL_CONSTRUCT_QUERY);
   }
 
   @Override
   public void validateAndAccept(@NotNull ParameterMap params) {
-    selectors = params.getValue(SELECTORS);
+    selectors = params.getValue(SELECTORS, new ArrayList<>());
+    sparqlQuery = params.getValue(SPARQL_CONSTRUCT_QUERY, null);
     if (selectors.size() == 0) {
       // empty HashMap will select everything - equivalent to "?s ?p ?o"
       selectors.add(new HashMap<>());
