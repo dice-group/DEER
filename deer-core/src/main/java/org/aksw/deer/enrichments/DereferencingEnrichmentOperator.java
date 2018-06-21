@@ -4,33 +4,25 @@ import com.github.therapi.runtimejavadoc.RetainJavadoc;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.aksw.faraday_cage.Vocabulary;
-import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
 import org.aksw.faraday_cage.parameter.Parameter;
 import org.aksw.faraday_cage.parameter.ParameterImpl;
 import org.aksw.faraday_cage.parameter.ParameterMap;
 import org.aksw.faraday_cage.parameter.ParameterMapImpl;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.OWL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.net.ConnectException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 /**
@@ -123,7 +115,7 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
 
   private static final Set<Property> ignoredProperties = new HashSet<>(Arrays.asList(OWL.sameAs));
 
-  private List<Map<Property, RDFNode>> operations;
+  private HashMap<OperationGroup, Set<Property[]>> operations;
 
   private Model model;
 
@@ -164,8 +156,23 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
 
   @Override
   public void validateAndAccept(@NotNull ParameterMap params) {
-    this.operations = params.getValue(OPERATIONS);
-
+    List<Map<Property, RDFNode>> origOps = params.getValue(OPERATIONS);
+    this.operations = new HashMap<>();
+    for (Map<Property, RDFNode> op : origOps) {
+      String lookUpPrefix = op.get(LOOKUP_PREFIX) == null
+        ? DEFAULT_LOOKUP_PREFIX : op.get(LOOKUP_PREFIX).toString();
+      Property lookUpProperty = op.get(LOOKUP_PROPERTY) == null
+        ? null : op.get(LOOKUP_PROPERTY).as(Property.class);
+      Property dereferencingProperty = op.get(DEREFERENCING_PROPERTY) == null
+        ? null : op.get(DEREFERENCING_PROPERTY).as(Property.class);
+      Property importProperty = op.get(IMPORT_PROPERTY) == null
+        ? dereferencingProperty : op.get(IMPORT_PROPERTY).as(Property.class);
+      OperationGroup opGroup = new OperationGroup(lookUpProperty, lookUpPrefix);
+      if (!operations.containsKey(opGroup)) {
+        operations.put(opGroup, new HashSet<>());
+      }
+      operations.get(opGroup).add(new Property[]{dereferencingProperty, importProperty});
+    }
   }
 
   @Override
@@ -175,31 +182,58 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
     return Lists.newArrayList(model);
   }
 
-  private void runOperation(Map<Property, RDFNode> op) {
-    // get configuration for this operation
-    String lookUpPrefix = op.get(LOOKUP_PREFIX) == null
-      ? DEFAULT_LOOKUP_PREFIX : op.get(LOOKUP_PREFIX).toString();
-    Property lookUpProperty = op.get(LOOKUP_PROPERTY) == null
-      ? null : op.get(LOOKUP_PROPERTY).as(Property.class);
-    Property dereferencingProperty = op.get(DEREFERENCING_PROPERTY) == null
-      ? null : op.get(DEREFERENCING_PROPERTY).as(Property.class);
-    Property importProperty = op.get(IMPORT_PROPERTY) == null
-      ? dereferencingProperty : op.get(IMPORT_PROPERTY).as(Property.class);
-    // execute this operation
-    if (dereferencingProperty != null) {
-      for (Statement statement : getCandidateNodes(lookUpPrefix, lookUpProperty)) {
-        for (RDFNode o : getEnrichmentValuesFor(statement.getObject().asResource(), dereferencingProperty)) {
-          statement.getSubject().addProperty(importProperty, o);
-        }
+  private void runOperation(OperationGroup opGroup, Set<Property[]> ops) {
+    Map<Resource, List<Pair<Property, RDFNode>>> dereffedPerResource = new HashMap<>();
+    List<Statement> candidateNodes = getCandidateNodes(opGroup.lookupPrefix, opGroup.lookupProperty);
+    candidateNodes.stream()
+      .map(Statement::getResource)
+      .distinct()
+      .forEach(o -> dereffedPerResource.put(o, getEnrichmentPairsFor(o, ops)));
+    for (Statement stmt : candidateNodes) {
+      for (Pair<Property, RDFNode> pair : dereffedPerResource.get(stmt.getResource())) {
+        stmt.getSubject().addProperty(pair.getLeft(), pair.getRight());
       }
     }
   }
 
+  private List<Pair<Property, RDFNode>> getEnrichmentPairsFor(Resource o, Set<Property[]> ops) {
+    List<Pair<Property, RDFNode>> result = new ArrayList<>();
+    Model resourceModel = queryResourceModel(o);
+    for (Property[] op : ops) {
+      resourceModel.listStatements(o, op[0], (RDFNode)null)
+        .mapWith(Statement::getObject)
+        .forEachRemaining(x -> result.add(new ImmutablePair<>(op[1], x)));
+    }
+    return result;
+  }
+
+  private Model queryResourceModel(Resource o) {
+    Model result = ModelFactory.createDefaultModel();
+    URL url;
+    URLConnection conn = null;
+    try {
+      url = new URL(o.getURI());
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+      return result;
+    }
+    try {
+      conn = url.openConnection();
+      conn.setRequestProperty("Accept", "application/rdf+xml");
+      conn.setRequestProperty("Accept-Language", "en");
+      return ModelFactory.createDefaultModel()
+        .read(conn.getInputStream(), null);
+    } catch (ConnectException e) {
+      if (e.getMessage().contains("refused")) {
+        throw new RuntimeException(e);
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return result;
+  }
+
   private List<Statement> getCandidateNodes(String lookupPrefix, Property lookUpProperty) {
-    // old way with util:
-    //      "SELECT * " +
-    //      "WHERE { ?s ?p ?o . FILTER (isURI(?o)) . " +
-    //      "FILTER (STRSTARTS(STR(?o), \"" + lookupPrefix + "\"))}";
     return model.listStatements()
       .filterKeep(statement -> statement.getObject().isURIResource() &&
         statement.getObject().asResource().getURI().startsWith(lookupPrefix) &&
@@ -207,31 +241,37 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
       .toList();
   }
 
-
-  private List<RDFNode> getEnrichmentValuesFor(Resource resource, Property dereferencingProperty) {
-    try {
-      URLConnection conn = new URL(resource.getURI()).openConnection();
-      conn.setRequestProperty("Accept", "application/rdf+xml");
-      conn.setRequestProperty("Accept-Language", "en");
-      return ModelFactory.createDefaultModel()
-        .read(conn.getInputStream(), null)
-        .listStatements(resource, dereferencingProperty, (RDFNode) null)
-        .mapWith(Statement::getObject)
-//        @todo: implement this somewhere else. should be configurable.
-//        .filterDrop(v -> v.isLiteral() && !Arrays.asList("en","de","")
-//          .contains(v.asLiteral().getLanguage().toLowerCase()))
-        .toList();
-    } catch (Exception e) {
-      e.printStackTrace();
-      return Collections.emptyList();
-    }
-  }
-
   private Set<Property> getPropertyDifference(Model source, Model target) {
     Function<Model, Set<Property>> getProperties =
       (m) -> m.listStatements().mapWith(Statement::getPredicate).toSet();
     return Sets.difference(getProperties.apply(source), getProperties.apply(target))
       .stream().filter(p -> !ignoredProperties.contains(p)).collect(Collectors.toSet());
+  }
+
+  private static class OperationGroup {
+
+    private final Property lookupProperty;
+    private final String lookupPrefix;
+
+    private OperationGroup(Property lookupProperty, String lookupPrefix) {
+      this.lookupProperty = lookupProperty;
+      this.lookupPrefix = lookupPrefix;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (!(obj instanceof  OperationGroup)) {
+        return false;
+      }
+      OperationGroup other = (OperationGroup) obj;
+      return (lookupPrefix == null ? other.lookupPrefix == null : lookupPrefix.equals(other.lookupPrefix))
+        && (lookupProperty == null ? other.lookupProperty == null : lookupProperty.equals(other.lookupProperty));
+    }
+
+    @Override
+    public int hashCode() {
+      return (lookupPrefix == null ? -1 : lookupPrefix.hashCode()) + 13 * (lookupProperty == null ? -1 : lookupProperty.hashCode());
+    }
   }
 
 }
