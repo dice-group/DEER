@@ -109,6 +109,7 @@ public class LinkingEnrichmentOperator extends AbstractParametrizedEnrichmentOpe
       ACache source = modelToCache(models.get(0));
       ACache target = modelToCache(models.get(1));
       AMapping mapping = LSPipeline.execute(source, target, new LinkSpecification(linkSpecification, threshold));
+      mapping = applySelectModeToMapping(mapping);
       if (getOutDegree() == 1) {
         addLinksToModel(models.get(0), mapping);
         return new MergeEnrichmentOperator().safeApply(models);
@@ -142,6 +143,11 @@ public class LinkingEnrichmentOperator extends AbstractParametrizedEnrichmentOpe
 
   private AMapping getMappingFromConfiguration(Configuration cfg) {
     AMapping mapping = Controller.getMapping(cfg).getAcceptanceMapping();
+    return applySelectModeToMapping(mapping);
+  }
+
+  private AMapping applySelectModeToMapping(AMapping mapping) {
+    AMapping result = mapping;
     switch (selectMode) {
       case BEST:
         HashMap<Double, HashMap<String, TreeSet<String>>> reversedMap = mapping.getReversedMap();
@@ -149,19 +155,20 @@ public class LinkingEnrichmentOperator extends AbstractParametrizedEnrichmentOpe
         for (Double sim : reversedMap.keySet()) {
           if (sim > best) {
             Map.Entry<String, TreeSet<String>> entry = reversedMap.get(sim).entrySet().iterator().next();
-            mapping = MappingFactory.createDefaultMapping();
-            mapping.add(entry.getKey(), entry.getValue().first(), sim);
+            result = MappingFactory.createDefaultMapping();
+            result.add(entry.getKey(), entry.getValue().first(), sim);
           }
         }
         break;
       case BEST1TO1:
-        mapping = mapping.getBestOneToOneMappings(mapping);
+        result = mapping.getBestOneToOneMappings(mapping);
         break;
       case BEST1TON:
-        mapping = mapping.getBestOneToNMapping();
+        result = mapping.getBestOneToNMapping();
         break;
     }
-    return mapping;
+    writeAnalytics("#discovered links", result.size() + "");
+    return result;
   }
 
 
