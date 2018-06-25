@@ -30,9 +30,9 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.aksw.limes.core</groupId>
+      <groupId>org.aksw.limes</groupId>
       <artifactId>limes-core</artifactId>
-      <version>1.1.2</version>
+      <version>1.4.0</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
