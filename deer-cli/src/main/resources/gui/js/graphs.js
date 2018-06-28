@@ -1,3 +1,5 @@
+
+
 document.onload = (function(d3, saveAs, Blob, undefined){
 	var id ="";
 	var selected_node_id= "";
@@ -17,10 +19,17 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 	var total_operators = parseInt("0");
 	var total_readers = parseInt("0");
 	var total_writers = parseInt("0");
-    id = parseInt("-1");
-    var myModal = "#myModal";
+    	id = parseInt("-1");
+    	var myModal = "#myModal";
+
+	var globalVariable={
+	       x: 'sachin'
+	    };
+
+
 
   "use strict";
+
 
   // define graphcreator object
   var GraphCreator = function(svg, nodes, edges){
@@ -41,6 +50,9 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       shiftNodeDrag: false,
       selectedText: null
     };
+
+
+
 
     // define arrow markers for graph links
     var defs = svg.append('svg:defs');
@@ -69,6 +81,10 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     thisGraph.svgG = svg.append("g")
           .classed(thisGraph.consts.graphClass, true);
     var svgG = thisGraph.svgG;
+
+
+
+
 
     // displayed when dragging between nodes
     thisGraph.dragLine = svgG.append('svg:path')
@@ -775,8 +791,9 @@ $(this).removeAttr("disabled");
 });
 
 $("#save_data").click(function(){
-var element_exist = false;
 
+
+var element_exist = false;
 node_name = $(this).parent().parent().find(operator_name_field).val();
 node_id = selected_node_id.toString();
 node_reference = $(this).parent().parent().parent().parent().parent().parent().find("svg").find("[id='" + node_id + "']").find("text").find("tspan");
@@ -858,7 +875,7 @@ else{
 console.log("element exist")
 }
 console.log(nodes_details);
-
+create_rdf(selected_node_type,node_name);
 });
 
 function validate_values() {
@@ -886,9 +903,31 @@ $("#help_manue").popover({
         }
     });
 
+function create_rdf(selected_node_type,node_name) {
+var N3 = require('n3');
+const { DataFactory } = N3;
+const { namedNode, literal, defaultGraph, quad } = DataFactory;
+const store = N3.Store();
+store.addQuad(
+  namedNode('http://ex.org/'+node_name), 
+  namedNode('http://ex.org/type'),
+  namedNode('http://ex.org/'+selected_node_type)
+);
+
+const mickey = store.getQuads(namedNode('http://ex.org/'+node_name), null, null)[0];
+console.log(mickey); 
+}
+
+
+
+
 
 })(window.d3, window.saveAs, window.Blob);
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }
+
+
+
+
 
