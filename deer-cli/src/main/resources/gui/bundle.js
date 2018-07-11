@@ -6462,14 +6462,20 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 	var total_writers = parseInt("0");
     	id = parseInt("-1");
     	var myModal = "#myModal";
-
 	var globalVariable={
 	       x: 'sachin'
 	    };
+	var N3 = require('n3');
+	var all_nodes_rdf = new Array();
 
 
 
   "use strict";
+
+
+
+
+
 
 
   // define graphcreator object
@@ -6869,7 +6875,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         // clicked, not dragged
 
 	svg.on('click', function() {
-		selected_node_id = d.id;			
+		selected_node_id = d.id;
+		console.log(selected_node_id);			
 		openNav();
     		});
 
@@ -6933,11 +6940,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       state.shiftNodeDrag = false;
       thisGraph.dragLine.classed("hidden", true);
     }
-   
-
-
-
-
 
     state.graphMouseDown = false;
   };
@@ -7344,9 +7346,9 @@ $("#help_manue").popover({
         }
     });
 
-
-
 function create_rdf(selected_node_type,node_name) {
+
+
 var N3 = require('n3');
 const { DataFactory } = N3;
 const { namedNode, literal, defaultGraph, quad } = DataFactory;
@@ -7357,23 +7359,14 @@ store.addQuad(
   namedNode('http://ex.org/'+selected_node_type)
 );
 
-const mickey = store.getQuads(namedNode('http://ex.org/'+node_name), null, null)[0];
-console.log(mickey); 
+const node_rdf = store.getQuads(namedNode('http://ex.org/'+node_name), null, null)[0];
+all_nodes_rdf.push(node_rdf);
+console.log(node_rdf); 
+console.log(all_nodes_rdf); 
+console.log("mango");
 }
 
 
-var N3 = require('n3');
-const { DataFactory } = N3;
-const { namedNode, literal, defaultGraph, quad } = DataFactory;
-const store = N3.Store();
-store.addQuad(
-  namedNode('http://ex.org/'+node_name), 
-  namedNode('http://ex.org/type'),
-  namedNode('http://ex.org/'+selected_node_type)
-);
-
-const mickey = store.getQuads(namedNode('http://ex.org/dd'), null, null)[0];
-console.log(mickey);
 
 
 
