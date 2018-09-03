@@ -1,0 +1,36 @@
+Libraries Being Used
+1)N3.Js (For converting nodes data into RDF)
+2)D3 Library (For the creation of Nodes)
+
+Required Interface
+1)Browserify to see nodes creation on browser.
+
+Important Instructoins
+1) You can run the script directly through localhost by hitting the test.html file.
+2)Graphs.js is the main functional file which contains functionality of nodes creation and rdf conversion.
+In order to see the effect of changes you made in graphs.js file, just compile this file with N3.js by using the above command
+browserify N3.js js/graphs.js -o bundle.js. Please note that you need to run this command in terminal and you should be in
+gui folder.
+
+
+Progress UpTill Now
+
+1) We can create visual nodes on interface.
+2) We can link those nodes and can also change their name and type from the side menue, which will appear after clicking on any node.
+3) We can also edit the name and type of node.
+4) When the data is saved, it is converted into RDF form showing predicate,object and subject.
+5) User can also view the help menue on how to create the nodes from the help button in menue bar.
+6) A sample Gui is also made for operators detail section.
+ 
+
+What is required further
+
+The data of nodes is being converted in to RDF form. Now we need to convert this RDF data into triples and should export it
+in file. Kindly look into N3 library which is currently being used. There might be some functionality in it to achieve this 
+requirement.
+
+
+Helpful Links
+
+https://github.com/rdfjs/N3.js/blob/master/README.md
+https://www.npmjs.com/package/rdf
