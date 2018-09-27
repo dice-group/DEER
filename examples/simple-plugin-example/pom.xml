@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.aksw.deer</groupId>
     <artifactId>deer-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.4-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -101,11 +101,24 @@
     <dependency>
       <groupId>org.aksw.deer</groupId>
       <artifactId>deer-core</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.4-SNAPSHOT</version>
       <!-- !!! VERY IMPORTANT -->
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>15.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.aksw.faraday_cage</groupId>
+      <artifactId>faraday-cage</artifactId>
+      <version>0.1.2</version>
+      <scope>provided</scope>
+    </dependency>
 
   </dependencies>
 

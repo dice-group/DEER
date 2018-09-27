@@ -14,7 +14,7 @@
 
 :fullInput
               :implementedIn     :DefaultModelReader ;
-              :fromUri      "slipo-bucharest-input.ttl" ;
+              :fromUri      "file://Users/kvn/fused.nt" ;
               :hasOutput         ( :malls :non_malls :mergeFull ) .
 
 :malls
@@ -177,4 +177,4 @@
 :output_node
               :implementedIn     :DefaultModelWriter ;
               :outputFile        "slipo-bucharest-enriched.ttl" ;
-              :outputFormat      "Turtle" .
+              :outputFormat      "NT" .

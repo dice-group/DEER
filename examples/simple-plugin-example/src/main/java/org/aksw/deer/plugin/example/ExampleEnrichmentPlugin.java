@@ -37,8 +37,8 @@ public class ExampleEnrichmentPlugin extends Plugin {
         protected List<Model> safeApply(List<Model> models) {
             Model model = models.get(0);
             model.setNsPrefix("deer", "http://aksw.org/deer/ontology#");
-            Resource resource = model.createResource("deer:examplePlugin");
-            Property property = model.createProperty("deer:says");
+            Resource resource = model.createResource(model.expandPrefix("deer:examplePlugin"));
+            Property property = model.createProperty(model.expandPrefix("deer:says"));
             model.add(resource, property, "Hello World!");
             return List.of(model);
         }
