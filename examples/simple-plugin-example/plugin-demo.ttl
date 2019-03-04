@@ -1,25 +1,31 @@
-@prefix : <http://deer.aksw.org/vocabulary/#> .
-@prefix deer: <http://aksw.org/deer/ontology#> .
+@prefix : <urn:example:plugin-demo/> .
+@prefix fcage: <http://w3id.org/fcage/> .
+@prefix deer: <http://w3id.org/deer/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix geos: <http://www.opengis.net/ont/geosparql#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-:reader       :implementedIn       :DefaultModelReader ;
-		          :fromUri			       <http://dbpedia.org/resource/Paderborn> ;
-		          :useEndPoint	       <http://dbpedia.org/sparql> ;
-		          :hasOutput           ( :filter ) .
+:reader
+  a deer:SparqlModelReader ;
+  fcage:hasOutput :filter ;
+  deer:useSparqlDescribeOf <http://dbpedia.org/resource/Paderborn> ;
+  deer:fromEndpoint <http://dbpedia.org/sparql> ;
+.
 
-:filter       :implementedIn       :FilterEnrichmentOperator ;
-              :hasInput            ( :reader ) ;
-              :hasOutput           ( :example ) ;
-              :selectors       (
-                                  [ :predicate rdfs:label ]
-                                  [ :predicate owl:sameAs ]
-                               ) .
+:filter
+ a deer:FilterEnrichmentOperator ;
+ fcage:hasOutput :example ;
+ deer:selector [ deer:predicate rdfs:label ] ,
+               [ deer:predicate owl:sameAs ] ;
+.
 
-:example      :implementedIn       :ExampleEnrichmentOperator ;
-              :hasInput            ( :filter ) ;
-              :hasOutput           ( :writer ) .
+:example
+  a deer:ExampleEnrichmentOperator ;
+  fcage:hasOutput :writer ;
+.
 
-:writer       :implementedIn       :DefaultModelWriter ;
-              :outputFile          "output.ttl" ;
-              :hasInput            ( :example ) .
+:writer
+  a deer:FileModelWriter ;
+  deer:outputFile "output.ttl" ;
+.

@@ -4,8 +4,8 @@
 package org.aksw.deer.learning;
 
 
+import org.aksw.deer.ParameterizedDeerExecutionGraphNode;
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.deer.ParametrizedDeerPlugin;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -16,7 +16,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
  */
 public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
 
-  public ParametrizedDeerPlugin module = null;
+  public ParameterizedDeerExecutionGraphNode module = null;
   public double fitness = -Double.MAX_VALUE;
   public Model inputModel = ModelFactory.createDefaultModel();
   public Model outputModel = ModelFactory.createDefaultModel();
@@ -30,7 +30,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
    */
   public RefinementNodeOld() {
     super();
-    configModel.setNsPrefix("gl", DEER.uri);
+    configModel.setNsPrefix("gl", DEER.NS);
   }
 
   public RefinementNodeOld(double fitness) {
@@ -41,7 +41,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
   /**
    * @author sherif
    */
-  public RefinementNodeOld(ParametrizedDeerPlugin module, double fitness, Model inputModel, Model outputModel,
+  public RefinementNodeOld(ParameterizedDeerExecutionGraphNode module, double fitness, Model inputModel, Model outputModel,
                            Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     this.module = module;
@@ -55,12 +55,12 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
     this.inputDataset = inputDataset;
     this.outputDataset = outputDataset;
     if (configModel != null) {
-      configModel.setNsPrefix("gl", DEER.uri);
+      configModel.setNsPrefix("gl", DEER.NS);
     }
   }
 
 
-  public RefinementNodeOld(ParametrizedDeerPlugin operator, Model inputModel, Model outputModel,
+  public RefinementNodeOld(ParameterizedDeerExecutionGraphNode operator, Model inputModel, Model outputModel,
                            Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     if (fitness == -2) {
@@ -72,7 +72,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
     this.inputDataset = inputDataset;
     this.outputDataset = outputDataset;
     if (configModel != null) {
-      configModel.setNsPrefix("gl", DEER.uri);
+      configModel.setNsPrefix("gl", DEER.NS);
     }
   }
 

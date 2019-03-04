@@ -1,50 +1,43 @@
+
 package org.aksw.deer.enrichments;
 
-import org.aksw.faraday_cage.Vocabulary;
-import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
-import org.aksw.faraday_cage.parameter.Parameter;
-import org.aksw.faraday_cage.parameter.ParameterImpl;
-import org.aksw.faraday_cage.parameter.ParameterMap;
-import org.aksw.faraday_cage.parameter.ParameterMapImpl;
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.faraday_cage.parameter.conversions.StringParameterConversion;
+import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.SimpleSelector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.rdf.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
  */
 @Extension
-public class FilterEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
+public class FilterEnrichmentOperator extends AbstractParameterizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(FilterEnrichmentOperator.class);
 
-  private static final Property SUBJECT = Vocabulary.property("subject");
-  private static final Property PREDICATE = Vocabulary.property("predicate");
-  private static final Property OBJECT = Vocabulary.property("object");
-
-  private static final Parameter SELECTORS = new ParameterImpl(
-    "selectors",
-    new DictListParameterConversion(SUBJECT, PREDICATE, OBJECT), false
-  );
-
-  private static final Parameter SPARQL_CONSTRUCT_QUERY = new ParameterImpl(
-    "sparqlConstructQuery", StringParameterConversion.getInstance(), false);
-
-  private List<Map<Property, RDFNode>> selectors = new ArrayList<>();
-  private String sparqlQuery;
+  public static final Property SUBJECT = DEER.property("subject");
+  public static final Property PREDICATE = DEER.property("predicate");
+  public static final Property OBJECT = DEER.property("object");
+  public static final Property SELECTOR = DEER.property("selector");
+  public static final Property SPARQL_CONSTRUCT_QUERY = DEER.property("sparqlConstructQuery");
 
   public FilterEnrichmentOperator() {
     super();
+  }
+
+  @NotNull
+  @Override
+  public ValidatableParameterMap createParameterMap() {
+    return ValidatableParameterMap.builder()
+      .declareProperty(SELECTOR)
+      .declareProperty(SPARQL_CONSTRUCT_QUERY)
+      .declareValidationShape(getValidationModelFor(FilterEnrichmentOperator.class))
+      .build();
   }
 
   @Override
@@ -53,55 +46,64 @@ public class FilterEnrichmentOperator extends AbstractParametrizedEnrichmentOper
   }
 
   private Model filterModel(Model model) {
-    Model resultModel = ModelFactory.createDefaultModel();
-    if (sparqlQuery != null) {
-      resultModel = QueryExecutionFactory.create(sparqlQuery, model).execConstruct();
+    final Model resultModel = ModelFactory.createDefaultModel();
+    final Optional<RDFNode> sparqlQuery = getParameterMap()
+      .getOptional(SPARQL_CONSTRUCT_QUERY);
+    if (sparqlQuery.isPresent()) {
+      logger.info("Executing SPARQL CONSTRUCT query for " + getId() + " ...");
+      return QueryExecutionFactory
+        .create(sparqlQuery.get().asLiteral().getString(), model)
+        .execConstruct();
     } else {
-      for (Map<Property, RDFNode> selectorMap : selectors) {
-        RDFNode s = selectorMap.get(SUBJECT);
-        RDFNode p = selectorMap.get(PREDICATE);
+      getParameterMap().listPropertyObjects(SELECTOR)
+        .map(RDFNode::asResource)
+        .forEach(selectorResource -> {
+        RDFNode s = selectorResource.getPropertyResourceValue(SUBJECT);
+        RDFNode p = selectorResource.getPropertyResourceValue(PREDICATE);
+        Statement o = selectorResource.getProperty(OBJECT);
+        logger.info("Filtering " + getId() + " for triple pattern {} {} {} ...",
+          s == null ? "[]" : "<" + s.asResource().getURI() + ">",
+          p == null ? "[]" : "<" + p.asResource().getURI() + ">",
+          o == null ? "[]" : "(<)(\")" + o.getObject().toString() + "(\")(>)");
         SimpleSelector selector = new SimpleSelector(
           s == null ? null : s.asResource(),
           p == null ? null : p.as(Property.class),
-          selectorMap.get(OBJECT)
+          o
         );
         resultModel.add(model.listStatements(selector));
-      }
+      });
     }
     return resultModel;
   }
 
-  @NotNull
-  @Override
-  public ParameterMap createParameterMap() {
-    return new ParameterMapImpl(SELECTORS, SPARQL_CONSTRUCT_QUERY);
-  }
+//  @NotNull
+//  @Override
+//  public ParameterMap selfConfig(Model source, Model target) {
+//    ParameterMap result = createParameterMap();
+//    Model intersection = source.intersection(target);
+//    if (intersection.isEmpty()) {
+//      return result;
+//    }
+//    List<Map<Property, RDFNode>> selectors = new ArrayList<>();
+//    intersection.listStatements().forEachRemaining(stmt -> {
+//      Map<Property, RDFNode> selectorMap = new HashMap<>();
+//      selectorMap.put(PREDICATE, stmt.getPredicate());
+//      selectors.add(selectorMap);
+//    });
+//    result.setValue(SELECTORS, selectors);
+//    return result;
+//  }
 
-  @Override
-  public void validateAndAccept(@NotNull ParameterMap params) {
-    selectors = params.getValue(SELECTORS, new ArrayList<>());
-    sparqlQuery = params.getValue(SPARQL_CONSTRUCT_QUERY, null);
-    if (selectors.size() == 0) {
-      // empty HashMap will select everything - equivalent to "?s ?p ?o"
-      selectors.add(new HashMap<>());
-    }
-  }
-  @NotNull
-  @Override
-  public ParameterMap selfConfig(Model source, Model target) {
-    ParameterMap result = createParameterMap();
-    Model intersection = source.intersection(target);
-    if (intersection.isEmpty()) {
-      return result;
-    }
-    List<Map<Property, RDFNode>> selectors = new ArrayList<>();
-    intersection.listStatements().forEachRemaining(stmt -> {
-      Map<Property, RDFNode> selectorMap = new HashMap<>();
-      selectorMap.put(PREDICATE, stmt.getPredicate());
-      selectors.add(selectorMap);
-    });
-    result.setValue(SELECTORS, selectors);
-    return result;
-  }
+
+
+//
+//  private static final Parameter SELECTORS = new DeerParameter(
+//    "selectors",
+//    new DictListParameterConversion(SUBJECT, PREDICATE, OBJECT), false
+//  );
+//
+//  private static final Parameter SPARQL_CONSTRUCT_QUERY = new DeerParameter(
+//    "sparqlConstructQuery", StringParameterConversion.getInstance(), false);
+
 
 }

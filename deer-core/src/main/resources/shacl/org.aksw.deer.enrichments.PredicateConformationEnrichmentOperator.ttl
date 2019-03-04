@@ -1,0 +1,40 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix deer: <http://w3id.org/deer/> .
+
+# Node PredicateConformationEnrichmentOperator
+
+deer:PredicateConformationEnrichmentOperatorShape
+	a sh:NodeShape ;
+	sh:targetClass deer:PredicateConformationEnrichmentOperator ;
+	sh:property deer:PredicateConformationEnrichmentOperatorShape_operation ;
+	sh:message "PredicateConformationEnrichmentOperator must declare at least one operation." ;
+.
+
+deer:PredicateConformationEnrichmentOperatorShape_operation
+  sh:path deer:operation ;
+  sh:minCount 1 ;
+  sh:node deer:PredicateConformationEnrichmentOperatorShape_operationNode;
+.
+
+deer:PredicateConformationEnrichmentOperatorShape_operationNode
+  a sh:NodeShape ;
+  sh:property deer:PredicateConformationEnrichmentOperatorShape_operationNode_sourcePredicate ,
+              deer:PredicateConformationEnrichmentOperatorShape_operationNode_targetPredicate ;
+.
+
+deer:PredicateConformationEnrichmentOperatorShape_operationNode_sourcePredicate
+  sh:path deer:sourcePredicate ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:PredicateConformationEnrichmentOperatorShape_operationNode_targetPredicate
+  sh:path deer:sourcePredicate ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.

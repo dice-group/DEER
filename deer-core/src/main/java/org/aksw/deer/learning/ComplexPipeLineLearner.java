@@ -270,7 +270,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //        node = new RefinementNode(module, -2, sourceModel, sourceModel, configModel, inputDataset,
 //          inputDataset);
 //      } else {
-//        module.init(parameters);
+//        module.initDegrees(parameters);
 //        Model currentMdl = module.apply(inputModel);
 //        double fitness;
 //        if (currentMdl == null || currentMdl.size() == 0 || currentMdl
@@ -302,7 +302,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //      Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
 //      logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
 //      if (parameters != null && parameters.size() > 0) { // if not a dead node
-//        module.init(parameters);
+//        module.initDegrees(parameters);
 //        Model currentMdl = module.apply(inputModel);
 //        if (currentMdl == null || currentMdl.size() == 0 || currentMdl
 //          .isIsomorphicWith(inputModel)) {
@@ -491,7 +491,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //  }
 //
 //  private Resource generateDatasetURI() {
-//    return ResourceFactory.createResource(SPECS.uri + "dataset_" + datasetCounter++);
+//    return ResourceFactory.createResource(SPECS.NS + "dataset_" + datasetCounter++);
 //  }
 //
 //  // -------------------- old code -----------------------------
@@ -510,7 +510,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //      if (parameters == null || parameters.size() == 0) {
 //        continue; // Dead node
 //      } else {
-//        module.init(parameters);
+//        module.initDegrees(parameters);
 //        Model currentMdl = module.apply(inputModel);
 //        if (currentMdl == null || currentMdl.size() == 0 || currentMdl
 //          .isIsomorphicWith(inputModel)) {
@@ -545,7 +545,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //      if (parameters == null || parameters.size() == 0) {
 //        continue; // Dead node
 //      } else {
-//        module.init(parameters);
+//        module.initDegrees(parameters);
 //        Model currentMdl = module.apply(inputModel);
 //        if (currentMdl == null || currentMdl.size() == 0 || currentMdl
 //          .isIsomorphicWith(inputModel)) {

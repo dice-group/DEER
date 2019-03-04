@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -24,7 +24,8 @@ public class ExampleEnrichmentPluginTest {
       ResourceFactory.createProperty("http://aksw.org/deer/ontology#says"),
       ResourceFactory.createPlainLiteral("Hello World!"));
     ExampleEnrichmentPlugin.ExampleEnrichmentOperator eeo = new ExampleEnrichmentPlugin.ExampleEnrichmentOperator();
-    eeo.init(ResourceFactory.createResource("urn:example-enrichment-operator"), 1, 1);
+    eeo.initPluginId(ResourceFactory.createResource("urn:example-enrichment-operator"));
+    eeo.initDegrees(1, 1);
     Model result = eeo.safeApply(List.of(ModelFactory.createDefaultModel())).get(0);
     assertTrue("The empty model enriched by the example enrichment operator should contain exactly" +
         " one triple: 'deer:examplePlugin deer:says \"Hello World!\"'.",

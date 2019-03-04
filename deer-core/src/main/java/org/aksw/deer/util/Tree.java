@@ -87,18 +87,18 @@ public class Tree<T> {
 //		print(root, "");
 //	}
 //	
-//	private void print(Tree<T> root, String prefix){
+//	private void print(Tree<T> root, String PREFIX){
 //		if(root == null){
 //			return;
 //		}//├── "└── "
-//		System.out.println(prefix + "├── " + ((root.parent == null) ? "ROOT(⟂)" : root.value));
+//		System.out.println(PREFIX + "├── " + ((root.parent == null) ? "ROOT(⟂)" : root.value));
 ////		System.out.print((root.status == NodeStatus.DEAD)? "DEAD" : "");
 //		if(root.children != null){
-//			prefix = "│\t" + prefix;
+//			PREFIX = "│\t" + PREFIX;
 //			for(Tree<T> child: root.children){
-//				print(child, prefix);
+//				print(child, PREFIX);
 //			}
-//			prefix = prefix.substring(1);
+//			PREFIX = PREFIX.substring(1);
 //		}
 //	}
 

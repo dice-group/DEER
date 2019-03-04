@@ -5,7 +5,7 @@ package org.aksw.deer.io;
  *
  *
  */
-public abstract class AbstractModelWriter extends AbstractModelIO {
+public abstract class AbstractModelWriter extends AbstractModelIO implements ModelWriter {
 
   @Override
   public DegreeBounds getDegreeBounds() {
