@@ -1,0 +1,61 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix deer: <http://w3id.org/deer/> .
+
+# Node NEREnrichmentOperator
+
+deer:NEREnrichmentOperatorShape
+	a sh:NodeShape ;
+	sh:targetClass deer:NEREnrichmentOperator ;
+	sh:property deer:NEREnrichmentOperatorShape_literalProperty ,
+              deer:NEREnrichmentOperatorShape_importProperty ,
+              deer:NEREnrichmentOperatorShape_foxUrl ,
+              deer:NEREnrichmentOperatorShape_dbpediaEndpointUrl ,
+              deer:NEREnrichmentOperatorShape_askEndpoint ,
+              deer:NEREnrichmentOperatorShape_neType ;
+	sh:message "NEREnrichmentOperator must declare exactly one deer:literalProperty ..." ;
+.
+
+deer:NEREnrichmentOperatorShape_literalProperty
+  sh:path deer:literalProperty ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:NEREnrichmentOperatorShape_importProperty
+  sh:path deer:importProperty ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:NEREnrichmentOperatorShape_foxUrl
+  sh:path deer:foxUrl ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:NEREnrichmentOperatorShape_dbpediaEndpointUrl
+  sh:path deer:dbpediaEndpointUrl ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:NEREnrichmentOperatorShape_askEndpoint
+  sh:path deer:askEndpoint ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:boolean ;
+.
+
+deer:NEREnrichmentOperatorShape_neType
+  sh:path deer:neType ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+.

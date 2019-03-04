@@ -4,16 +4,17 @@
 package org.aksw.deer.learning;
 
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import org.aksw.deer.ParameterizedDeerExecutionGraphNode;
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.deer.ParametrizedDeerPlugin;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author sherif
@@ -22,8 +23,8 @@ public class RefinementNode implements Comparable<RefinementNode> {
 
   private static final Logger logger = LoggerFactory.getLogger(RefinementNode.class);
 
-  public ParametrizedDeerPlugin module = null;
-  public ParametrizedDeerPlugin operator = null;
+  public ParameterizedDeerExecutionGraphNode module = null;
+  public ParameterizedDeerExecutionGraphNode operator = null;
   public double fitness = -Double.MAX_VALUE;
   public List<Model> inputModels = new ArrayList<Model>();
   public List<Model> outputModels = new ArrayList<Model>();
@@ -36,7 +37,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(ParametrizedDeerPlugin module, ParametrizedDeerPlugin operator, double fitness,
+  private RefinementNode(ParameterizedDeerExecutionGraphNode module, ParameterizedDeerExecutionGraphNode operator, double fitness,
                          List<Model> inputModels,
                          List<Model> outputModels, Model configModel, List<Resource> inputDatasets,
                          List<Resource> outputDatasets) {
@@ -55,7 +56,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
     this.inputDatasets = inputDatasets;
     this.outputDatasets = outputDatasets;
     if (configModel != null) {
-      configModel.setNsPrefix(DEER.prefix, DEER.uri);
+      configModel.setNsPrefix(DEER.PREFIX, DEER.NS);
     }
   }
 
@@ -81,7 +82,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
    *
    * @author sherif
    */
-  public RefinementNode(ParametrizedDeerPlugin operator, double fitness, List<Model> inputModels,
+  public RefinementNode(ParameterizedDeerExecutionGraphNode operator, double fitness, List<Model> inputModels,
                         List<Model> outputModels,
                         Model configModel, List<Resource> inputDatasets, List<Resource> outputDatasets) {
     this(null, operator, fitness, inputModels, outputModels, configModel, inputDatasets,
@@ -92,7 +93,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(ParametrizedDeerPlugin module, ParametrizedDeerPlugin operator, double fitness, Model inputModel,
+  private RefinementNode(ParameterizedDeerExecutionGraphNode module, ParameterizedDeerExecutionGraphNode operator, double fitness, Model inputModel,
                          Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
     super();
     if (module != null && operator != null) {
@@ -109,7 +110,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
     this.inputDatasets.add(inputDataset);
     this.outputDatasets.add(outputDataset);
     if (configModel != null) {
-      configModel.setNsPrefix(DEER.prefix, DEER.uri);
+      configModel.setNsPrefix(DEER.PREFIX, DEER.NS);
     }
   }
 
@@ -119,7 +120,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
    *
    * @author sherif
    */
-  public RefinementNode(ParametrizedDeerPlugin module, double fitness, Model inputModel,
+  public RefinementNode(ParameterizedDeerExecutionGraphNode module, double fitness, Model inputModel,
                         Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
     this(module, null, fitness, inputModel, outputModel, configModel, inputDataset, outputDataset);
   }
@@ -147,7 +148,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
    */
   public RefinementNode() {
     super();
-    configModel.setNsPrefix(DEER.prefix, DEER.uri);
+    configModel.setNsPrefix(DEER.PREFIX, DEER.NS);
   }
 
   /**

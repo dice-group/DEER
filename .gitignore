@@ -6,7 +6,6 @@
 *.ear
 /.server-storage/
 /target/
-/faraday-cage/
 out/
 nbactions.xml
 
@@ -19,3 +18,7 @@ dependency-reduced-pom.xml
 
 /manual/node_modules
 /manual/_book
+
+# Subrepositories
+/faraday-cage/
+/deer-slipo-plugin/

@@ -88,7 +88,7 @@ public class SimplePipeLineLearner implements PipelineLearner {
 //
 //  private Tree<RefinementNodeOld> createRefinementTreeRoot() {
 //    Resource outputDataset = ResourceFactory
-//      .createResource(SPECS.uri + "Dataset_" + datasetIndex++);
+//      .createResource(SPECS.NS + "Dataset_" + datasetIndex++);
 //    Model config = ModelFactory.createDefaultModel();
 //    double f = -Double.MAX_VALUE;
 //    RefinementNodeOld initialNode = new RefinementNodeOld(null, f, sourceModel, sourceModel,
@@ -110,7 +110,7 @@ public class SimplePipeLineLearner implements PipelineLearner {
 //        node = new RefinementNodeOld(module, -2, sourceModel, sourceModel, inputDataset,
 //          inputDataset, configMdl);
 //      } else {
-//        module.init(parameters);
+//        module.initDegrees(parameters);
 //        Model currentMdl = module.apply(inputModel);
 //        double fitness;
 //        if (currentMdl == null || currentMdl.size() == 0 || currentMdl
@@ -121,7 +121,7 @@ public class SimplePipeLineLearner implements PipelineLearner {
 //          fitness = computeFMeasure(currentMdl, targetModel);
 //        }
 //        Resource outputDataset = ResourceFactory
-//          .createResource(SPECS.uri + "Dataset_" + datasetIndex++);
+//          .createResource(SPECS.NS + "Dataset_" + datasetIndex++);
 //        configMdl = configBuilder
 //          .addModule(module, parameters, root.getValue().configModel, inputDataset, outputDataset);
 //        node = new RefinementNodeOld(module, fitness, root.getValue().outputModel, currentMdl,

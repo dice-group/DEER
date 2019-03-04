@@ -1,21 +1,21 @@
 # Configuring DEER
 
 DEER is configured using a simple RDF vocabulary.
-Its namespace is `http://deer.aksw.org/vocabulary/#`.
+Its namespace is `http://w3id.org/deer/`.
 
 There are just three predefined predicates that DEER inherits from FARADAY-CAGE:
 
-* `<http://deer.aksw.org/vocabulary/#implementedIn>`
-* `<http://deer.aksw.org/vocabulary/#hasInput>`
-* `<http://deer.aksw.org/vocabulary/#hasOutput>`
+* `<http://w3id.org/deer/implementedIn>`
+* `<http://w3id.org/deer/hasInput>`
+* `<http://w3id.org/deer/hasOutput>`
 
 To learn about the usage of these predicates please read the documentation on the [FARADAY-CAGE core vocabulary](https://dice-group.github.io/faraday-cage/CONF.html#core). 
 Plugins are associated with unique resources. The [default plugins](./configuring_deer/enrichment_operators.md) that ship with deer-core live in
 the deer namespace and have just their class name as local part, e.g.: 
 
-* `<http://deer.aksw.org/vocabulary/#DefaultModelReader>`
-* `<http://deer.aksw.org/vocabulary/#DefaultModelWriter>`
-* `<http://deer.aksw.org/vocabulary/#FilterEnrichmentOperator>`
+* `<http://w3id.org/deer/DefaultModelReader>`
+* `<http://w3id.org/deer/DefaultModelWriter>`
+* `<http://w3id.org/deer/FilterEnrichmentOperator>`
 
 Custom plugins should be identified by resources outside of the default namespace to prevent
 naming collisions.
@@ -25,7 +25,7 @@ Plugins define their own configuration vocabulary. [Here](./configuring_deer/enr
 The following example configuration demonstrates how the predefined vocabulary works:  
 
 ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <http://w3id.org/deer/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .

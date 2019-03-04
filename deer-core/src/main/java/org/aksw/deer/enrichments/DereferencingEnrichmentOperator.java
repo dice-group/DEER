@@ -3,12 +3,8 @@ package org.aksw.deer.enrichments;
 import com.github.therapi.runtimejavadoc.RetainJavadoc;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.aksw.faraday_cage.Vocabulary;
-import org.aksw.faraday_cage.parameter.Parameter;
-import org.aksw.faraday_cage.parameter.ParameterImpl;
-import org.aksw.faraday_cage.parameter.ParameterMap;
-import org.aksw.faraday_cage.parameter.ParameterMapImpl;
-import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
+import org.aksw.deer.vocabulary.DEER;
+import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.rdf.model.*;
@@ -43,9 +39,9 @@ import java.util.stream.Collectors;
  *
  * <h3>{@code :operations}</h3>
  *
- * A {@link DictListParameterConversion DictList}.
  *
- * Each entry in the {@code DictList} corresponds to one dereferencing operation, allowing multiple
+ *
+ * Each operation corresponds to one dereferencing operation, allowing multiple
  * dereferencing operations being carried out by a single {@code DereferencingEnrichmentOperator}.
  * Each entry may contain the following properties:
  *
@@ -85,7 +81,7 @@ import java.util.stream.Collectors;
  *
  */
 @Extension @RetainJavadoc
-public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
+public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrichmentOperator {
 
 //   * <blockquote>
 //   *     <b>{@code :endpoint} </b>
@@ -99,17 +95,19 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
 
   private static final Logger logger = LoggerFactory.getLogger(DereferencingEnrichmentOperator.class);
 
-  private static final Property LOOKUP_PROPERTY = Vocabulary.property("lookUpProperty");
+  public static final Property LOOKUP_PROPERTY = DEER.property("lookUpProperty");
 
-  private static final Property LOOKUP_PREFIX = Vocabulary.property("lookUpPrefix");
+  public static final Property LOOKUP_PREFIX = DEER.property("lookUpPrefix");
 
-  private static final Property DEREFERENCING_PROPERTY = Vocabulary.property("dereferencingProperty");
+  public static final Property DEREFERENCING_PROPERTY = DEER.property("dereferencingProperty");
 
-  private static final Property IMPORT_PROPERTY = Vocabulary.property("importProperty");
+  public static final Property IMPORT_PROPERTY = DEER.property("importProperty");
 
-  private static final Parameter OPERATIONS = new ParameterImpl("operations",
-    new DictListParameterConversion(LOOKUP_PREFIX, LOOKUP_PROPERTY, DEREFERENCING_PROPERTY,
-      IMPORT_PROPERTY), true);
+  public static final Property OPERATION = DEER.property("operation");
+
+//  public static final Parameter OPERATIONS = new DeerParameter("operations",
+//    new DictListParameterConversion(LOOKUP_PREFIX, LOOKUP_PROPERTY, DEREFERENCING_PROPERTY,
+//      IMPORT_PROPERTY), true);
 
   private static final String DEFAULT_LOOKUP_PREFIX = "http://dbpedia.org/resource";
 
@@ -119,64 +117,65 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
 
   private Model model;
 
-  public DereferencingEnrichmentOperator() {
-    super();
-  }
-
-  /**
-   * Self configuration
-   * Find source/target URI as the most redundant URIs
-   *
-   * @param source source
-   * @param target target
-   *
-   * @return Map of (key, value) pairs of self configured parameters
-   */
   @NotNull
   @Override
-  public ParameterMap selfConfig(Model source, Model target) {
-    ParameterMap parameters = createParameterMap();
-    Set<Property> propertyDifference = getPropertyDifference(source, target);
-    List<Map<Property, RDFNode>> autoOperations = new ArrayList<>();
-    for (Property property : propertyDifference) {
-      Map<Property, RDFNode> autoOperation = new HashMap<>();
-      autoOperation.put(DEREFERENCING_PROPERTY, property);
-      autoOperation.put(IMPORT_PROPERTY, property);
-      autoOperations.add(autoOperation);
-    }
-    parameters.setValue(OPERATIONS, autoOperations);
-    return parameters;
+  public ValidatableParameterMap createParameterMap() {
+    return ValidatableParameterMap.builder()
+      .declareProperty(OPERATION)
+      .declareValidationShape(getValidationModelFor(DereferencingEnrichmentOperator.class))
+      .build();
   }
 
-  @NotNull
-  @Override
-  public ParameterMap createParameterMap() {
-    return new ParameterMapImpl(OPERATIONS);
-  }
+//  /**
+//   * Self configuration
+//   * Find source/target URI as the most redundant URIs
+//   *
+//   * @param source source
+//   * @param target target
+//   *
+//   * @return Map of (key, value) pairs of self configured parameters
+//   */
+//  @NotNull
+//  @Override
+//  public ParameterMap selfConfig(Model source, Model target) {
+//    ParameterMap parameters = createParameterMap();
+//    Set<Property> propertyDifference = getPropertyDifference(source, target);
+//    List<Map<Property, RDFNode>> autoOperations = new ArrayList<>();
+//    for (Property property : propertyDifference) {
+//      Map<Property, RDFNode> autoOperation = new HashMap<>();
+//      autoOperation.put(DEREFERENCING_PROPERTY, property);
+//      autoOperation.put(IMPORT_PROPERTY, property);
+//      autoOperations.add(autoOperation);
+//    }
+//    parameters.setValue(OPERATIONS, autoOperations);
+//    return parameters;
+//  }
 
-  @Override
-  public void validateAndAccept(@NotNull ParameterMap params) {
-    List<Map<Property, RDFNode>> origOps = params.getValue(OPERATIONS);
+  public void initializeOperations() {
+    ValidatableParameterMap parameters = getParameterMap();
     this.operations = new HashMap<>();
-    for (Map<Property, RDFNode> op : origOps) {
-      String lookUpPrefix = op.get(LOOKUP_PREFIX) == null
-        ? DEFAULT_LOOKUP_PREFIX : op.get(LOOKUP_PREFIX).toString();
-      Property lookUpProperty = op.get(LOOKUP_PROPERTY) == null
-        ? null : op.get(LOOKUP_PROPERTY).as(Property.class);
-      Property dereferencingProperty = op.get(DEREFERENCING_PROPERTY) == null
-        ? null : op.get(DEREFERENCING_PROPERTY).as(Property.class);
-      Property importProperty = op.get(IMPORT_PROPERTY) == null
-        ? dereferencingProperty : op.get(IMPORT_PROPERTY).as(Property.class);
+    parameters.listPropertyObjects(OPERATION)
+      .map(RDFNode::asResource)
+      .forEach(op -> {
+      String lookUpPrefix = !op.hasProperty(LOOKUP_PREFIX)
+        ? DEFAULT_LOOKUP_PREFIX : op.getProperty(LOOKUP_PREFIX).getLiteral().getString();
+      Property lookUpProperty = !op.hasProperty(LOOKUP_PROPERTY)
+        ? null : op.getPropertyResourceValue(LOOKUP_PROPERTY).as(Property.class);
+      Property dereferencingProperty = !op.hasProperty(DEREFERENCING_PROPERTY)
+        ? null : op.getPropertyResourceValue(DEREFERENCING_PROPERTY).as(Property.class);
+      Property importProperty = !op.hasProperty(IMPORT_PROPERTY)
+        ? dereferencingProperty : op.getPropertyResourceValue(IMPORT_PROPERTY).as(Property.class);
       OperationGroup opGroup = new OperationGroup(lookUpProperty, lookUpPrefix);
       if (!operations.containsKey(opGroup)) {
         operations.put(opGroup, new HashSet<>());
       }
       operations.get(opGroup).add(new Property[]{dereferencingProperty, importProperty});
-    }
+    });
   }
 
   @Override
   protected List<Model> safeApply(List<Model> models) {
+    initializeOperations();
     model = ModelFactory.createDefaultModel().add(models.get(0));
     operations.forEach(this::runOperation);
     return Lists.newArrayList(model);
@@ -210,7 +209,16 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
   private Model queryResourceModel(Resource o) {
     Model result = ModelFactory.createDefaultModel();
     URL url;
-    URLConnection conn = null;
+    URLConnection conn;
+
+//    try (RDFConnection conn = RDFConnectionRemote
+//      .create()
+//      .destination(o.getURI())
+//      .acceptHeaderGraph("application/rdf+xml")
+//      .build()) {
+//      return conn.fetch();
+//    }
+
     try {
       url = new URL(o.getURI());
     } catch (MalformedURLException e) {
@@ -244,7 +252,7 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
   private Set<Property> getPropertyDifference(Model source, Model target) {
     Function<Model, Set<Property>> getProperties =
       (m) -> m.listStatements().mapWith(Statement::getPredicate).toSet();
-    return Sets.difference(getProperties.apply(source), getProperties.apply(target))
+    return Sets.difference(getProperties.apply(target), getProperties.apply(source))
       .stream().filter(p -> !ignoredProperties.contains(p)).collect(Collectors.toSet());
   }
 
@@ -264,8 +272,8 @@ public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichm
         return false;
       }
       OperationGroup other = (OperationGroup) obj;
-      return (lookupPrefix == null ? other.lookupPrefix == null : lookupPrefix.equals(other.lookupPrefix))
-        && (lookupProperty == null ? other.lookupProperty == null : lookupProperty.equals(other.lookupProperty));
+      return (Objects.equals(lookupPrefix, other.lookupPrefix))
+        && (Objects.equals(lookupProperty, other.lookupProperty));
     }
 
     @Override

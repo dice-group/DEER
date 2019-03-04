@@ -1,0 +1,57 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix deer: <http://w3id.org/deer/> .
+
+# Node SparqlModelReader
+
+deer:SparqlModelReaderShape
+	a sh:NodeShape ;
+	sh:targetClass deer:SparqlModelReader ;
+	sh:property deer:SparqlModelReaderShape_fromEndpoint ,
+	            deer:SparqlModelReaderShape_useTriplePattern ;
+	sh:xone (
+    [ sh:property deer:SparqlModelReaderShape_useSparqlConstruct; ]
+    [ sh:property deer:SparqlModelReaderShape_useGraph ; ]
+    [ sh:property deer:SparqlModelReaderShape_useSparqlDescribeOf ; ]
+	) ;
+	sh:message "SparqlModelReader must declare exactly one of {deer:useSparqlConstruct, deer:useGraph, deer:useSparqlDescribeOf}" ;
+.
+
+deer:SparqlModelReaderShape_fromEndpoint
+  sh:path deer:fromEndpoint ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+  sh:message "SparqlModelReader must declare exactly one deer:fromEndpoint"
+.
+
+deer:SparqlModelReaderShape_useGraph
+  sh:path deer:useGraph ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:SparqlModelReaderShape_useTriplePattern
+  sh:path deer:useTriplePattern ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+  sh:message "SparqlModelReader must declare at most one deer:useTriplePattern"
+.
+
+deer:SparqlModelReaderShape_useSparqlConstruct
+  sh:path deer:useSparqlConstruct ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+.
+
+deer:SparqlModelReaderShape_useSparqlDescribeOf
+  sh:path deer:useSparqlDescribeOf ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.

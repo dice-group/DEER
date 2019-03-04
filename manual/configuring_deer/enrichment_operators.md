@@ -22,7 +22,7 @@ few given properties, this is easier to set up than to write a SPARQL query.
 The following example configuration demonstrates the configuration of the filter enrichment operator for filtering only the predicates  `geo:lat`, `geo:long`, `rdfs:label` and `owl:sameAs`. 
 
 ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <http://w3id.org/deer/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -75,7 +75,7 @@ It can be used in two modes:
 In the following example, the linking enrichment operator is used based on the LIMES configuration file "limes_specs.xml" and the source dataset is the one to be enriched.
   
   ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <http://w3id.org/deer/> .
 
 :node_linking
               :implementedIn     :LinkingEnrichmentOperator ;
@@ -95,7 +95,7 @@ For datasets which contain similarity properties links (e.g. `owl:sameAs`), the 
 In the following example, the dereferencing enrichment operator is used to find `dbo:abstract` from external dataset of DBpedia and export them using the `dcterms:description`.
 
   ```turtle
- @prefix : <http://deer.aksw.org/vocabulary/#> .
+ @prefix : <http://w3id.org/deer/> .
  @prefix dbo: <http://dbpedia.org/property/> .
  @prefix dcterms: <http://purl.org/dc/terms/> .
   
@@ -127,7 +127,7 @@ The idea behind the clone operator is to enable parallel enrichment of multiple 
 In the following example, the clone operator is used to make 2 copies of the input dataset from `:node_1` into `:node_1_clone_1` and `:node_1_clone_2`
 
   ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <http://w3id.org/deer/> .
 
 :node_clone
               :implementedIn     :CloneEnrichmentOperator 
@@ -143,7 +143,7 @@ In the following example, the merge operator is used to combine the 2 input data
 
 
   ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <http://w3id.org/deer/> .
 
 :node_merge
               :implementedIn     :MergeEnrichmentOperator ;
@@ -163,7 +163,7 @@ In addtion to the common parameters, the geo-fusion operator have the following 
  - The `:mergeOtherStatements` parameter is used to enable the merge of all other non geo-spacial properties from all input dataset to the output dataset
 
 ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <http://w3id.org/deer/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -184,7 +184,7 @@ The idea of the authority conformation operator is to change a specified source 
 In the following example, we use the `:sourceSubjectAuthority` of `http://dbpedia.org` and the `:targetSubjectAuthority` of `http://deer.org`. Such configuration will change a resource like `http://dbpedia.org/Berlin` to `http://deer.org/Berlin`. 
 
 ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <http://w3id.org/deer/> .
 
 :node_a_conf
               :implementedIn     :AuthorityConformationEnrichmentOperator ;
@@ -203,7 +203,7 @@ The idea of the predicate conformation operator is to replace all instances of s
 In the following example, we use the predicate conformation enrichment operator to change all instances of `rdf:label` to `SKOS:prefLabel`. For example, a triple as  `dbp:Berlin rdf:label "Berlin"` to `dbp:Berlin skos:prefLabel "Berlin"`. 
 
 ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <http://w3id.org/deer/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
@@ -229,7 +229,7 @@ In the following example, we use the geo-distance enrichment operator to enrich 
 with the distance to their western adjacent cities. 
 
 ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <http://w3id.org/deer/> .
 @prefix dbp : <http://dbpedia.org/property/> .
 
 :node_geodistance

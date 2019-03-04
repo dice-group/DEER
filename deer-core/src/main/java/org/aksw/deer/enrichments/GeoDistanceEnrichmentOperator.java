@@ -1,11 +1,12 @@
 package org.aksw.deer.enrichments;
 
-import org.aksw.faraday_cage.parameter.Parameter;
-import org.aksw.faraday_cage.parameter.ParameterImpl;
-import org.aksw.faraday_cage.parameter.ParameterMap;
-import org.aksw.faraday_cage.parameter.ParameterMapImpl;
+import org.aksw.deer.vocabulary.DEER;
+import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.aksw.limes.core.measures.mapper.pointsets.OrthodromicDistance;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Statement;
 import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -19,48 +20,44 @@ import java.util.List;
  * The {@code GeoDistanceEnrichmentOperator} ...
  */
 @Extension
-public class GeoDistanceEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
+public class GeoDistanceEnrichmentOperator extends AbstractParameterizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(GeoDistanceEnrichmentOperator.class);
 
-  private static final Parameter SELECT_PREDICATE = new ParameterImpl("selectPredicate");
+  public static final Property SELECT_PREDICATE = DEER.property("selectPredicate");
 
-  private static final Parameter DISTANCE_PREDICATE = new ParameterImpl("distancePredicate");
-
-  private Property selectPredicate;
-
-  private Property distancePredicate;
+  public static final Property DISTANCE_PREDICATE = DEER.property("distancePredicate");
 
   @Override
   public @NotNull
-  ParameterMap createParameterMap() {
-    return new ParameterMapImpl(SELECT_PREDICATE, DISTANCE_PREDICATE);
+  ValidatableParameterMap createParameterMap() {
+    return ValidatableParameterMap.builder()
+      .declareProperty(SELECT_PREDICATE)
+      .declareProperty(DISTANCE_PREDICATE)
+      .declareValidationShape(getValidationModelFor(GeoDistanceEnrichmentOperator.class))
+      .build();
   }
 
-  @Override
-  public void validateAndAccept(@NotNull ParameterMap params) {
-    this.selectPredicate = ResourceFactory.createProperty(params.getValue(SELECT_PREDICATE));
-    this.distancePredicate = ResourceFactory.createProperty(params.getValue(DISTANCE_PREDICATE));
-  }
-
-  @Override
-  public @NotNull
-  ParameterMap selfConfig(Model source, Model target) {
-    return ParameterMap.EMPTY_INSTANCE;
-  }
+//  @Override
+//  public @NotNull
+//  ParameterMap selfConfig(Model source, Model target) {
+//    return ParameterMap.EMPTY_INSTANCE;
+//  }
 
   /**
    * @param models
    * @return model enriched with distances
    */
   protected List<Model> safeApply(List<Model> models) {
+    final Property selectPredicate = getParameterMap().get(SELECT_PREDICATE).as(Property.class);
+    final Property distancePredicate = getParameterMap().get(DISTANCE_PREDICATE).as(Property.class);
     models.get(0).listStatements(null, selectPredicate, (RDFNode) null)
       .filterKeep(stmt -> stmt.getObject().isResource()).toList()
-      .forEach(stmt -> enrichWithDistance(stmt, models.get(0)));
+      .forEach(stmt -> enrichWithDistance(stmt, models.get(0), distancePredicate));
     return models;
   }
 
-  private void enrichWithDistance(Statement stmt, Model model) {
+  private void enrichWithDistance(Statement stmt, Model model, Property distancePredicate) {
     final String ns = "http://www.w3.org/2003/01/geo/wgs84_pos#";
     final Property lat = model.createProperty(ns, "lat");
     final Property lon = model.createProperty(ns, "long");

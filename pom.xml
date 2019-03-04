@@ -3,7 +3,7 @@
   <groupId>org.aksw.deer</groupId>
   <artifactId>deer-parent</artifactId>
   <version>1.1.4-SNAPSHOT</version>
-  <name>DEER</name>
+  <name>DEER Parent POM</name>
   <description>DEER - RDF Dataset Enrichment Framework</description>
   <url>http://github.com/dice-group/DEER</url>
 
@@ -17,6 +17,9 @@
     <maven.compiler.source>9</maven.compiler.source>
     <maven.compiler.target>9</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <fcage.version>1.0.0-SNAPSHOT</fcage.version>
+    <jena.version>3.9.0</jena.version>
+    <slf4j.version>1.7.25</slf4j.version>
   </properties>
 
   <packaging>pom</packaging>
@@ -24,6 +27,8 @@
     <module>deer-core</module>
     <module>deer-cli</module>
     <module>examples/simple-plugin-example</module>
+    <!--<module>deer-slipo-plugin</module>-->
+    <!--<module>faraday-cage</module>-->
   </modules>
 
   <distributionManagement>
@@ -39,6 +44,17 @@
   </distributionManagement>
 
   <repositories>
+
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
 
     <repository>
       <id>maven.aksw.internal</id>
@@ -57,17 +73,6 @@
       <name>Java.net Repository for Maven</name>
       <url>http://download.java.net/maven/2/</url>
       <layout>default</layout>
-    </repository>
-
-    <repository>
-      <id>sonatype-nexus-snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
     </repository>
 
     <repository>
@@ -192,15 +197,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.25</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.aksw.faraday_cage</groupId>
       <artifactId>faraday-cage</artifactId>
-      <version>0.1.2</version>
+      <version>${fcage.version}</version>
     </dependency>
 
   </dependencies>

@@ -5,7 +5,7 @@
   <groupId>org.aksw.deer.plugin.examples</groupId>
   <artifactId>simple-example-plugin</artifactId>
   <packaging>jar</packaging>
-  <name>Simple Example Plugin</name>
+  <name>DEER Simple Example Plugin</name>
 
   <parent>
     <groupId>org.aksw.deer</groupId>
@@ -85,7 +85,7 @@
     <dependency>
       <groupId>org.pf4j</groupId>
       <artifactId>pf4j</artifactId>
-      <version>2.2.0</version>
+      <version>2.5.0</version>
       <!-- !!! VERY IMPORTANT -->
       <scope>provided</scope>
     </dependency>
@@ -116,7 +116,7 @@
     <dependency>
       <groupId>org.aksw.faraday_cage</groupId>
       <artifactId>faraday-cage</artifactId>
-      <version>0.1.2</version>
+      <version>${fcage.version}</version>
       <scope>provided</scope>
     </dependency>
 

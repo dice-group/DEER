@@ -29,14 +29,14 @@ public class ConfigBuilder {
 //    config.add(s, DEER.hasOutput, outputDataset);
 //    for (String key : parameters.keySet()) {
 //      String value = parameters.get(key);
-//      Resource param = ResourceFactory.createResource(DEER.uri + "parameter_" + parameterNr++);
+//      Resource param = ResourceFactory.createResource(DEER.NS + "parameter_" + parameterNr++);
 //      config.add(s, DEER.hasParameter, param);
 //      config.add(param, RDF.type, DEER.Parameter);
 //      config.add(param, DEER.hasKey, key);
 //      config.add(param, DEER.hasValue, value);
 //    }
 //    config = config.union(inputConfig);
-//    config.setNsPrefix(DEER.prefix, DEER.getURI());
+//    config.setNsPrefix(DEER.PREFIX, DEER.getURI());
 //    config.setNsPrefix("RDFS", RDFS.getURI());
 //    return config;
 //  }
@@ -64,7 +64,7 @@ public class ConfigBuilder {
 //    if (parameters != null) {
 //      for (String key : parameters.keySet()) {
 //        String value = parameters.get(key);
-//        Resource param = ResourceFactory.createResource(DEER.uri + "Parameter_" + parameterNr++);
+//        Resource param = ResourceFactory.createResource(DEER.NS + "Parameter_" + parameterNr++);
 //        config.add(s, DEER.hasParameter, param);
 //        config.add(param, RDF.type, DEER.Parameter);
 //        config.add(param, DEER.hasKey, key);
@@ -74,7 +74,7 @@ public class ConfigBuilder {
 //    for (Model inputConfig : inputConfigs) {
 //      config = config.union(inputConfig);
 //    }
-//    config.setNsPrefix(DEER.prefix, DEER.getURI());
+//    config.setNsPrefix(DEER.PREFIX, DEER.getURI());
 //    config.setNsPrefix("RDFS", RDFS.getURI());
 //    return config;
 //  }
@@ -89,10 +89,10 @@ public class ConfigBuilder {
 //  /**
 //   * @author sherif
 //   */
-//  public Model addDataset(Model config, Resource dataset, Resource uri, Resource endpoint) {
+//  public Model addDataset(Model config, Resource dataset, Resource NS, Resource endpoint) {
 //    addDataset(config, dataset);
 //    config.add(dataset, DEER.fromEndPoint, endpoint);
-//    config.add(dataset, DEER.hasUri, uri);
+//    config.add(dataset, DEER.hasUri, NS);
 //    return config;
 //  }
 //
