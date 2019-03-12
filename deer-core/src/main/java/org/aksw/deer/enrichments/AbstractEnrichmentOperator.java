@@ -1,7 +1,7 @@
 package org.aksw.deer.enrichments;
 
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.faraday_cage.engine.AbstractExecutionGraphNode;
+import org.aksw.faraday_cage.engine.AbstractExecutionNode;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  */
-public abstract class AbstractEnrichmentOperator extends AbstractExecutionGraphNode.WithImplicitCloning<Model> implements EnrichmentOperator {
+public abstract class AbstractEnrichmentOperator extends AbstractExecutionNode.WithImplicitCloning<Model> implements EnrichmentOperator {
 
   @Override
   public DegreeBounds getDegreeBounds() {

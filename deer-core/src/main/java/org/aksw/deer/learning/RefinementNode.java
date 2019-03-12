@@ -4,7 +4,7 @@
 package org.aksw.deer.learning;
 
 
-import org.aksw.deer.ParameterizedDeerExecutionGraphNode;
+import org.aksw.deer.ParameterizedDeerExecutionNode;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -23,8 +23,8 @@ public class RefinementNode implements Comparable<RefinementNode> {
 
   private static final Logger logger = LoggerFactory.getLogger(RefinementNode.class);
 
-  public ParameterizedDeerExecutionGraphNode module = null;
-  public ParameterizedDeerExecutionGraphNode operator = null;
+  public ParameterizedDeerExecutionNode module = null;
+  public ParameterizedDeerExecutionNode operator = null;
   public double fitness = -Double.MAX_VALUE;
   public List<Model> inputModels = new ArrayList<Model>();
   public List<Model> outputModels = new ArrayList<Model>();
@@ -37,7 +37,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(ParameterizedDeerExecutionGraphNode module, ParameterizedDeerExecutionGraphNode operator, double fitness,
+  private RefinementNode(ParameterizedDeerExecutionNode module, ParameterizedDeerExecutionNode operator, double fitness,
                          List<Model> inputModels,
                          List<Model> outputModels, Model configModel, List<Resource> inputDatasets,
                          List<Resource> outputDatasets) {
@@ -82,7 +82,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
    *
    * @author sherif
    */
-  public RefinementNode(ParameterizedDeerExecutionGraphNode operator, double fitness, List<Model> inputModels,
+  public RefinementNode(ParameterizedDeerExecutionNode operator, double fitness, List<Model> inputModels,
                         List<Model> outputModels,
                         Model configModel, List<Resource> inputDatasets, List<Resource> outputDatasets) {
     this(null, operator, fitness, inputModels, outputModels, configModel, inputDatasets,
@@ -93,7 +93,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(ParameterizedDeerExecutionGraphNode module, ParameterizedDeerExecutionGraphNode operator, double fitness, Model inputModel,
+  private RefinementNode(ParameterizedDeerExecutionNode module, ParameterizedDeerExecutionNode operator, double fitness, Model inputModel,
                          Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
     super();
     if (module != null && operator != null) {
@@ -120,7 +120,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
    *
    * @author sherif
    */
-  public RefinementNode(ParameterizedDeerExecutionGraphNode module, double fitness, Model inputModel,
+  public RefinementNode(ParameterizedDeerExecutionNode module, double fitness, Model inputModel,
                         Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
     this(module, null, fitness, inputModel, outputModel, configModel, inputDataset, outputDataset);
   }

@@ -16,7 +16,7 @@ public final class Deer {
 
   public static synchronized FaradayCageContext getExecutionContext(PluginManager pluginManager) {
     return FaradayCageContext.of(
-      DeerExecutionGraphNode.class,
+      DeerExecutionNode.class,
       DeerExecutionNodeWrapper.class,
       pluginManager);
   }

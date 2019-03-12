@@ -19,7 +19,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jena.version>3.9.0</jena.version>
     <slf4j.version>1.7.25</slf4j.version>
-    <fcage.version>1.0.0</fcage.version>
+    <fcage.version>1.0.1</fcage.version>
   </properties>
 
   <packaging>pom</packaging>

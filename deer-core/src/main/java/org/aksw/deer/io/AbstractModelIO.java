@@ -1,8 +1,8 @@
 package org.aksw.deer.io;
 
-import org.aksw.deer.ParameterizedDeerExecutionGraphNode;
+import org.aksw.deer.ParameterizedDeerExecutionNode;
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.faraday_cage.engine.AbstractParameterizedExecutionGraphNode;
+import org.aksw.faraday_cage.engine.AbstractParameterizedExecutionNode;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  *
  *
  */
-public abstract class AbstractModelIO extends AbstractParameterizedExecutionGraphNode.WithImplicitCloning<Model> implements ParameterizedDeerExecutionGraphNode {
+public abstract class AbstractModelIO extends AbstractParameterizedExecutionNode.WithImplicitCloning<Model> implements ParameterizedDeerExecutionNode {
 
   private static Supplier<String> workingDirectorySupplier = () -> "";
 

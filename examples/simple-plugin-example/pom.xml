@@ -114,14 +114,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.aksw.faraday_cage</groupId>
-      <artifactId>faraday-cage</artifactId>
-      <version>1.0.0</version>
-      <!-- !!! VERY IMPORTANT -->
-      <scope>provided</scope>
-    </dependency>
-
   </dependencies>
 
 </project>

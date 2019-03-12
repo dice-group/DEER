@@ -1,7 +1,7 @@
 package org.aksw.deer.io;
 
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.faraday_cage.engine.ExecutionGraphNode;
+import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
@@ -39,7 +39,7 @@ public class FileModelWriter extends AbstractModelWriter {
 
   @Override
   protected List<Model> safeApply(List<Model> data) {
-    return ExecutionGraphNode.toMultiExecution(this::write).apply(data);
+    return ExecutionNode.toMultiExecution(this::write).apply(data);
   }
 
 

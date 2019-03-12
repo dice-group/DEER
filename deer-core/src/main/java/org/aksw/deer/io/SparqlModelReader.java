@@ -1,7 +1,7 @@
 package org.aksw.deer.io;
 
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.faraday_cage.engine.ExecutionGraphNode;
+import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -52,7 +52,7 @@ public class SparqlModelReader extends AbstractModelReader {
 
   @Override
   protected List<Model> safeApply(List<Model> data) {
-    return ExecutionGraphNode.toMultiExecution((Model m) -> readModelFromEndPoint()).apply(data);
+    return ExecutionNode.toMultiExecution((Model m) -> readModelFromEndPoint()).apply(data);
   }
 
   @SuppressWarnings("Duplicates")

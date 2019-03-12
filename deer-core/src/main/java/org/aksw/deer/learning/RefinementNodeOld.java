@@ -4,7 +4,7 @@
 package org.aksw.deer.learning;
 
 
-import org.aksw.deer.ParameterizedDeerExecutionGraphNode;
+import org.aksw.deer.ParameterizedDeerExecutionNode;
 import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -16,7 +16,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
  */
 public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
 
-  public ParameterizedDeerExecutionGraphNode module = null;
+  public ParameterizedDeerExecutionNode module = null;
   public double fitness = -Double.MAX_VALUE;
   public Model inputModel = ModelFactory.createDefaultModel();
   public Model outputModel = ModelFactory.createDefaultModel();
@@ -41,7 +41,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
   /**
    * @author sherif
    */
-  public RefinementNodeOld(ParameterizedDeerExecutionGraphNode module, double fitness, Model inputModel, Model outputModel,
+  public RefinementNodeOld(ParameterizedDeerExecutionNode module, double fitness, Model inputModel, Model outputModel,
                            Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     this.module = module;
@@ -60,7 +60,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
   }
 
 
-  public RefinementNodeOld(ParameterizedDeerExecutionGraphNode operator, Model inputModel, Model outputModel,
+  public RefinementNodeOld(ParameterizedDeerExecutionNode operator, Model inputModel, Model outputModel,
                            Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     if (fitness == -2) {

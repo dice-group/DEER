@@ -1,10 +1,10 @@
 package org.aksw.deer.decorators;
 
 import org.aksw.deer.DeerAnalyticsStore;
-import org.aksw.deer.DeerExecutionGraphNode;
-import org.aksw.deer.ParameterizedDeerExecutionGraphNode;
+import org.aksw.deer.DeerExecutionNode;
+import org.aksw.deer.ParameterizedDeerExecutionNode;
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.faraday_cage.engine.ExecutionGraphNode;
+import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.FaradayCageContext;
 import org.aksw.faraday_cage.engine.Parameterized;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
@@ -24,7 +24,7 @@ import java.util.List;
  *
  */
 @Extension
-public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionGraphNodeWrapper {
+public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionNodeWrapper {
 
   private static final Logger logger = LoggerFactory.getLogger(SparqlAnalyticsWrapper.class);
 
@@ -66,17 +66,17 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionGr
   }
 
   @Override
-  public DeerExecutionGraphNode wrap(DeerExecutionGraphNode executionNode) {
+  public DeerExecutionNode wrap(DeerExecutionNode executionNode) {
     if (executionNode instanceof Parameterized) {
-      return new ParameterizedSparqlAnalyticsDecorator((ParameterizedDeerExecutionGraphNode) executionNode);
+      return new ParameterizedSparqlAnalyticsDecorator((ParameterizedDeerExecutionNode) executionNode);
     } else {
       return new SparqlAnalyticsDecorator(executionNode);
     }
   }
 
-  private class SparqlAnalyticsDecorator extends AbstractDeerExecutionGraphNodeDecorator {
+  private class SparqlAnalyticsDecorator extends AbstractDeerExecutionNodeDecorator {
 
-    public SparqlAnalyticsDecorator(ExecutionGraphNode<Model> other) {
+    public SparqlAnalyticsDecorator(ExecutionNode<Model> other) {
       super(other);
     }
 
@@ -88,9 +88,9 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionGr
 
   }
 
-  private class ParameterizedSparqlAnalyticsDecorator extends AbstractParameterizedDeerExecutionGraphNodeDecorator {
+  private class ParameterizedSparqlAnalyticsDecorator extends AbstractParameterizedDeerExecutionNodeDecorator {
 
-    public ParameterizedSparqlAnalyticsDecorator(ParameterizedDeerExecutionGraphNode other) {
+    public ParameterizedSparqlAnalyticsDecorator(ParameterizedDeerExecutionNode other) {
       super(other);
     }
 
