@@ -17,12 +17,12 @@ deer:LinkingEnrichmentOperatorShape
     [ sh:property deer:LinkingEnrichmentOperatorShape_specFile ; ]
     [ sh:property deer:LinkingEnrichmentOperatorShape_linkSpecification ; ]
 	) ;
-	sh:message "LinkingEnrichmentOperator must declare exactly one deer:linkingPredicate and exactly one of {deer:specFile, deer:linkSpecification}" ;
+	sh:message "LinkingEnrichmentOperator must declare exactly one of {deer:specFile, deer:linkSpecification}" ;
 .
 
 deer:LinkingEnrichmentOperatorShape_linkingPredicate
   sh:path deer:linkingPredicate ;
-  sh:minCount 1 ;
+  sh:minCount 0 ;
   sh:maxCount 1 ;
   sh:nodeKind sh:IRI ;
 .

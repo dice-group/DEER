@@ -10,14 +10,14 @@ deer:SparqlUpdateEnrichmentOperatorShape
 	a sh:NodeShape ;
 	sh:targetClass deer:SparqlUpdateEnrichmentOperator ;
 	sh:property deer:SparqlUpdateEnrichmentOperatorShape_updateQuery ;
-	sh:message "SparqlUpdateEnrichmentOperator must declare exactly one deer:updateQuery" ;
+	sh:message "SparqlUpdateEnrichmentOperator must declare exactly one deer:sparqlUpdateQuery" ;
 .
 
 deer:SparqlUpdateEnrichmentOperatorShape_updateQuery
-  sh:path deer:updateQuery ;
+  sh:path deer:sparqlUpdateQuery ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
   sh:datatype xsd:string ;
-  sh:message "SparqlUpdateEnrichmentOperator must declare exactly one deer:updateQuery" ;
+  sh:message "SparqlUpdateEnrichmentOperator must declare exactly one deer:sparqlUpdateQuery" ;
 .
 

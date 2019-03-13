@@ -89,16 +89,16 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
     final DATASET_PART linksPart = parameters.getOptional(LINKS_PART)
       .map(n -> n.asLiteral().getString().toUpperCase())
       .map(DATASET_PART::valueOf).orElse(DATASET_PART.SOURCE);
-
     if (getInDegree() == 1 && specFile.isPresent()) {
       Model model = setPrefixes(models.get(0));
       Configuration cfg = new XMLConfigurationReader(specFile.get()).read();
+      final Property linkingPredicate = ResourceFactory.createProperty(cfg.getAcceptanceRelation());
       if (getOutDegree() == 1) {
-        addLinksToModel(linksPart, model, getMappingFromConfiguration(cfg));
+        addLinksToModel(linksPart, model, getMappingFromConfiguration(cfg), linkingPredicate);
         return Lists.newArrayList(model);
       } else {
         Model linkModel = ModelFactory.createDefaultModel();
-        addLinksToModel(linksPart, linkModel, getMappingFromConfiguration(cfg));
+        addLinksToModel(linksPart, linkModel, getMappingFromConfiguration(cfg), linkingPredicate);
         return Lists.newArrayList(model, linkModel);
       }
     } else if (getInDegree() == 2 && linkSpecification.isPresent()) {
@@ -181,10 +181,14 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
     return result;
   }
 
-
   private void addLinksToModel(DATASET_PART linksPart, Model model, AMapping mapping) {
     // parameter linkingPredicate must always be declared
     final Property linkingPredicate = getParameterMap().get(LINKING_PREDICATE).as(Property.class);
+    addLinksToModel(linksPart, model, mapping, linkingPredicate);
+  }
+
+  private void addLinksToModel(DATASET_PART linksPart, Model model, AMapping mapping, Property linkingPredicate) {
+    // parameter linkingPredicate must always be declared
     for (String s : mapping.getMap().keySet()) {
       Resource subject = model.createResource(s);
       for (String t : mapping.getMap().get(s).keySet()) {

@@ -9,14 +9,12 @@
 deer:SparqlModelReaderShape
 	a sh:NodeShape ;
 	sh:targetClass deer:SparqlModelReader ;
-	sh:property deer:SparqlModelReaderShape_fromEndpoint ,
-	            deer:SparqlModelReaderShape_useTriplePattern ;
+	sh:property deer:SparqlModelReaderShape_fromEndpoint ;
 	sh:xone (
     [ sh:property deer:SparqlModelReaderShape_useSparqlConstruct; ]
-    [ sh:property deer:SparqlModelReaderShape_useGraph ; ]
     [ sh:property deer:SparqlModelReaderShape_useSparqlDescribeOf ; ]
 	) ;
-	sh:message "SparqlModelReader must declare exactly one of {deer:useSparqlConstruct, deer:useGraph, deer:useSparqlDescribeOf}" ;
+	sh:message "SparqlModelReader must declare exactly one of {deer:useSparqlConstruct, deer:useSparqlDescribeOf}" ;
 .
 
 deer:SparqlModelReaderShape_fromEndpoint
@@ -25,21 +23,6 @@ deer:SparqlModelReaderShape_fromEndpoint
   sh:maxCount 1 ;
   sh:nodeKind sh:IRI ;
   sh:message "SparqlModelReader must declare exactly one deer:fromEndpoint"
-.
-
-deer:SparqlModelReaderShape_useGraph
-  sh:path deer:useGraph ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-  sh:nodeKind sh:IRI ;
-.
-
-deer:SparqlModelReaderShape_useTriplePattern
-  sh:path deer:useTriplePattern ;
-  sh:minCount 0 ;
-  sh:maxCount 1 ;
-  sh:datatype xsd:string ;
-  sh:message "SparqlModelReader must declare at most one deer:useTriplePattern"
 .
 
 deer:SparqlModelReaderShape_useSparqlConstruct

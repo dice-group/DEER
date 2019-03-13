@@ -23,7 +23,7 @@ public class SparqlUpdateEnrichmentOperator extends AbstractParameterizedEnrichm
 
   private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 
-  public static final Property UPDATE = DEER.property("updateQuery");
+  public static final Property UPDATE = DEER.property("sparqlUpdateQuery");
 
   @NotNull
   @Override
@@ -41,11 +41,5 @@ public class SparqlUpdateEnrichmentOperator extends AbstractParameterizedEnrichm
     UpdateAction.parseExecute(updateStatement, model);
     return Lists.newArrayList(model);
   }
-
-//  @NotNull
-//  @Override
-//  public ParameterMap selfConfig(Model source, Model target) {
-//    return createParameterMap();
-//  }
 
 }

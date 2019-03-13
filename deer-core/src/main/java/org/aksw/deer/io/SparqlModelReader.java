@@ -28,10 +28,6 @@ public class SparqlModelReader extends AbstractModelReader {
 
   public static final Property FROM_ENDPOINT = DEER.property("fromEndpoint");
 
-  public static final Property USE_GRAPH = DEER.property("useGraph");
-
-  public static final Property USE_TRIPLE_PATTERN = DEER.property("useTriplePattern");
-
   public static final Property USE_SPARQL_CONSTRUCT = DEER.property("useSparqlConstruct");
 
   public static final Property USE_SPARQL_DESCRIBE_OF= DEER.property("useSparqlDescribeOf");
@@ -42,8 +38,6 @@ public class SparqlModelReader extends AbstractModelReader {
   ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
       .declareProperty(FROM_ENDPOINT)
-      .declareProperty(USE_GRAPH)
-      .declareProperty(USE_TRIPLE_PATTERN)
       .declareProperty(USE_SPARQL_CONSTRUCT)
       .declareProperty(USE_SPARQL_DESCRIBE_OF)
       .declareValidationShape(getValidationModelFor(SparqlModelReader.class))
@@ -59,10 +53,6 @@ public class SparqlModelReader extends AbstractModelReader {
   private Model readModelFromEndPoint() {
     ValidatableParameterMap parameters = getParameterMap();
     String fromEndpoint = parameters.get(FROM_ENDPOINT).asResource().getURI();
-    final Optional<String> useGraph = parameters.getOptional(USE_GRAPH)
-      .map(RDFNode::asResource).map(Resource::getURI);
-    final String triplePattern = parameters.getOptional(USE_TRIPLE_PATTERN)
-      .map(RDFNode::asLiteral).map(Literal::getString).orElse("?s ?p ?o");
     final Optional<String> sparqlQuery = parameters.getOptional(USE_SPARQL_CONSTRUCT)
       .map(RDFNode::asLiteral).map(Literal::getString);
     final Optional<String> describeTarget = parameters.getOptional(USE_SPARQL_DESCRIBE_OF)
@@ -73,11 +63,8 @@ public class SparqlModelReader extends AbstractModelReader {
     long startTime = System.currentTimeMillis();
     logger.info("Reading dataset from " + fromEndpoint);
     final String sparqlQueryString;
-    if (sparqlQuery.isPresent() || useGraph.isPresent()) {
-      sparqlQueryString = sparqlQuery.orElse(
-        "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <"
-        + useGraph + "> { " + triplePattern + " } . }"
-      );
+    if (sparqlQuery.isPresent()) {
+      sparqlQueryString = sparqlQuery.get();
       final QueryExecution qExec = QueryExecutionFactory.sparqlService(fromEndpoint, sparqlQueryString);
       result = qExec.execConstruct();
       qExec.close();
@@ -88,10 +75,12 @@ public class SparqlModelReader extends AbstractModelReader {
       result = qExec.execDescribe();
       qExec.close();
     } else {
-      throw new RuntimeException("Neither " + USE_SPARQL_DESCRIBE_OF.toString() + " nor " + USE_GRAPH.toString() +
-        " or " + USE_SPARQL_CONSTRUCT.toString() + " defined to read dataset from " + fromEndpoint + ", exit with error.");
+      throw new RuntimeException("Neither " + USE_SPARQL_DESCRIBE_OF.toString() + " nor "
+        + USE_SPARQL_CONSTRUCT.toString() + " defined to read dataset from " + fromEndpoint
+        + ", exit with error.");
     }
-    logger.info("Dataset reading is done in " + (System.currentTimeMillis() - startTime) + "ms, " + result.size() + " triples found.");
+    logger.info("Dataset reading is done in {}ms, {} triples found.",
+      (System.currentTimeMillis() - startTime), result.size());
     return result;
   }
 }
