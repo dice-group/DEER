@@ -1,0 +1,59 @@
+@prefix : <urn:example:server-demo/> .
+@prefix fcage: <http://w3id.org/fcage/> .
+@prefix deer: <http://w3id.org/deer/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+:readInput
+  a deer:FileModelReader ;
+  deer:fromPath "server-demo-data.ttl" ;
+  fcage:hasOutput ( :nameToLabel :dereferenceMayor ) ;
+.
+
+:nameToLabel
+  a deer:PredicateConformationEnrichmentOperator ;
+  deer:operation [
+    deer:sourcePredicate foaf:name ;
+    deer:targetPredicate rdf:label ;
+  ] ;
+  fcage:hasOutput :merge ;
+.
+
+:dereferenceMayor
+  a deer:DereferencingEnrichmentOperator ;
+  deer:operation [
+    deer:lookUpProperty foaf:based_near ;
+    deer:lookUpPrefix "http://dbpedia.org/resource" ;
+    deer:importProperty <http://example.org/ruled_by> ;
+    deer:dereferencingProperty <http://dbpedia.org/property/mayor> ;
+  ] ;
+  fcage:hasOutput :knowsReflexiveClosure ;
+.
+
+:knowsReflexiveClosure
+  a deer:SparqlUpdateEnrichmentOperator ;
+  deer:sparqlUpdateQuery """
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    INSERT { ?other foaf:knows ?person }
+    WHERE
+      {
+        ?person foaf:knows ?other .
+        FILTER NOT EXISTS {
+          ?other foaf:knows ?person .
+        }
+      }
+  """ ;
+  fcage:hasOutput :merge ;
+.
+
+:merge
+  a deer:MergeEnrichmentOperator ;
+  fcage:hasInput ( :nameToLabel :knowsReflexiveClosure ) ;
+  fcage:hasOutput ( :writeResult ) ;
+.
+
+:writeResult
+  a deer:FileModelWriter ;
+  deer:outputFile "server-demo-output.nt" ;
+  deer:outputFormat "NT" ;
+.

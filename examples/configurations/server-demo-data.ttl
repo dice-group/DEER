@@ -1,0 +1,18 @@
+@prefix : <urn:example:mockup/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix deer: <http://w3id.org/deer> .
+
+:bob
+  a foaf:person ;
+  foaf:name "Bob Barnes" ;
+  foaf:interest deer: ;
+  foaf:based_near <http://dbpedia.org/resource/Paderborn> ;
+  foaf:knows :tom ;
+.
+
+:tom
+  a foaf:person ;
+  foaf:name "Tom Tweed" ;
+  foaf:interest deer: ;
+  foaf:based_near <http://dbpedia.org/resource/Bonn> ;
+.
