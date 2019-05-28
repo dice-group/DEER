@@ -1,6 +1,5 @@
 package org.aksw.deer.enrichments;
 
-import com.github.therapi.runtimejavadoc.RetainJavadoc;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.aksw.deer.vocabulary.DEER;
@@ -80,7 +79,7 @@ import java.util.stream.Collectors;
  * <h2>Example</h2>
  *
  */
-@Extension @RetainJavadoc
+@Extension
 public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrichmentOperator {
 
 //   * <blockquote>

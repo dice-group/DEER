@@ -30,10 +30,10 @@ public class DereferencingEnrichmentOperatorTest {
 
   private FusekiServer setupServer(Resource...rest) {
     FusekiServer.Builder builder = FusekiServer.create();
-      Arrays.stream(rest).forEach(resource -> {
-        String uri = resource.getURI();
-        builder.add("/" + uri.substring(EX.length(), uri.indexOf("?")), DatasetFactory.create(resource.getModel()));
-      });
+    Arrays.stream(rest).forEach(resource -> {
+      String uri = resource.getURI();
+      builder.add("/" + uri.substring(EX.length(), uri.indexOf("?")), DatasetFactory.create(resource.getModel()));
+    });
     FusekiServer server = builder.port(PORT).build().start();
     Lib.sleep(100);
     return server;
