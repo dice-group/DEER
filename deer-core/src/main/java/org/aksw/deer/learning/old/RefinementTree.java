@@ -1,11 +1,12 @@
 /**
  *
  */
-package org.aksw.deer.learning;
+package org.aksw.deer.learning.old;
+
+import org.aksw.deer.util.Tree;
 
 import java.util.List;
 import java.util.Set;
-import org.aksw.deer.util.Tree;
 
 /**
  * @author sherif
