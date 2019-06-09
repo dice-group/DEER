@@ -41,7 +41,7 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionNo
       .build();
   }
 
-  private void applyTriggered(Resource id, List<Model> in, List<Model> out) {
+  private void applyTriggered(@NotNull Resource id, @NotNull List<Model> in, @NotNull List<Model> out) {
     Dataset dataset = DatasetFactory.createGeneral();
     for (int i = 0; i < in.size(); i++) {
       dataset.addNamedModel(DEER.resource("inputGraph" + i).getURI(), in.get(i));
@@ -65,6 +65,7 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionNo
     logger.info("AnalyticsWrapper {} keeping notes", getId());
   }
 
+  @NotNull
   @Override
   public DeerExecutionNode wrap(DeerExecutionNode executionNode) {
     if (executionNode instanceof Parameterized) {
@@ -80,7 +81,7 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionNo
       super(other);
     }
 
-    public List<Model> apply(List<Model> in) {
+    public List<Model> apply(@NotNull List<Model> in) {
       List<Model> out = super.apply(in);
       applyTriggered(getWrapped().getId(), in, out);
       return out;
@@ -94,7 +95,7 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionNo
       super(other);
     }
 
-    public List<Model> apply(List<Model> in) {
+    public List<Model> apply(@NotNull List<Model> in) {
       List<Model> out = super.apply(in);
       applyTriggered(getWrapped().getId(), in, out);
       return out;

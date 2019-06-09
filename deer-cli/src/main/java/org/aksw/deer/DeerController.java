@@ -14,6 +14,8 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginManager;
@@ -72,6 +74,7 @@ public class DeerController {
 
   private static final FaradayCageContext executionContext = Deer.getExecutionContext(pluginManager);
 
+  @NotNull
   public static FaradayCageContext getExecutionContext() {
     return executionContext;
   }
@@ -122,6 +125,7 @@ public class DeerController {
     }
   }
 
+  @Nullable
   private static CommandLine parseCommandLine(String[] args) {
     CommandLineParser parser = new DefaultParser();
     CommandLine cl = null;
@@ -174,12 +178,12 @@ public class DeerController {
     }
   }
 
-  private static void runDeer(CompiledExecutionGraph compiledExecutionGraph) {
+  private static void runDeer(@NotNull CompiledExecutionGraph compiledExecutionGraph) {
     compiledExecutionGraph.andThen(() -> writeAnalytics(Paths.get("deer-analytics.json").toAbsolutePath()));
     executionContext.run(compiledExecutionGraph);
   }
 
-  public static void writeAnalytics(Path analyticsFile) {
+  public static void writeAnalytics(@NotNull Path analyticsFile) {
     try {
       logger.info("Trying to write analytics data to " + analyticsFile);
       BufferedWriter writer = Files.newBufferedWriter(analyticsFile, StandardOpenOption.WRITE, StandardOpenOption.CREATE);

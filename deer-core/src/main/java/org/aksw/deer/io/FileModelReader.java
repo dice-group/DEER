@@ -37,6 +37,7 @@ public class FileModelReader extends AbstractModelReader {
       .build();
   }
 
+  @NotNull
   @Override
   protected List<Model> safeApply(List<Model> data) {
     final Optional<String> path = getParameterMap().getOptional(FROM_PATH)

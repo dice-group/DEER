@@ -7,6 +7,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,6 +20,7 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractModelIO extends AbstractParameterizedExecutionNode.WithImplicitCloning<Model> implements ParameterizedDeerExecutionNode {
 
+  @Nullable
   private static Supplier<String> workingDirectorySupplier = () -> "";
 
 
@@ -28,7 +30,7 @@ public abstract class AbstractModelIO extends AbstractParameterizedExecutionNode
    * working directory path at ExecutionGraph compile time.
    * @param supplier the supplier
    */
-  public static void takeWorkingDirectoryFrom(Supplier<String> supplier) {
+  public static void takeWorkingDirectoryFrom(@Nullable Supplier<String> supplier) {
     if (supplier != null) {
       workingDirectorySupplier = supplier;
     }
@@ -39,7 +41,7 @@ public abstract class AbstractModelIO extends AbstractParameterizedExecutionNode
    * @param pathString Path to inject working directory into
    * @return injected path
    */
-  public static String injectWorkingDirectory(String pathString) {
+  public static String injectWorkingDirectory(@NotNull String pathString) {
       Path path = Paths.get(pathString);
       Path currentDir = Paths.get(".");
       if (workingDirectorySupplier != null && path.isAbsolute()) {

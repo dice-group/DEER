@@ -8,6 +8,8 @@ import org.aksw.deer.DeerController;
 import org.aksw.deer.io.AbstractModelIO;
 import org.aksw.faraday_cage.engine.CompiledExecutionGraph;
 import org.aksw.faraday_cage.engine.FaradayCageContext;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -42,12 +44,14 @@ public class Server {
   public static final String LOG_DIR_PATH = STORAGE_DIR_PATH + "logs/";
 
   private static final Gson GSON = new GsonBuilder().create();
+  @Nullable
   private static Server instance = null;
 
   private final ConcurrentMap<String, CompletableFuture<Void>> requests = new ConcurrentHashMap<>();
   private final File uploadDir = new File(STORAGE_DIR_PATH);
   private int port = -1;
 
+  @Nullable
   public static Server getInstance() {
     if (instance == null) {
       instance = new Server();
@@ -93,7 +97,7 @@ public class Server {
     new RequestHealthChecker(requests).start();
   }
 
-  private Object handleSubmit(Request req, Response res) throws IOException, ServletException {
+  private Object handleSubmit(@NotNull Request req, @NotNull Response res) throws IOException, ServletException {
     String runId = FaradayCageContext.newRunId();
     File workingDir = new File(uploadDir.getAbsoluteFile(), runId);
     if (!workingDir.mkdirs()) {
@@ -132,7 +136,7 @@ public class Server {
     return GSON.toJson(new SubmitMessage(runId));
   }
 
-  private Object handleStatus(Request req, Response res) {
+  private Object handleStatus(@NotNull Request req, @NotNull Response res) {
     String id = sanitizeId(req.params("id"));
     StatusMessage result;
     if (!requests.containsKey(id)) {
@@ -148,7 +152,7 @@ public class Server {
     return GSON.toJson(result);
   }
 
-  private Object handleLogs(Request req, Response res) throws Exception {
+  private Object handleLogs(@NotNull Request req, @NotNull Response res) throws Exception {
     String id = sanitizeId(req.params("id"));
     File requestedFile = new File(LOG_DIR_PATH + id + ".log");
     if (requestedFile.exists()) {
@@ -178,7 +182,7 @@ public class Server {
     }
   }
 
-  private Object handleResult(Request req, Response res) throws Exception {
+  private Object handleResult(@NotNull Request req, @NotNull Response res) throws Exception {
     String id = sanitizeId(req.params("id"));
     File file = new File(req.params("file"));
     File requestedFile = new File(STORAGE_DIR_PATH + id + "/" + file.getName());
@@ -207,7 +211,7 @@ public class Server {
     }
   }
 
-  private Object handleResults(Request req, Response res) {
+  private Object handleResults(@NotNull Request req, @NotNull Response res) {
     String id = sanitizeId(req.params("id"));
     File dir = new File(STORAGE_DIR_PATH + id);
     if (dir.exists() && dir.isDirectory()) {
@@ -221,11 +225,13 @@ public class Server {
     }
   }
 
-  private static String sanitizeId(String id) {
+  @NotNull
+  private static String sanitizeId(@NotNull String id) {
     return id.replaceAll("[^0-9a-f\\-]", "");
   }
 
-  private static String getFileName(Part part) {
+  @NotNull
+  private static String getFileName(@NotNull Part part) {
     for (String cd : part.getHeader("content-disposition").split(";")) {
       if (cd.trim().startsWith("filename")) {
         return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
@@ -270,7 +276,7 @@ public class Server {
       private String message;
     }
 
-    ErrorMessage(Throwable e) {
+    ErrorMessage(@NotNull Throwable e) {
       this(-1, e.getMessage());
     }
 

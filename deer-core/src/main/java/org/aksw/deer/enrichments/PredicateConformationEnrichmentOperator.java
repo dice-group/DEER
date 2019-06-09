@@ -64,8 +64,9 @@ public class PredicateConformationEnrichmentOperator extends AbstractParameteriz
       .build();
   }
 
+  @NotNull
   @Override
-  protected List<Model> safeApply(List<Model> models) {
+  protected List<Model> safeApply(@NotNull List<Model> models) {
     final Model model = models.get(0);
     final Model conformModel = ModelFactory.createDefaultModel();
     final Map<Property, Property> propertyMapping = new HashMap<>();

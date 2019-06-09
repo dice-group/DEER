@@ -48,7 +48,8 @@ public class GeoDistanceEnrichmentOperator extends AbstractParameterizedEnrichme
    * @param models
    * @return model enriched with distances
    */
-  protected List<Model> safeApply(List<Model> models) {
+  @NotNull
+  protected List<Model> safeApply(@NotNull List<Model> models) {
     final Property selectPredicate = getParameterMap().get(SELECT_PREDICATE).as(Property.class);
     final Property distancePredicate = getParameterMap().get(DISTANCE_PREDICATE).as(Property.class);
     models.get(0).listStatements(null, selectPredicate, (RDFNode) null)
@@ -57,7 +58,7 @@ public class GeoDistanceEnrichmentOperator extends AbstractParameterizedEnrichme
     return models;
   }
 
-  private void enrichWithDistance(Statement stmt, Model model, Property distancePredicate) {
+  private void enrichWithDistance(@NotNull Statement stmt, @NotNull Model model, Property distancePredicate) {
     final String ns = "http://www.w3.org/2003/01/geo/wgs84_pos#";
     final Property lat = model.createProperty(ns, "lat");
     final Property lon = model.createProperty(ns, "long");

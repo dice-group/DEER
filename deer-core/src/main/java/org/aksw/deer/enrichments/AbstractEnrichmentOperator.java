@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class AbstractEnrichmentOperator extends AbstractExecutionNode.WithImplicitCloning<Model> implements EnrichmentOperator {
 
+  @NotNull
   @Override
   public DegreeBounds getDegreeBounds() {
     return new DegreeBounds(1,1,1,1);

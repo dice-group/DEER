@@ -2,6 +2,7 @@ package org.aksw.deer;
 
 
 import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,9 +16,10 @@ import java.util.Map;
  */
 public class DeerAnalyticsStore {
 
+  @NotNull
   private static Map<String, JSONObject> backend = new HashMap<>();
 
-  public static synchronized void write(String jobId, Resource nodeId, JSONObject nodeJson) {
+  public static synchronized void write(String jobId, @NotNull Resource nodeId, @NotNull JSONObject nodeJson) {
     String nodeName = nodeId.toString();
     JSONObject jobJson = backend.get(jobId);
     if (jobJson == null) {
@@ -36,7 +38,7 @@ public class DeerAnalyticsStore {
     return backend.get(jobId);
   }
 
-  private static JSONObject mergeJSONObjects(JSONObject json1, JSONObject json2) {
+  private static JSONObject mergeJSONObjects(@NotNull JSONObject json1, @NotNull JSONObject json2) {
     JSONObject mergedJSON;
     try {
       mergedJSON = new JSONObject(json1, JSONObject.getNames(json1));

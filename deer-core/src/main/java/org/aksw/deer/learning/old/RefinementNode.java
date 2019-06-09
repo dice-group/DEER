@@ -9,6 +9,8 @@ import org.aksw.deer.vocabulary.DEER;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +25,14 @@ public class RefinementNode implements Comparable<RefinementNode> {
 
   private static final Logger logger = LoggerFactory.getLogger(RefinementNode.class);
 
+  @Nullable
   public ParameterizedDeerExecutionNode module = null;
+  @Nullable
   public ParameterizedDeerExecutionNode operator = null;
   public double fitness = -Double.MAX_VALUE;
   public List<Model> inputModels = new ArrayList<Model>();
   public List<Model> outputModels = new ArrayList<Model>();
+  @Nullable
   public Model configModel = ModelFactory.createDefaultModel();
   public List<Resource> inputDatasets = new ArrayList<Resource>();
   public List<Resource> outputDatasets = new ArrayList<Resource>();
@@ -37,9 +42,9 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(ParameterizedDeerExecutionNode module, ParameterizedDeerExecutionNode operator, double fitness,
+  private RefinementNode(@Nullable ParameterizedDeerExecutionNode module, @Nullable ParameterizedDeerExecutionNode operator, double fitness,
                          List<Model> inputModels,
-                         List<Model> outputModels, Model configModel, List<Resource> inputDatasets,
+                         List<Model> outputModels, @Nullable Model configModel, List<Resource> inputDatasets,
                          List<Resource> outputDatasets) {
     super();
     if (module != null && operator != null) {
@@ -93,8 +98,8 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /**
    * @author sherif
    */
-  private RefinementNode(ParameterizedDeerExecutionNode module, ParameterizedDeerExecutionNode operator, double fitness, Model inputModel,
-                         Model outputModel, Model configModel, Resource inputDataset, Resource outputDataset) {
+  private RefinementNode(@Nullable ParameterizedDeerExecutionNode module, @Nullable ParameterizedDeerExecutionNode operator, double fitness, Model inputModel,
+                         Model outputModel, @Nullable Model configModel, Resource inputDataset, Resource outputDataset) {
     super();
     if (module != null && operator != null) {
       logger.error(
@@ -171,6 +176,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
+  @NotNull
   @Override
   public String toString() {
     String format = new DecimalFormat("#.###").format(fitness);
@@ -191,7 +197,7 @@ public class RefinementNode implements Comparable<RefinementNode> {
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
   @Override
-  public int compareTo(RefinementNode o) {
+  public int compareTo(@NotNull RefinementNode o) {
     return (int) (fitness - o.fitness);
 
   }

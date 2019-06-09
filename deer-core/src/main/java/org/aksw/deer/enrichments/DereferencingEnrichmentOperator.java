@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.OWL;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,15 +173,16 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
     });
   }
 
+  @NotNull
   @Override
-  protected List<Model> safeApply(List<Model> models) {
+  protected List<Model> safeApply(@NotNull List<Model> models) {
     initializeOperations();
     model = ModelFactory.createDefaultModel().add(models.get(0));
     operations.forEach(this::runOperation);
     return Lists.newArrayList(model);
   }
 
-  private void runOperation(OperationGroup opGroup, Set<Property[]> ops) {
+  private void runOperation(@NotNull OperationGroup opGroup, @NotNull Set<Property[]> ops) {
     Map<Resource, List<Pair<Property, RDFNode>>> dereffedPerResource = new HashMap<>();
     List<Statement> candidateNodes = getCandidateNodes(opGroup.lookupPrefix, opGroup.lookupProperty);
     candidateNodes.stream()
@@ -194,7 +196,8 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
     }
   }
 
-  private List<Pair<Property, RDFNode>> getEnrichmentPairsFor(Resource o, Set<Property[]> ops) {
+  @NotNull
+  private List<Pair<Property, RDFNode>> getEnrichmentPairsFor(@NotNull Resource o, @NotNull Set<Property[]> ops) {
     List<Pair<Property, RDFNode>> result = new ArrayList<>();
     Model resourceModel = queryResourceModel(o);
     for (Property[] op : ops) {
@@ -205,7 +208,7 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
     return result;
   }
 
-  private Model queryResourceModel(Resource o) {
+  private Model queryResourceModel(@NotNull Resource o) {
     Model result = ModelFactory.createDefaultModel();
     URL url;
     URLConnection conn;
@@ -240,7 +243,7 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
     return result;
   }
 
-  private List<Statement> getCandidateNodes(String lookupPrefix, Property lookUpProperty) {
+  private List<Statement> getCandidateNodes(@NotNull String lookupPrefix, @Nullable Property lookUpProperty) {
     return model.listStatements()
       .filterKeep(statement -> statement.getObject().isURIResource() &&
         statement.getObject().asResource().getURI().startsWith(lookupPrefix) &&

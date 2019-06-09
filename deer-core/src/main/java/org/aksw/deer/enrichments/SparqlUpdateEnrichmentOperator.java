@@ -34,8 +34,9 @@ public class SparqlUpdateEnrichmentOperator extends AbstractParameterizedEnrichm
       .build();
   }
 
+  @NotNull
   @Override
-  protected List<Model> safeApply(List<Model> models) {
+  protected List<Model> safeApply(@NotNull List<Model> models) {
     Model model = models.get(0);
     final String updateStatement = getParameterMap().get(UPDATE).asLiteral().getString();
     UpdateAction.parseExecute(updateStatement, model);

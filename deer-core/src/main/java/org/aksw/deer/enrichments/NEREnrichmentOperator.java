@@ -119,8 +119,9 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
 //    return ParameterMap.EMPTY_INSTANCE;
 //  }
 
+  @NotNull
   @Override
-  protected List<Model> safeApply(List<Model> models) {
+  protected List<Model> safeApply(@NotNull List<Model> models) {
     initializeFields();
     final Model model = models.get(0);
     final Model resultModel = ModelFactory.createDefaultModel();
@@ -156,7 +157,7 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
   /**
    * @return model of places contained in the input model
    */
-  private List<Statement> getNE(Model namedEntityModel, Resource subject, Resource type) {
+  private List<Statement> getNE(@NotNull Model namedEntityModel, Resource subject, Resource type) {
     String sparqlQueryString = "CONSTRUCT {?s ?p ?o} " +
       " WHERE {?s a <" + type + ">. ?s ?p ?o} ";
     Model locationsModel = QueryExecutionFactory.create(sparqlQueryString, namedEntityModel)
@@ -169,7 +170,7 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
    *
    * @return model of all NEs contained in the input model
    */
-  private List<Statement> getNE(Model namedEntityModel, Resource subject) {
+  private List<Statement> getNE(@NotNull Model namedEntityModel, Resource subject) {
     return namedEntityModel.listObjectsOfProperty(SCMSANN.MEANS)
       .filterKeep(RDFNode::isResource)
       .mapWith(RDFNode::asResource)
@@ -181,7 +182,7 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
   /**
    * @return wither is the input URI is a place of not
    */
-  private boolean isPlace(RDFNode uri) {
+  private boolean isPlace(@NotNull RDFNode uri) {
     boolean result;
     if (uri.toString().contains("http://ns.aksw.org/scms/")) {
       return false;
@@ -195,6 +196,7 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
     return result;
   }
 
+  @NotNull
   private Model runFOX(String input) {
     Model namedEntityModel = ModelFactory.createDefaultModel();
     final IFoxApi fox = new FoxApi()
@@ -211,7 +213,8 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
 
   private static class LiteralPropertyRanker {
 
-    static SortedMap<Double, Property> rank(Model model) {
+    @NotNull
+    static SortedMap<Double, Property> rank(@NotNull Model model) {
       SortedMap<Double, Property> propertyRanks = new TreeMap<>(Collections.reverseOrder());
       model.listStatements()
         .mapWith(Statement::getPredicate)
@@ -231,7 +234,7 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
       return propertyRanks;
     }
 
-    static Property getTopRankedProperty(Model model) {
+    static Property getTopRankedProperty(@NotNull Model model) {
       SortedMap<Double, Property> ranks = rank(model);
       return ranks.get(ranks.firstKey());
     }

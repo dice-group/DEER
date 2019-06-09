@@ -1,5 +1,8 @@
 package org.aksw.deer.util;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,9 +14,12 @@ import java.util.Set;
  */
 public class TreeX<T> {
 
+  @Nullable
   private List<TreeX<T>> children = null;//new ArrayList<Tree<T>>();
 
+  @Nullable
   private List<TreeX<T>> parents;
+  @Nullable
   private T value;
   private boolean isPrinted = false;
 
@@ -23,7 +29,7 @@ public class TreeX<T> {
    *
    * 
    */
-  public TreeX(List<TreeX<T>> parents, T value, List<TreeX<T>> childrenlist) {
+  public TreeX(@Nullable List<TreeX<T>> parents, T value, @Nullable List<TreeX<T>> childrenlist) {
     //		this.parents = parents;
     this.value = value;
     if (parents != null) {
@@ -43,7 +49,7 @@ public class TreeX<T> {
    *
    * 
    */
-  public TreeX(TreeX<T> root) {
+  public TreeX(@NotNull TreeX<T> root) {
     this(root.parents, root.value, root.children);
   }
 
@@ -52,7 +58,7 @@ public class TreeX<T> {
    *
    * 
    */
-  public TreeX(TreeX<T> parent, T value, List<TreeX<T>> childrenlist) {
+  public TreeX(@Nullable TreeX<T> parent, T value, @Nullable List<TreeX<T>> childrenlist) {
     if (parent != null) {
       this.addParent(parent);
     }
@@ -69,7 +75,7 @@ public class TreeX<T> {
    *
    * 
    */
-  public TreeX(List<TreeX<T>> parents, T value, TreeX<T> child) {
+  public TreeX(@NotNull List<TreeX<T>> parents, T value, @Nullable TreeX<T> child) {
     this.value = value;
     for (TreeX<T> parent : parents) {
       this.addParent(parent);
@@ -125,6 +131,7 @@ public class TreeX<T> {
   /**
    * @return the children
    */
+  @Nullable
   public List<TreeX<T>> getChildren() {
     return children;
   }
@@ -141,6 +148,7 @@ public class TreeX<T> {
    *
    * 
    */
+  @NotNull
   public Set<TreeX<T>> getLeaves() {
     Set<TreeX<T>> leaves = new HashSet<TreeX<T>>();
     for (TreeX<T> child : this.children) {
@@ -161,7 +169,8 @@ public class TreeX<T> {
    *
    * 
    */
-  public TreeX<T> addChild(TreeX<T> child) {
+  @NotNull
+  public TreeX<T> addChild(@NotNull TreeX<T> child) {
     if (children == null) {
       children = new ArrayList<TreeX<T>>();
     }
@@ -179,7 +188,8 @@ public class TreeX<T> {
    * @return the added parent node
    * 
    */
-  public TreeX<T> addParent(TreeX<T> parent) {
+  @NotNull
+  public TreeX<T> addParent(@NotNull TreeX<T> parent) {
     if (parents == null) {
       parents = new ArrayList<TreeX<T>>();
     }
@@ -214,7 +224,7 @@ public class TreeX<T> {
   /**
    * @param parent
    */
-  public void setParent(TreeX<T> parent) {
+  public void setParent(@NotNull TreeX<T> parent) {
     if (this.parents == null) {
       this.parents = new ArrayList<TreeX<T>>();
     }
@@ -230,6 +240,7 @@ public class TreeX<T> {
    *
    * 
    */
+  @Nullable
   public List<TreeX<T>> getParents() {
     return parents;
   }
@@ -245,6 +256,7 @@ public class TreeX<T> {
    * @return a list of all children nodes of the current tree node
    * 
    */
+  @Nullable
   public List<TreeX<T>> getchildren() {
     return children;
   }
@@ -277,6 +289,7 @@ public class TreeX<T> {
    * @return the data value of the current tree node
    * 
    */
+  @Nullable
   public T getValue() {
     return value;
   }

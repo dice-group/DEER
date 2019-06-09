@@ -3,6 +3,7 @@ package org.aksw.deer.vocabulary;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Vocabulary for http://ns.aksw.org/deer/#
@@ -22,6 +23,7 @@ public class DEER {
     return ResourceFactory.createResource(NS + localName);
   }
 
+  @NotNull
   public static String getURI() {
     return NS;
   }

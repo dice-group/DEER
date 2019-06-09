@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class AbstractParameterizedEnrichmentOperator extends AbstractParameterizedExecutionNode.WithImplicitCloning<Model> implements ParameterizedEnrichmentOperator {
 
+  @NotNull
   @Override
   public DegreeBounds getDegreeBounds() {
     return new DegreeBounds(1,1,1,1);

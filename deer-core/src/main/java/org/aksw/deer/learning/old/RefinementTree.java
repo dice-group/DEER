@@ -4,6 +4,8 @@
 package org.aksw.deer.learning.old;
 
 import org.aksw.deer.util.Tree;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -38,7 +40,7 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
   }
 
   @SuppressWarnings("unused")
-  private void setFitness(Tree<RefinementNodeOld> root, double fitness) {
+  private void setFitness(@NotNull Tree<RefinementNodeOld> root, double fitness) {
     long rootChildrenCount = root.size() - 1;
     root.getValue().fitness += fitness + CHILDREN_MULTIPLIER * rootChildrenCount;
     root = root.getParent();
@@ -61,7 +63,7 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
    * @see org.aksw.geolift.execution.specslearner.Tree#addChild(org.aksw.geolift.execution.specslearner.Tree)
    */
   @Override
-  public void addChild(Tree<RefinementNodeOld> child) {
+  public void addChild(@NotNull Tree<RefinementNodeOld> child) {
     super.addChild(child);
   }
 
@@ -76,6 +78,7 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
   /* (non-Javadoc)
    * @see org.aksw.geolift.execution.specslearner.Tree#getParent()
    */
+  @Nullable
   @Override
   public Tree<RefinementNodeOld> getParent() {
     return super.getParent();
@@ -84,6 +87,7 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
   /* (non-Javadoc)
    * @see org.aksw.geolift.execution.specslearner.Tree#getchildren()
    */
+  @Nullable
   @Override
   public List<Tree<RefinementNodeOld>> getchildren() {
     return super.getchildren();
@@ -92,6 +96,7 @@ public class RefinementTree extends Tree<RefinementNodeOld> {
   /* (non-Javadoc)
    * @see org.aksw.geolift.execution.specslearner.Tree#getValue()
    */
+  @Nullable
   @Override
   public RefinementNodeOld getValue() {
     return super.getValue();

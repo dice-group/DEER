@@ -2,12 +2,14 @@ package org.aksw.deer.learning;
 
 import io.jenetics.prngine.MT19937_64Random;
 import io.jenetics.prngine.Random64;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
  */
 public class RandomUtil {
 
+  @NotNull
   private static final Random64 rng;
 
   static {

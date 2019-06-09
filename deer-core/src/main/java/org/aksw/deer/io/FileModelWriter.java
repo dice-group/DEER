@@ -43,7 +43,8 @@ public class FileModelWriter extends AbstractModelWriter {
   }
 
 
-  private Model write(Model model) {
+  @NotNull
+  private Model write(@NotNull Model model) {
     final String outputFile = injectWorkingDirectory(
       getParameterMap().get(OUTPUT_FILE).asLiteral().getString()
     );
