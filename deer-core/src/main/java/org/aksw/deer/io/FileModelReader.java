@@ -3,7 +3,6 @@ package org.aksw.deer.io;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.rdf.model.*;
-import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +27,7 @@ public class FileModelReader extends AbstractModelReader {
   public static final Property FROM_URI = DEER.property("fromUri");
 
   @Override
-  public @NotNull
-  ValidatableParameterMap createParameterMap() {
+  public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
       .declareProperty(FROM_PATH)
       .declareProperty(FROM_URI)
@@ -37,7 +35,6 @@ public class FileModelReader extends AbstractModelReader {
       .build();
   }
 
-  @NotNull
   @Override
   protected List<Model> safeApply(List<Model> data) {
     final Optional<String> path = getParameterMap().getOptional(FROM_PATH)

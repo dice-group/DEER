@@ -5,7 +5,6 @@ import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.*;
-import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,6 @@ public class FilterEnrichmentOperator extends AbstractParameterizedEnrichmentOpe
     super();
   }
 
-  @NotNull
   @Override
   public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
@@ -40,13 +38,12 @@ public class FilterEnrichmentOperator extends AbstractParameterizedEnrichmentOpe
       .build();
   }
 
-  @NotNull
   @Override
-  protected List<Model> safeApply(@NotNull List<Model> models) {
+  protected List<Model> safeApply(List<Model> models) {
     return List.of(filterModel(models.get(0)));
   }
 
-  private Model filterModel(@NotNull Model model) {
+  private Model filterModel(Model model) {
     final Model resultModel = ModelFactory.createDefaultModel();
     final Optional<RDFNode> sparqlQuery = getParameterMap()
       .getOptional(SPARQL_CONSTRUCT_QUERY);
@@ -77,8 +74,7 @@ public class FilterEnrichmentOperator extends AbstractParameterizedEnrichmentOpe
     return resultModel;
   }
 
-//  @NotNull
-//  @Override
+//  //  @Override
 //  public ParameterMap selfConfig(Model source, Model target) {
 //    ParameterMap result = createParameterMap();
 //    Model intersection = source.intersection(target);

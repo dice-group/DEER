@@ -6,8 +6,6 @@ import org.aksw.faraday_cage.engine.AbstractParameterizedExecutionNode;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,17 +18,16 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractModelIO extends AbstractParameterizedExecutionNode.WithImplicitCloning<Model> implements ParameterizedDeerExecutionNode {
 
-  @Nullable
   private static Supplier<String> workingDirectorySupplier = () -> "";
 
 
   /**
    * Specify the supplier of the working directory injection.
    * It <b>must</b> have the necessary information to construct a valid
-   * working directory path at ExecutionGraph compile time.
+   * working directory path at ExecutionGraph compileCanonicalForm time.
    * @param supplier the supplier
    */
-  public static void takeWorkingDirectoryFrom(@Nullable Supplier<String> supplier) {
+  public static void takeWorkingDirectoryFrom(Supplier<String> supplier) {
     if (supplier != null) {
       workingDirectorySupplier = supplier;
     }
@@ -41,7 +38,7 @@ public abstract class AbstractModelIO extends AbstractParameterizedExecutionNode
    * @param pathString Path to inject working directory into
    * @return injected path
    */
-  public static String injectWorkingDirectory(@NotNull String pathString) {
+  public static String injectWorkingDirectory(String pathString) {
       Path path = Paths.get(pathString);
       Path currentDir = Paths.get(".");
       if (workingDirectorySupplier != null && path.isAbsolute()) {
@@ -54,11 +51,10 @@ public abstract class AbstractModelIO extends AbstractParameterizedExecutionNode
   }
 
   @Override
-  protected Model deepCopy(Model data) {
+  public Model deepCopy(Model data) {
     return ModelFactory.createDefaultModel().add(data);
   }
 
-  @NotNull
   @Override
   public Resource getType() {
     return DEER.resource(this.getClass().getSimpleName());

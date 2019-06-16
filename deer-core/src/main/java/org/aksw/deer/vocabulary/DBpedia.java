@@ -5,7 +5,6 @@ package org.aksw.deer.vocabulary;
 
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.jetbrains.annotations.NotNull;
 
 public class DBpedia {
 
@@ -21,7 +20,6 @@ public class DBpedia {
     return result;
   }
 
-  @NotNull
   public static String getURI() {
     return uri;
   }

@@ -15,7 +15,6 @@ import org.aksw.limes.core.io.ls.LinkSpecification;
 import org.aksw.limes.core.io.mapping.AMapping;
 import org.aksw.limes.core.io.mapping.MappingFactory;
 import org.apache.jena.rdf.model.*;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -55,8 +54,7 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
   }
 
   @Override
-  public @NotNull
-  ValidatableParameterMap createParameterMap() {
+  public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
       .declareProperty(SPEC_FILE)
       .declareProperty(LINKS_PART)
@@ -72,9 +70,8 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
    * @param models
    * @return model enriched with links generated from LIMES
    */
-  @NotNull
   @SuppressWarnings("Duplicates")
-  protected List<Model> safeApply(@NotNull List<Model> models) {
+  protected List<Model> safeApply(List<Model> models) {
     // retrieve parameters
     ValidatableParameterMap parameters = getParameterMap();
     // spec file must be present if in degree == 1
@@ -130,7 +127,6 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
     }
   }
 
-  @NotNull
   @Override
   public DegreeBounds getDegreeBounds() {
     return new DegreeBounds(1, 2, 1, 3);
@@ -139,8 +135,7 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
   /**
    * @return model with prefixes added This function adds prefixes required
    */
-  @NotNull
-  private Model setPrefixes(@NotNull Model model) {
+  private Model setPrefixes(Model model) {
     String gn = "http://www.geonames.org/ontology#";
     String owl = "http://www.w3.org/2002/07/owl#";
 
@@ -149,12 +144,12 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
     return model;
   }
 
-  private AMapping getMappingFromConfiguration(@NotNull Configuration cfg) {
+  private AMapping getMappingFromConfiguration(Configuration cfg) {
     AMapping mapping = Controller.getMapping(cfg).getAcceptanceMapping();
     return applySelectModeToMapping(mapping);
   }
 
-  private AMapping applySelectModeToMapping(@NotNull AMapping mapping) {
+  private AMapping applySelectModeToMapping(AMapping mapping) {
     AMapping result = mapping;
     // parameter selectMode is optional, defaults to "all"
     final SELECT selectMode = getParameterMap().getOptional(SELECT_MODE)
@@ -184,13 +179,13 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
     return result;
   }
 
-  private void addLinksToModel(DATASET_PART linksPart, @NotNull Model model, @NotNull AMapping mapping) {
+  private void addLinksToModel(DATASET_PART linksPart, Model model, AMapping mapping) {
     // parameter linkingPredicate must always be declared
     final Property linkingPredicate = getParameterMap().get(LINKING_PREDICATE).as(Property.class);
     addLinksToModel(linksPart, model, mapping, linkingPredicate);
   }
 
-  private void addLinksToModel(DATASET_PART linksPart, @NotNull Model model, @NotNull AMapping mapping, Property linkingPredicate) {
+  private void addLinksToModel(DATASET_PART linksPart, Model model, AMapping mapping, Property linkingPredicate) {
     // parameter linkingPredicate must always be declared
     for (String s : mapping.getMap().keySet()) {
       Resource subject = model.createResource(s);
@@ -205,8 +200,7 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
     }
   }
 
-  @NotNull
-  private ACache modelToCache(@NotNull Model m) {
+  private ACache modelToCache(Model m) {
     ACache cache = new MemoryCache();
     m.listStatements()
       .filterDrop(stmt -> stmt.getObject().isAnon())
@@ -216,8 +210,7 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
 
 
 //  @Override
-//  public @NotNull
-//  ParameterMap selfConfig(Model source, Model target) {
+//  public //  ParameterMap selfConfig(Model source, Model target) {
 //    return ParameterMap.EMPTY_INSTANCE;
 //  }
 

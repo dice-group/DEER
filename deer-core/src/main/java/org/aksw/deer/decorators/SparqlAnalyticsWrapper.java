@@ -12,7 +12,6 @@ import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -33,15 +32,14 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionNo
   public static final Property JSON_OUTPUT = DEER.property("jsonOutput");
 
   @Override
-  public @NotNull
-  ValidatableParameterMap createParameterMap() {
+  public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
       .declareProperty(SPARQL_SELECT_QUERY)
       .declareProperty(JSON_OUTPUT)
       .build();
   }
 
-  private void applyTriggered(@NotNull Resource id, @NotNull List<Model> in, @NotNull List<Model> out) {
+  private void applyTriggered(Resource id, List<Model> in, List<Model> out) {
     Dataset dataset = DatasetFactory.createGeneral();
     for (int i = 0; i < in.size(); i++) {
       dataset.addNamedModel(DEER.resource("inputGraph" + i).getURI(), in.get(i));
@@ -65,7 +63,6 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionNo
     logger.info("AnalyticsWrapper {} keeping notes", getId());
   }
 
-  @NotNull
   @Override
   public DeerExecutionNode wrap(DeerExecutionNode executionNode) {
     if (executionNode instanceof Parameterized) {
@@ -81,7 +78,7 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionNo
       super(other);
     }
 
-    public List<Model> apply(@NotNull List<Model> in) {
+    public List<Model> apply(List<Model> in) {
       List<Model> out = super.apply(in);
       applyTriggered(getWrapped().getId(), in, out);
       return out;
@@ -95,7 +92,7 @@ public class SparqlAnalyticsWrapper extends AbstractParameterizedDeerExecutionNo
       super(other);
     }
 
-    public List<Model> apply(@NotNull List<Model> in) {
+    public List<Model> apply(List<Model> in) {
       List<Model> out = super.apply(in);
       applyTriggered(getWrapped().getId(), in, out);
       return out;

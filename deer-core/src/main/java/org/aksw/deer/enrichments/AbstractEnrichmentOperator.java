@@ -5,23 +5,20 @@ import org.aksw.faraday_cage.engine.AbstractExecutionNode;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.jetbrains.annotations.NotNull;
 
 /**
  */
 public abstract class AbstractEnrichmentOperator extends AbstractExecutionNode.WithImplicitCloning<Model> implements EnrichmentOperator {
 
-  @NotNull
   @Override
   public DegreeBounds getDegreeBounds() {
     return new DegreeBounds(1,1,1,1);
   }
 
-  protected final Model deepCopy(Model model) {
+  public final Model deepCopy(Model model) {
     return ModelFactory.createDefaultModel().add(model);
   }
 
-  @NotNull
   @Override
   public Resource getType() {
     return DEER.resource(this.getClass().getSimpleName());

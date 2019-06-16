@@ -14,8 +14,6 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginManager;
@@ -24,8 +22,14 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.topbraid.shacl.validation.sparql.AbstractSPARQLExecutor;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import static org.fusesource.jansi.Ansi.Color.RED;
 import static org.fusesource.jansi.Ansi.ansi;
@@ -74,7 +78,6 @@ public class DeerController {
 
   private static final FaradayCageContext executionContext = Deer.getExecutionContext(pluginManager);
 
-  @NotNull
   public static FaradayCageContext getExecutionContext() {
     return executionContext;
   }
@@ -125,7 +128,6 @@ public class DeerController {
     }
   }
 
-  @Nullable
   private static CommandLine parseCommandLine(String[] args) {
     CommandLineParser parser = new DefaultParser();
     CommandLine cl = null;
@@ -178,12 +180,12 @@ public class DeerController {
     }
   }
 
-  private static void runDeer(@NotNull CompiledExecutionGraph compiledExecutionGraph) {
+  private static void runDeer(CompiledExecutionGraph compiledExecutionGraph) {
     compiledExecutionGraph.andThen(() -> writeAnalytics(Paths.get("deer-analytics.json").toAbsolutePath()));
     executionContext.run(compiledExecutionGraph);
   }
 
-  public static void writeAnalytics(@NotNull Path analyticsFile) {
+  public static void writeAnalytics(Path analyticsFile) {
     try {
       logger.info("Trying to write analytics data to " + analyticsFile);
       BufferedWriter writer = Files.newBufferedWriter(analyticsFile, StandardOpenOption.WRITE, StandardOpenOption.CREATE);

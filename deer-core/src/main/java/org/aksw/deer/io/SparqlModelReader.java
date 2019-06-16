@@ -8,7 +8,6 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
-import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +33,7 @@ public class SparqlModelReader extends AbstractModelReader {
 
 
   @Override
-  public @NotNull
-  ValidatableParameterMap createParameterMap() {
+  public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
       .declareProperty(FROM_ENDPOINT)
       .declareProperty(USE_SPARQL_CONSTRUCT)

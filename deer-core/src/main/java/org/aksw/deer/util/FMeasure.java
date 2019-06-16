@@ -1,7 +1,6 @@
 package org.aksw.deer.util;
 
 import org.apache.jena.rdf.model.Model;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Helper class for FMeasure computation.
@@ -14,7 +13,7 @@ public class FMeasure {
   private double r;
   private double f;
 
-  public FMeasure(@NotNull Model current, @NotNull Model target) {
+  public FMeasure(Model current, Model target) {
     this(computePrecision(current, target), computeRecall(current, target));
   }
 
@@ -38,15 +37,14 @@ public class FMeasure {
     return f;
   }
 
-  private static double computePrecision(@NotNull Model current, Model target) {
+  private static double computePrecision(Model current, Model target) {
     return (double) current.intersection(target).size() / (double) current.size();
   }
 
-  private static double computeRecall(@NotNull Model current, @NotNull Model target) {
+  private static double computeRecall(Model current, Model target) {
     return (double) current.intersection(target).size() / (double) target.size();
   }
 
-  @NotNull
   @Override
   public String toString() {
     return "FMeasure [p=" + p + ", r=" + r + ", f=" + f + "]";

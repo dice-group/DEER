@@ -9,7 +9,6 @@ import org.apache.jena.rdf.model.AnonId;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +20,6 @@ public class DereferencingEnrichmentOperatorTest {
 
   private static int PORT;
   private static String EX;
-  @NotNull
   private static String CFG = "http://example.org/";
 
   @Before
@@ -30,7 +28,7 @@ public class DereferencingEnrichmentOperatorTest {
     EX = "http://localhost:" + PORT + "/";
   }
 
-  private FusekiServer setupServer(@NotNull Resource...rest) {
+  private FusekiServer setupServer(Resource...rest) {
     FusekiServer.Builder builder = FusekiServer.create();
     Arrays.stream(rest).forEach(resource -> {
       String uri = resource.getURI();

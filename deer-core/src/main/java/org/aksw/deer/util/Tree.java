@@ -1,8 +1,5 @@
 package org.aksw.deer.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,15 +10,12 @@ import java.util.Set;
  */
 public class Tree<T> {
 
-  @Nullable
   private List<Tree<T>> children = null;//new ArrayList<Tree<T>>();
-  @Nullable
   private Tree<T> parent;
-  @Nullable
   private T value;
 
 
-  public Tree(Tree<T> parent, T value, @Nullable List<Tree<T>> childrenlist) {
+  public Tree(Tree<T> parent, T value, List<Tree<T>> childrenlist) {
     this.parent = parent;
     this.value = value;
     if (childrenlist != null) {
@@ -69,7 +63,7 @@ public class Tree<T> {
     return leaves;
   }
 
-  public void addChild(@NotNull Tree<T> child) {
+  public void addChild(Tree<T> child) {
     if (children == null) {
       children = new ArrayList<Tree<T>>();
     }
@@ -81,12 +75,10 @@ public class Tree<T> {
     children.remove(child);
   }
 
-  @Nullable
   public Tree<T> getParent() {
     return parent;
   }
 
-  @Nullable
   public List<Tree<T>> getchildren() {
     return children;
   }
@@ -110,7 +102,6 @@ public class Tree<T> {
 //		}
 //	}
 
-  @Nullable
   public T getValue() {
     return value;
   }

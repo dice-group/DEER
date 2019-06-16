@@ -4,7 +4,6 @@ import org.aksw.deer.enrichments.AbstractEnrichmentOperator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 import org.pf4j.Plugin;
 import org.pf4j.PluginWrapper;
@@ -17,7 +16,7 @@ public class ExampleEnrichmentPlugin extends Plugin {
 
     private static final Logger logger = LoggerFactory.getLogger(ExampleEnrichmentPlugin.class);
 
-    public ExampleEnrichmentPlugin(@NotNull PluginWrapper wrapper) {
+    public ExampleEnrichmentPlugin(PluginWrapper wrapper) {
         super(wrapper);
     }
 
@@ -34,9 +33,8 @@ public class ExampleEnrichmentPlugin extends Plugin {
     @Extension
     public static class ExampleEnrichmentOperator extends AbstractEnrichmentOperator {
 
-        @NotNull
         @Override
-        protected List<Model> safeApply(@NotNull List<Model> models) {
+        protected List<Model> safeApply(List<Model> models) {
             Model model = models.get(0);
             model.setNsPrefix("deer", "http://aksw.org/deer/ontology#");
             Resource resource = model.createResource(model.expandPrefix("deer:examplePlugin"));

@@ -1,6 +1,5 @@
 package org.aksw.deer.server;
 
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -22,7 +21,6 @@ public class RequestHealthChecker extends Thread {
   private static final Logger logger = LoggerFactory.getLogger(RequestHealthChecker.class);
 
   private ConcurrentMap<String, CompletableFuture<Void>> requestsMap;
-  @NotNull
   private Set<String> visited = new HashSet<>();
 
   RequestHealthChecker(ConcurrentMap<String, CompletableFuture<Void>> requestsMap) {
@@ -38,7 +36,7 @@ public class RequestHealthChecker extends Thread {
           try {
             visited.add(requestId);
             request.get();
-          } catch (@NotNull InterruptedException | ExecutionException e) {
+          } catch (InterruptedException | ExecutionException e) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             e.printStackTrace(new PrintStream(baos));
             try {

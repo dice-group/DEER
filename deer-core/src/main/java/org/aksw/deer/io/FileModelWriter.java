@@ -7,7 +7,6 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +27,7 @@ public class FileModelWriter extends AbstractModelWriter {
   public static final Property OUTPUT_FORMAT = DEER.property("outputFormat");
 
   @Override
-  public @NotNull
-  ValidatableParameterMap createParameterMap() {
+  public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
       .declareProperty(OUTPUT_FILE)
       .declareProperty(OUTPUT_FORMAT)
@@ -43,8 +41,7 @@ public class FileModelWriter extends AbstractModelWriter {
   }
 
 
-  @NotNull
-  private Model write(@NotNull Model model) {
+  private Model write(Model model) {
     final String outputFile = injectWorkingDirectory(
       getParameterMap().get(OUTPUT_FILE).asLiteral().getString()
     );

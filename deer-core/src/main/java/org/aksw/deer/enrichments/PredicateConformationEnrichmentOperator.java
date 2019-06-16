@@ -7,7 +7,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.jetbrains.annotations.NotNull;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +31,7 @@ public class PredicateConformationEnrichmentOperator extends AbstractParameteriz
 
 //  private List<Map<Property , RDFNode>> propertyMapping = new ArrayList<>();
 
-//  @NotNull
-//  @Override
+//  //  @Override
 //  public ParameterMap selfConfig(Model source, Model target) {
 //    //@todo improve time complexity to be sub-quadratic
 //    ParameterMap result = createParameterMap();
@@ -55,7 +53,6 @@ public class PredicateConformationEnrichmentOperator extends AbstractParameteriz
 //    return result;
 //  }
 
-  @NotNull
   @Override
   public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
@@ -64,9 +61,8 @@ public class PredicateConformationEnrichmentOperator extends AbstractParameteriz
       .build();
   }
 
-  @NotNull
   @Override
-  protected List<Model> safeApply(@NotNull List<Model> models) {
+  protected List<Model> safeApply(List<Model> models) {
     final Model model = models.get(0);
     final Model conformModel = ModelFactory.createDefaultModel();
     final Map<Property, Property> propertyMapping = new HashMap<>();

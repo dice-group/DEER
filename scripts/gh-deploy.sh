@@ -36,7 +36,7 @@ cd ..
 # Clean out existing contents
 rm -rf out/**/* || exit 0
 
-# compile gitbook
+# compileCanonicalForm gitbook
 # enter manual folder
 cd manual
 # remove old folder if present

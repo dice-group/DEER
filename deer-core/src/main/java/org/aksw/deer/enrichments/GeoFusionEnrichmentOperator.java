@@ -7,8 +7,6 @@ import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.vocabulary.OWL;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +71,6 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
       return geometryModel;
     }
 
-    @NotNull
     @Override
     public String toString() {
       return "CandidateGeometry [subject=" + subject + ", geometryModel=" + geometryModel + "]";
@@ -81,7 +78,6 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
 
   }
 
-  @NotNull
   @Override
   public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
@@ -91,9 +87,8 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
       .build();
   }
 
-  @NotNull
   @Override
-  protected List<Model> safeApply(@NotNull List<Model> models) {
+  protected List<Model> safeApply(List<Model> models) {
     final GeoFusionAction fusionAction = GeoFusionAction.valueOf(
       getParameterMap().get(FUSION_ACTION).asLiteral().getString()
     );
@@ -142,8 +137,7 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
 
     return Lists.newArrayList(targetModel);
   }
-//  @NotNull
-//  @Override
+//  //  @Override
 //  public ParameterMap selfConfig(Model source, Model target) {
 //    ParameterMap result = createParameterMap();
 //    result.setValue(FUSION_ACTION, GeoFusionAction.takeMostDetailed.name());
@@ -152,15 +146,14 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
 //    return result;
 //  }
 
-  @NotNull
   @Override
   public DegreeBounds getDegreeBounds() {
     return new DegreeBounds(2, 2, 1, 1);
   }
 
-  private void fuseCandidateGeometries(@NotNull Model model, @NotNull Model model2, Resource subject, @NotNull List<Resource> sameAsResources,
-                                       @NotNull List<CandidateGeometry> candidateGeometries, @NotNull GeoFusionAction action, boolean mergeOtherStatements,
-                                       @NotNull Model targetModel) {
+  private void fuseCandidateGeometries(Model model, Model model2, Resource subject, List<Resource> sameAsResources,
+                                       List<CandidateGeometry> candidateGeometries, GeoFusionAction action, boolean mergeOtherStatements,
+                                       Model targetModel) {
     CandidateGeometry selectedCandidateGeometry = selectCandidateGeometry(model, candidateGeometries, subject,
       action);
     if (selectedCandidateGeometry != null) {
@@ -202,7 +195,7 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
     }
   }
 
-  private void addNonVisitedResources(@NotNull Model model2, @NotNull Model targetModel, @NotNull List<Resource> visitedResources,
+  private void addNonVisitedResources(Model model2, Model targetModel, List<Resource> visitedResources,
                                       boolean mergeOtherStatements) {
     // add non-visited resources
     Set<Resource> nonVisitedSubjects = model2.listSubjects().toSet();
@@ -218,9 +211,8 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
     }
   }
 
-  @Nullable
-  private CandidateGeometry selectCandidateGeometry(@NotNull Model model, @NotNull List<CandidateGeometry> candidateGeometries,
-                                                    Resource subject, @NotNull GeoFusionAction action) {
+  private CandidateGeometry selectCandidateGeometry(Model model, List<CandidateGeometry> candidateGeometries,
+                                                    Resource subject, GeoFusionAction action) {
     CandidateGeometry selected = null;
     int score = -1; // score for most detailed geometry
     if (action.equals(GeoFusionAction.takeAll)) {
@@ -247,9 +239,8 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
     return selected;
   }
 
-  @NotNull
-  private Model getDroppedGeometries(@NotNull List<CandidateGeometry> candidateGeometries,
-                                     @NotNull CandidateGeometry selectedCandidateGeometry) {
+  private Model getDroppedGeometries(List<CandidateGeometry> candidateGeometries,
+                                     CandidateGeometry selectedCandidateGeometry) {
     Model droppedGeometriesModel = ModelFactory.createDefaultModel();
     for (CandidateGeometry candidateGeometry : candidateGeometries) {
       if (!candidateGeometry.getSubject().equals(selectedCandidateGeometry.getSubject())) {
@@ -259,7 +250,7 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
     return droppedGeometriesModel;
   }
 
-  private int computeCandidateScore(@NotNull Model model, @NotNull CandidateGeometry candidateGeometry) {
+  private int computeCandidateScore(Model model, CandidateGeometry candidateGeometry) {
     NodeIterator latitudeNodes = candidateGeometry.getGeometryModel().listObjectsOfProperty(null,
       new PropertyImpl(model.expandPrefix("geo:lat")));
     NodeIterator longitudeNodes = candidateGeometry.getGeometryModel().listObjectsOfProperty(null,
@@ -294,7 +285,7 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
     return latScore + longScore;
   }
 
-  private Model getGeometry(@NotNull Model model, Resource subject) {
+  private Model getGeometry(Model model, Resource subject) {
     List<Statement> latitudes = model
       .listStatements(subject, new PropertyImpl(model.expandPrefix("geo:lat")), (RDFNode) null).toList();
     List<Statement> longitudes = model
@@ -302,9 +293,8 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
     return ModelFactory.createDefaultModel().add(latitudes).add(longitudes);
   }
 
-  @NotNull
-  private List<CandidateGeometry> getCandidateGeometries(@NotNull Model sourceA, @NotNull Model sourceB, Resource subject,
-                                                         @NotNull List<Resource> sameAsResources) {
+  private List<CandidateGeometry> getCandidateGeometries(Model sourceA, Model sourceB, Resource subject,
+                                                         List<Resource> sameAsResources) {
     List<CandidateGeometry> candidateGeometries = Lists.newArrayList();
     Model sourceAGeometry = getGeometry(sourceA, subject);
     if (!sourceAGeometry.isEmpty()) {
@@ -322,7 +312,7 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
     return candidateGeometries;
   }
 
-  private List<Resource> getSameAsResources(@NotNull Model sourceA, Resource subject) {
+  private List<Resource> getSameAsResources(Model sourceA, Resource subject) {
     return sourceA.listObjectsOfProperty(subject, OWL.sameAs)
       .filterKeep(RDFNode::isURIResource).mapWith(RDFNode::asResource).toList();
   }

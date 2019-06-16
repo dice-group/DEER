@@ -10,20 +10,16 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author sherif
  */
 public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
 
-  @Nullable
   public ParameterizedDeerExecutionNode module = null;
   public double fitness = -Double.MAX_VALUE;
   public Model inputModel = ModelFactory.createDefaultModel();
   public Model outputModel = ModelFactory.createDefaultModel();
-  @Nullable
   public Model configModel = ModelFactory.createDefaultModel();
   public Resource inputDataset = ResourceFactory.createResource();
   public Resource outputDataset = ResourceFactory.createResource();
@@ -46,7 +42,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
    * @author sherif
    */
   public RefinementNodeOld(ParameterizedDeerExecutionNode module, double fitness, Model inputModel, Model outputModel,
-                           Resource inputDataset, Resource outputDataset, @Nullable Model configModel) {
+                           Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     this.module = module;
     this.fitness = fitness;
@@ -65,7 +61,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
 
 
   public RefinementNodeOld(ParameterizedDeerExecutionNode operator, Model inputModel, Model outputModel,
-                           Resource inputDataset, Resource outputDataset, @Nullable Model configModel) {
+                           Resource inputDataset, Resource outputDataset, Model configModel) {
     super();
     if (fitness == -2) {
       status = NodeStatus.DEAD;
@@ -90,7 +86,6 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
-  @NotNull
   @Override
   public String toString() {
     return module.getClass().getSimpleName() + "(" + fitness + ")";
@@ -107,7 +102,7 @@ public class RefinementNodeOld implements Comparable<RefinementNodeOld> {
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
   @Override
-  public int compareTo(@NotNull RefinementNodeOld o) {
+  public int compareTo(RefinementNodeOld o) {
     return (int) (fitness - o.fitness);
 //		if(fitness > o.fitness){
 //			return 1;
