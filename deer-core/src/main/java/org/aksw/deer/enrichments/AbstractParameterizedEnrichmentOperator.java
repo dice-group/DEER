@@ -8,7 +8,7 @@ import org.apache.jena.rdf.model.Resource;
 
 /**
  */
-public abstract class AbstractParameterizedEnrichmentOperator extends AbstractParameterizedExecutionNode.WithImplicitCloning<Model> implements ParameterizedEnrichmentOperator {
+public abstract class AbstractParameterizedEnrichmentOperator extends AbstractParameterizedExecutionNode<Model> implements ParameterizedEnrichmentOperator {
 
   @Override
   public DegreeBounds getDegreeBounds() {

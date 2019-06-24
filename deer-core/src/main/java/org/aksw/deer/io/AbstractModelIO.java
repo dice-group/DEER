@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  *
  *
  */
-public abstract class AbstractModelIO extends AbstractParameterizedExecutionNode.WithImplicitCloning<Model> implements ParameterizedDeerExecutionNode {
+public abstract class AbstractModelIO extends AbstractParameterizedExecutionNode<Model> implements ParameterizedDeerExecutionNode {
 
   private static Supplier<String> workingDirectorySupplier = () -> "";
 

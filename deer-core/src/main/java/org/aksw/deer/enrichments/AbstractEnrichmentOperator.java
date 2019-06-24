@@ -8,7 +8,7 @@ import org.apache.jena.rdf.model.Resource;
 
 /**
  */
-public abstract class AbstractEnrichmentOperator extends AbstractExecutionNode.WithImplicitCloning<Model> implements EnrichmentOperator {
+public abstract class AbstractEnrichmentOperator extends AbstractExecutionNode<Model> implements EnrichmentOperator {
 
   @Override
   public DegreeBounds getDegreeBounds() {

@@ -3,11 +3,12 @@ package org.aksw.deer.enrichments;
 import com.google.common.collect.Lists;
 import org.aksw.deer.vocabulary.DBpedia;
 import org.aksw.deer.vocabulary.DEER;
-import org.aksw.deer.vocabulary.SCMSANN;
+import org.aksw.deer.vocabulary.NIFCORE;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.aksw.fox.binding.FoxApi;
 import org.aksw.fox.binding.FoxParameter;
 import org.aksw.fox.binding.IFoxApi;
+import org.aksw.fox.data.Entity;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -137,13 +138,13 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
               resultModel.add(getNE(namedEntityModel, subject));
               break;
             case LOCATION:
-              resultModel.add(getNE(namedEntityModel, subject, SCMSANN.LOCATION));
+              resultModel.add(getNE(namedEntityModel, subject, NIFCORE.LOCATION));
               break;
             case PERSON:
-              resultModel.add(getNE(namedEntityModel, subject, SCMSANN.PERSON));
+              resultModel.add(getNE(namedEntityModel, subject, NIFCORE.PERSON));
               break;
             case ORGANIZATION:
-              resultModel.add(getNE(namedEntityModel, subject, SCMSANN.ORGANIZATION));
+              resultModel.add(getNE(namedEntityModel, subject, NIFCORE.ORGANIZATION));
               break;
           }
         }
@@ -168,7 +169,7 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
    * @return model of all NEs contained in the input model
    */
   private List<Statement> getNE(Model namedEntityModel, Resource subject) {
-    return namedEntityModel.listObjectsOfProperty(SCMSANN.MEANS)
+    return namedEntityModel.listObjectsOfProperty(NIFCORE.MEANS)
       .filterKeep(RDFNode::isResource)
       .mapWith(RDFNode::asResource)
       .filterDrop(r -> askEndPoint && !isPlace(r))
@@ -233,6 +234,33 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
       SortedMap<Double, Property> ranks = rank(model);
       return ranks.get(ranks.firstKey());
     }
+  }
+
+  public static void main(String[] args) throws MalformedURLException {
+    Model namedEntityModel = ModelFactory.createDefaultModel();
+    final IFoxApi fox = new FoxApi()
+      .setApiURL(new URL("http://localhost:4444/fox"))
+//      .setApiURL(new URL("http://fox-demo.aksw.org/fox"))
+      .setLightVersion(FoxParameter.FOXLIGHT.ENOpenNLP)
+      .setTask(FoxParameter.TASK.NER)
+      .setOutputFormat(FoxParameter.OUTPUT.TURTLE)
+      .setLang(FoxParameter.LANG.EN)
+      .setInput("The president of the United States (POTUS)[B] is the head of state and head of government of the United States of America. The president directs the executive branch of the federal government and is the commander-in-chief of the United States Armed Forces.\n" +
+        "In contemporary times, the president is looked upon as one of the world's most powerful political figures as the leader of the only remaining global superpower.[12][13][14][15] The role includes responsibility for the world's most expensive military, which has the second largest nuclear arsenal. The president also leads the nation with the largest economy by nominal GDP. The president possesses significant domestic and international hard and soft power.\n" +
+        "Article II of the Constitution establishes the executive branch of the federal government. It vests the executive power of the United States in the president. The power includes the execution and enforcement of federal law, alongside the responsibility of appointing federal executive, diplomatic, regulatory and judicial officers, and concluding treaties with foreign powers with the advice and consent of the Senate. The president is further empowered to grant federal pardons and reprieves, and to convene and adjourn either or both houses of Congress under extraordinary circumstances.[16] The president directs the foreign and domestic policies of the United States, and takes an active role in promoting his policy priorities to members of Congress.[17] In addition, as part of the system of checks and balances, Article I, Section 7 of the Constitution gives the president the power to sign or veto federal legislation. The power of the presidency has grown substantially since its formation, as has the power of the federal government as a whole.[18]\n" +
+        "Through the Electoral College, registered voters indirectly elect the president and vice president to a four-year term. This is the only federal election in the United States which is not decided by popular vote.[19] Nine vice presidents became president by virtue of a president's intra-term death or resignation.[C]")
+      .send();
+    String trim = fox.responseAsFile().trim();
+    logger.info(trim);
+    fox.responseAsClasses()
+      .getEntities().stream()
+      .map(Entity::getUri)
+      .map(ResourceFactory::createResource)
+      .forEach(x -> namedEntityModel.add(ResourceFactory.createResource("urn:ex:test"), ResourceFactory.createProperty("urn:ex:relatedTo"), x));
+//    namedEntityModel.read(new StringReader(trim), null, "TTL");
+//    NEREnrichmentOperator ner = new NEREnrichmentOperator();
+//    ner.getNE(namedEntityModel, ResourceFactory.createResource("urn:ex:test"));
+    namedEntityModel.write(System.out, "TTL");
   }
 
 }
