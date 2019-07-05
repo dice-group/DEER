@@ -1,4 +1,4 @@
-package org.aksw.deer.learning.old;
+package org.aksw.deer.old_learning;
 
 public interface PipelineLearner {
 

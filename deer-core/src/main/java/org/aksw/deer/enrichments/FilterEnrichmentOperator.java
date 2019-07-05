@@ -1,6 +1,8 @@
 
 package org.aksw.deer.enrichments;
 
+import org.aksw.deer.learning.ReverseLearnable;
+import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -15,7 +17,7 @@ import java.util.Optional;
 /**
  */
 @Extension
-public class FilterEnrichmentOperator extends AbstractParameterizedEnrichmentOperator {
+public class FilterEnrichmentOperator extends AbstractParameterizedEnrichmentOperator implements ReverseLearnable, SelfConfigurable {
 
   private static final Logger logger = LoggerFactory.getLogger(FilterEnrichmentOperator.class);
 
@@ -56,51 +58,61 @@ public class FilterEnrichmentOperator extends AbstractParameterizedEnrichmentOpe
       getParameterMap().listPropertyObjects(SELECTOR)
         .map(RDFNode::asResource)
         .forEach(selectorResource -> {
-        RDFNode s = selectorResource.getPropertyResourceValue(SUBJECT);
-        RDFNode p = selectorResource.getPropertyResourceValue(PREDICATE);
-        Statement o = selectorResource.getProperty(OBJECT);
-        logger.info("Filtering " + getId() + " for triple pattern {} {} {} ...",
-          s == null ? "[]" : "<" + s.asResource().getURI() + ">",
-          p == null ? "[]" : "<" + p.asResource().getURI() + ">",
-          o == null ? "[]" : "(<)(\")" + o.getObject().toString() + "(\")(>)");
-        SimpleSelector selector = new SimpleSelector(
-          s == null ? null : s.asResource(),
-          p == null ? null : p.as(Property.class),
-          o
-        );
-        resultModel.add(model.listStatements(selector));
-      });
+          RDFNode s = selectorResource.getPropertyResourceValue(SUBJECT);
+          RDFNode p = selectorResource.getPropertyResourceValue(PREDICATE);
+          Resource o = selectorResource.getPropertyResourceValue(OBJECT);
+          logger.info("Filtering " + getId() + " for triple pattern {} {} {} ...",
+            s == null ? "[]" : "<" + s.asResource().getURI() + ">",
+            p == null ? "[]" : "<" + p.asResource().getURI() + ">",
+            o == null ? "[]" : "(<)(\")" + o.toString() + "(\")(>)");
+          SimpleSelector selector = new SimpleSelector(
+            s == null ? null : s.asResource(),
+            p == null ? null : p.as(Property.class),
+            o
+          );
+          resultModel.add(model.listStatements(selector));
+        });
     }
     return resultModel;
   }
 
-//  //  @Override
-//  public ParameterMap selfConfig(Model source, Model target) {
-//    ParameterMap result = createParameterMap();
-//    Model intersection = source.intersection(target);
-//    if (intersection.isEmpty()) {
-//      return result;
-//    }
-//    List<Map<Property, RDFNode>> selectors = new ArrayList<>();
-//    intersection.listStatements().forEachRemaining(stmt -> {
-//      Map<Property, RDFNode> selectorMap = new HashMap<>();
-//      selectorMap.put(PREDICATE, stmt.getPredicate());
-//      selectors.add(selectorMap);
-//    });
-//    result.setValue(SELECTORS, selectors);
-//    return result;
-//  }
+  @Override
+  public double predictApplicability(List<Model> inputs, Model target) {
+    // size of target < input && combined recall of input/target is high.
+    Model in = inputs.get(0);
+    double propertyIntersectionSize = target.listStatements()
+      .mapWith(Statement::getPredicate)
+      .filterKeep(p -> in.contains(null, p)).toList().size();
+    double stmtIntersectionSize = target.listStatements()
+      .filterKeep(in::contains).toList().size();
+    double propertyRecall = propertyIntersectionSize/target.size();
+    double stmtRecall = stmtIntersectionSize/target.size();
+    return stmtRecall * 0.6 + propertyRecall * 0.3 + (in.size()-target.size())/(double)in.size() * 0.1;
+  }
 
+  @Override
+  public List<Model> reverseApply(List<Model> inputs, Model target) {
+    return List.of(ModelFactory.createDefaultModel().add(target).add(inputs.get(0)));
+  }
 
+  @Override
+  public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target, ValidatableParameterMap prototype) {
+    ValidatableParameterMap result = createParameterMap();
+    Model in = inputs.get(0);
+    target.listStatements()
+      .mapWith(Statement::getPredicate)
+      .filterKeep(p -> in.contains(null, p))
+      .toSet()
+      .forEach(p -> {
+        result.add(SELECTOR, result.createResource()
+          .addProperty(PREDICATE, p));
+      });
+    return result.init();
+  }
 
-//
-//  private static final Parameter SELECTORS = new DeerParameter(
-//    "selectors",
-//    new DictListParameterConversion(SUBJECT, PREDICATE, OBJECT), false
-//  );
-//
-//  private static final Parameter SPARQL_CONSTRUCT_QUERY = new DeerParameter(
-//    "sparqlConstructQuery", StringParameterConversion.getInstance(), false);
-
+  @Override
+  public DegreeBounds getLearnableDegreeBounds() {
+    return getDegreeBounds();
+  }
 
 }

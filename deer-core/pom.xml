@@ -33,7 +33,7 @@
     <dependency>
       <groupId>org.aksw.limes</groupId>
       <artifactId>limes-core</artifactId>
-      <version>1.6.0</version>
+      <version>1.6.2</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
@@ -202,6 +202,12 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20180813</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.jenetics</groupId>
+      <artifactId>jenetics</artifactId>
+      <version>4.4.0</version>
     </dependency>
 
     <dependency>

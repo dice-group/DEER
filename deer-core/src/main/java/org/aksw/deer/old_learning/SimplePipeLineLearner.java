@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.aksw.deer.learning.old;
+package org.aksw.deer.old_learning;
 
 
 /**
@@ -99,7 +99,7 @@ public class SimplePipeLineLearner implements PipelineLearner {
 //  private Tree<RefinementNodeOld> expandNode(Tree<RefinementNodeOld> root) {
 //    for (IEnrichmentOperator module : MODULES) {
 //      Model inputModel = root.getValue().outputModel;
-//      Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
+//      Map<String, String> parameters = module.learnParameterMap(inputModel, targetModel);
 //      Resource inputDataset = root.getValue().outputDataset;
 //      Model configMdl = ModelFactory.createDefaultModel();
 //      RefinementNodeOld node = new RefinementNodeOld();

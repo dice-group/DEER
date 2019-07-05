@@ -1,6 +1,10 @@
 package org.aksw.deer.enrichments;
 
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multiset;
+import org.aksw.deer.learning.ReverseLearnable;
+import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.rdf.model.*;
@@ -17,7 +21,7 @@ import java.util.Objects;
  * 
  */
 @Extension
-public class AuthorityConformationEnrichmentOperator extends AbstractParameterizedEnrichmentOperator {
+public class AuthorityConformationEnrichmentOperator extends AbstractParameterizedEnrichmentOperator implements ReverseLearnable, SelfConfigurable {
 
   private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 
@@ -61,50 +65,69 @@ public class AuthorityConformationEnrichmentOperator extends AbstractParameteriz
     return Lists.newArrayList(conformModel);
   }
 
-//
-//  /**
-//   * @return Most redundant source URI in the input model
-//   */
-//  private String getMostRedundantUri(Model m) {
-//    Multiset<Resource> subjectsMultiset = HashMultiset.create();
-//    ResIterator listSubjects = m.listSubjects();
-//    while (listSubjects.hasNext()) {
-//      String authority = listSubjects.next().toString();
-//      if (authority.contains("#")) {
-//        authority = authority.substring(0, authority.indexOf("#"));
-//      } else {
-//        authority = authority.substring(0, authority.lastIndexOf("/"));
-//      }
-//      subjectsMultiset.add(ResourceFactory.createResource(authority));
-//    }
-//    String result = "";
-//    int max = 0;
-//    for (Resource r : subjectsMultiset) {
-//      int i = subjectsMultiset.count(r);
-//      if (i > max) {
-//        max = i;
-//        result = r.getURI();
-//      }
-//    }
-//    return result;
-//  }
-//
-//  /**
-//   * Self configuration
-//   * Find source/target URI as the most redundant URIs
-//   *
-//   * @return Map of (key, value) pairs of self configured parameters
-//   */
-//  //  @Override
-//  public ParameterMap selfConfig(Model source, Model target) {
-//    ParameterMap parameters = createParameterMap();
-//    String s = getMostRedundantUri(source);
-//    String t = getMostRedundantUri(target);
-//    if (!Objects.equals(s, t)) {
-//      parameters.setValue(SOURCE_AUTHORITY, s);
-//      parameters.setValue(TARGET_AUTHORITY, s);
-//    }
-//    return parameters;
-//  }
+  @Override
+  public double predictApplicability(List<Model> inputs, Model target) {
+    return learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION).count() > 0 ? 1 : 0;
+  }
+
+  @SuppressWarnings("Duplicates")
+  @Override
+  public List<Model> reverseApply(List<Model> inputs, Model target) {
+    ValidatableParameterMap reverseParameterMap = createParameterMap();
+    learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION)
+      .forEach(r -> reverseParameterMap.add(OPERATION, reverseParameterMap.createResource()
+        .addProperty(SOURCE_AUTHORITY, r.asResource().getPropertyResourceValue(TARGET_AUTHORITY))
+        .addProperty(TARGET_AUTHORITY, r.asResource().getPropertyResourceValue(SOURCE_AUTHORITY))
+      ));
+    initParameters(reverseParameterMap.init());
+    return safeApply(List.of(target));
+  }
+
+  @Override
+  public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target, ValidatableParameterMap prototype) {
+    ValidatableParameterMap parameters = createParameterMap();
+    String s = getMostRedundantUri(inputs.get(0));
+    String t = getMostRedundantUri(target);
+    if (!Objects.equals(s, t)) {
+      parameters.add(OPERATION, parameters.createResource()
+        .addProperty(SOURCE_AUTHORITY, parameters.createResource(s))
+        .addProperty(TARGET_AUTHORITY, parameters.createResource(t))
+      );
+    }
+    return parameters.init();
+  }
+
+  @Override
+  public DegreeBounds getLearnableDegreeBounds() {
+    return getDegreeBounds();
+  }
+
+  /**
+   * @return Most redundant source URI in the input model
+   */
+  private String getMostRedundantUri(Model m) {
+    Multiset<Resource> subjectsMultiset = HashMultiset.create();
+    ResIterator listSubjects = m.listSubjects();
+    while (listSubjects.hasNext()) {
+      String authority = listSubjects.next().toString();
+      if (authority.contains("#")) {
+        authority = authority.substring(0, authority.indexOf("#")+1);
+      } else {
+        authority = authority.substring(0, authority.lastIndexOf("/")+1);
+      }
+      subjectsMultiset.add(ResourceFactory.createResource(authority));
+    }
+    String result = "";
+    int max = 0;
+    for (Resource r : subjectsMultiset) {
+      int i = subjectsMultiset.count(r);
+      if (i > max) {
+        max = i;
+        result = r.getURI();
+      }
+    }
+    return result;
+  }
+
 
 }

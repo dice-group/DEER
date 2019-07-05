@@ -1,19 +1,21 @@
 package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
+import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.AnonId;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.StringReader;
 import java.util.Arrays;
+import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DereferencingEnrichmentOperatorTest {
@@ -22,10 +24,39 @@ public class DereferencingEnrichmentOperatorTest {
   private static String EX;
   private static String CFG = "http://example.org/";
 
+  private DereferencingEnrichmentOperator op;
+  private Model input, expected;
+  private ValidatableParameterMap expectedParameters;
+  private FusekiServer fusekiServer;
+
   @Before
-  public void prepareServer() {
+  public void setUp() {
     PORT = WebLib.choosePort();
     EX = "http://localhost:" + PORT + "/";
+    DereferencingEnrichmentOperator.setDefaultLookupPrefix(EX);
+    input = ModelFactory.createDefaultModel();
+    expected = ModelFactory.createDefaultModel();
+    input.read(new StringReader(
+      "@prefix ex: <" + EX + "> ." +
+        "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ." +
+        "ex:subject rdfs:seeAlso <" + EX + "birch?default> ."
+    ), null, "TTL");
+    Model lookup = ModelFactory.createDefaultModel();
+    Resource birch = lookup.createResource(EX + "birch?default");
+    lookup.add(birch,
+      lookup.createProperty(EX + "brinellHardness"),
+      lookup.createTypedLiteral(27));
+    fusekiServer = setupServer(birch);
+    expected.add(input);
+    expected.add(lookup);
+    op = new DereferencingEnrichmentOperator();
+    expectedParameters = op.createParameterMap();
+    expectedParameters.add(DereferencingEnrichmentOperator.OPERATION, expectedParameters.createResource()
+      .addProperty(DereferencingEnrichmentOperator.DEREFERENCING_PROPERTY, lookup.createProperty(EX + "brinellHardness"))
+      .addProperty(DereferencingEnrichmentOperator.LOOKUP_PREFIX, EX)
+    ).init();
+    op.initDegrees(1,1);
+    op.initPluginId(ResourceFactory.createResource("urn:ex/test/dereferencing-test"));
   }
 
   private FusekiServer setupServer(Resource...rest) {
@@ -37,6 +68,11 @@ public class DereferencingEnrichmentOperatorTest {
     FusekiServer server = builder.port(PORT).build().start();
     Lib.sleep(100);
     return server;
+  }
+
+  @After
+  public void tearDown() {
+    fusekiServer.stop();
   }
 
   @Test
@@ -55,19 +91,12 @@ public class DereferencingEnrichmentOperatorTest {
       in.createProperty(CFG + "madeOf"),
       in.createResource(EX + "birch?default"));
 
-    Model lookup = ModelFactory.createDefaultModel();
-    Resource birch = lookup.createResource(EX + "birch?default");
-    lookup.add(birch,
-      lookup.createProperty(EX + "brinellHardness"),
-      lookup.createTypedLiteral(27));
-
-    setupServer(birch);
     DereferencingEnrichmentOperator deo = new DereferencingEnrichmentOperator();
     deo.initPluginId(deoConf); deo.initDegrees(1, 1);
     deo.initParameters(deo.createParameterMap().populate(deoConf).init());
     Model out = deo.safeApply(Lists.newArrayList(in)).get(0);
     //    System.out.println(out);
-    assertTrue("The dereferenced data is in the output", out.contains(in.createResource(CFG + "table"), lookup.createProperty(CFG + "brinellHardness"), lookup.createTypedLiteral(27)));
+    assertTrue("The dereferenced data is in the output", out.contains(in.createResource(EX + "birch?default"), ResourceFactory.createProperty(CFG + "brinellHardness"), ResourceFactory.createTypedLiteral(27)));
   }
 
 
@@ -86,19 +115,12 @@ public class DereferencingEnrichmentOperatorTest {
       in.createProperty(EX + "madeOf"),
       in.createResource(EX + "birch?default"));
 
-    Model lookup = ModelFactory.createDefaultModel();
-    Resource birch = lookup.createResource(EX + "birch?default");
-    lookup.add(birch,
-      lookup.createProperty(EX + "brinellHardness"),
-      lookup.createTypedLiteral(27));
-
-    setupServer(birch);
     DereferencingEnrichmentOperator deo = new DereferencingEnrichmentOperator();
     deo.initParameters(deo.createParameterMap().populate(deoConf).init());
     deo.initPluginId(deoConf); deo.initDegrees(1, 1);
     Model out = deo.safeApply(Lists.newArrayList(in)).get(0);
     //    System.out.println(out);
-    assertTrue("The dereferenced data is in the output", out.contains(in.createResource(EX + "table"), lookup.createProperty(EX + "brinellHardness"), lookup.createTypedLiteral(27)));
+    assertTrue("The dereferenced data is in the output", out.contains(in.createResource(EX + "birch?default"), ResourceFactory.createProperty(EX + "brinellHardness"), ResourceFactory.createTypedLiteral(27)));
   }
 
   @Test
@@ -121,21 +143,40 @@ public class DereferencingEnrichmentOperatorTest {
       in.createProperty(EX + "madeOf"),
       in.createResource(EX + "birch?default"));
 
-    Model lookup = ModelFactory.createDefaultModel();
-    Resource birch = lookup.createResource(EX + "birch?default");
-    lookup.add(birch,
-      lookup.createProperty(EX + "brinellHardness"),
-      lookup.createTypedLiteral(27));
-
-    setupServer(birch);
     DereferencingEnrichmentOperator deo = new DereferencingEnrichmentOperator();
     deo.initParameters(deo.createParameterMap().populate(deoConf).init());
     deo.initPluginId(deoConf); deo.initDegrees(1, 1);
     Model out = deo.safeApply(Lists.newArrayList(in)).get(0);
     //    System.out.println(out);
     assertTrue("The dereferenced data is in the output",
-         out.contains(in.createResource(EX + "table"), lookup.createProperty(EX + "brinellHardness"), lookup.createTypedLiteral(27))
-      && out.contains(in.createResource(EX + "table"), lookup.createProperty(EX + "brinellHardness2"), lookup.createTypedLiteral(27)) );
+         out.contains(in.createResource(EX + "birch?default"), ResourceFactory.createProperty(EX + "brinellHardness"), ResourceFactory.createTypedLiteral(27))
+      && out.contains(in.createResource(EX + "birch?default"), ResourceFactory.createProperty(EX + "brinellHardness2"), ResourceFactory.createTypedLiteral(27)) );
+  }
+
+  @Test
+  public void safeApply() {
+    op.initParameters(expectedParameters);
+    Model actual = op.apply(List.of(input)).get(0);
+    assertTrue("It should dereference birch authority.", expected.isIsomorphicWith(actual));
+  }
+
+  @Test
+  public void predictApplicability() {
+    double applicability = op.predictApplicability(List.of(input), expected);
+    assertEquals("It should detect perfect applicability.", 1.0d, applicability, 0.01d);
+  }
+
+  @Test
+  public void learnParameterMap() {
+    ValidatableParameterMap actualLearned = op.learnParameterMap(List.of(input), expected, null);
+    Resource id = op.getId();
+    assertTrue("It should learn the appropriate configuration", actualLearned.parametrize(id).isIsomorphicWith(expectedParameters.parametrize(id)));
+  }
+
+  @Test
+  public void reverseApply() {
+    Model actual = op.reverseApply(List.of(input), expected).get(0);
+    assertTrue("It should revert the operation.", input.isIsomorphicWith(actual));
   }
 
 }

@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.aksw.deer.learning.old;
+package org.aksw.deer.old_learning;
 
 import org.aksw.deer.util.Tree;
 

@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.aksw.deer.learning.old;
+package org.aksw.deer.old_learning;
 
 /**
  * @author sherif

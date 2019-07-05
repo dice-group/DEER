@@ -138,7 +138,7 @@ public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichment
     return Lists.newArrayList(targetModel);
   }
 //  //  @Override
-//  public ParameterMap selfConfig(Model source, Model target) {
+//  public ParameterMap learnParameterMap(Model source, Model target) {
 //    ParameterMap result = createParameterMap();
 //    result.setValue(FUSION_ACTION, GeoFusionAction.takeMostDetailed.name());
 //    result.setValue(MERGE_OTHER_STATEMENTS, "true");

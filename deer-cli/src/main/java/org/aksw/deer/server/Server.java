@@ -126,6 +126,7 @@ public class Server {
     requests.put(runId, CompletableFuture.completedFuture(null).thenAcceptAsync($->{
       MDC.put("requestId", runId);
       compiledExecutionGraph.run();
+      compiledExecutionGraph.join();
     }));
     MDC.remove("requestId");
     res.status(200);

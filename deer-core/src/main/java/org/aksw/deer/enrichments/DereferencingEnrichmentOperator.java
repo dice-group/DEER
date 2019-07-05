@@ -2,6 +2,9 @@ package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.aksw.deer.learning.ReverseLearnable;
+import org.aksw.deer.learning.SelfConfigurable;
+import org.aksw.deer.vocabulary.DBR;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -17,6 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 /**
@@ -79,7 +84,7 @@ import java.util.stream.Collectors;
  *
  */
 @Extension
-public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrichmentOperator {
+public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrichmentOperator implements ReverseLearnable, SelfConfigurable {
 
 //   * <blockquote>
 //   *     <b>{@code :endpoint} </b>
@@ -103,17 +108,15 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
 
   public static final Property OPERATION = DEER.property("operation");
 
-//  public static final Parameter OPERATIONS = new DeerParameter("operations",
-//    new DictListParameterConversion(LOOKUP_PREFIX, LOOKUP_PROPERTY, DEREFERENCING_PROPERTY,
-//      IMPORT_PROPERTY), true);
-
-  private static final String DEFAULT_LOOKUP_PREFIX = "http://dbpedia.org/resource";
+  private static String DEFAULT_LOOKUP_PREFIX = DBR.getURI();
 
   private static final Set<Property> ignoredProperties = new HashSet<>(Arrays.asList(OWL.sameAs));
 
   private HashMap<OperationGroup, Set<Property[]>> operations;
 
   private Model model;
+
+  private static final ConcurrentMap<Resource, Model> cache = new ConcurrentHashMap<>();
 
   @Override
   public ValidatableParameterMap createParameterMap() {
@@ -133,7 +136,7 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
 //   * @return Map of (key, value) pairs of self configured parameters
 //   */
 //  //  @Override
-//  public ParameterMap selfConfig(Model source, Model target) {
+//  public ParameterMap learnParameterMap(Model source, Model target) {
 //    ParameterMap parameters = createParameterMap();
 //    Set<Property> propertyDifference = getPropertyDifference(source, target);
 //    List<Map<Property, RDFNode>> autoOperations = new ArrayList<>();
@@ -153,20 +156,20 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
     parameters.listPropertyObjects(OPERATION)
       .map(RDFNode::asResource)
       .forEach(op -> {
-      String lookUpPrefix = !op.hasProperty(LOOKUP_PREFIX)
-        ? DEFAULT_LOOKUP_PREFIX : op.getProperty(LOOKUP_PREFIX).getLiteral().getString();
-      Property lookUpProperty = !op.hasProperty(LOOKUP_PROPERTY)
-        ? null : op.getPropertyResourceValue(LOOKUP_PROPERTY).as(Property.class);
-      Property dereferencingProperty = !op.hasProperty(DEREFERENCING_PROPERTY)
-        ? null : op.getPropertyResourceValue(DEREFERENCING_PROPERTY).as(Property.class);
-      Property importProperty = !op.hasProperty(IMPORT_PROPERTY)
-        ? dereferencingProperty : op.getPropertyResourceValue(IMPORT_PROPERTY).as(Property.class);
-      OperationGroup opGroup = new OperationGroup(lookUpProperty, lookUpPrefix);
-      if (!operations.containsKey(opGroup)) {
-        operations.put(opGroup, new HashSet<>());
-      }
-      operations.get(opGroup).add(new Property[]{dereferencingProperty, importProperty});
-    });
+        String lookUpPrefix = !op.hasProperty(LOOKUP_PREFIX)
+          ? DEFAULT_LOOKUP_PREFIX : op.getProperty(LOOKUP_PREFIX).getLiteral().getString();
+        Property lookUpProperty = !op.hasProperty(LOOKUP_PROPERTY)
+          ? null : op.getPropertyResourceValue(LOOKUP_PROPERTY).as(Property.class);
+        Property dereferencingProperty = !op.hasProperty(DEREFERENCING_PROPERTY)
+          ? null : op.getPropertyResourceValue(DEREFERENCING_PROPERTY).as(Property.class);
+        Property importProperty = !op.hasProperty(IMPORT_PROPERTY)
+          ? dereferencingProperty : op.getPropertyResourceValue(IMPORT_PROPERTY).as(Property.class);
+        OperationGroup opGroup = new OperationGroup(lookUpProperty, lookUpPrefix);
+        if (!operations.containsKey(opGroup)) {
+          operations.put(opGroup, new HashSet<>());
+        }
+        operations.get(opGroup).add(new Property[]{dereferencingProperty, importProperty});
+      });
   }
 
   @Override
@@ -186,7 +189,7 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
       .forEach(o -> dereffedPerResource.put(o, getEnrichmentPairsFor(o, ops)));
     for (Statement stmt : candidateNodes) {
       for (Pair<Property, RDFNode> pair : dereffedPerResource.get(stmt.getResource())) {
-        stmt.getSubject().addProperty(pair.getLeft(), pair.getRight());
+        stmt.getResource().addProperty(pair.getLeft(), pair.getRight());
       }
     }
   }
@@ -203,18 +206,12 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
   }
 
   private Model queryResourceModel(Resource o) {
+    if (cache.containsKey(o)) {
+      return cache.get(o);
+    }
     Model result = ModelFactory.createDefaultModel();
     URL url;
     URLConnection conn;
-
-//    try (RDFConnection conn = RDFConnectionRemote
-//      .create()
-//      .destination(o.getURI())
-//      .acceptHeaderGraph("application/rdf+xml")
-//      .build()) {
-//      return conn.fetch();
-//    }
-
     try {
       url = new URL(o.getURI());
     } catch (MalformedURLException e) {
@@ -234,6 +231,7 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+    cache.putIfAbsent(o, result);
     return result;
   }
 
@@ -250,6 +248,52 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
       (m) -> m.listStatements().mapWith(Statement::getPredicate).toSet();
     return Sets.difference(getProperties.apply(target), getProperties.apply(source))
       .stream().filter(p -> !ignoredProperties.contains(p)).collect(Collectors.toSet());
+  }
+
+  @Override
+  public double predictApplicability(List<Model> inputs, Model target) {
+    return learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION).count() > 0 ? 1 : 0;
+  }
+
+  @Override
+  public List<Model> reverseApply(List<Model> inputs, Model target) {
+    Model result = ModelFactory.createDefaultModel();
+    Set<Resource> predicatesForDeletion = learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION)
+      .map(n -> n.asResource().getPropertyResourceValue(DEREFERENCING_PROPERTY))
+      .collect(Collectors.toSet());
+    target.listStatements()
+      .filterDrop(stmt -> stmt.getSubject().getURI().startsWith(DEFAULT_LOOKUP_PREFIX)
+      && predicatesForDeletion.contains(stmt.getPredicate()))
+      .forEachRemaining(result::add);
+    return List.of(result);
+  }
+
+  @Override
+  public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target, ValidatableParameterMap prototype) {
+    Model in = inputs.get(0);
+    ValidatableParameterMap result = createParameterMap();
+    target.listStatements()
+      .filterDrop(stmt -> stmt.getObject().isLiteral())
+      .mapWith(Statement::getResource)
+      .filterKeep(r -> r.getURI().startsWith(DEFAULT_LOOKUP_PREFIX))
+      .forEachRemaining(r -> target.listStatements(r, null, (RDFNode) null)
+        .filterDrop(stmt -> in.contains(r, stmt.getPredicate(), (RDFNode) null))
+        .mapWith(Statement::getPredicate).toSet()
+        .forEach(p -> result.add(OPERATION,
+          result.createResource()
+            .addProperty(LOOKUP_PREFIX, DEFAULT_LOOKUP_PREFIX)
+            .addProperty(DEREFERENCING_PROPERTY, p)
+        )));
+    return result.init();
+  }
+
+  @Override
+  public DegreeBounds getLearnableDegreeBounds() {
+    return getDegreeBounds();
+  }
+
+  static void setDefaultLookupPrefix(String defaultLookupPrefix) {
+    DEFAULT_LOOKUP_PREFIX = defaultLookupPrefix;
   }
 
   private static class OperationGroup {

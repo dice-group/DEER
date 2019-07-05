@@ -1,103 +1,76 @@
 package org.aksw.deer.learning.genetic;
 
-import org.aksw.deer.DeerAnalyticsStore;
 import org.aksw.deer.DeerExecutionNode;
 import org.aksw.deer.ParameterizedDeerExecutionNode;
 import org.aksw.deer.decorators.AbstractDeerExecutionNodeDecorator;
 import org.aksw.deer.decorators.AbstractParameterizedDeerExecutionNodeDecorator;
-import org.aksw.deer.decorators.AbstractParameterizedDeerExecutionNodeWrapper;
-import org.aksw.deer.vocabulary.DEER;
+import org.aksw.deer.learning.EvaluationResult;
+import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.faraday_cage.engine.ExecutionNode;
-import org.aksw.faraday_cage.engine.FaradayCageContext;
 import org.aksw.faraday_cage.engine.Parameterized;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
-import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.json.JSONObject;
-import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  *
  */
-@Extension
-public class SelfConfigurationWrapper extends AbstractParameterizedDeerExecutionNodeWrapper {
+class SelfConfigurationWrapper {
 
   private static final Logger logger = LoggerFactory.getLogger(SelfConfigurationWrapper.class);
 
-  public static final Property SPARQL_SELECT_QUERY = DEER.property("sparqlSelectQuery");
+  private SelfConfigurationWrapper() {
 
-  public static final Property JSON_OUTPUT = DEER.property("jsonOutput");
-
-  @Override
-  public ValidatableParameterMap createParameterMap() {
-    return ValidatableParameterMap.builder()
-      .declareProperty(SPARQL_SELECT_QUERY)
-      .declareProperty(JSON_OUTPUT)
-      .build();
   }
 
-  private void applyTriggered(Resource id, List<Model> in, List<Model> out) {
-    Dataset dataset = DatasetFactory.createGeneral();
-    for (int i = 0; i < in.size(); i++) {
-      dataset.addNamedModel(DEER.resource("inputGraph" + i).getURI(), in.get(i));
-    }
-    for (int i = 0; i < out.size(); i++) {
-      dataset.addNamedModel(DEER.resource("outputGraph" + i).getURI(), out.get(i));
-    }
-    final String query = getParameterMap().get(SPARQL_SELECT_QUERY).asLiteral().getString();
-    final String[] jsonOutput = { getParameterMap().get(JSON_OUTPUT).asLiteral().getString() };
-    QueryExecution queryExecution = QueryExecutionFactory.create(query, dataset);
-    ResultSet resultSet = queryExecution.execSelect();
-    List<String> resultVars = resultSet.getResultVars();
-    resultSet.forEachRemaining(qs ->
-      resultVars.stream()
-        .filter(qs::contains)
-        .forEach(varName ->
-          jsonOutput[0] = jsonOutput[0].replace("?" + varName, "\"" + qs.get(varName).toString() + "\"")
-        )
-    );
-    DeerAnalyticsStore.write(FaradayCageContext.getRunId(), id, new JSONObject(jsonOutput[0]));
-    logger.info("AnalyticsWrapper {} keeping notes", getId());
-  }
-
-  @Override
-  public DeerExecutionNode wrap(DeerExecutionNode executionNode) {
+  static DeerExecutionNode wrap(DeerExecutionNode executionNode, Consumer<EvaluationResult> callback, Model target) {
     if (executionNode instanceof Parameterized) {
-      return new ParameterizedSparqlAnalyticsDecorator((ParameterizedDeerExecutionNode) executionNode);
+      return new SelfConfigurationDecorator((ParameterizedDeerExecutionNode) executionNode, callback, target);
     } else {
-      return new SparqlAnalyticsDecorator(executionNode);
+      return new LearningDecorator(executionNode, callback, target);
     }
   }
 
-  private class SparqlAnalyticsDecorator extends AbstractDeerExecutionNodeDecorator {
+  private static class LearningDecorator extends AbstractDeerExecutionNodeDecorator {
 
-    public SparqlAnalyticsDecorator(ExecutionNode<Model> other) {
+    private final Consumer<EvaluationResult> callback;
+    private final Model target;
+
+    public LearningDecorator(ExecutionNode<Model> other, Consumer<EvaluationResult> callback, Model target) {
       super(other);
+      this.callback = callback;
+      this.target = target;
     }
 
     public List<Model> apply(List<Model> in) {
       List<Model> out = super.apply(in);
-      applyTriggered(getWrapped().getId(), in, out);
+      callback.accept(new EvaluationResult(out.get(0), target));
       return out;
     }
 
   }
 
-  private class ParameterizedSparqlAnalyticsDecorator extends AbstractParameterizedDeerExecutionNodeDecorator {
+  private static class SelfConfigurationDecorator extends AbstractParameterizedDeerExecutionNodeDecorator {
 
-    public ParameterizedSparqlAnalyticsDecorator(ParameterizedDeerExecutionNode other) {
+    private final Consumer<EvaluationResult> callback;
+    private final Model target;
+
+    public SelfConfigurationDecorator(ParameterizedDeerExecutionNode other, Consumer<EvaluationResult> callback, Model target) {
       super(other);
+      this.callback = callback;
+      this.target = target;
     }
 
     public List<Model> apply(List<Model> in) {
+      ValidatableParameterMap parameterMap =
+        ((SelfConfigurable) getWrapped()).learnParameterMap(in, target, null);
+      getWrapped().initParameters(parameterMap);
       List<Model> out = super.apply(in);
-      applyTriggered(getWrapped().getId(), in, out);
+      callback.accept(new EvaluationResult(out.get(0), target));
       return out;
     }
 

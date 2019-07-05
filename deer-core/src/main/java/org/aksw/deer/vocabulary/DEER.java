@@ -4,9 +4,6 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
-/**
- * Vocabulary for http://ns.aksw.org/deer/#
- */
 public class DEER {
 
   public static final String NS = "http://w3id.org/deer/";

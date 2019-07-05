@@ -1,6 +1,8 @@
 package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
+import org.aksw.deer.learning.ReverseLearnable;
+import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.rdf.model.Model;
@@ -11,47 +13,18 @@ import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  */
 @Extension
-public class PredicateConformationEnrichmentOperator extends AbstractParameterizedEnrichmentOperator {
+public class PredicateConformationEnrichmentOperator extends AbstractParameterizedEnrichmentOperator implements ReverseLearnable, SelfConfigurable {
 
   private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 
   public static final Property SOURCE_PREDICATE = DEER.property("sourcePredicate");
   public static final Property TARGET_PREDICATE = DEER.property("targetPredicate");
   public static final Property OPERATION = DEER.property("operation");
-
-//  private static final Parameter PROPERTY_MAPPING = new DeerParameter("propertyMapping",
-//    new DictListParameterConversion(SOURCE, TARGET), true);
-
-//  private List<Map<Property , RDFNode>> propertyMapping = new ArrayList<>();
-
-//  //  @Override
-//  public ParameterMap selfConfig(Model source, Model target) {
-//    //@todo improve time complexity to be sub-quadratic
-//    ParameterMap result = createParameterMap();
-//    List<Map<Property , RDFNode>> propertyDictList = new ArrayList<>();
-//    source.listStatements().forEachRemaining(s -> {
-//      StmtIterator targetIt = target.listStatements(s.getSubject(), null, s.getObject());
-//      if (targetIt.hasNext()) {
-//        Statement t = targetIt.next();
-//        Map<Property, RDFNode> nodeMap = new HashMap<>();
-//        // could be improved by transforming the map to a multiset of POJOs. then, keep X percentile of the multiset
-//        if (Objects.equals(s.getSubject(),t.getSubject())) {
-//          nodeMap.put(SOURCE, s.getPredicate().asResource());
-//          nodeMap.put(TARGET, t.getPredicate().asResource());
-//          propertyDictList.add(nodeMap);
-//        }
-//      }
-//    });
-//    result.setValue(PROPERTY_MAPPING, propertyDictList);
-//    return result;
-//  }
 
   @Override
   public ValidatableParameterMap createParameterMap() {
@@ -82,6 +55,53 @@ public class PredicateConformationEnrichmentOperator extends AbstractParameteriz
       conformModel.add(stmt.getSubject(), p, stmt.getObject());
     });
     return Lists.newArrayList(conformModel);
+  }
+
+  @Override
+  public double predictApplicability(List<Model> inputs, Model target) {
+    return learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION).count() > 0 ? 1 : 0;
+  }
+
+  @SuppressWarnings("Duplicates")
+  @Override
+  public List<Model> reverseApply(List<Model> inputs, Model target) {
+    ValidatableParameterMap reverseParameterMap = createParameterMap();
+    learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION)
+      .forEach(r -> reverseParameterMap.add(OPERATION, reverseParameterMap.createResource()
+        .addProperty(SOURCE_PREDICATE, r.asResource().getPropertyResourceValue(TARGET_PREDICATE))
+        .addProperty(TARGET_PREDICATE, r.asResource().getPropertyResourceValue(SOURCE_PREDICATE))
+      ));
+    initParameters(reverseParameterMap.init());
+    return safeApply(List.of(target));
+  }
+
+  @Override
+  public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target, ValidatableParameterMap prototype) {
+    ValidatableParameterMap result = createParameterMap();
+    Model source = inputs.get(0);
+    Set<Property> seen = new HashSet<>();
+    source.listStatements().forEachRemaining(s -> {
+      if (seen.contains(s.getPredicate())) {
+        return;
+      }
+      seen.add(s.getPredicate());
+      target.listStatements(s.getSubject(), null, s.getObject())
+        .nextOptional()
+        .ifPresent(t -> {
+          if (!Objects.equals(s.getPredicate(), t.getPredicate())) {
+            result.add(OPERATION, result.createResource()
+              .addProperty(SOURCE_PREDICATE, s.getPredicate())
+              .addProperty(TARGET_PREDICATE, t.getPredicate())
+            );
+          }
+        });
+    });
+    return result.init();
+  }
+
+  @Override
+  public DegreeBounds getLearnableDegreeBounds() {
+    return getDegreeBounds();
   }
 
 }

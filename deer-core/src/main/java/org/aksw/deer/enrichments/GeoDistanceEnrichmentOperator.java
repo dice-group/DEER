@@ -37,7 +37,7 @@ public class GeoDistanceEnrichmentOperator extends AbstractParameterizedEnrichme
   }
 
 //  @Override
-//  public //  ParameterMap selfConfig(Model source, Model target) {
+//  public //  ParameterMap learnParameterMap(Model source, Model target) {
 //    return ParameterMap.EMPTY_INSTANCE;
 //  }
 

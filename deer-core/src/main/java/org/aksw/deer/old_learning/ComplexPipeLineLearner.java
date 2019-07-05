@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.aksw.deer.learning.old;
+package org.aksw.deer.old_learning;
 
 
 /**
@@ -60,7 +60,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //    refinementTreeRoot = createRefinementTreeRoot();
 //    TreeX<RefinementNode> mostPromisingNode = null;
 //    if (refinementTreeRoot == expand(refinementTreeRoot, null)) {
-//      logger.error("Learner can not learn any Specs! Stop here.");
+//      logger.error("Learner can not learnParameterMap any Specs! Stop here.");
 //      refinementTreeRoot.print();
 //      return null;
 //    }
@@ -75,7 +75,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //      List<TreeX<RefinementNode>> oldChildren = mostPromisingNode.getchildren();
 //      TreeX<RefinementNode> expandNode = expand(mostPromisingNode, oldChildren);
 //      if (expandNode.getValue() == null || mostPromisingNode == expandNode) {
-//        logger.error("Learner can not learn any more Specs! Stop here.");
+//        logger.error("Learner can not learnParameterMap any more Specs! Stop here.");
 //        //remove expandNode
 //        expandNode.getParent().removeChild(expandNode);
 //        refinementTreeRoot.print();
@@ -259,7 +259,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //  private TreeX<RefinementNode> expandNode(TreeX<RefinementNode> root) {
 //    for (IEnrichmentOperator module : MODULES) {
 //      Model inputModel = root.getValue().getOutputModel();
-//      Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
+//      Map<String, String> parameters = module.learnParameterMap(inputModel, targetModel);
 //      Resource inputDataset = root.getValue().getOutputDataset();
 //      Model configModel = ModelFactory.createDefaultModel();
 //      RefinementNode node = new RefinementNode();
@@ -299,7 +299,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //    RefinementNode right = null;
 //    for (IEnrichmentOperator module : MODULES) {
 //      Model inputModel = rootValue.getOutputModel();
-//      Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
+//      Map<String, String> parameters = module.learnParameterMap(inputModel, targetModel);
 //      logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
 //      if (parameters != null && parameters.size() > 0) { // if not a dead node
 //        module.initDegrees(parameters);
@@ -504,7 +504,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //        continue;
 //      }
 //      Model inputModel = root.getValue().getOutputModel();
-//      Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
+//      Map<String, String> parameters = module.learnParameterMap(inputModel, targetModel);
 //      RefinementNode node = new RefinementNode();
 //      logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
 //      if (parameters == null || parameters.size() == 0) {
@@ -540,7 +540,7 @@ public class ComplexPipeLineLearner implements PipelineLearner {
 //    RefinementNode promisingNode = null;
 //    for (IEnrichmentOperator module : MODULES) {
 //      Model inputModel = root.getValue().getOutputModel();
-//      Map<String, String> parameters = module.selfConfig(inputModel, targetModel);
+//      Map<String, String> parameters = module.learnParameterMap(inputModel, targetModel);
 //      logger.info(module.getClass().getSimpleName() + "' self-config parameter(s):" + parameters);
 //      if (parameters == null || parameters.size() == 0) {
 //        continue; // Dead node
