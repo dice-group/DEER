@@ -96,14 +96,14 @@ public class RandomGenotypeTest {
 
   @Test
   public void constructorTest() {
-    runSimpleExperiment(0.4, 0.5, 0.25);
-//    for (double oF = 0; oF <= 1; oF+=.1) {
-//      for (double mP = 0.1; mP <= 1; mP+=.2) {
-//        for (double mR = 0.1; mR <= 1; mR+=.2) {
-//          runSimpleExperiment(oF, mP, mR);
-//        }
-//      }
-//    }
+//    runSimpleExperiment(0.4, 0.5, 0.25);
+    for (double oF = 0; oF <= 1; oF+=.1) {
+      for (double mP = 0.1; mP <= 1; mP+=.2) {
+        for (double mR = 0.1; mR <= 1; mR+=.2) {
+          runSimpleExperiment(oF, mP, mR);
+        }
+      }
+    }
   }
 
   private void runSimpleExperiment(double oF, double mP, double mR) {
