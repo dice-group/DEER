@@ -96,17 +96,18 @@ public class RandomGenotypeTest {
 
   @Test
   public void constructorTest() {
-    for (double oF = 0; oF <= 1; oF+=.1) {
-      for (double mP = 0.1; mP <= 1; mP+=.2) {
-        for (double mR = 0.1; mR <= 1; mR+=.2) {
-          runSimpleExperiment(oF, mP, mR);
-        }
-      }
-    }
+    runSimpleExperiment(0.4, 0.5, 0.25);
+//    for (double oF = 0; oF <= 1; oF+=.1) {
+//      for (double mP = 0.1; mP <= 1; mP+=.2) {
+//        for (double mR = 0.1; mR <= 1; mR+=.2) {
+//          runSimpleExperiment(oF, mP, mR);
+//        }
+//      }
+//    }
   }
 
   private void runSimpleExperiment(double oF, double mP, double mR) {
-    PopulationEvaluationResult.DoubleStatistics statistics = IntStream.range(0, 10)
+    PopulationEvaluationResult.DoubleStatistics statistics = IntStream.range(0, 1000)
       .mapToDouble(j -> getAlg(oF, mP, mR).run().size())
       .collect(PopulationEvaluationResult.DoubleStatistics::new,
         PopulationEvaluationResult.DoubleStatistics::accept,
