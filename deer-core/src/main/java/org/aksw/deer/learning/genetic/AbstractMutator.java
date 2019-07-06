@@ -9,7 +9,7 @@ public abstract class AbstractMutator implements Mutator {
   @Override
   public Genotype mutate(Genotype original, double mutationRate) {
     Genotype m = new Genotype(original);
-    for (short i = m.getInputSize(); i < m.getSize(); i++) {
+    for (int i = m.getNumberOfInputs(); i < m.getSize(); i++) {
       if (RandomUtil.get() < mutationRate) {
         mutateRow(m, i);
       }
@@ -17,6 +17,6 @@ public abstract class AbstractMutator implements Mutator {
     return m;
   }
 
-  protected abstract void mutateRow(Genotype g, short i);
+  protected abstract void mutateRow(Genotype g, int i);
 
 }

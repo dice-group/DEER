@@ -11,6 +11,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  *
@@ -34,13 +35,22 @@ public class TrainingData {
 
   private static class NoOpModelWriterDecorator extends AbstractParameterizedExecutionNodeDecorator<ParameterizedDeerExecutionNode, Model> implements ParameterizedDeerExecutionNode {
 
+    private Consumer<Model> callback = m -> {};
+
     public NoOpModelWriterDecorator(ParameterizedDeerExecutionNode other) {
       super(other);
     }
 
+
+
     @Override
     public List<Model> apply(List<Model> data) {
+      callback.accept(data.get(0));
       return List.of();
+    }
+
+    public void setCallback(Consumer<Model> callback) {
+      this.callback = callback;
     }
   }
 
@@ -139,7 +149,7 @@ public class TrainingData {
     return resultTargetPath;
   }
 
-  public ParameterizedDeerExecutionNode getResultWriter() {
+  public ParameterizedDeerExecutionNode getResultWriter(Consumer<Model> callback) {
     return resultWriter;
   }
 
