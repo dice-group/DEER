@@ -56,7 +56,8 @@ public class GeneticProgrammingAlgorithm {
         });
       // select survivors
       nextPopulation.fillPopulation(currentPopulation.size(),
-        () -> selector.select(selectionPopulation).getEvaluatedCopy());
+//        () -> selector.select(selectionPopulation).getEvaluatedCopy());
+        () -> selector.select(selectionPopulation).compactBestResult(false, 0));
       // mutation, preserve elite
       currentPopulation = nextPopulation
         .getMutatedPopulation(this::getMutator, mutationProbability, mutationRate, g -> g == bestInGeneration);

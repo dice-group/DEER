@@ -13,19 +13,22 @@ public class RandomGenotype extends Genotype {
     super(trainingData);
     int currentRow = getNumberOfInputs();
     while (currentRow < getSize()) {
-      int arity = RandomUtil.get(1, Math.min(currentRow, RandomOperatorFactory.getMaxArity())+1);
-      EnrichmentOperator op = RandomOperatorFactory.getForMaxArity(arity);
-      arity = ((Learnable) op).getLearnableDegreeBounds().minIn();
-      op.initDegrees(arity, 1);
-      int[] row = new int[2+arity*2];
-      row[0] = arity;
-      row[1] = 1;
-      for (int i = 0; i < arity; i++) {
-        row[2+i*2] = RandomUtil.get(currentRow);
-        row[2+i*2+1] = 0;
-      }
-      addRow(currentRow++, op, row);
+      addRandomRow(this, currentRow++);
     }
+  }
+
+  static void addRandomRow(Genotype g, int i) {
+    EnrichmentOperator op = RandomOperatorFactory.getForMaxArity(Math.min(i, RandomOperatorFactory.getMaxArity()));
+    int arity = ((Learnable) op).getLearnableDegreeBounds().minIn();
+    op.initDegrees(arity, 1);
+    int[] row = new int[2+arity*2];
+    row[0] = arity;
+    row[1] = 1;
+    for (int j = 0; j < arity; j++) {
+      row[2+j*2] = RandomUtil.get(i);
+      row[2+j*2+1] = 0;
+    }
+    g.addRow(i, op, row);
   }
 
 }

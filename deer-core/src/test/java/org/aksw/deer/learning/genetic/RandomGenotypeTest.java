@@ -75,7 +75,7 @@ public class RandomGenotypeTest {
     target.write(new FileWriter(testDir + paths[2]), "TTL");
     target.write(new FileWriter(testDir + paths[3]), "TTL");
     trainingData = new TrainingData(List.of(testDir + paths[0]), List.of(testDir + paths[1]), testDir + paths[2], testDir + paths[3], testDir + paths[4]);
-    Genotype.SIZE = 7;
+    Genotype.SIZE = 4;
   }
 
   @AfterClass
@@ -96,8 +96,8 @@ public class RandomGenotypeTest {
 
   @Test
   public void constructorTest() {
-//    runSimpleExperiment(0.4, 0.5, 0.25);
-    for (double oF = 0; oF <= 1; oF+=.1) {
+//    runSimpleExperiment(0.0, 0.0, 0.0);
+    for (double oF = 0; oF <= 1; oF+=.2) {
       for (double mP = 0.1; mP <= 1; mP+=.2) {
         for (double mR = 0.1; mR <= 1; mR+=.2) {
           runSimpleExperiment(oF, mP, mR);
@@ -112,7 +112,7 @@ public class RandomGenotypeTest {
       .collect(PopulationEvaluationResult.DoubleStatistics::new,
         PopulationEvaluationResult.DoubleStatistics::accept,
         PopulationEvaluationResult.DoubleStatistics::combine);
-    System.out.println(String.format(Locale.ENGLISH, "%.2f \t %.2f \t %.2f \t %.2f \t %.2f \t %.2f", oF, mP, mR, statistics.getAverage(), statistics.getStandardDeviation(), statistics.getMax()));
+    System.out.println(String.format(Locale.ENGLISH, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", oF, mP, mR, statistics.getAverage(), statistics.getStandardDeviation(), statistics.getMin(), statistics.getMax()));
 //    System.out.println(oF  + "\t" +  mP  + "\t" +  mR + "\t" + statistics.getAverage() + "\t" + statistics.getStandardDeviation() + "\t" + statistics.getMax());
   }
 

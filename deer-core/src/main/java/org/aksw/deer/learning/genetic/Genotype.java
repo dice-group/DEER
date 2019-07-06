@@ -132,6 +132,10 @@ public class Genotype extends ExecutionGraph<Model> {
     NavigableSet<Integer> relevantRows = new TreeSet<>();
     relevantRows.add(this.bestResultRow);
     for(int i = this.bestResultRow; i >= 0; i--) {
+      if (i < getNumberOfInputs()) {
+        relevantRows.add(i);
+        continue;
+      }
       if (relevantRows.contains(i)) {
         int[] e = this.getRow(i);
         for (int j = 0; j < e[0]; j++) {
@@ -148,6 +152,7 @@ public class Genotype extends ExecutionGraph<Model> {
       }
       return this.results[i].getResultModel();
     };
+
     for (int i : relevantRows) {
       if (i >= this.getNumberOfInputs()) { //ignore readers
         int[] row = this.getRow(i);
@@ -177,24 +182,29 @@ public class Genotype extends ExecutionGraph<Model> {
     compacted.trainingData = trainingData;
     int k = startRow;
     List<ParameterizedDeerExecutionNode> readers = this.trainingData.getEvaluationReaders();
+    int[] rowMapping = new int[compacted.getSize()];
     for (int i : relevantRows) {
+      rowMapping[i] = k;
       if (k < readers.size()) {
         compacted.addRow(k, readers.get(k++), this.getRow(i));
       } else if (!skipMap.containsKey(i)) {
         int[] row = Arrays.copyOf(this.getRow(i), this.getRow(i).length);
         int arity = row[0];
         for (int j = 0; j < arity; j++) {
-          if (skipMap.containsKey(row[2+2*j])) {
-            int inputIndex = skipMap.get(row[2 + 2 * j]);
-            row[2+2*j] = inputIndex + ((inputIndex < getNumberOfInputs()) ? 0 : startRow);
+          int inputIndex = row[2 + 2 * j];
+          if (skipMap.containsKey(inputIndex)) {
+            inputIndex = skipMap.get(inputIndex);
           }
+          inputIndex = rowMapping[inputIndex];
+          inputIndex += inputIndex < getNumberOfInputs() ? 0 : startRow;
+          row[2+2*j] = inputIndex;
         }
         compacted.addRow(k++, RandomOperatorFactory.reproduce((EnrichmentOperator)this.getRawNode(i)), row);
       }
     }
     for (int i = 0; i < compacted.getSize(); i++) {
       if (compacted.getRawNode(i) == null) {
-        compacted.addRow(i, RandomOperatorFactory.reproduce((EnrichmentOperator)this.getRawNode(i)), Arrays.copyOf(this.getRow(i), this.getRow(i).length));
+        RandomGenotype.addRandomRow(compacted, i);
       }
     }
     return compacted;
