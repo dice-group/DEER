@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 /**
@@ -109,12 +110,21 @@ public class HPOPhase3 {
   }
 
   private void runSimpleExperiment(double oF, double mP, double mR) {
-    PopulationEvaluationResult.DoubleStatistics statistics = IntStream.range(0, 1000)
-      .mapToDouble(j -> getAlg(oF, mP, mR).run().size())
+    AtomicInteger i = new AtomicInteger(0);
+    PopulationEvaluationResult.DoubleStatistics statistics = IntStream.range(0, 100)
+      .mapToDouble(j -> {
+        GeneticProgrammingAlgorithm alg = getAlg(oF, mP, mR);
+        List<PopulationEvaluationResult> evaluationResults = alg.run();
+        double max = evaluationResults.get(evaluationResults.size() - 1).getMax();
+        if (max == 1.0) {
+          i.incrementAndGet();
+        }
+        return evaluationResults.size();
+      })
       .collect(PopulationEvaluationResult.DoubleStatistics::new,
         PopulationEvaluationResult.DoubleStatistics::accept,
         PopulationEvaluationResult.DoubleStatistics::combine);
-    System.out.println(String.format(Locale.ENGLISH, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", oF, mP, mR, statistics.getAverage(), statistics.getStandardDeviation(), statistics.getMin(), statistics.getMax()));
+    System.out.println(String.format(Locale.ENGLISH, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%d", oF, mP, mR, statistics.getAverage(), statistics.getStandardDeviation(), statistics.getMin(), statistics.getMax(), i.get()));
 //    System.out.println(oF  + "\t" +  mP  + "\t" +  mR + "\t" + statistics.getAverage() + "\t" + statistics.getStandardDeviation() + "\t" + statistics.getMax());
   }
 

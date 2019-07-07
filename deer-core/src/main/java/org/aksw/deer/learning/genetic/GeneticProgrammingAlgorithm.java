@@ -42,7 +42,7 @@ public class GeneticProgrammingAlgorithm {
     final List<PopulationEvaluationResult> evolutionHistory = new ArrayList<>();
     evolutionHistory.add(startingPopulation.evaluate(fitnessFunction));
     Population currentPopulation = startingPopulation;
-    while (!mustTerminate(generation, evolutionHistory.get(generation).getBest())) {
+    while (!mustTerminate(generation, evolutionHistory.get(generation).getBest(), evolutionHistory)) {
       // find elite
       final Genotype bestInGeneration = evolutionHistory.get(generation).getBest();
       Population nextPopulation = new Population(1, () -> bestInGeneration);
@@ -78,8 +78,20 @@ public class GeneticProgrammingAlgorithm {
     return evolutionHistory;
   }
 
-  private boolean mustTerminate(int generation, Genotype bestInGeneration) {
-    return generation >= 5000-1 || bestInGeneration.getBestFitness() == 1.0;
+  private boolean converged(List<PopulationEvaluationResult> history) {
+    if (history.size() < 11) {
+      return false;
+    }
+    boolean converged = true;
+    double f = history.get(history.size()-1).getMax();
+    for (int i = history.size()-10; i < history.size(); i++) {
+      converged &= history.get(i).getMax() == f && history.get(i).getStandardDeviation() < 0.01;
+    }
+    return converged;
+  }
+
+  private boolean mustTerminate(int generation, Genotype bestInGeneration, List<PopulationEvaluationResult> h) {
+    return generation >= 5000-1 || bestInGeneration.getBestFitness() == 1.0 || converged(h);
   }
 
   private Mutator getMutator() {
