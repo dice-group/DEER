@@ -71,7 +71,7 @@ public class HPOPhase3 {
     a.write(new FileWriter(testDir + paths[0]), "TTL");
     b.write(new FileWriter(testDir + paths[1]), "TTL");
     target.write(new FileWriter(testDir + paths[2]), "TTL");
-    trainingData = new TrainingData(List.of(testDir + paths[0], testDir + paths[1]), List.of(testDir + paths[0], testDir + paths[1]), testDir + paths[2], testDir + paths[2], testDir + paths[3]);
+    trainingData = new TrainingData(new FitnessFunction(new int[]{1,1,1,1}, 1), List.of(testDir + paths[0], testDir + paths[1]), List.of(testDir + paths[0], testDir + paths[1]), testDir + paths[2], testDir + paths[2], testDir + paths[3]);
     Genotype.SIZE = 8;
   }
 
@@ -84,7 +84,7 @@ public class HPOPhase3 {
 
   @Test
   public void simpleTest() {
-    List<PopulationEvaluationResult> evaluationResults = getAlg(0.6, 0.2, 0.125).run();
+    List<PopulationEvaluationResult> evaluationResults = getAlg(0.0, 0.3, 0.2).run();
     System.out.println(evaluationResults.size());
     System.out.println(Phenotype.of(evaluationResults.get(evaluationResults.size()-1).getBest()));
     System.out.println(evaluationResults.get(evaluationResults.size()-1).getBest().compactBestResult(false, 0));
@@ -98,7 +98,7 @@ public class HPOPhase3 {
 
   @Test
   public void constructorTest() {
-    runSimpleExperiment(0.6, 0.1, 0.1);
+    runSimpleExperiment(0., 0.3, 0.2);
 //    for (double oF = 0; oF <= 1; oF+=.2) {
 //      for (double mP = 0.1; mP <= 1; mP+=.2) {
 //        for (double mR = 0.1; mR <= 1; mR+=.2) {
@@ -129,7 +129,7 @@ public class HPOPhase3 {
       new TournamentSelector(2, 0.9),
       List.of(new SemanticRecombinator()),
       oF,
-      List.of(new AllMutator(), new OperatorMutator(), new InputsMutator()),
+      List.of(new InputsMutator(), new SimpleSemanticMutator()),
       mP,
       mR
     );

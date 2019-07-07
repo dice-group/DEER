@@ -74,7 +74,7 @@ public class ExperimentPhase2 {
     model.write(new FileWriter(testDir + paths[1]), "TTL");
     target.write(new FileWriter(testDir + paths[2]), "TTL");
     target.write(new FileWriter(testDir + paths[3]), "TTL");
-    trainingData = new TrainingData(List.of(testDir + paths[0]), List.of(testDir + paths[1]), testDir + paths[2], testDir + paths[3], testDir + paths[4]);
+    trainingData = new TrainingData(new FitnessFunction(new int[]{1,1,1,1}, 2), List.of(testDir + paths[0]), List.of(testDir + paths[1]), testDir + paths[2], testDir + paths[3], testDir + paths[4]);
     Genotype.SIZE = 4;
   }
 

@@ -1,5 +1,7 @@
 package org.aksw.deer.learning.genetic;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.aksw.deer.DeerExecutionNode;
 import org.aksw.deer.ParameterizedDeerExecutionNode;
 import org.aksw.deer.enrichments.EnrichmentOperator;
@@ -14,7 +16,8 @@ import org.apache.jena.rdf.model.Resource;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -32,6 +35,10 @@ public class Genotype extends ExecutionGraph<Model> {
   EvaluationResult[] results = null;
 
   boolean evaluated = false;
+
+  private Multimap<Integer, Integer> transitiveHull = null;
+
+  private Set<Integer> outputs = null;
 
   protected Genotype() {
     super(SIZE);
@@ -109,6 +116,10 @@ public class Genotype extends ExecutionGraph<Model> {
     return results[bestResultRow];
   }
 
+  public CompletableFuture<EvaluationResult> getBestEvaluationResult() {
+   return getBestEvaluationResult(trainingData.getFitnessFunction());
+  }
+
   public CompletableFuture<EvaluationResult> getBestEvaluationResult(FitnessFunction f) {
     if (!evaluated) {
       results = new EvaluationResult[getSize()];
@@ -127,40 +138,22 @@ public class Genotype extends ExecutionGraph<Model> {
 
 
   Genotype compactBestResult(boolean shrink, int rightShiftSize) {
-    NavigableSet<Integer> relevantRows = new TreeSet<>();
+    NavigableSet<Integer> relevantRows = new TreeSet<>(getRelevantRows(this.bestResultRow));
     relevantRows.add(this.bestResultRow);
-    for(int i = this.bestResultRow; i >= 0; i--) {
-      if (i < getNumberOfInputs()) {
-        relevantRows.add(i);
-        continue;
-      }
-      if (relevantRows.contains(i)) {
-        int[] e = this.getRow(i);
-        for (int j = 0; j < e[0]; j++) {
-          relevantRows.add(e[2 + j * 2]);
-        }
-      }
+    for (int i = 0; i < getNumberOfInputs(); i++) {
+      relevantRows.add(i);
     }
     Map<Integer, Integer> skipMap = new HashMap<>();
     // strip no ops
     List<Model> trainingSources = this.trainingData.getTrainingSources();
-    Function<Integer, Model> getResultModel = i -> {
-      if (i < trainingSources.size()) {
-        return trainingSources.get(i);
-      }
-      return this.results[i].getResultModel();
-    };
 
     for (int i : relevantRows) {
       if (i >= this.getNumberOfInputs()) { //ignore readers
-        int[] row = this.getRow(i);
-        int arity = row[0];
-        for (int j = 0; j < arity; j++) {
-          int input = row[2+j*2];
+        for (int input : getInputs(i)) {
           if (skipMap.containsKey(input)) {
             input = skipMap.get(input);
           }
-          if (getResultModel.apply(input).isIsomorphicWith(getResultModel.apply(i))) {
+          if (getResultModel(input).isIsomorphicWith(getResultModel(i))) {
             // no op
             skipMap.put(i, input);
             break;
@@ -212,6 +205,13 @@ public class Genotype extends ExecutionGraph<Model> {
     return compacted;
   }
 
+  private Model getResultModel(int i) {
+      if (i < trainingData.getTrainingSources().size()) {
+        return trainingData.getTrainingSources().get(i);
+      }
+      return this.results[i].getResultModel();
+  }
+
   Set<Resource> getSmell() {
     Set<Resource> smell = new HashSet<>();
     for (int i = getNumberOfInputs(); i <= bestResultRow; i++) {
@@ -231,6 +231,43 @@ public class Genotype extends ExecutionGraph<Model> {
       sb.append("\n");
     }
     return sb.toString();
+  }
+
+  public List<Integer> getInputs(int i) {
+    int[] row = getRow(i);
+    int n = row[0];
+    List<Integer> result = new ArrayList<>(n);
+    for (int j = 0; j < n; j++) {
+      result.add(row[2+2*j]);
+    }
+    return result;
+  }
+
+  public List<Model> getInputModels(int i) {
+    return getInputs(i).stream().map(this::getResultModel)
+      .collect(Collectors.toList());
+  }
+
+  public Collection<Integer> getRelevantRows(int i) {
+    if (transitiveHull == null) {
+      computeTransitiveHullAndOutputs();
+    }
+    return transitiveHull.get(i);
+  }
+
+  private void computeTransitiveHullAndOutputs() {
+    this.transitiveHull = HashMultimap.create();
+    this.outputs = IntStream.range(0,getSize()).boxed().collect(Collectors.toSet());
+    for (int i = getNumberOfInputs(); i < getSize(); i++) {
+      List<Integer> inputs = getInputs(i);
+      for (int j : inputs) {
+        if (transitiveHull.containsKey(j)) {
+          transitiveHull.putAll(i, transitiveHull.get(j));
+        }
+      }
+      transitiveHull.putAll(i, inputs);
+      outputs.removeAll(transitiveHull.get(i));
+    }
   }
 
 }

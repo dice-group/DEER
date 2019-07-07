@@ -3,6 +3,7 @@ package org.aksw.deer.learning.genetic;
 import org.aksw.deer.ParameterizedDeerExecutionNode;
 import org.aksw.deer.io.FileModelReader;
 import org.aksw.deer.io.FileModelWriter;
+import org.aksw.deer.learning.FitnessFunction;
 import org.aksw.deer.vocabulary.DEERA;
 import org.aksw.faraday_cage.decorator.AbstractParameterizedExecutionNodeDecorator;
 import org.apache.jena.rdf.model.Model;
@@ -20,8 +21,8 @@ public class TrainingData {
 
   private static class NoOpModelReaderDecorator extends AbstractParameterizedExecutionNodeDecorator<ParameterizedDeerExecutionNode, Model> implements ParameterizedDeerExecutionNode {
 
-    private List<Model> staticReturn;
 
+    private List<Model> staticReturn;
     public NoOpModelReaderDecorator(ParameterizedDeerExecutionNode other, List<Model> staticReturn) {
       super(other);
       this.staticReturn = staticReturn;
@@ -31,12 +32,12 @@ public class TrainingData {
     public List<Model> apply(List<Model> data) {
       return staticReturn;
     }
-  }
 
+  }
   private static class NoOpModelWriterDecorator extends AbstractParameterizedExecutionNodeDecorator<ParameterizedDeerExecutionNode, Model> implements ParameterizedDeerExecutionNode {
 
-    private Consumer<Model> callback = m -> {};
 
+    private Consumer<Model> callback = m -> {};
     public NoOpModelWriterDecorator(ParameterizedDeerExecutionNode other) {
       super(other);
     }
@@ -52,8 +53,10 @@ public class TrainingData {
     public void setCallback(Consumer<Model> callback) {
       this.callback = callback;
     }
-  }
 
+
+  }
+  private FitnessFunction fitnessFunciton;
   private List<String> trainingSourcePaths;
   private List<String> evaluationSourcePaths;
   private String trainingTargetPath;
@@ -68,7 +71,8 @@ public class TrainingData {
   private List<ParameterizedDeerExecutionNode> evaluationReaders;
   private ParameterizedDeerExecutionNode resultWriter;
 
-  public TrainingData(List<String> trainingSourcePaths, List<String> evaluationSourcePaths, String trainingTargetPath, String evaluationTargetPath, String resultTargetPath) {
+  public TrainingData(FitnessFunction fitnessFunciton, List<String> trainingSourcePaths, List<String> evaluationSourcePaths, String trainingTargetPath, String evaluationTargetPath, String resultTargetPath) {
+    this.fitnessFunciton = fitnessFunciton;
     this.trainingSourcePaths = trainingSourcePaths;
     this.evaluationSourcePaths = evaluationSourcePaths;
     this.trainingTargetPath = trainingTargetPath;
@@ -163,5 +167,9 @@ public class TrainingData {
 
   public List<ParameterizedDeerExecutionNode> getEvaluationReaders() {
     return evaluationReaders;
+  }
+
+  public FitnessFunction getFitnessFunction() {
+    return fitnessFunciton;
   }
 }

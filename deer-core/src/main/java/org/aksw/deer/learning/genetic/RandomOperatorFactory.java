@@ -13,6 +13,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.pf4j.DefaultPluginManager;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -72,6 +73,13 @@ public class RandomOperatorFactory {
   public static void setFactory(PluginFactory<EnrichmentOperator> factory) {
     RandomOperatorFactory.factory = factory;
     setup();
+  }
+
+  public static List<EnrichmentOperator> getAll() {
+    return allowedTypes.stream().map(factory::getImplementationOf)
+      .peek(op -> op.initDegrees(((Learnable) op).getLearnableDegreeBounds().minIn(), 1))
+      .peek(op -> op.initPluginId(DEERA.forExecutionNode(op)))
+      .collect(Collectors.toList());
   }
 
   public static EnrichmentOperator getForMaxArity(int arity) {

@@ -38,6 +38,7 @@ public class GeneticProgrammingAlgorithm {
 
   public List<PopulationEvaluationResult> run() {
     int generation = 0;
+//    boolean converged = false;
     final List<PopulationEvaluationResult> evolutionHistory = new ArrayList<>();
     evolutionHistory.add(startingPopulation.evaluate(fitnessFunction));
     Population currentPopulation = startingPopulation;
@@ -59,12 +60,20 @@ public class GeneticProgrammingAlgorithm {
 //        () -> selector.select(selectionPopulation).getEvaluatedCopy());
         () -> selector.select(selectionPopulation).compactBestResult(false, 0));
       // mutation, preserve elite
+      nextPopulation.evaluate(fitnessFunction);
       currentPopulation = nextPopulation
         .getMutatedPopulation(this::getMutator, mutationProbability, mutationRate, g -> g == bestInGeneration);
       // evaluation & storage of results
       evolutionHistory.add(currentPopulation.evaluate(fitnessFunction));
       // repeat
       generation++;
+//      if (!converged && evolutionHistory.get(generation).getStandardDeviation() < 0.1) {
+//        converged = true;
+//        System.out.println("converged after\t"+ generation);
+//      } else if (converged && evolutionHistory.get(generation).getStandardDeviation() >= 0.1){
+//        converged = false;
+//        System.out.println("reset after\t" + generation);
+//      }
     }
     return evolutionHistory;
   }

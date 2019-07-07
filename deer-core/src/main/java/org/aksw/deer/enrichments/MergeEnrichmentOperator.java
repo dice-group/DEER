@@ -30,7 +30,7 @@ public class MergeEnrichmentOperator extends AbstractEnrichmentOperator implemen
     Model tI = inputs.get(1);
     // input has size 1 -> 0.05
     if (inputs.size() == 1) {
-      return 0.05;
+      return 0;
     }
     double[] score = new double[2];
     int size = target.listStatements()
