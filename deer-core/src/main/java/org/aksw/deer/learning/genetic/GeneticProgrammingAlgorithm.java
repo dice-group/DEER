@@ -38,11 +38,13 @@ public class GeneticProgrammingAlgorithm {
 
   public List<PopulationEvaluationResult> run() {
     int generation = 0;
-//    boolean converged = false;
+    int convergenceCounter = 0;
+    double localMP = mutationProbability;
+    double localMR = mutationRate;
     final List<PopulationEvaluationResult> evolutionHistory = new ArrayList<>();
     evolutionHistory.add(startingPopulation.evaluate(fitnessFunction));
     Population currentPopulation = startingPopulation;
-    while (!mustTerminate(generation, evolutionHistory.get(generation).getBest(), evolutionHistory)) {
+    while (!mustTerminate(generation, evolutionHistory.get(generation).getBest(), convergenceCounter)) {
       // find elite
       final Genotype bestInGeneration = evolutionHistory.get(generation).getBest();
       Population nextPopulation = new Population(1, () -> bestInGeneration);
@@ -57,41 +59,52 @@ public class GeneticProgrammingAlgorithm {
         });
       // select survivors
       nextPopulation.fillPopulation(currentPopulation.size(),
-//        () -> selector.select(selectionPopulation).getEvaluatedCopy());
-        () -> selector.select(selectionPopulation).compactBestResult(false, 0));
+        () -> {
+        if (RandomUtil.get() < 0.5) {
+          return selector.select(selectionPopulation).compactBestResult(false, 0);
+        } else {
+          return selector.select(selectionPopulation).getEvaluatedCopy();
+        }
+        });
       // mutation, preserve elite
       nextPopulation.evaluate(fitnessFunction);
       currentPopulation = nextPopulation
-        .getMutatedPopulation(this::getMutator, mutationProbability, mutationRate, g -> g == bestInGeneration);
+        .getMutatedPopulation(this::getMutator, localMP, localMR, g -> g == bestInGeneration);
       // evaluation & storage of results
       evolutionHistory.add(currentPopulation.evaluate(fitnessFunction));
       // repeat
       generation++;
-//      if (!converged && evolutionHistory.get(generation).getStandardDeviation() < 0.1) {
-//        converged = true;
-//        System.out.println("converged after\t"+ generation);
-//      } else if (converged && evolutionHistory.get(generation).getStandardDeviation() >= 0.1){
-//        converged = false;
-//        System.out.println("reset after\t" + generation);
-//      }
+      if (localMP != mutationProbability) {
+        localMP = Math.max(mutationProbability, localMP/5*4);
+      }
+      if (localMR != mutationRate) {
+        localMR = Math.max(mutationRate, localMR/5*4);
+      }
+      if (converged(evolutionHistory)) {
+        convergenceCounter++;
+        localMP = 1.0;
+        localMR = 1.0;
+      }
     }
     return evolutionHistory;
   }
 
   private boolean converged(List<PopulationEvaluationResult> history) {
-    if (history.size() < 11) {
+    int lookAhead = 10;
+    if (history.size() < lookAhead) {
       return false;
     }
-    boolean converged = true;
     double f = history.get(history.size()-1).getMax();
-    for (int i = history.size()-10; i < history.size(); i++) {
-      converged &= history.get(i).getMax() == f && history.get(i).getStandardDeviation() < 0.01;
+//    List<Resource> smell = history.get(history.size()-1).getBest().getSmell(true);
+    for (int i = history.size()-lookAhead; i < history.size(); i++) {
+      if (history.get(i).getMax() != f || history.get(i).getStandardDeviation() > 0.1 )
+        return false;
     }
-    return converged;
+    return true;
   }
 
-  private boolean mustTerminate(int generation, Genotype bestInGeneration, List<PopulationEvaluationResult> h) {
-    return generation >= 5000-1 || bestInGeneration.getBestFitness() == 1.0 || converged(h);
+  private boolean mustTerminate(int generation, Genotype bestInGeneration, int convergenceCounter) {
+    return generation >= 2000-1 || bestInGeneration.getBestFitness() == 1.0 || convergenceCounter == 5;
   }
 
   private Mutator getMutator() {

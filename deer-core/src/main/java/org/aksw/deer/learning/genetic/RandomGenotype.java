@@ -18,7 +18,7 @@ public class RandomGenotype extends Genotype {
   }
 
   static void addRandomRow(Genotype g, int i) {
-    EnrichmentOperator op = RandomOperatorFactory.getForMaxArity(Math.min(i, RandomOperatorFactory.getMaxArity()));
+    EnrichmentOperator op = RandomOperatorFactory.getForMaxArity(RandomUtil.get(1,Math.min(i, RandomOperatorFactory.getMaxArity())+1));
     int arity = ((Learnable) op).getLearnableDegreeBounds().minIn();
     op.initDegrees(arity, 1);
     int[] row = new int[2+arity*2];

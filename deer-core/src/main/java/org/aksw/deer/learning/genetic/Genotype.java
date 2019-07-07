@@ -70,12 +70,17 @@ public class Genotype extends ExecutionGraph<Model> {
     }
   }
 
-  Genotype getEvaluatedCopy() {
+  Genotype getEvaluatedCopy(boolean evaluated) {
     Genotype copy = new Genotype(this);
     copy.results = Arrays.copyOf(this.results, this.results.length);
     copy.bestFitness = this.bestFitness;
     copy.bestResultRow = this.bestResultRow;
+    copy.evaluated = evaluated;
     return copy;
+  }
+
+  Genotype getEvaluatedCopy() {
+    return getEvaluatedCopy(true);
   }
 
   ExecutionNode<Model> getRawNode(int i) {
@@ -123,6 +128,8 @@ public class Genotype extends ExecutionGraph<Model> {
   public CompletableFuture<EvaluationResult> getBestEvaluationResult(FitnessFunction f) {
     if (!evaluated) {
       results = new EvaluationResult[getSize()];
+      bestResultRow = -1;
+      bestFitness = -1;
       return evaluate(f);
     }
     return ThreadlocalInheritingCompletableFuture.completedFuture(results[bestResultRow]);
@@ -215,6 +222,14 @@ public class Genotype extends ExecutionGraph<Model> {
   Set<Resource> getSmell() {
     Set<Resource> smell = new HashSet<>();
     for (int i = getNumberOfInputs(); i <= bestResultRow; i++) {
+      smell.add(getRawNode(i).getType());
+    }
+    return smell;
+  }
+
+  List<Resource> getSmell(boolean full) {
+    List<Resource> smell = new ArrayList<>();
+    for (int i = getNumberOfInputs(); i <= (full ? getSize() : bestResultRow); i++) {
       smell.add(getRawNode(i).getType());
     }
     return smell;

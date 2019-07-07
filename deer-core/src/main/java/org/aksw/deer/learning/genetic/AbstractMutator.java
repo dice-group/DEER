@@ -14,7 +14,7 @@ public abstract class AbstractMutator implements Mutator {
         mutateRow(m, i);
       }
     }
-    return m;
+    return m.getEvaluatedCopy(false);
   }
 
   protected abstract void mutateRow(Genotype g, int i);

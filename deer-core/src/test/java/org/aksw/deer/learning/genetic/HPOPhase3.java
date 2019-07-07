@@ -1,5 +1,6 @@
 package org.aksw.deer.learning.genetic;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import org.aksw.deer.learning.FitnessFunction;
 import org.aksw.deer.learning.RandomUtil;
 import org.apache.commons.io.FileUtils;
@@ -32,6 +33,8 @@ public class HPOPhase3 {
     "c.ttl",
     "d.ttl"
   };
+  private static Population[] population;
+
   @BeforeClass
   public static void setUp() throws IOException {
     if (!Files.exists(Paths.get(testDir))) {
@@ -74,6 +77,10 @@ public class HPOPhase3 {
     target.write(new FileWriter(testDir + paths[2]), "TTL");
     trainingData = new TrainingData(new FitnessFunction(new int[]{1,1,1,1}, 1), List.of(testDir + paths[0], testDir + paths[1]), List.of(testDir + paths[0], testDir + paths[1]), testDir + paths[2], testDir + paths[2], testDir + paths[3]);
     Genotype.SIZE = 8;
+    population = new Population[1];
+    RandomUtil.temporaryWithSeed(54738, () ->
+      population[0] = new Population(30, () -> new RandomGenotype(trainingData))
+    );
   }
 
   @AfterClass
@@ -99,23 +106,26 @@ public class HPOPhase3 {
 
   @Test
   public void constructorTest() {
-    runSimpleExperiment(0., 0.3, 0.2);
-//    for (double oF = 0; oF <= 1; oF+=.2) {
-//      for (double mP = 0.1; mP <= 1; mP+=.2) {
-//        for (double mR = 0.1; mR <= 1; mR+=.2) {
-//          runSimpleExperiment(oF, mP, mR);
-//        }
-//      }
-//    }
+//    runSimpleExperiment(0.6, 0.25, 0.125);
+    for (double oF = 0; oF <= 1; oF+=.2) {
+      for (double mP = 0.1; mP <= 0.5; mP+=.2) {
+        for (double mR = 0.1; mR <= 0.5; mR+=.2) {
+          runSimpleExperiment(oF, mP, mR);
+        }
+      }
+    }
   }
 
   private void runSimpleExperiment(double oF, double mP, double mR) {
+    int it = 1000;
     AtomicInteger i = new AtomicInteger(0);
-    PopulationEvaluationResult.DoubleStatistics statistics = IntStream.range(0, 1000)
+    AtomicDouble d = new AtomicDouble(0);
+    PopulationEvaluationResult.DoubleStatistics statistics = IntStream.range(0, it)
       .mapToDouble(j -> {
         GeneticProgrammingAlgorithm alg = getAlg(oF, mP, mR);
         List<PopulationEvaluationResult> evaluationResults = alg.run();
         double max = evaluationResults.get(evaluationResults.size() - 1).getMax();
+        d.addAndGet(max);
         if (max == 1.0) {
           i.incrementAndGet();
         }
@@ -124,22 +134,20 @@ public class HPOPhase3 {
       .collect(PopulationEvaluationResult.DoubleStatistics::new,
         PopulationEvaluationResult.DoubleStatistics::accept,
         PopulationEvaluationResult.DoubleStatistics::combine);
-    System.out.println(String.format(Locale.ENGLISH, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%d", oF, mP, mR, statistics.getAverage(), statistics.getStandardDeviation(), statistics.getMin(), statistics.getMax(), i.get()));
+    System.out.println(String.format(Locale.ENGLISH, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%d", oF, mP, mR, statistics.getAverage(), statistics.getStandardDeviation(), statistics.getMin(), statistics.getMax(), d.get()/it, i.get()));
 //    System.out.println(oF  + "\t" +  mP  + "\t" +  mR + "\t" + statistics.getAverage() + "\t" + statistics.getStandardDeviation() + "\t" + statistics.getMax());
   }
 
   private GeneticProgrammingAlgorithm getAlg(double oF, double mP, double mR) {
-    Population[] population = new Population[1];
-    RandomUtil.temporaryWithSeed(54738, () ->
-      population[0] = new Population(30, () -> new RandomGenotype(trainingData))
-    );
     return new GeneticProgrammingAlgorithm(
       population[0],
       new FitnessFunction(new int[]{1,1,1,1}, 1),
-      new TournamentSelector(2, 0.9),
+      new TournamentSelector(3, 0.75),
       List.of(new SemanticRecombinator()),
+//      List.of(new DefaultRecombinator()),
       oF,
-      List.of(new InputsMutator(), new SimpleSemanticMutator()),
+//      List.of(new AllMutator(), new InputsMutator(), new OperatorMutator()),
+      List.of(new SimpleSemanticMutator(), new AllMutator()),
       mP,
       mR
     );
