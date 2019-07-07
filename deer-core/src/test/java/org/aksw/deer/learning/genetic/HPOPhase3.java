@@ -111,7 +111,7 @@ public class HPOPhase3 {
 
   private void runSimpleExperiment(double oF, double mP, double mR) {
     AtomicInteger i = new AtomicInteger(0);
-    PopulationEvaluationResult.DoubleStatistics statistics = IntStream.range(0, 100)
+    PopulationEvaluationResult.DoubleStatistics statistics = IntStream.range(0, 1000)
       .mapToDouble(j -> {
         GeneticProgrammingAlgorithm alg = getAlg(oF, mP, mR);
         List<PopulationEvaluationResult> evaluationResults = alg.run();
