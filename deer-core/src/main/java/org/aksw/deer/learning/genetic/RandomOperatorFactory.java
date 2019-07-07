@@ -93,6 +93,7 @@ public class RandomOperatorFactory {
     List<Resource> bucket = arityOpsMap.get(arity);
     EnrichmentOperator op = factory.getImplementationOf(bucket.get(RandomUtil.get(bucket.size())));
     op.initPluginId(DEERA.forExecutionNode(op));
+    op.initDegrees(arity, 1);
     return op;
   }
 

@@ -10,6 +10,7 @@ import org.aksw.faraday_cage.engine.ExecutionGraph;
 import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.ThreadlocalInheritingCompletableFuture;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -29,6 +30,8 @@ public class Genotype extends ExecutionGraph<Model> {
   private double bestFitness = -1;
 
   EvaluationResult[] results = null;
+
+  boolean evaluated = false;
 
   protected Genotype() {
     super(SIZE);
@@ -91,12 +94,6 @@ public class Genotype extends ExecutionGraph<Model> {
     CompletableFuture<Void> completionStage = compiled.getCompletionStage();
     CompletableFuture<EvaluationResult> result = completionStage.thenApply(x -> findAndSetBestEvaluationResult(f));
     compiled.run();
-    compiled.getCompletionStage().exceptionally(t -> {
-      if (t instanceof ConcurrentModificationException) {
-        System.out.println(this);
-      }
-      return null;
-    });
     return result;
   }
 
@@ -108,11 +105,12 @@ public class Genotype extends ExecutionGraph<Model> {
         bestResultRow  = i;
       }
     }
+    evaluated = true;
     return results[bestResultRow];
   }
 
   public CompletableFuture<EvaluationResult> getBestEvaluationResult(FitnessFunction f) {
-    if (results == null) {
+    if (!evaluated) {
       results = new EvaluationResult[getSize()];
       return evaluate(f);
     }
@@ -128,7 +126,7 @@ public class Genotype extends ExecutionGraph<Model> {
   }
 
 
-  Genotype compactBestResult(boolean shrink, int startRow) {
+  Genotype compactBestResult(boolean shrink, int rightShiftSize) {
     NavigableSet<Integer> relevantRows = new TreeSet<>();
     relevantRows.add(this.bestResultRow);
     for(int i = this.bestResultRow; i >= 0; i--) {
@@ -173,21 +171,23 @@ public class Genotype extends ExecutionGraph<Model> {
     Genotype compacted;
     if (shrink) {
       compacted = new Genotype(relevantRows.size()+1-skipMap.size());
-    } else if (startRow < 1) {
-      startRow = 0;
-      compacted = new Genotype(this.trainingData);
     } else {
       compacted = new Genotype();
     }
+    if (rightShiftSize < 0) {
+      rightShiftSize = 0;
+    }
     compacted.trainingData = trainingData;
-    int k = startRow;
+    compacted.results = new EvaluationResult[compacted.getSize()];
+    int k = 0;
     List<ParameterizedDeerExecutionNode> readers = this.trainingData.getEvaluationReaders();
     int[] rowMapping = new int[getSize()];
     for (int i : relevantRows) {
-      rowMapping[i] = k;
       if (k < readers.size()) {
+        rowMapping[i] = k;
         compacted.addRow(k, readers.get(k++), this.getRow(i));
       } else if (!skipMap.containsKey(i)) {
+        rowMapping[i] = k + rightShiftSize;
         int[] row = Arrays.copyOf(this.getRow(i), this.getRow(i).length);
         int arity = row[0];
         for (int j = 0; j < arity; j++) {
@@ -196,18 +196,28 @@ public class Genotype extends ExecutionGraph<Model> {
             inputIndex = skipMap.get(inputIndex);
           }
           inputIndex = rowMapping[inputIndex];
-          inputIndex += inputIndex < getNumberOfInputs() ? 0 : startRow;
           row[2+2*j] = inputIndex;
         }
-        compacted.addRow(k++, RandomOperatorFactory.reproduce((EnrichmentOperator)this.getRawNode(i)), row);
+        compacted.results[rightShiftSize + k] = results[i];
+        compacted.addRow(rightShiftSize + k++, RandomOperatorFactory.reproduce((EnrichmentOperator)this.getRawNode(i)), row);
       }
     }
+    compacted.bestResultRow = rightShiftSize + relevantRows.size()-1 - skipMap.size();
+    compacted.bestFitness = bestFitness;
     for (int i = 0; i < compacted.getSize(); i++) {
       if (compacted.getRawNode(i) == null) {
         RandomGenotype.addRandomRow(compacted, i);
       }
     }
     return compacted;
+  }
+
+  Set<Resource> getSmell() {
+    Set<Resource> smell = new HashSet<>();
+    for (int i = getNumberOfInputs(); i <= bestResultRow; i++) {
+      smell.add(getRawNode(i).getType());
+    }
+    return smell;
   }
 
   public String toString() {

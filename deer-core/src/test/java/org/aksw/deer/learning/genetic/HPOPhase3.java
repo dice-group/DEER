@@ -84,7 +84,7 @@ public class HPOPhase3 {
 
   @Test
   public void simpleTest() {
-    List<PopulationEvaluationResult> evaluationResults = getAlg(0, 0., 0.).run();
+    List<PopulationEvaluationResult> evaluationResults = getAlg(0.6, 0.2, 0.125).run();
     System.out.println(evaluationResults.size());
     System.out.println(Phenotype.of(evaluationResults.get(evaluationResults.size()-1).getBest()));
     System.out.println(evaluationResults.get(evaluationResults.size()-1).getBest().compactBestResult(false, 0));
@@ -98,14 +98,14 @@ public class HPOPhase3 {
 
   @Test
   public void constructorTest() {
-//    runSimpleExperiment(0.0, 0.0, 0.0);
-    for (double oF = 0; oF <= 1; oF+=.2) {
-      for (double mP = 0.1; mP <= 1; mP+=.2) {
-        for (double mR = 0.1; mR <= 1; mR+=.2) {
-          runSimpleExperiment(oF, mP, mR);
-        }
-      }
-    }
+    runSimpleExperiment(0.6, 0.2, 0.125);
+//    for (double oF = 0; oF <= 1; oF+=.2) {
+//      for (double mP = 0.1; mP <= 1; mP+=.2) {
+//        for (double mR = 0.1; mR <= 1; mR+=.2) {
+//          runSimpleExperiment(oF, mP, mR);
+//        }
+//      }
+//    }
   }
 
   private void runSimpleExperiment(double oF, double mP, double mR) {
@@ -125,9 +125,9 @@ public class HPOPhase3 {
     );
     return new GeneticProgrammingAlgorithm(
       population[0],
-      new FitnessFunction(new int[]{1,1,1,1}, 2),
+      new FitnessFunction(new int[]{1,1,1,1}, 1),
       new TournamentSelector(4, 0.9),
-      List.of(new DefaultRecombinator()),
+      List.of(new SemanticRecombinator()),
       oF,
       List.of(new AllMutator(), new OperatorMutator(), new InputsMutator()),
       mP,
