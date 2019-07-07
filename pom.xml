@@ -185,7 +185,7 @@
         <configuration>
           <forkCount>0</forkCount>
           <!--suppress UnresolvedMavenProperty -->
-          <argLine>-Xms256m -Xmx512m</argLine>
+          <argLine>-Xms256m -Xmx8G</argLine>
           <testFailureIgnore>false</testFailureIgnore>
           <skipTests>false</skipTests>
           <useManifestOnlyJar>false</useManifestOnlyJar>
