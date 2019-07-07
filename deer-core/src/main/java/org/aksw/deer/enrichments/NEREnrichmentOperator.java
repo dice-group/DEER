@@ -60,6 +60,9 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
   static {
     try {
       cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "Goethe lived in Leipzig.",null), List.of("http://dbpedia.org/resource/Johann_Wolfgang_von_Goethe","http://dbpedia.org/resource/Leipzig"));
+      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "The University of Leipzig has been founded in 1409.",null), List.of("http://dbpedia.org/resource/Leipzig"));
+      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "This table has been manufactured in Leipzig.",null), List.of("http://dbpedia.org/resource/Leipzig"));
+      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "This chair has been manufactured in Leipzig.",null), List.of("http://dbpedia.org/resource/Leipzig"));
     } catch (MalformedURLException e) {
       e.printStackTrace();
     }

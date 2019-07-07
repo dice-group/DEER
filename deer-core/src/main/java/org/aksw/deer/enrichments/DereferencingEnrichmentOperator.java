@@ -15,6 +15,7 @@ import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.StringReader;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -117,6 +118,14 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
   private Model model;
 
   private static final ConcurrentMap<Resource, Model> cache = new ConcurrentHashMap<>();
+
+  static {
+    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Leipzig"),
+      ModelFactory.createDefaultModel().read(new StringReader("" +
+        "<http://dbpedia.org/resource/Leipzig> <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Germany> ." +
+        ""), null, "TTL"));
+  }
+
 
   @Override
   public ValidatableParameterMap createParameterMap() {

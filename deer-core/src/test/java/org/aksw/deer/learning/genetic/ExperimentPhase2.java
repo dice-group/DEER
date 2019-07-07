@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 /**
  *
  */
-public class RandomGenotypeTest {
+public class ExperimentPhase2 {
 
   private static TrainingData trainingData;
   private static String testDir = "./test/";

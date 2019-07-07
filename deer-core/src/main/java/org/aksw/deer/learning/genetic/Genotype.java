@@ -182,7 +182,7 @@ public class Genotype extends ExecutionGraph<Model> {
     compacted.trainingData = trainingData;
     int k = startRow;
     List<ParameterizedDeerExecutionNode> readers = this.trainingData.getEvaluationReaders();
-    int[] rowMapping = new int[compacted.getSize()];
+    int[] rowMapping = new int[getSize()];
     for (int i : relevantRows) {
       rowMapping[i] = k;
       if (k < readers.size()) {

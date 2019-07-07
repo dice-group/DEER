@@ -32,22 +32,14 @@ public class NEREnrichmentOperatorTest {
     input.read(new StringReader(
       "@prefix ex: <http://example.org/> ." +
         "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ." +
-        "ex:subject rdfs:comment \"Goethe lived in Leipzig. Amazon has a parcel center in Leipzig.\" ." +
-        "ex:subject2 rdfs:comment \"Goethe lived in Leipzig. Amazon has a parcel center in Leipzig.\" ." +
-        "ex:subject3 rdfs:comment \"Goethe lived in Leipzig. Amazon has a parcel center in Leipzig.\" ." +
-        "ex:subject4 rdfs:comment \"Goethe lived in Leipzig. Amazon has a parcel center in Leipzig.\" ." +
-        "ex:subject5 rdfs:comment \"Goethe lived in Leipzig. Amazon has a parcel center in Leipzig.\" ."
+        "ex:subject rdfs:comment \"The University of Leipzig has been founded in 1409.\" ."
     ), null, "TTL");
 
     expected.add(input);
     expected.read(new StringReader(
       "@prefix ex: <http://example.org/> ." +
         "@prefix foxo:  <http://ns.aksw.org/fox/ontology#> ." +
-        "ex:subject foxo:relatedTo <http://dbpedia.org/resource/Amazon.com> , <http://dbpedia.org/resource/Johann_Wolfgang_von_Goethe> , <http://dbpedia.org/resource/Leipzig> ." +
-        "ex:subject2 foxo:relatedTo <http://dbpedia.org/resource/Amazon.com> , <http://dbpedia.org/resource/Johann_Wolfgang_von_Goethe> , <http://dbpedia.org/resource/Leipzig> ." +
-        "ex:subject3 foxo:relatedTo <http://dbpedia.org/resource/Amazon.com> , <http://dbpedia.org/resource/Johann_Wolfgang_von_Goethe> , <http://dbpedia.org/resource/Leipzig> ." +
-        "ex:subject4 foxo:relatedTo <http://dbpedia.org/resource/Amazon.com> , <http://dbpedia.org/resource/Johann_Wolfgang_von_Goethe> , <http://dbpedia.org/resource/Leipzig> ." +
-        "ex:subject5 foxo:relatedTo <http://dbpedia.org/resource/Amazon.com> , <http://dbpedia.org/resource/Johann_Wolfgang_von_Goethe> , <http://dbpedia.org/resource/Leipzig> ."
+        "ex:subject foxo:relatedTo <http://dbpedia.org/resource/Leipzig> ."
     ), null, "TTL");
     op = new NEREnrichmentOperator();
     expectedParameters = op.createParameterMap()
