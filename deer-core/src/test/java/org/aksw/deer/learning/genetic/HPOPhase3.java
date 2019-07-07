@@ -98,7 +98,7 @@ public class HPOPhase3 {
 
   @Test
   public void constructorTest() {
-    runSimpleExperiment(0.6, 0.2, 0.125);
+    runSimpleExperiment(0.6, 0.1, 0.1);
 //    for (double oF = 0; oF <= 1; oF+=.2) {
 //      for (double mP = 0.1; mP <= 1; mP+=.2) {
 //        for (double mR = 0.1; mR <= 1; mR+=.2) {
@@ -126,7 +126,7 @@ public class HPOPhase3 {
     return new GeneticProgrammingAlgorithm(
       population[0],
       new FitnessFunction(new int[]{1,1,1,1}, 1),
-      new TournamentSelector(4, 0.9),
+      new TournamentSelector(2, 0.9),
       List.of(new SemanticRecombinator()),
       oF,
       List.of(new AllMutator(), new OperatorMutator(), new InputsMutator()),
