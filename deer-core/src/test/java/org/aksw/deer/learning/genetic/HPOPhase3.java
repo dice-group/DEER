@@ -35,7 +35,6 @@ public class HPOPhase3 {
     "c.ttl",
     "d.ttl"
   };
-  private static Population[] population;
 
   @BeforeClass
   public static void setUp() throws IOException {
@@ -79,10 +78,6 @@ public class HPOPhase3 {
     target.write(new FileWriter(testDir + paths[2]), "TTL");
     trainingData = new TrainingData(new FitnessFunction(new int[]{1,1,1,1}, 1), List.of(testDir + paths[0], testDir + paths[1]), List.of(testDir + paths[0], testDir + paths[1]), testDir + paths[2], testDir + paths[2], testDir + paths[3]);
     Genotype.SIZE = 8;
-    population = new Population[1];
-    RandomUtil.temporaryWithSeed(54738, () ->
-      population[0] = new Population(30, () -> new RandomGenotype(trainingData))
-    );
   }
 
   @AfterClass
@@ -154,6 +149,10 @@ public class HPOPhase3 {
   }
 
   private GeneticProgrammingAlgorithm getAlg(double oF, double mP, double mR) {
+    Population[] population = new Population[1];
+    RandomUtil.temporaryWithSeed(54738, () ->
+      population[0] = new Population(30, () -> new RandomGenotype(trainingData))
+    );
     return new GeneticProgrammingAlgorithm(
       population[0],
       new FitnessFunction(new int[]{1,1,1,1}, 1),
