@@ -120,7 +120,9 @@ public class HPOPhase3 {
         }
       }
     }
-    threads.stream().peek(Thread::run).forEach(thread -> {
+    threads.stream().forEach(Thread::run);
+    threads.stream()
+    .forEach(thread -> {
       try {
         thread.join();
       } catch (InterruptedException e) {
