@@ -102,7 +102,7 @@ public class HPOPhase3 {
   }
 
   @Test
-  public void constructorTest() {
+  public void constructorTest() throws InterruptedException {
 
     List<Thread> threads = new ArrayList<>();
     for (double oF = 0; oF <= 1; oF+=.2) {
@@ -115,15 +115,21 @@ public class HPOPhase3 {
         }
       }
     }
-    threads.stream().forEach(Thread::start);
-    threads.stream()
-    .forEach(thread -> {
-      try {
-        thread.join();
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+    int k = 0;
+    while (k < threads.size()) {
+      for (int i = 0; i < 8; i++) {
+        if (k+i < threads.size()) {
+          threads.get(k+i).start();
+        }
       }
-    });
+      for (int i = 0; i < 8; i++) {
+        if (k+i < threads.size()) {
+          threads.get(k+i).join();
+        }
+      }
+      k+=8;
+    }
+
   }
 
   private void runSimpleExperiment(double oF, double mP, double mR) {
