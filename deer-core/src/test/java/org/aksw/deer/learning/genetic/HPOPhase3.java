@@ -108,7 +108,7 @@ public class HPOPhase3 {
 
   @Test
   public void constructorTest() {
-    //    runSimpleExperiment(0.6, 0.25, 0.125);
+
     List<Thread> threads = new ArrayList<>();
     for (double oF = 0; oF <= 1; oF+=.2) {
       for (double mP = 0.1; mP <= 0.5; mP+=.2) {
@@ -120,7 +120,7 @@ public class HPOPhase3 {
         }
       }
     }
-    threads.stream().forEach(Thread::run);
+    threads.stream().forEach(Thread::start);
     threads.stream()
     .forEach(thread -> {
       try {
