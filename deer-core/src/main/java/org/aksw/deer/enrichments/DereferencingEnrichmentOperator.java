@@ -10,7 +10,6 @@ import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.shared.Lock;
 import org.apache.jena.vocabulary.OWL;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -207,13 +206,13 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
   private List<Pair<Property, RDFNode>> getEnrichmentPairsFor(Resource o, Set<Property[]> ops) {
     List<Pair<Property, RDFNode>> result = new ArrayList<>();
     Model resourceModel = queryResourceModel(o);
-    resourceModel.enterCriticalSection(Lock.READ);
+//    resourceModel.enterCriticalSection(Lock.READ);
     for (Property[] op : ops) {
       resourceModel.listStatements(o, op[0], (RDFNode)null)
         .mapWith(Statement::getObject)
         .forEachRemaining(x -> result.add(new ImmutablePair<>(op[1], x)));
     }
-    resourceModel.leaveCriticalSection();
+//    resourceModel.leaveCriticalSection();
     return result;
   }
 

@@ -30,6 +30,10 @@ public class Population {
     backingList = new ArrayList<>(size);
   }
 
+  Population(Population population) {
+    this.backingList = new ArrayList<>(population.backingList);
+  }
+
   public PopulationEvaluationResult evaluate(FitnessFunction f) {
     if (Objects.isNull(evaluationResult)) {
       CompletableFuture<EvaluationResult> joiner = ThreadlocalInheritingCompletableFuture.completedFuture(null);

@@ -15,17 +15,15 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 /**
  *
  */
-public class HPOPhase3 {
+public class HPOPhase4 {
 
   private static TrainingData trainingData;
   private static String testDir = "./test/";
@@ -108,26 +106,14 @@ public class HPOPhase3 {
 
   @Test
   public void constructorTest() {
-    //    runSimpleExperiment(0.6, 0.25, 0.125);
-    System.setProperty("deerParallelismLevel","4");
-    List<Thread> threads = new ArrayList<>();
+//    runSimpleExperiment(0.6, 0.25, 0.125);
     for (double oF = 0; oF <= 1; oF+=.2) {
       for (double mP = 0.1; mP <= 0.5; mP+=.2) {
         for (double mR = 0.1; mR <= 0.5; mR+=.2) {
-          final double a = oF;
-          final double b = mP;
-          final double c = mR;
-          threads.add(Executors.defaultThreadFactory().newThread(() -> runSimpleExperiment(a, b, c)));
+          runSimpleExperiment(oF, mP, mR);
         }
       }
     }
-    threads.stream().peek(Thread::run).forEach(thread -> {
-      try {
-        thread.join();
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    });
   }
 
   private void runSimpleExperiment(double oF, double mP, double mR) {
@@ -154,7 +140,7 @@ public class HPOPhase3 {
 
   private GeneticProgrammingAlgorithm getAlg(double oF, double mP, double mR) {
     return new GeneticProgrammingAlgorithm(
-      population[0],
+      new Population(population[0]),
       new FitnessFunction(new int[]{1,1,1,1}, 1),
       new TournamentSelector(3, 0.75),
       List.of(new SemanticRecombinator()),
