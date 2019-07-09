@@ -3,8 +3,10 @@ package org.aksw.deer.io;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
+import org.aksw.jena_sparql_api.delay.core.QueryExecutionFactoryDelay;
+import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
+import org.aksw.jena_sparql_api.pagination.core.QueryExecutionFactoryPaginated;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
@@ -62,10 +64,16 @@ public class SparqlModelReader extends AbstractModelReader {
     logger.info("Reading dataset from " + fromEndpoint);
     final String sparqlQueryString;
     if (sparqlQuery.isPresent()) {
+      org.aksw.jena_sparql_api.core.QueryExecutionFactory qef = new QueryExecutionFactoryHttp(fromEndpoint);
+      qef = new QueryExecutionFactoryDelay(qef, 2000);
+      qef = new QueryExecutionFactoryPaginated(qef, 5000);
       sparqlQueryString = sparqlQuery.get();
-      final QueryExecution qExec = QueryExecutionFactory.sparqlService(fromEndpoint, sparqlQueryString);
-      result = qExec.execConstruct();
-      qExec.close();
+      final QueryExecution queryExecution = qef.createQueryExecution(sparqlQueryString);
+      result = queryExecution.execConstruct();
+      queryExecution.close();
+//      final QueryExecution qExec = QueryExecutionFactory.sparqlService(fromEndpoint, sparqlQueryString);
+//      result = qExec.execConstruct();
+//      qExec.close();
     } else if (describeTarget.isPresent()) {
       sparqlQueryString = "DESCRIBE <" + describeTarget.get() + ">";
       final QueryEngineHTTP qExec = new QueryEngineHTTP(fromEndpoint, sparqlQueryString);
