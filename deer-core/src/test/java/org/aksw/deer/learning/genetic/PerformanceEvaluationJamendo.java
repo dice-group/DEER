@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
 /**
  *
  */
-public class HPOPhase4 {
+public class PerformanceEvaluationJamendo {
 
   private static TrainingData trainingData;
   private static String testDir = "./test/";

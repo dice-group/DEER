@@ -20,6 +20,7 @@ import javax.servlet.http.Part;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collection;
@@ -104,13 +105,13 @@ public class Server {
     if (req.contentType().contains("multipart/form-data")) {
       for (Part part : req.raw().getParts()) {
         try (InputStream is = part.getInputStream()) {
-          Path destinationPath = workingDir.toPath().resolve(part.getSubmittedFileName());
+          Path partFileName = Paths.get(part.getSubmittedFileName()).getFileName();
+          Path destinationPath = workingDir.toPath().resolve(partFileName);
           Files.copy(is, destinationPath, StandardCopyOption.REPLACE_EXISTING);
           if (part.getName().equals("config")) {
             configFile = destinationPath;
           }
-          logger.info("Uploaded file '{}' to '{}'", part.getSubmittedFileName(),
-            destinationPath);
+          logger.info("Uploaded file '{}' to '{}'", partFileName, destinationPath);
         }
       }
     } else {

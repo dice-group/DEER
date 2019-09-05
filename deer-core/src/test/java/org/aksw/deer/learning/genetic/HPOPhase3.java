@@ -15,10 +15,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
@@ -104,36 +102,40 @@ public class HPOPhase3 {
   @Test
   public void constructorTest() throws InterruptedException {
 
-    List<Thread> threads = new ArrayList<>();
-    for (double oF = 0; oF <= 1; oF+=.2) {
-      for (double mP = 0.1; mP <= 0.5; mP+=.2) {
-        for (double mR = 0.1; mR <= 0.5; mR+=.2) {
-          final double a = oF;
-          final double b = mP;
-          final double c = mR;
-          threads.add(Executors.defaultThreadFactory().newThread(() -> runSimpleExperiment(a, b, c)));
-        }
-      }
-    }
-    int k = 0;
-    while (k < threads.size()) {
-      for (int i = 0; i < 8; i++) {
-        if (k+i < threads.size()) {
-          threads.get(k+i).start();
-        }
-      }
-      for (int i = 0; i < 8; i++) {
-        if (k+i < threads.size()) {
-          threads.get(k+i).join();
-        }
-      }
-      k+=8;
-    }
+    runSimpleExperiment(0.6,0.5,0.5);
+//    0.60	0.50	0.50	31.36	37.86	3.00	266.00	1.00	200
+    //0.60	0.50	0.50	41.35	50.48	4.00	225.00	1.00	20
+
+//    List<Thread> threads = new ArrayList<>();
+//    for (double oF = 0; oF <= 1; oF+=.2) {
+//      for (double mP = 0.1; mP <= 0.5; mP+=.2) {
+//        for (double mR = 0.1; mR <= 0.5; mR+=.2) {
+//          final double a = oF;
+//          final double b = mP;
+//          final double c = mR;
+//          threads.add(Executors.defaultThreadFactory().newThread(() -> runSimpleExperiment(a, b, c)));
+//        }
+//      }
+//    }
+//    int k = 0;
+//    while (k < threads.size()) {
+//      for (int i = 0; i < 8; i++) {
+//        if (k+i < threads.size()) {
+//          threads.get(k+i).start();
+//        }
+//      }
+//      for (int i = 0; i < 8; i++) {
+//        if (k+i < threads.size()) {
+//          threads.get(k+i).join();
+//        }
+//      }
+//      k+=8;
+//    }
 
   }
 
   private void runSimpleExperiment(double oF, double mP, double mR) {
-    int it = 1000;
+    int it = 200;
     AtomicInteger i = new AtomicInteger(0);
     AtomicDouble d = new AtomicDouble(0);
     PopulationEvaluationResult.DoubleStatistics statistics = IntStream.range(0, it)
@@ -161,7 +163,7 @@ public class HPOPhase3 {
     );
     return new GeneticProgrammingAlgorithm(
       population[0],
-      new FitnessFunction(new int[]{1,1,1,1}, 1),
+      trainingData.getFitnessFunction(),
       new TournamentSelector(3, 0.75),
       List.of(new SemanticRecombinator()),
 //      List.of(new DefaultRecombinator()),

@@ -124,6 +124,15 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
       ModelFactory.createDefaultModel().read(new StringReader("" +
         "<http://dbpedia.org/resource/Leipzig> <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Germany> ." +
         ""), null, "TTL"));
+    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)"),
+      ModelFactory.createDefaultModel().read(new StringReader("" +
+        "<http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> <http://dbpedia.org/ontology/director> <http://dbpedia.org/resource/Tim_Southam> ." +
+        ""), null, "TTL"));
+    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Johns_Hopkins_University"), ModelFactory.createDefaultModel());
+    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Germany"), ModelFactory.createDefaultModel());
+    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Paramount_Pictures"), ModelFactory.createDefaultModel());
+    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Baltimore"), ModelFactory.createDefaultModel());
+    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Tim_Southam"), ModelFactory.createDefaultModel());
   }
 
 

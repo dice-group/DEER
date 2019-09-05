@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * An {@code EnrichmentOperator} to enrich models with links discovered using LIMES.
@@ -309,6 +310,9 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
 
   @Override
   public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target, ValidatableParameterMap prototype) {
+    if (parameterMapSupplier != null) {
+      return parameterMapSupplier.get();
+    }
     return createParameterMap()
       .add(USE_ML, ResourceFactory.createTypedLiteral(true))
       .add(LINKING_PREDICATE, OWL.sameAs)
@@ -319,5 +323,10 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
     return new DegreeBounds(2,2,1,1);
   }
 
+
+  private static Supplier<ValidatableParameterMap> parameterMapSupplier = null;
+  public static void setStaticLearning(Supplier<ValidatableParameterMap> x) {
+    parameterMapSupplier = x;
+  }
 
 }

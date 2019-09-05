@@ -170,7 +170,7 @@ public class Genotype extends ExecutionGraph<Model> {
     }
     Genotype compacted;
     if (shrink) {
-      compacted = new Genotype(relevantRows.size()+1-skipMap.size());
+      compacted = new Genotype(relevantRows.size()-skipMap.size());
     } else {
       compacted = new Genotype();
     }
