@@ -41,7 +41,7 @@ public class HPOPhase6 {
   @BeforeClass
   public static void setUp() throws IOException {
     LinkingEnrichmentOperator.setStaticLearning(()-> new LinkingEnrichmentOperator().createParameterMap()
-      .add(LinkingEnrichmentOperator.LINKING_PREDICATE, ResourceFactory.createProperty(""))
+      .add(LinkingEnrichmentOperator.LINKING_PREDICATE, ResourceFactory.createProperty("<http://my.dataset.edu/birthPlace>"))
       .add(LinkingEnrichmentOperator.LINK_SPECIFICATION, ResourceFactory.createStringLiteral("exactmatch(x.http://dbpedia.org/ontology/birthPlace, y.http://www.w3.org/2000/01/rdf-schema#label)"))
       .add(LinkingEnrichmentOperator.THRESHOLD, ResourceFactory.createTypedLiteral(1.0))
       .init());
@@ -80,10 +80,10 @@ public class HPOPhase6 {
         "<http://dbpedia.org/resource/Peter_Koper> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/Rock_%28geology%29> .\n" +
         "<http://dbpedia.org/resource/Peter_Koper> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/Discovery_Channel> .\n" +
         "<http://dbpedia.org/resource/Peter_Koper> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/Washington%2C_D.C.> .\n" +
-        "<http://dbpedia.org/resource/Peter_Koper> <http://xmlns.com/foaf/0.1/name> \"Peter Koper\"@en .\n" +
-        "<http://dbpedia.org/resource/Peter_Koper> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/John_Waters> .\n" +
         "<http://dbpedia.org/resource/Peter_Koper> <http://dbpedia.org/ontology/birthPlace> \"Quakenbrück\" .\n" +
-        "<http://dbpedia.org/resource/Peter_Koper> <http://www.w3.org/2000/01/rdf-schema#comment> \"Peter Koper (born 1947) is an American journalist, professor, screenwriter, and producer. He numbers among the original Dreamlanders, the group of actors and artists who worked with independent film maker John Waters on his early films. He has written for the Associated Press, the Baltimore Sun, American Film, Rolling Stone, and People. He worked as a staff writer and producer for America's Most Wanted, and has written television for the Discovery Channel, the Learning Channel, Paramount Television and Lorimar Television. Koper wrote and co-produced the cult movie Headless Body in Topless Bar, and wrote the screenplay for Island of the Dead. He has taught at the University of the District of Columbia, and Hofstra University.\"@en .\n" +
+        "<http://dbpedia.org/resource/Peter_Koper> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/John_Waters> .\n" +
+        "<http://dbpedia.org/resource/Peter_Koper> <http://xmlns.com/foaf/0.1/name> \"Peter Koper\"@en .\n" +
+        "<http://dbpedia.org/resource/Peter_Koper> <http://www.w3.org/2000/01/rdf-schema#comment> \"Peter Koper (born 1947) is an American journalist, professor, screenwriter, and producer. He numbers among the original Dreamlanders, the group of actors and artists who worked with independent film maker John Waters on his early films. He has written for the Associated Press, the Baltimore Sun, American Film, Rolling Stone, and People. He worked as a staff writer and producer for America's Most Wanted, and has written television for the Discovery Channel, the Learning Channel, Paramount Television and Lorimar Television. Koper wrote and co-produced the cult movie Headless Body in Topless Bar, and wrote the screenplay for Island of the Dead. He has taught at the University of the District of Columbia, and Hofstra University.\" .\n" +
         "<http://dbpedia.org/resource/Peter_Koper> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/Hofstra_University> .\n" +
         "<http://dbpedia.org/resource/Peter_Koper> <http://dbpedia.org/ontology/producerOf> <http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> .\n" +
         "<http://dbpedia.org/resource/Peter_Koper> <http://dbpedia.org/ontology/almaMater> <http://dbpedia.org/resource/Johns_Hopkins_University> .\n" +

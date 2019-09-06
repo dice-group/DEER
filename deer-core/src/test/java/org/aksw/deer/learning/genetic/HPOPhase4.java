@@ -41,7 +41,7 @@ public class HPOPhase4 {
   @BeforeClass
   public static void setUp() throws IOException {
     LinkingEnrichmentOperator.setStaticLearning(()-> new LinkingEnrichmentOperator().createParameterMap()
-      .add(LinkingEnrichmentOperator.LINKING_PREDICATE, ResourceFactory.createProperty(""))
+      .add(LinkingEnrichmentOperator.LINKING_PREDICATE, ResourceFactory.createProperty("<http://my.dataset.edu/birthPlace>"))
       .add(LinkingEnrichmentOperator.LINK_SPECIFICATION, ResourceFactory.createStringLiteral("exactmatch(x.http://dbpedia.org/ontology/birthPlace, y.http://www.w3.org/2000/01/rdf-schema#label)"))
       .add(LinkingEnrichmentOperator.THRESHOLD, ResourceFactory.createTypedLiteral(1.0))
       .init());
