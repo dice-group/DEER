@@ -61,7 +61,7 @@ public class FilterEnrichmentOperator extends AbstractParameterizedEnrichmentOpe
           RDFNode s = selectorResource.getPropertyResourceValue(SUBJECT);
           RDFNode p = selectorResource.getPropertyResourceValue(PREDICATE);
           Resource o = selectorResource.getPropertyResourceValue(OBJECT);
-          logger.info("Filtering " + getId() + " for triple pattern {} {} {} ...",
+          logger.info("Running filter " + getId() + " for triple pattern {} {} {} ...",
             s == null ? "[]" : "<" + s.asResource().getURI() + ">",
             p == null ? "[]" : "<" + p.asResource().getURI() + ">",
             o == null ? "[]" : "(<)(\")" + o.toString() + "(\")(>)");

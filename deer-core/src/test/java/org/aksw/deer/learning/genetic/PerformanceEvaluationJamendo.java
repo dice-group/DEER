@@ -50,41 +50,34 @@ public class PerformanceEvaluationJamendo {
       Files.createDirectory(Paths.get(testDir));
     }
 
-    Model a = ModelFactory.createDefaultModel().read(new StringReader(
-        "<http://dbpedia.org/resource/Peter_Koper> <http://dbpedia.org/ontology/birthDate> \"1947-0-0\"^^<http://www.w3.org/2001/XMLSchema#date> .\n" +
-        "<http://dbpedia.org/resource/Peter_Koper> <http://xmlns.com/foaf/0.1/name> \"Peter Koper\"@en .\n" +
-        "<http://dbpedia.org/resource/Peter_Koper> <http://dbpedia.org/ontology/birthPlace> \"Quakenbrück\" .\n" +
-        "<http://dbpedia.org/resource/Peter_Koper> <http://www.w3.org/2000/01/rdf-schema#comment> \"Peter Koper (born 1947) is an American journalist, professor, screenwriter, and producer. He numbers among the original Dreamlanders, the group of actors and artists who worked with independent film maker John Waters on his early films. He has written for the Associated Press, the Baltimore Sun, American Film, Rolling Stone, and People. He worked as a staff writer and producer for America's Most Wanted, and has written television for the Discovery Channel, the Learning Channel, Paramount Television and Lorimar Television. Koper wrote and co-produced the cult movie Headless Body in Topless Bar, and wrote the screenplay for Island of the Dead. He has taught at the University of the District of Columbia, and Hofstra University.\" .\n" +
-        "<http://dbpedia.org/resource/Peter_Koper> <http://dbpedia.org/ontology/producerOf> <http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> .\n" +
-        "<http://dbpedia.org/resource/Peter_Koper> <http://dbpedia.org/ontology/almaMater> <http://dbpedia.org/resource/Johns_Hopkins_University> .\n" +
-        ""), null, "NT");
-
-    Model b = ModelFactory.createDefaultModel().read(new StringReader(
-      "<http://example.org/Quakenbrück> <http://dbpedia.org/ontology/postalCode> \"49610\" .\n" +
-        "<http://example.org/Quakenbrück> <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Germany> .\n" +
-        "<http://example.org/Quakenbrück> <http://www.w3.org/2003/01/geo/wgs84_pos#long> \"7.9574999809265136719\"^^<http://www.w3.org/2001/XMLSchema#float> .\n" +
-        "<http://example.org/Quakenbrück> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> \"52.67722320556640625\"^^<http://www.w3.org/2001/XMLSchema#float> .\n" +
-        "<http://example.org/Quakenbrück> <http://www.w3.org/2000/01/rdf-schema#label> \"Quakenbrück\" .\n" +
-        "<http://example.org/Quakenbrück> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Town> ." +
-        ""), null, "NT");
-// (a -> )(b -> AC ->) -> MERGE -> NER -> PC -> DEREF
     Model target = ModelFactory.createDefaultModel().read(new StringReader(
-      "<http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> <http://dbpedia.org/ontology/director> <http://dbpedia.org/resource/Tim_Southam> .\n" +
-        "<http://my.dataset.edu/Peter_Koper> <http://my.dataset.edu/relatedTo> <http://dbpedia.org/resource/Paramount_Pictures> .\n" +
-        "<http://my.dataset.edu/Peter_Koper> <http://my.dataset.edu/birthPlace> <http://example.org/Quakenbrück> .\n" +
-        "<http://my.dataset.edu/Peter_Koper> <http://my.dataset.edu/relatedTo> <http://dbpedia.org/resource/Baltimore> .\n" +
-        "<http://my.dataset.edu/Peter_Koper> <http://my.dataset.edu/name> \"Peter Koper\"@en .\n" +
-        "<http://my.dataset.edu/Peter_Koper> <http://dbpedia.org/ontology/producerOf> <http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> .\n" +
-        "<http://example.org/Quakenbrück> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> \"52.67722320556640625\"^^<http://www.w3.org/2001/XMLSchema#float> .\n" +
-        "<http://example.org/Quakenbrück> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Town> .\n" +
-        "<http://example.org/Quakenbrück> <http://www.w3.org/2000/01/rdf-schema#label> \"Quakenbrück\" .\n" +
-        "<http://example.org/Quakenbrück> <http://www.w3.org/2003/01/geo/wgs84_pos#long> \"7.9574999809265136719\"^^<http://www.w3.org/2001/XMLSchema#float> .\n" +
-        "<http://example.org/Quakenbrück> <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Germany> .\n"
-    ), null, "NT");
+        "<http://dbtune.org/jamendo/artist/1399> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/Tom_Morello> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/Marcus_Martin> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/name> \"ARCTIC\" .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/mo/MusicArtist> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/Yellowknife> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/homepage> <http://www.projectarctic.com> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/Northwest_Territories> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://www.w3.org/2000/01/rdf-schema#comment> \"<p>ARCTIC - the band and/or solo project of Marcus Martin - is all about duality. His childhood in Yellowknife, a small gold mining town in the Arctic region of Canada's Northwest Territories, was a stark contrast to his experiences in a private UK boarding school. He grew up in the land of lakes, trees, rocks and ice with true wilderness spirit and is equally at home sharing his ARCTIC adventures in any big city, where there are more people on one street than in his whole hometown. </p>\\n<p>Coming from the Tom Morello school of guitar texture, he has learned to challenge the listener by layering unique sounds usually found only in the electric guitar world. As a loop-based acoustic artist he tours with an 80 lb. effects pedalboard - not traveling light compared to most acoustic singer-songwriters. </p>\\n<p>His live set is where this duality takes flight, as he constructs each song before the audience, piece by piece. Influenced by both 70's progressive rock and conventional songwriters of the day, ARCTIC bridges a world of opposites together. He layers haunting melodies on top of his arrangements, improvising like a jazz artist, intertwining vocals and guitar into a chilled and airy soundscape. </p>\" .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/United_Kingdom> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://ns.aksw.org/fox/ontology#relatedTo> <http://dbpedia.org/resource/Canada> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/img> <http://img.jamendo.com/artists/a/arctic.gif> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/made> <http://dbtune.org/jamendo/record/2357> .\n" +
+          "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/based_near> <http://sws.geonames.org/6251999/> .\n" +
+          ""), null, "NT");
+// (a -> )(b -> AC ->) -> MERGE -> NER -> PC -> DEREF
+    Model a = ModelFactory.createDefaultModel().read(new StringReader(
+      "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/name> \"ARCTIC\" .\n" +
+        "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/made> <http://dbtune.org/jamendo/record/2357> .\n" +
+        "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/img> <http://img.jamendo.com/artists/a/arctic.gif> .\n" +
+        "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/homepage> <http://www.projectarctic.com> .\n" +
+        "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/based_near> <http://sws.geonames.org/6251999/> .\n" +
+        "<http://dbtune.org/jamendo/artist/1399> <http://www.w3.org/2000/01/rdf-schema#comment> \"<p>ARCTIC - the band and/or solo project of Marcus Martin - is all about duality. His childhood in Yellowknife, a small gold mining town in the Arctic region of Canada's Northwest Territories, was a stark contrast to his experiences in a private UK boarding school. He grew up in the land of lakes, trees, rocks and ice with true wilderness spirit and is equally at home sharing his ARCTIC adventures in any big city, where there are more people on one street than in his whole hometown. </p>\\n<p>Coming from the Tom Morello school of guitar texture, he has learned to challenge the listener by layering unique sounds usually found only in the electric guitar world. As a loop-based acoustic artist he tours with an 80 lb. effects pedalboard - not traveling light compared to most acoustic singer-songwriters. </p>\\n<p>His live set is where this duality takes flight, as he constructs each song before the audience, piece by piece. Influenced by both 70's progressive rock and conventional songwriters of the day, ARCTIC bridges a world of opposites together. He layers haunting melodies on top of his arrangements, improvising like a jazz artist, intertwining vocals and guitar into a chilled and airy soundscape. </p>\" .\n" +
+        "<http://dbtune.org/jamendo/artist/1399> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/mo/MusicArtist> .\n" +
+        ""), null, "NT");
     a.write(new FileWriter(testDir + paths[0]), "TTL");
-    b.write(new FileWriter(testDir + paths[1]), "TTL");
     target.write(new FileWriter(testDir + paths[2]), "TTL");
-    trainingData = new TrainingData(new FitnessFunction(new int[]{1,1,1,1}, 1), List.of(testDir + paths[0], testDir + paths[1]), List.of(testDir + paths[0], testDir + paths[1]), testDir + paths[2], testDir + paths[2], testDir + paths[3]);
+    trainingData = new TrainingData(new FitnessFunction(new int[]{1,1,1,1}, 1), List.of(testDir + paths[0]), List.of(testDir + paths[0]), testDir + paths[2], testDir + paths[2], testDir + paths[3]);
     Genotype.SIZE = 10;
   }
 
@@ -110,7 +103,7 @@ public class PerformanceEvaluationJamendo {
 
   @Test
   public void simpleTest() {
-    List<PopulationEvaluationResult> evaluationResults = getAlg(1.0, 0.5, 0.5).run();
+    List<PopulationEvaluationResult> evaluationResults = getAlg(1.0, 0.5, 0.25).run();
     System.out.println(evaluationResults.size());
     Phenotype of = Phenotype.of(evaluationResults.get(evaluationResults.size() - 1).getBest());
     Genotype genotype = evaluationResults.get(evaluationResults.size() - 1).getBest().compactBestResult(false, 0);

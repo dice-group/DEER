@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -55,19 +56,19 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
 
   private static final Logger logger = LoggerFactory.getLogger(NEREnrichmentOperator.class);
 
-  private static final ConcurrentMap<NEROperationID, List<String>> cache = new ConcurrentHashMap<>();
+  private static final ConcurrentMap<NEROperationID, CompletableFuture<List<String>>> cache = new ConcurrentHashMap<>();
 
-  static {
-    try {
-      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "Goethe lived in Leipzig.",null), List.of("http://dbpedia.org/resource/Johann_Wolfgang_von_Goethe","http://dbpedia.org/resource/Leipzig"));
-      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "The University of Leipzig has been founded in 1409.",null), List.of("http://dbpedia.org/resource/Leipzig"));
-      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "This table has been manufactured in Leipzig.",null), List.of("http://dbpedia.org/resource/Leipzig"));
-      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "This chair has been manufactured in Leipzig.",null), List.of("http://dbpedia.org/resource/Leipzig"));
-      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "Peter Koper (born 1947) is an American journalist, professor, screenwriter, and producer. He numbers among the original Dreamlanders, the group of actors and artists who worked with independent film maker John Waters on his early films. He has written for the Associated Press, the Baltimore Sun, American Film, Rolling Stone, and People. He worked as a staff writer and producer for America's Most Wanted, and has written television for the Discovery Channel, the Learning Channel, Paramount Television and Lorimar Television. Koper wrote and co-produced the cult movie Headless Body in Topless Bar, and wrote the screenplay for Island of the Dead. He has taught at the University of the District of Columbia, and Hofstra University.",null), List.of("http://dbpedia.org/resource/Paramount_Pictures","http://dbpedia.org/resource/Baltimore"));
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    }
-  }
+//  static {
+//    try {
+//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "Goethe lived in Leipzig.",null), List.of("http://dbpedia.org/resource/Johann_Wolfgang_von_Goethe","http://dbpedia.org/resource/Leipzig"));
+//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "The University of Leipzig has been founded in 1409.",null), List.of("http://dbpedia.org/resource/Leipzig"));
+//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "This table has been manufactured in Leipzig.",null), List.of("http://dbpedia.org/resource/Leipzig"));
+//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "This chair has been manufactured in Leipzig.",null), List.of("http://dbpedia.org/resource/Leipzig"));
+//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "Peter Koper (born 1947) is an American journalist, professor, screenwriter, and producer. He numbers among the original Dreamlanders, the group of actors and artists who worked with independent film maker John Waters on his early films. He has written for the Associated Press, the Baltimore Sun, American Film, Rolling Stone, and People. He worked as a staff writer and producer for America's Most Wanted, and has written television for the Discovery Channel, the Learning Channel, Paramount Television and Lorimar Television. Koper wrote and co-produced the cult movie Headless Body in Topless Bar, and wrote the screenplay for Island of the Dead. He has taught at the University of the District of Columbia, and Hofstra University.",null), List.of("http://dbpedia.org/resource/Paramount_Pictures","http://dbpedia.org/resource/Baltimore"));
+//    } catch (MalformedURLException e) {
+//      e.printStackTrace();
+//    }
+//  }
 
   /**
    * Defines the possible (sub)types of named entities to be discovered
@@ -187,8 +188,14 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
   private Model runFOX(Resource subject, String input, String type) {
     NEROperationID key = new NEROperationID(foxUri, input, type);
     List<String> result;
-    if (cache.containsKey(key)) {
-      result = cache.get(key);
+    CompletableFuture<List<String>> future = new ThreadlocalInheritingCompletableFuture<>();
+    cache.putIfAbsent(key, future);
+    if (cache.get(key) != future) {
+      try {
+        result = cache.get(key).get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
     } else {
       final IFoxApi fox = new FoxApi()
         .setApiURL(foxUri)
@@ -203,7 +210,7 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
         .filter(e -> Optional.ofNullable(type).isEmpty() || e.getType().equals(type))
         .map(Entity::getUri)
         .collect(Collectors.toList());
-      cache.putIfAbsent(key, result);
+      future.complete(result);
     }
     Model namedEntityModel = ModelFactory.createDefaultModel();
     result.forEach(e -> namedEntityModel.add(subject, importProperty, namedEntityModel.createResource(e)));

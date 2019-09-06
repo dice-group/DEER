@@ -6,6 +6,7 @@ import org.aksw.deer.learning.ReverseLearnable;
 import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.deer.vocabulary.DBR;
 import org.aksw.deer.vocabulary.DEER;
+import org.aksw.faraday_cage.engine.ThreadlocalInheritingCompletableFuture;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,14 +16,15 @@ import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringReader;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 /**
@@ -117,23 +119,23 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
 
   private Model model;
 
-  private static final ConcurrentMap<Resource, Model> cache = new ConcurrentHashMap<>();
+  private static final ConcurrentMap<Resource, CompletableFuture<Model>> cache = new ConcurrentHashMap<>();
 
-  static {
-    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Leipzig"),
-      ModelFactory.createDefaultModel().read(new StringReader("" +
-        "<http://dbpedia.org/resource/Leipzig> <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Germany> ." +
-        ""), null, "TTL"));
-    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)"),
-      ModelFactory.createDefaultModel().read(new StringReader("" +
-        "<http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> <http://dbpedia.org/ontology/director> <http://dbpedia.org/resource/Tim_Southam> ." +
-        ""), null, "TTL"));
-    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Johns_Hopkins_University"), ModelFactory.createDefaultModel());
-    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Germany"), ModelFactory.createDefaultModel());
-    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Paramount_Pictures"), ModelFactory.createDefaultModel());
-    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Baltimore"), ModelFactory.createDefaultModel());
-    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Tim_Southam"), ModelFactory.createDefaultModel());
-  }
+//  static {
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Leipzig"),
+//      ModelFactory.createDefaultModel().read(new StringReader("" +
+//        "<http://dbpedia.org/resource/Leipzig> <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Germany> ." +
+//        ""), null, "TTL"));
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)"),
+//      ModelFactory.createDefaultModel().read(new StringReader("" +
+//        "<http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> <http://dbpedia.org/ontology/director> <http://dbpedia.org/resource/Tim_Southam> ." +
+//        ""), null, "TTL"));
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Johns_Hopkins_University"), ModelFactory.createDefaultModel());
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Germany"), ModelFactory.createDefaultModel());
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Paramount_Pictures"), ModelFactory.createDefaultModel());
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Baltimore"), ModelFactory.createDefaultModel());
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Tim_Southam"), ModelFactory.createDefaultModel());
+//  }
 
 
   @Override
@@ -226,8 +228,13 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
   }
 
   private Model queryResourceModel(Resource o) {
-    if (cache.containsKey(o)) {
-      return cache.get(o);
+    CompletableFuture<Model> future = cache.putIfAbsent(o, new ThreadlocalInheritingCompletableFuture<>());
+    if (cache.get(o) != future) {
+      try {
+        return cache.get(o).get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
     }
     Model result = ModelFactory.createDefaultModel();
     URL url;
@@ -236,6 +243,7 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
       url = new URL(o.getURI());
     } catch (MalformedURLException e) {
       e.printStackTrace();
+      future.complete(result);
       return result;
     }
     try {
@@ -251,7 +259,7 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    cache.putIfAbsent(o, result);
+    future.complete(result);
     return result;
   }
 
