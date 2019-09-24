@@ -28,7 +28,7 @@
   <module>deer-cli</module>
   <module>examples/simple-plugin-example</module>
   <!--<module>deer-slipo-plugin</module>-->
-  <module>faraday-cage</module>
+<!--  <module>faraday-cage</module>-->
 </modules>
 
 <distributionManagement>
