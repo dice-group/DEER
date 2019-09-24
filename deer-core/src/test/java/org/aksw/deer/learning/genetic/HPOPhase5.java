@@ -3,6 +3,7 @@ package org.aksw.deer.learning.genetic;
 import com.google.common.util.concurrent.AtomicDouble;
 import org.aksw.deer.enrichments.LinkingEnrichmentOperator;
 import org.aksw.deer.learning.FitnessFunction;
+import org.aksw.faraday_cage.util.ExecutionGraphSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
@@ -14,6 +15,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
@@ -130,6 +132,13 @@ public class HPOPhase5 {
     Genotype genotype = evaluationResults.get(evaluationResults.size() - 1).getBest().compactBestResult(false, 0);
     System.out.println(of);
     System.out.println(genotype);
+    try {
+      File testfile = new File("/Users/kvn/testconfiguration.ttl");
+      testfile.createNewFile();
+      ExecutionGraphSerializer.serialize(evaluationResults.get(evaluationResults.size() - 1).getBest()).write(new FileWriter(testfile), "TTL");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     System.out.println(evaluationResults.get(evaluationResults.size()-1).getBest().getBestFitness());
   }
 
@@ -194,16 +203,16 @@ public class HPOPhase5 {
 //    System.out.println(oF  + "\t" +  mP  + "\t" +  mR + "\t" + statistics.getAverage() + "\t" + statistics.getStandardDeviation() + "\t" + statistics.getMax());
   }
 
-  private GeneticProgrammingAlgorithm getAlg(double oF, double mP, double mR) {
+  private GeneticProgrammingAlgorithm getAlg(double offspringFraction, double mutationProbability, double mutationRate) {
     return new GeneticProgrammingAlgorithm(
       new Population(30, () -> new RandomGenotype(trainingData)),
       trainingData.getFitnessFunction(),
       new TournamentSelector(3, 0.75),
       List.of(new SemanticRecombinator()),
-      oF,
+      offspringFraction,
       List.of(new SimpleSemanticMutator(), new AllMutator()),
-      mP,
-      mR
+      mutationProbability,
+      mutationRate
     );
   }
 
