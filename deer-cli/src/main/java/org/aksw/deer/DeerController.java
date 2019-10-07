@@ -188,7 +188,7 @@ public class DeerController {
   public static void writeAnalytics(Path analyticsFile) {
     try {
       logger.info("Trying to write analytics data to " + analyticsFile);
-      BufferedWriter writer = Files.newBufferedWriter(analyticsFile, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+      BufferedWriter writer = Files.newBufferedWriter(analyticsFile, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
       JSONObject analyticsForJob = DeerAnalyticsStore.getAnalyticsForJob(FaradayCageContext.getRunId());
       analyticsForJob.write(writer, 2, 0);
       writer.flush();

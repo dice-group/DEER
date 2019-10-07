@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.update.UpdateAction;
 import org.pf4j.Extension;
@@ -34,7 +35,7 @@ public class SparqlUpdateEnrichmentOperator extends AbstractParameterizedEnrichm
 
   @Override
   protected List<Model> safeApply(List<Model> models) {
-    Model model = models.get(0);
+    Model model = ModelFactory.createDefaultModel().add(models.get(0));
     final String updateStatement = getParameterMap().get(UPDATE).asLiteral().getString();
     UpdateAction.parseExecute(updateStatement, model);
     return Lists.newArrayList(model);

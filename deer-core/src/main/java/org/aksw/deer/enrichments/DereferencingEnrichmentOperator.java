@@ -228,14 +228,17 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
   }
 
   private Model queryResourceModel(Resource o) {
-    CompletableFuture<Model> future = cache.putIfAbsent(o, new ThreadlocalInheritingCompletableFuture<>());
+    CompletableFuture<Model> future = new ThreadlocalInheritingCompletableFuture<>();
+    cache.putIfAbsent(o, future);
     if (cache.get(o) != future) {
+      logger.debug("cached future for " + o.getURI());
       try {
         return cache.get(o).get();
       } catch (InterruptedException | ExecutionException e) {
         throw new RuntimeException(e);
       }
     }
+    logger.debug("no cache for " + o.getURI());
     Model result = ModelFactory.createDefaultModel();
     URL url;
     URLConnection conn;
@@ -250,8 +253,7 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
       conn = url.openConnection();
       conn.setRequestProperty("Accept", "application/rdf+xml");
       conn.setRequestProperty("Accept-Language", "en");
-      return ModelFactory.createDefaultModel()
-        .read(conn.getInputStream(), null);
+      result.read(conn.getInputStream(), null);
     } catch (ConnectException e) {
       if (e.getMessage().contains("refused")) {
         throw new RuntimeException(e);

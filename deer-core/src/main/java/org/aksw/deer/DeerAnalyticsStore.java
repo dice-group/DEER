@@ -18,17 +18,40 @@ public class DeerAnalyticsStore {
   private static Map<String, JSONObject> backend = new HashMap<>();
 
   public static synchronized void write(String jobId, Resource nodeId, JSONObject nodeJson) {
+    if (nodeId == null) {
+      writeGlobal(jobId, nodeJson);
+      return;
+    }
     String nodeName = nodeId.toString();
     JSONObject jobJson = backend.get(jobId);
     if (jobJson == null) {
       jobJson = new JSONObject();
       backend.put(jobId, jobJson);
     }
-    JSONObject oldNodeJson = jobJson.optJSONObject(nodeName);
+    JSONObject insertJson = jobJson.optJSONObject("operatorStats");
+    if (insertJson == null) {
+      jobJson.put("operatorStats", new JSONObject());
+      insertJson = jobJson.getJSONObject("operatorStats");
+    }
+    JSONObject oldNodeJson = insertJson.optJSONObject(nodeName);
     if (oldNodeJson == null) {
-      jobJson.put(nodeName, nodeJson);
+      insertJson.put(nodeName, nodeJson);
     } else {
-      jobJson.put(nodeName, mergeJSONObjects(oldNodeJson, nodeJson));
+      insertJson.put(nodeName, mergeJSONObjects(oldNodeJson, nodeJson));
+    }
+  }
+
+  private static void writeGlobal(String jobId, JSONObject json) {
+    JSONObject jobJson = backend.get(jobId);
+    if (jobJson == null) {
+      jobJson = new JSONObject();
+      backend.put(jobId, jobJson);
+    }
+    JSONObject oldJson = jobJson.optJSONObject("globalStats");
+    if (oldJson == null) {
+      jobJson.put("globalStats", json);
+    } else {
+      jobJson.put("globalStats", mergeJSONObjects(oldJson, json));
     }
   }
 

@@ -117,6 +117,7 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
     } else if (getInDegree() == 2) {
       ACache source = modelToCache(models.get(0));
       ACache target = modelToCache(models.get(1));
+      // safeguard against empty models
       if (models.get(0).size() == 0 || models.get(1).size() == 0 ) {
         if (getOutDegree() == 1) {
           return List.of(models.get(0).add(models.get(1)));
@@ -216,7 +217,7 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
         break;
     }
     DeerAnalyticsStore.write(FaradayCageContext.getRunId(), getId(),
-      new JSONObject().put("discovered links", result.size()));
+      new JSONObject().put("newDiscoveredLinks", result.size()));
     return result;
   }
 
