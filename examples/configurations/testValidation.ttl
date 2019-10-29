@@ -1,0 +1,24 @@
+@prefix : <urn:example:server-demo/> .
+@prefix fcage: <http://w3id.org/fcage/> .
+@prefix deer: <http://w3id.org/deer/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+:readInput
+  a deer:FileModelReader ;
+  deer:fromPath "server-demo-data.ttl" ;
+.
+
+:ner
+  a deer:NEREnrichmentOperator ;
+  fcage:hasInput :readInput ;
+  deer:literalProperty rdfs:description ;
+  deer:parallelism 4;
+.
+
+:writeResult
+  a deer:FileModelWriter ;
+  fcage:hasInput :ner ;
+  deer:outputFile "server-demo-output.nt" ;
+  deer:outputFormat "NT" ;
+.

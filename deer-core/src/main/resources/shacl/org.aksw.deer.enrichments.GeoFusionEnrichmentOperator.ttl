@@ -9,10 +9,8 @@
 deer:GeoFusionEnrichmentOperatorShape
 	a sh:NodeShape ;
 	sh:targetClass deer:GeoFusionEnrichmentOperator ;
-	sh:property deer:GeoFusionEnrichmentOperatorShape_ ;
-	sh:xone (
-    [ sh:property deer:GeoFusionEnrichmentOperatorShape_ ; ]
-	) ;
+	sh:property deer:GeoFusionEnrichmentOperatorShape_fusionAction ;
+	sh:property deer:GeoFusionEnrichmentOperatorShape_mergeOtherStatements ;
 	sh:message "GeoFusionEnrichmentOperator must declare exactly one deer:fusionAction and at most one deer:mergeOtherStatements" ;
 .
 

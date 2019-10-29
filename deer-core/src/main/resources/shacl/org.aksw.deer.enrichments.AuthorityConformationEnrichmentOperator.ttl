@@ -3,6 +3,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix deer: <http://w3id.org/deer/> .
+@prefix dash: <http://datashapes.org/dash#> .
 
 # Node AuthorityConformationEnrichmentOperator
 
@@ -16,8 +17,13 @@ deer:AuthorityConformationEnrichmentOperatorShape
 deer:AuthorityConformationEnrichmentOperatorShape_operation
   sh:path deer:operation ;
   sh:minCount 1 ;
-  sh:node deer:AuthorityConformationEnrichmentOperatorShape_operationNode;
-.
+  sh:node dash:ListShape ;
+  sh:property [
+               sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+               sh:node deer:AuthorityConformationEnrichmentOperatorShape_operationNode ;
+               sh:minCount 1 ;
+           ] ;
+ .
 
 deer:AuthorityConformationEnrichmentOperatorShape_operationNode
   a sh:NodeShape ;

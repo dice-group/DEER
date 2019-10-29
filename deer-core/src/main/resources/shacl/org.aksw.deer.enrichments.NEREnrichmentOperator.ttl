@@ -3,17 +3,19 @@
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix deer: <http://w3id.org/deer/> .
+@prefix fcage: <http://w3id.org/fcage/> .
 
 # Node NEREnrichmentOperator
 
 deer:NEREnrichmentOperatorShape
 	a sh:NodeShape ;
 	sh:targetClass deer:NEREnrichmentOperator ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type fcage:hasInput ) ;
 	sh:property deer:NEREnrichmentOperatorShape_literalProperty ,
               deer:NEREnrichmentOperatorShape_importProperty ,
               deer:NEREnrichmentOperatorShape_foxUrl ,
-              deer:NEREnrichmentOperatorShape_dbpediaEndpointUrl ,
-              deer:NEREnrichmentOperatorShape_askEndpoint ,
+              deer:NEREnrichmentOperatorShape_parallelism ,
               deer:NEREnrichmentOperatorShape_neType ;
 	sh:message "NEREnrichmentOperator must declare exactly one deer:literalProperty ..." ;
 .
@@ -39,18 +41,12 @@ deer:NEREnrichmentOperatorShape_foxUrl
   sh:nodeKind sh:IRI ;
 .
 
-deer:NEREnrichmentOperatorShape_dbpediaEndpointUrl
-  sh:path deer:dbpediaEndpointUrl ;
+deer:NEREnrichmentOperatorShape_parallelism
+  sh:path deer:parallelism ;
   sh:minCount 0 ;
   sh:maxCount 1 ;
-  sh:nodeKind sh:IRI ;
-.
-
-deer:NEREnrichmentOperatorShape_askEndpoint
-  sh:path deer:askEndpoint ;
-  sh:minCount 0 ;
-  sh:maxCount 1 ;
-  sh:datatype xsd:boolean ;
+  sh:nodeKind sh:Literal ;
+  sh:datatype xsd:integer ;
 .
 
 deer:NEREnrichmentOperatorShape_neType

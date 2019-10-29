@@ -112,7 +112,7 @@
         <dependency>
           <groupId>org.ow2.asm</groupId>
           <artifactId>asm</artifactId>
-          <version>7.0</version>
+          <version>7.1</version>
         </dependency>
       </dependencies>
     </plugin>
@@ -132,7 +132,7 @@
         <dependency>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-plugin</artifactId>
-          <version>1.9.5</version>
+          <version>1.11.2</version>
         </dependency>
       </dependencies>
     </plugin>
@@ -152,30 +152,32 @@
       </executions>
     </plugin>
 
+
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-javadoc-plugin</artifactId>
-      <version>3.1.0</version>
+      <version>3.0.1</version>
       <executions>
         <execution>
-          <id>attach-javadocs</id>
+          <id>aggregate</id>
           <phase>package</phase>
           <goals>
             <goal>aggregate-jar</goal>
           </goals>
-          <configuration>
-            <!--switch on dependency-driven aggregation-->
-            <includeDependencySources>true</includeDependencySources>
-            <dependencySourceIncludes>
-              <!-- include ONLY dependencies I control -->
-              <dependencySourceInclude>org.aksw.faraday_cage:*</dependencySourceInclude>
-            </dependencySourceIncludes>
-            <links>
-              <link>https://jena.apache.org/documentation/javadoc/jena</link>
-            </links>
-          </configuration>
         </execution>
       </executions>
+      <configuration>
+        <!--          switch on dependency-driven aggregation-->
+        <includeDependencySources>true</includeDependencySources>
+        <dependencySourceIncludes>
+          <!-- include ONLY dependencies I control -->
+          <dependencySourceInclude>org.aksw.faraday_cage:*</dependencySourceInclude>
+        </dependencySourceIncludes>
+        <links>
+          <link>https://jena.apache.org/documentation/javadoc/jena</link>
+        </links>
+        <!--            <useStandardDocletOptions>false</useStandardDocletOptions>-->
+      </configuration>
     </plugin>
 
     <plugin>

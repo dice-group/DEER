@@ -47,11 +47,10 @@
   </build>
 
   <dependencies>
-
     <dependency>
       <groupId>org.aksw.limes</groupId>
       <artifactId>limes-core</artifactId>
-      <version>1.6.2</version>
+      <version>1.7.0</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>

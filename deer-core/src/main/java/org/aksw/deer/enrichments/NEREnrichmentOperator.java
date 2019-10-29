@@ -58,18 +58,6 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
 
   private static final ConcurrentMap<NEROperationID, CompletableFuture<List<String>>> cache = new ConcurrentHashMap<>();
 
-//  static {
-//    try {
-//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "Goethe lived in Leipzig.",null), List.of("http://dbpedia.org/resource/Johann_Wolfgang_von_Goethe","http://dbpedia.org/resource/Leipzig"));
-//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "The University of Leipzig has been founded in 1409.",null), List.of("http://dbpedia.org/resource/Leipzig"));
-//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "This table has been manufactured in Leipzig.",null), List.of("http://dbpedia.org/resource/Leipzig"));
-//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "This chair has been manufactured in Leipzig.",null), List.of("http://dbpedia.org/resource/Leipzig"));
-//      cache.putIfAbsent(new NEROperationID(new URL(DEFAULT_FOX_URL), "Peter Koper (born 1947) is an American journalist, professor, screenwriter, and producer. He numbers among the original Dreamlanders, the group of actors and artists who worked with independent film maker John Waters on his early films. He has written for the Associated Press, the Baltimore Sun, American Film, Rolling Stone, and People. He worked as a staff writer and producer for America's Most Wanted, and has written television for the Discovery Channel, the Learning Channel, Paramount Television and Lorimar Television. Koper wrote and co-produced the cult movie Headless Body in Topless Bar, and wrote the screenplay for Island of the Dead. He has taught at the University of the District of Columbia, and Hofstra University.",null), List.of("http://dbpedia.org/resource/Paramount_Pictures","http://dbpedia.org/resource/Baltimore"));
-//    } catch (MalformedURLException e) {
-//      e.printStackTrace();
-//    }
-//  }
-
   /**
    * Defines the possible (sub)types of named entities to be discovered
    */
@@ -81,8 +69,6 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
   private Property importProperty;
   private URL foxUri;
   private int parallelism;
-
-  private boolean askEndPoint;
   private NET neType;
 
   @Override
@@ -92,6 +78,7 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
       .declareProperty(IMPORT_PROPERTY)
       .declareProperty(FOX_URL)
       .declareProperty(NE_TYPE)
+      .declareValidationShape(getValidationModelFor(NEREnrichmentOperator.class))
       .declareValidationShape(getValidationModelFor(NEREnrichmentOperator.class))
       .build();
   }
@@ -110,13 +97,13 @@ public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperat
       String urlString = parameters.getOptional(FOX_URL)
         .map(RDFNode::asResource).map(Resource::getURI).orElse(DEFAULT_FOX_URL);
       foxUri = new URL(urlString);
-      // optional parameter dbpediaEndpointUrl
     } catch (MalformedURLException e) {
       throw new RuntimeException("Encountered bad URL in " + getId() + "!", e);
     }
     // optional parameter neType
     neType = parameters.getOptional(NE_TYPE)
       .map(RDFNode::asLiteral).map(l -> l.getString().toUpperCase()).map(NET::valueOf).orElse(NET.ALL);
+    // optional parameter parallelism
     parallelism = parameters.getOptional(PARALLELISM)
       .map(RDFNode::asLiteral).map(Literal::getInt).orElse(DEFAULT_PARALLELISM);
   }
