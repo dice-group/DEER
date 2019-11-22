@@ -9,9 +9,20 @@
   deer:fromPath "server-demo-data.ttl" ;
 .
 
+:readInput2
+  a deer:FileModelReader ;
+  deer:fromPath "server-demo-data.ttl" ;
+.
+
+
+:merge
+  a deer:MergeEnrichmentOperator ;
+  fcage:hasInput ( :readInput :readInput2 ) ;
+.
+
 :ner
   a deer:NEREnrichmentOperator ;
-  fcage:hasInput :readInput ;
+  fcage:hasInput :merge ;
   deer:literalProperty rdfs:description ;
   deer:parallelism 4;
 .

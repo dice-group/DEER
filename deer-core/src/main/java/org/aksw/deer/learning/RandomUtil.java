@@ -4,6 +4,7 @@ import io.jenetics.prngine.MT19937_64Random;
 import io.jenetics.prngine.Random64;
 
 /**
+ * Random utility class
  */
 public class RandomUtil {
 

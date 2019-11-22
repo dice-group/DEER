@@ -16,7 +16,7 @@ deer:LinkingEnrichmentOperatorShape
 	sh:xone (
     [ sh:property deer:LinkingEnrichmentOperatorShape_specFile ; ]
     [ sh:property deer:LinkingEnrichmentOperatorShape_linkSpecification ; ]
-    [ sh:property deer:LinkingEnrichmentOperatorShape_useMlL ; ]
+    [ sh:property deer:LinkingEnrichmentOperatorShape_useML ; ]
 	) ;
 	sh:message "LinkingEnrichmentOperator must declare exactly one of {deer:specFile, deer:linkSpecification}" ;
 .
