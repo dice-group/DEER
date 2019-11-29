@@ -27,12 +27,7 @@ deer:FilterEnrichmentOperatorShape_sparqlConstructQuery
 deer:FilterEnrichmentOperatorShape_selector
   sh:path deer:selector ;
   sh:minCount 1 ;
-  sh:node dash:ListShape ;
-  sh:property [
-              sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
-              sh:node deer:FilterEnrichmentOperatorShape_selectorNode ;
-              sh:minCount 1 ;
-          ] ;
+  sh:node deer:FilterEnrichmentOperatorShape_selectorNode ;
 .
 
 deer:FilterEnrichmentOperatorShape_selectorNode
