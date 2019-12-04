@@ -7,6 +7,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.shared.PropertyNotFoundException;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,11 +59,15 @@ public class GeoDistanceEnrichmentOperator extends AbstractParameterizedEnrichme
     final String ns = "http://www.w3.org/2003/01/geo/wgs84_pos#";
     final Property lat = model.createProperty(ns, "lat");
     final Property lon = model.createProperty(ns, "long");
-    double aLat = stmt.getSubject().getProperty(lat).getDouble();
-    double aLong = stmt.getSubject().getProperty(lon).getDouble();
-    double bLat = stmt.getObject().asResource().getProperty(lat).getDouble();
-    double bLong = stmt.getObject().asResource().getProperty(lon).getDouble();
-    stmt.getSubject().addProperty(distancePredicate, OrthodromicDistance.getDistanceInDegrees(aLat, aLong, bLat, bLong) + "km");
+    try {
+      double aLat = stmt.getSubject().getRequiredProperty(lat).getDouble();
+      double aLong = stmt.getSubject().getRequiredProperty(lon).getDouble();
+      double bLat = stmt.getObject().asResource().getRequiredProperty(lat).getDouble();
+      double bLong = stmt.getObject().asResource().getRequiredProperty(lon).getDouble();
+      stmt.getSubject().addProperty(distancePredicate, OrthodromicDistance.getDistanceInDegrees(aLat, aLong, bLat, bLong) + "km");
+    } catch (PropertyNotFoundException e) {
+      logger.info("Could not compute distance between " + stmt.getSubject().getURI() + " and " + stmt.getResource().getURI() + "! (Missing lat, long!");
+    }
   }
 
 }
