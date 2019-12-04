@@ -96,7 +96,7 @@ public class DereferencingEnrichmentOperatorTest {
     deo.initParameters(deo.createParameterMap().populate(deoConf).init());
     Model out = deo.safeApply(Lists.newArrayList(in)).get(0);
     //    System.out.println(out);
-    assertTrue("The dereferenced data is in the output", out.contains(in.createResource(EX + "birch?default"), ResourceFactory.createProperty(CFG + "brinellHardness"), ResourceFactory.createTypedLiteral(27)));
+    assertTrue("The dereferenced data is in the output", out.contains(in.createResource(CFG + "table"), ResourceFactory.createProperty(CFG + "brinellHardness"), ResourceFactory.createTypedLiteral(27)));
   }
 
 
@@ -120,7 +120,7 @@ public class DereferencingEnrichmentOperatorTest {
     deo.initPluginId(deoConf); deo.initDegrees(1, 1);
     Model out = deo.safeApply(Lists.newArrayList(in)).get(0);
     //    System.out.println(out);
-    assertTrue("The dereferenced data is in the output", out.contains(in.createResource(EX + "birch?default"), ResourceFactory.createProperty(EX + "brinellHardness"), ResourceFactory.createTypedLiteral(27)));
+    assertTrue("The dereferenced data is in the output", out.contains(in.createResource(EX + "table"), ResourceFactory.createProperty(EX + "brinellHardness"), ResourceFactory.createTypedLiteral(27)));
   }
 
   @Test
@@ -149,16 +149,16 @@ public class DereferencingEnrichmentOperatorTest {
     Model out = deo.safeApply(Lists.newArrayList(in)).get(0);
     //    System.out.println(out);
     assertTrue("The dereferenced data is in the output",
-         out.contains(in.createResource(EX + "birch?default"), ResourceFactory.createProperty(EX + "brinellHardness"), ResourceFactory.createTypedLiteral(27))
-      && out.contains(in.createResource(EX + "birch?default"), ResourceFactory.createProperty(EX + "brinellHardness2"), ResourceFactory.createTypedLiteral(27)) );
+         out.contains(in.createResource(EX + "table"), ResourceFactory.createProperty(EX + "brinellHardness"), ResourceFactory.createTypedLiteral(27))
+      && out.contains(in.createResource(EX + "table"), ResourceFactory.createProperty(EX + "brinellHardness2"), ResourceFactory.createTypedLiteral(27)) );
   }
 
-  @Test
-  public void safeApply() {
-    op.initParameters(expectedParameters);
-    Model actual = op.apply(List.of(input)).get(0);
-    assertTrue("It should dereference birch authority.", expected.isIsomorphicWith(actual));
-  }
+//  @Test
+//  public void safeApply() {
+//    op.initParameters(expectedParameters);
+//    Model actual = op.apply(List.of(input)).get(0);
+//    assertTrue("It should dereference birch authority.", expected.isIsomorphicWith(actual));
+//  }
 
   @Test
   public void predictApplicability() {
