@@ -36,7 +36,7 @@ deer:AuthorityConformationEnrichmentOperatorShape_operationNode_sourceAuthority
 .
 
 deer:AuthorityConformationEnrichmentOperatorShape_operationNode_targetAuthority
-  sh:path deer:sourceAuthority ;
+  sh:path deer:targetAuthority ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
   sh:nodeKind sh:IRI ;
