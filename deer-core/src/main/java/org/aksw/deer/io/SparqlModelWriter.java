@@ -3,7 +3,6 @@ package org.aksw.deer.io;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
-import org.apache.http.HttpException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdfconnection.RDFConnection;
