@@ -3,13 +3,12 @@ package org.aksw.deer.io;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ExecutionNode;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
-import org.apache.jena.query.ReadWrite;
+import org.apache.http.HttpException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
-import org.apache.jena.riot.Lang;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +25,10 @@ public class SparqlModelWriter extends AbstractModelWriter
   public static final Property ENDPOINT = DEER.property("endPoint");
   public static final Property WRITE_TYPE = DEER.property("writeType");
   public static final Property WRITE_OP = DEER.property("writeOp");
+  public static final Property GRAPH_NAME = DEER.property("graphName");
 
   public static final String REPLACE = "replace";
+  public static final String DEAFULT_GRAPH = "default";
   public static final String SPARQL = "sparql";
   public static final String GRAPH_STORE_HTTP = "graphstore-http";
   public static final String MERGE = "merge";
@@ -38,6 +39,7 @@ public class SparqlModelWriter extends AbstractModelWriter
       .declareProperty(WRITE_TYPE)
       .declareProperty(WRITE_OP)
       .declareProperty(ENDPOINT)
+      .declareProperty(GRAPH_NAME)
       .declareValidationShape(getValidationModelFor(SparqlModelWriter.class))
       .build();
   }
@@ -49,55 +51,79 @@ public class SparqlModelWriter extends AbstractModelWriter
 
   public Model write(Model model) {
     String writeType = getParameterMap().get(WRITE_TYPE).asLiteral().getString();
+    String writeOp = getParameterMap().get(WRITE_OP).asLiteral().getString();
     String endPoint = getParameterMap().get(ENDPOINT).asLiteral().getString();
+    String graphName = getParameterMap().get(GRAPH_NAME).asLiteral().getString();
 
     if(writeType.equals(SPARQL))
     {
-      System.out.println("Writing using Pure SPARQL to: " + endPoint);
-      sparqlWrite(model);
+      sparqlWrite(model, endPoint, writeOp, graphName);
     }
     else if(writeType.equals(GRAPH_STORE_HTTP))
     {
-      System.out.println("Writing using Pure Graphstore http to: " + endPoint);
-      httpWrite(model);
+      httpWrite(model, endPoint, writeOp, graphName);
     }
 
     return model;
   }
 
-  public void sparqlWrite(Model model)
+  public void sparqlWrite(Model model, String endPoint, String writeOp, String graphName)
   {
-    String writeOperation = getParameterMap().get(WRITE_OP).toString();
-    System.out.println("Write operation is : " + writeOperation);
+    System.out.println("Write operation is : " + writeOp);
 
     //TODO: implement SparqlModelWriter using Pure SPARQL Update here.
     return;
   }
 
-  public void httpWrite(Model model)
+  public Model httpWrite(Model model, String endPoint, String writeOp, String graphName)
   {
-    String writeOperation = getParameterMap().get(WRITE_OP).toString();
-    String endPoint = getParameterMap().get(ENDPOINT).toString();
-
-    System.out.println("Write operation is : " + writeOperation);
-
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination(endPoint)
-      .queryEndpoint("sparql")
-      .updateEndpoint(null)
-      .gspEndpoint("DS");
+      .destination(endPoint);
 
     RDFConnection connection = builder.build();
-    connection.begin(ReadWrite.WRITE);
 
-    if(writeOperation.equals(SparqlModelWriter.MERGE))
-      connection.load(model);
-    else if(writeOperation.equals(SparqlModelWriter.REPLACE))
-      connection.put(model);
+    try
+    {
+      if(writeOp.equals(SparqlModelWriter.MERGE))
+      {
+        if(graphName.equals(DEAFULT_GRAPH) || graphName.equals(""))
+        {
+          logger.info("Writing the model with [Graph-Store HTTP protocol, MERGE operation, Graph name: default] "
+            + "to the endpoint: " + endPoint);
+          connection.load(model);
+        }
+        else
+        {
+          logger.info("Writing the model with [Graph-Store HTTP protocol, MERGE operation, Graph name: "
+            + graphName + "] to the endpoint: " + endPoint);
+          connection.load(graphName, model);
+        }
+      }
+      else if(writeOp.equals(SparqlModelWriter.REPLACE))
+      {
+        if(graphName.equals(DEAFULT_GRAPH) || graphName.equals(""))
+        {
+          logger.info("Writing the model with [Graph-Store HTTP protocol, REPLACE operation, Graph name: default] "
+            + "to the endpoint: " + endPoint);
+          connection.put(model);
+        }
+        else
+        {
+          logger.info("Writing the model with [Graph-Store HTTP protocol, REPLACE operation, Graph name: "
+            + graphName + "] to the endpoint: " + endPoint);
+          connection.put(graphName, model);
+        }
+      }
 
-    connection.commit();
-    connection.close();
+      connection.commit();
+      connection.close();
+    }
+    catch(Exception e)
+    {
+      throw new RuntimeException("Encountered problem while trying to write dataset to " +
+        endPoint, e);
+    }
 
-    return;
+    return model;
   }
 }
