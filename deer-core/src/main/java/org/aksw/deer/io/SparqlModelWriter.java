@@ -12,6 +12,8 @@ import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -48,7 +50,7 @@ public class SparqlModelWriter extends AbstractModelWriter
     return ExecutionNode.toMultiExecution(this::write).apply(data);
   }
 
-  public Model write(Model model) {
+  private Model write(Model model) {
     String writeType = getParameterMap().get(WRITE_TYPE).asLiteral().getString();
     String writeOp = getParameterMap().get(WRITE_OP).asLiteral().getString();
     String endPoint = getParameterMap().get(ENDPOINT).asLiteral().getString();
@@ -66,15 +68,81 @@ public class SparqlModelWriter extends AbstractModelWriter
     return model;
   }
 
-  public void sparqlWrite(Model model, String endPoint, String writeOp, String graphName)
-  {
-    System.out.println("Write operation is : " + writeOp);
 
-    //TODO: implement SparqlModelWriter using Pure SPARQL Update here.
+  private String getGraphData(Model model)
+  {
+    OutputStream output = new OutputStream()
+    {
+      private StringBuilder string = new StringBuilder();
+      @Override
+      public void write(int b) throws IOException {
+        this.string.append((char) b );
+      }
+
+      public String toString(){
+        return this.string.toString();
+      }
+    };
+
+    model.write(output, "TRIG");
+    return output.toString();
+  }
+
+  private void sparqlWrite(Model model, String endPoint, String writeOp, String graphName)
+  {
+    RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
+      .destination(endPoint);
+
+    RDFConnection connection = builder.build();
+
+    try
+    {
+      if(writeOp.equals(SparqlModelWriter.MERGE))
+      {
+        if(graphName.equals(DEAFULT_GRAPH) || graphName.equals(""))
+        {
+          logger.info("Writing the model with [Graph-Store HTTP protocol, MERGE operation, Graph name: default] "
+            + "to the endpoint: " + endPoint);
+          connection.update("INSERT DATA {" + getGraphData(model) + "}");
+        }
+        else
+        {
+          logger.info("Writing the model with [Graph-Store HTTP protocol, MERGE operation, Graph name: "
+            + graphName + "] to the endpoint: " + endPoint);
+          connection.update("INSERT DATA { GRAPH <" + endPoint + graphName + "> {" + getGraphData(model) + "} }");
+        }
+      }
+      else if(writeOp.equals(SparqlModelWriter.REPLACE))
+      {
+        if(graphName.equals(DEAFULT_GRAPH) || graphName.equals(""))
+        {
+          logger.info("Writing the model with [Graph-Store HTTP protocol, REPLACE operation, Graph name: default] "
+            + "to the endpoint: " + endPoint);
+          connection.update("CLEAR DEFAULT");
+          connection.update("INSERT DATA {" + getGraphData(model) + "}");
+        }
+        else
+        {
+          logger.info("Writing the model with [Graph-Store HTTP protocol, REPLACE operation, Graph name: "
+            + graphName + "] to the endpoint: " + endPoint);
+          connection.update("CLEAR GRAPH <" + endPoint + graphName + ">");
+          connection.update("INSERT DATA { GRAPH <" + endPoint + graphName + "> {" + getGraphData(model) + "} }");
+        }
+      }
+
+      connection.commit();
+      connection.close();
+    }
+    catch(Exception e)
+    {
+      throw new RuntimeException("Encountered problem while trying to write dataset to " +
+        endPoint, e);
+    }
+
     return;
   }
 
-  public Model httpWrite(Model model, String endPoint, String writeOp, String graphName)
+  private Model httpWrite(Model model, String endPoint, String writeOp, String graphName)
   {
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
       .destination(endPoint);
