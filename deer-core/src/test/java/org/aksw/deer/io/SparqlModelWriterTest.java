@@ -5,7 +5,9 @@ import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
@@ -15,58 +17,30 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.StringReader;
-import java.util.Arrays;
-
 public class SparqlModelWriterTest
 {
   private static int PORT;
-  private static String EX;
+  private static String GSP_ENDPOINT;
+  private static String SPARQL_ENDPOINT;
   private static String CFG = "http://example.org/";
   private FusekiServer fusekiServer;
+  private static final String NS = "urn:example:";
+  private static final String TEST_GRAPH = NS + "testGraph";
 
   @Before
   public void setUp()
   {
     PORT = WebLib.choosePort();
-    EX = "http://localhost:" + PORT + "/";
-
-    Model input = ModelFactory.createDefaultModel();
-    Model expected = ModelFactory.createDefaultModel();
-    input.read(new StringReader(
-      "@prefix ex: <" + EX + "> ." +
-        "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ." +
-        "ex:subject rdfs:seeAlso <" + EX + "birch?default> ."
-    ), null, "TTL");
-    Model lookup = ModelFactory.createDefaultModel();
-    Resource birch = lookup.createResource(EX + "birch?default");
-    lookup.add(birch,
-      lookup.createProperty(EX + "brinellHardness"),
-      lookup.createTypedLiteral(27));
-
-    fusekiServer = setupServer(birch);
-    expected.add(input);
-    expected.add(lookup);
-    SparqlModelWriter writer = new SparqlModelWriter();
-    writer.initDegrees(1,1);
-    writer.initPluginId(ResourceFactory.createResource("urn:ex/test/dereferencing-test"));
+    GSP_ENDPOINT = "http://localhost:" + PORT + "/default/data";
+    SPARQL_ENDPOINT = "http://localhost:" + PORT + "/default/update";
+    fusekiServer = FusekiServer.make(PORT, "default", DatasetFactory.create().asDatasetGraph());
+    fusekiServer.start();
+    Lib.sleep(500);
   }
 
   @After
   public void tearDown() {
     fusekiServer.stop();
-  }
-
-  private FusekiServer setupServer(Resource...rest)
-  {
-    FusekiServer.Builder builder = FusekiServer.create();
-    Arrays.stream(rest).forEach(resource -> {
-      String uri = resource.getURI();
-      builder.add("/" + uri.substring(EX.length(), uri.indexOf("?")), DatasetFactory.create(resource.getModel()));
-    });
-    FusekiServer server = builder.port(PORT).build().start();
-    Lib.sleep(100);
-    return server;
   }
 
   @Test
@@ -75,20 +49,20 @@ public class SparqlModelWriterTest
     Resource mainRes = conf.createResource(CFG + "deo");
     conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.GRAPH_STORE_HTTP);
     conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.MERGE);
-    conf.add(mainRes, SparqlModelWriter.ENDPOINT, "http://localhost:3030/test/");
+    conf.add(mainRes, SparqlModelWriter.ENDPOINT, GSP_ENDPOINT);
     conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, "");
 
     //Create the first model to write it into fuseki.
     Model firstModel = ModelFactory.createDefaultModel();
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "dss?default"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "updatedBy"),
-      firstModel.createResource(EX + "dice?update"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "tentris?running"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "dss?default"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "updatedBy"),
+      firstModel.createResource(NS + "dice?update"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "tentris?running"));
 
     SparqlModelWriter writer = new SparqlModelWriter();
     writer.initParameters(writer.createParameterMap().populate(mainRes).init());
@@ -99,31 +73,31 @@ public class SparqlModelWriterTest
 
     //Create the second model to write it into fuseki.
     Model secondModel = ModelFactory.createDefaultModel();
-    secondModel.add(secondModel.createResource(EX + "table"),
-      secondModel.createProperty(EX + "madeOf"),
-      secondModel.createResource(EX + "iguana?created"));
+    secondModel.add(secondModel.createResource(NS + "table"),
+      secondModel.createProperty(NS + "madeOf"),
+      secondModel.createResource(NS + "iguana?created"));
 
     //Write the second model into fuseki.
     out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
 
     //Create the testModel which looks likes merge of firstModel and secondModel to test merge is working or not.
     Model testModel = ModelFactory.createDefaultModel();
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "tentris?running"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "iguana?created"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "dss?default"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "updatedBy"),
-      testModel.createResource(EX + "dice?update"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "tentris?running"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "iguana?created"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "dss?default"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "updatedBy"),
+      testModel.createResource(NS + "dice?update"));
 
     //Get the model from fuseki server.
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination("http://localhost:3030/test");
+      .destination(GSP_ENDPOINT);
 
     RDFConnection connection = builder.build();
     Model checkModel = connection.fetch();
@@ -140,20 +114,20 @@ public class SparqlModelWriterTest
     Resource mainRes = conf.createResource(CFG + "deo");
     conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.GRAPH_STORE_HTTP);
     conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.REPLACE);
-    conf.add(mainRes, SparqlModelWriter.ENDPOINT, "http://localhost:3030/test/");
+    conf.add(mainRes, SparqlModelWriter.ENDPOINT, GSP_ENDPOINT);
     conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, SparqlModelWriter.DEAFULT_GRAPH);
 
     //Create the first model to write it into fuseki.
     Model firstModel = ModelFactory.createDefaultModel();
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "dss?default"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "updatedBy"),
-      firstModel.createResource(EX + "dice?update"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "tentris?running"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "dss?default"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "updatedBy"),
+      firstModel.createResource(NS + "dice?update"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "tentris?running"));
 
     SparqlModelWriter writer = new SparqlModelWriter();
     writer.initParameters(writer.createParameterMap().populate(mainRes).init());
@@ -164,16 +138,16 @@ public class SparqlModelWriterTest
 
     //Create the second model to write it into fuseki.
     Model secondModel = ModelFactory.createDefaultModel();
-    secondModel.add(secondModel.createResource(EX + "table"),
-      secondModel.createProperty(EX + "madeOf"),
-      secondModel.createResource(EX + "iguana?created"));
+    secondModel.add(secondModel.createResource(NS + "table"),
+      secondModel.createProperty(NS + "madeOf"),
+      secondModel.createResource(NS + "iguana?created"));
 
     //Write the second model into fuseki.
     out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
 
     //Get the model from fuseki server.
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination("http://localhost:3030/test");
+      .destination(GSP_ENDPOINT);
 
     RDFConnection connection = builder.build();
     Model checkModel = connection.fetch();
@@ -190,20 +164,20 @@ public class SparqlModelWriterTest
     Resource mainRes = conf.createResource(CFG + "deo");
     conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.GRAPH_STORE_HTTP);
     conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.MERGE);
-    conf.add(mainRes, SparqlModelWriter.ENDPOINT, "http://localhost:3030/test/");
-    conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, "testGraph");
+    conf.add(mainRes, SparqlModelWriter.ENDPOINT, GSP_ENDPOINT);
+    conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, TEST_GRAPH);
 
     //Create the first model to write it into fuseki.
     Model firstModel = ModelFactory.createDefaultModel();
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "dss?default"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "updatedBy"),
-      firstModel.createResource(EX + "dice?update"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "tentris?running"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "dss?default"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "updatedBy"),
+      firstModel.createResource(NS + "dice?update"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "tentris?running"));
 
     SparqlModelWriter writer = new SparqlModelWriter();
     writer.initParameters(writer.createParameterMap().populate(mainRes).init());
@@ -214,35 +188,35 @@ public class SparqlModelWriterTest
 
     //Create the second model to write it into fuseki.
     Model secondModel = ModelFactory.createDefaultModel();
-    secondModel.add(secondModel.createResource(EX + "table"),
-      secondModel.createProperty(EX + "madeOf"),
-      secondModel.createResource(EX + "iguana?created"));
+    secondModel.add(secondModel.createResource(NS + "table"),
+      secondModel.createProperty(NS + "madeOf"),
+      secondModel.createResource(NS + "iguana?created"));
 
     //Write the second model into fuseki.
     out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
 
     //Create the testModel which looks likes merge of firstModel and secondModel to test merge is working or not.
     Model testModel = ModelFactory.createDefaultModel();
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "tentris?running"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "iguana?created"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "dss?default"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "updatedBy"),
-      testModel.createResource(EX + "dice?update"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "tentris?running"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "iguana?created"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "dss?default"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "updatedBy"),
+      testModel.createResource(NS + "dice?update"));
 
     //Get the model from fuseki server.
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination("http://localhost:3030/test");
+      .destination(GSP_ENDPOINT);
 
     RDFConnection connection = builder.build();
-    Model checkModel = connection.fetch("testGraph");
-    connection.delete("testGraph");
+    Model checkModel = connection.fetch(TEST_GRAPH);
+    connection.delete(TEST_GRAPH);
     connection.commit();
     connection.close();
     //assert if the testModel and model from fuseki server is not same.
@@ -255,20 +229,20 @@ public class SparqlModelWriterTest
     Resource mainRes = conf.createResource(CFG + "deo");
     conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.GRAPH_STORE_HTTP);
     conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.REPLACE);
-    conf.add(mainRes, SparqlModelWriter.ENDPOINT, "http://localhost:3030/test/");
-    conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, "testGraph");
+    conf.add(mainRes, SparqlModelWriter.ENDPOINT, GSP_ENDPOINT);
+    conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, TEST_GRAPH);
 
     //Create the first model to write it into fuseki.
     Model firstModel = ModelFactory.createDefaultModel();
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "dss?default"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "updatedBy"),
-      firstModel.createResource(EX + "dice?update"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "tentris?running"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "dss?default"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "updatedBy"),
+      firstModel.createResource(NS + "dice?update"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "tentris?running"));
 
     SparqlModelWriter writer = new SparqlModelWriter();
     writer.initParameters(writer.createParameterMap().populate(mainRes).init());
@@ -279,20 +253,20 @@ public class SparqlModelWriterTest
 
     //Create the second model to write it into fuseki.
     Model secondModel = ModelFactory.createDefaultModel();
-    secondModel.add(secondModel.createResource(EX + "table"),
-      secondModel.createProperty(EX + "madeOf"),
-      secondModel.createResource(EX + "iguana?created"));
+    secondModel.add(secondModel.createResource(NS + "table"),
+      secondModel.createProperty(NS + "madeOf"),
+      secondModel.createResource(NS + "iguana?created"));
 
     //Write the second model into fuseki.
     out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
 
     //Get the model from fuseki server.
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination("http://localhost:3030/test");
+      .destination(GSP_ENDPOINT);
 
     RDFConnection connection = builder.build();
-    Model checkModel = connection.fetch("testGraph");
-    connection.delete("testGraph");
+    Model checkModel = connection.fetch(TEST_GRAPH);
+    connection.delete(TEST_GRAPH);
     connection.commit();
     connection.close();
     //assert if the testModel and model from fuseki server is not same.
@@ -305,20 +279,20 @@ public class SparqlModelWriterTest
     Resource mainRes = conf.createResource(CFG + "deo");
     conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.SPARQL);
     conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.MERGE);
-    conf.add(mainRes, SparqlModelWriter.ENDPOINT, "http://localhost:3030/test/");
+    conf.add(mainRes, SparqlModelWriter.ENDPOINT, SPARQL_ENDPOINT);
     conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, SparqlModelWriter.DEAFULT_GRAPH);
 
     //Create the first model to write it into fuseki.
     Model firstModel = ModelFactory.createDefaultModel();
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "dss?default"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "updatedBy"),
-      firstModel.createResource(EX + "dice?update"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "tentris?running"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "dss?default"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "updatedBy"),
+      firstModel.createResource(NS + "dice?update"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "tentris?running"));
 
     SparqlModelWriter writer = new SparqlModelWriter();
     writer.initParameters(writer.createParameterMap().populate(mainRes).init());
@@ -329,31 +303,31 @@ public class SparqlModelWriterTest
 
     //Create the second model to write it into fuseki.
     Model secondModel = ModelFactory.createDefaultModel();
-    secondModel.add(secondModel.createResource(EX + "table"),
-      secondModel.createProperty(EX + "madeOf"),
-      secondModel.createResource(EX + "iguana?created"));
+    secondModel.add(secondModel.createResource(NS + "table"),
+      secondModel.createProperty(NS + "madeOf"),
+      secondModel.createResource(NS + "iguana?created"));
 
     //Write the second model into fuseki.
     out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
 
     //Create the testModel which looks likes merge of firstModel and secondModel to test merge is working or not.
     Model testModel = ModelFactory.createDefaultModel();
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "tentris?running"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "iguana?created"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "dss?default"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "updatedBy"),
-      testModel.createResource(EX + "dice?update"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "tentris?running"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "iguana?created"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "dss?default"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "updatedBy"),
+      testModel.createResource(NS + "dice?update"));
 
     //Get the model from fuseki server.
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination("http://localhost:3030/test");
+      .destination(GSP_ENDPOINT);
 
     RDFConnection connection = builder.build();
     Model checkModel = connection.fetch();
@@ -370,20 +344,20 @@ public class SparqlModelWriterTest
     Resource mainRes = conf.createResource(CFG + "deo");
     conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.SPARQL);
     conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.MERGE);
-    conf.add(mainRes, SparqlModelWriter.ENDPOINT, "http://localhost:3030/test/");
-    conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, "testGraph");
+    conf.add(mainRes, SparqlModelWriter.ENDPOINT, SPARQL_ENDPOINT);
+    conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, TEST_GRAPH);
 
     //Create the first model to write it into fuseki.
     Model firstModel = ModelFactory.createDefaultModel();
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "dss?default"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "updatedBy"),
-      firstModel.createResource(EX + "dice?update"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "tentris?running"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "dss?default"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "updatedBy"),
+      firstModel.createResource(NS + "dice?update"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "tentris?running"));
 
     SparqlModelWriter writer = new SparqlModelWriter();
     writer.initParameters(writer.createParameterMap().populate(mainRes).init());
@@ -394,35 +368,35 @@ public class SparqlModelWriterTest
 
     //Create the second model to write it into fuseki.
     Model secondModel = ModelFactory.createDefaultModel();
-    secondModel.add(secondModel.createResource(EX + "table"),
-      secondModel.createProperty(EX + "madeOf"),
-      secondModel.createResource(EX + "iguana?created"));
+    secondModel.add(secondModel.createResource(NS + "table"),
+      secondModel.createProperty(NS + "madeOf"),
+      secondModel.createResource(NS + "iguana?created"));
 
     //Write the second model into fuseki.
     out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
 
     //Create the testModel which looks likes merge of firstModel and secondModel to test merge is working or not.
     Model testModel = ModelFactory.createDefaultModel();
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "tentris?running"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "iguana?created"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "madeOf"),
-      testModel.createResource(EX + "dss?default"));
-    testModel.add(testModel.createResource(EX + "table"),
-      testModel.createProperty(EX + "updatedBy"),
-      testModel.createResource(EX + "dice?update"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "tentris?running"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "iguana?created"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "dss?default"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "updatedBy"),
+      testModel.createResource(NS + "dice?update"));
 
     //Get the model from fuseki server.
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination("http://localhost:3030/test");
+      .destination(GSP_ENDPOINT);
 
     RDFConnection connection = builder.build();
-    Model checkModel = connection.fetch("testGraph");
-    connection.delete("testGraph");
+    Model checkModel = connection.fetch(TEST_GRAPH);
+    connection.delete(TEST_GRAPH);
     connection.commit();
     connection.close();
     //assert if the testModel and model from fuseki server is not same.
@@ -435,20 +409,20 @@ public class SparqlModelWriterTest
     Resource mainRes = conf.createResource(CFG + "deo");
     conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.SPARQL);
     conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.REPLACE);
-    conf.add(mainRes, SparqlModelWriter.ENDPOINT, "http://localhost:3030/test/");
+    conf.add(mainRes, SparqlModelWriter.ENDPOINT, SPARQL_ENDPOINT);
     conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, SparqlModelWriter.DEAFULT_GRAPH);
 
     //Create the first model to write it into fuseki.
     Model firstModel = ModelFactory.createDefaultModel();
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "dss?default"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "updatedBy"),
-      firstModel.createResource(EX + "dice?update"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "tentris?running"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "dss?default"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "updatedBy"),
+      firstModel.createResource(NS + "dice?update"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "tentris?running"));
 
     SparqlModelWriter writer = new SparqlModelWriter();
     writer.initParameters(writer.createParameterMap().populate(mainRes).init());
@@ -459,16 +433,16 @@ public class SparqlModelWriterTest
 
     //Create the second model to write it into fuseki.
     Model secondModel = ModelFactory.createDefaultModel();
-    secondModel.add(secondModel.createResource(EX + "table"),
-      secondModel.createProperty(EX + "madeOf"),
-      secondModel.createResource(EX + "iguana?created"));
+    secondModel.add(secondModel.createResource(NS + "table"),
+      secondModel.createProperty(NS + "madeOf"),
+      secondModel.createResource(NS + "iguana?created"));
 
     //Write the second model into fuseki.
     out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
 
     //Get the model from fuseki server.
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination("http://localhost:3030/test");
+      .destination(GSP_ENDPOINT);
 
     RDFConnection connection = builder.build();
     Model checkModel = connection.fetch();
@@ -485,20 +459,20 @@ public class SparqlModelWriterTest
     Resource mainRes = conf.createResource(CFG + "deo");
     conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.SPARQL);
     conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.REPLACE);
-    conf.add(mainRes, SparqlModelWriter.ENDPOINT, "http://localhost:3030/test/");
-    conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, "testGraph");
+    conf.add(mainRes, SparqlModelWriter.ENDPOINT, SPARQL_ENDPOINT);
+    conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, TEST_GRAPH);
 
     //Create the first model to write it into fuseki.
     Model firstModel = ModelFactory.createDefaultModel();
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "dss?default"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "updatedBy"),
-      firstModel.createResource(EX + "dice?update"));
-    firstModel.add(firstModel.createResource(EX + "table"),
-      firstModel.createProperty(EX + "madeOf"),
-      firstModel.createResource(EX + "tentris?running"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "dss?default"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "updatedBy"),
+      firstModel.createResource(NS + "dice?update"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "tentris?running"));
 
     SparqlModelWriter writer = new SparqlModelWriter();
     writer.initParameters(writer.createParameterMap().populate(mainRes).init());
@@ -509,20 +483,21 @@ public class SparqlModelWriterTest
 
     //Create the second model to write it into fuseki.
     Model secondModel = ModelFactory.createDefaultModel();
-    secondModel.add(secondModel.createResource(EX + "table"),
-      secondModel.createProperty(EX + "madeOf"),
-      secondModel.createResource(EX + "iguana?created"));
+    secondModel.add(secondModel.createResource(NS + "table"),
+      secondModel.createProperty(NS + "madeOf"),
+      secondModel.createResource(NS + "iguana?created"));
 
     //Write the second model into fuseki.
     out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
 
     //Get the model from fuseki server.
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination("http://localhost:3030/test");
+      .destination(GSP_ENDPOINT);
 
     RDFConnection connection = builder.build();
-    Model checkModel = connection.fetch("testGraph");
-    connection.delete("testGraph");
+//    Dataset testDS = connection.fetchDataset();
+    Model checkModel = connection.fetch(TEST_GRAPH);
+    connection.delete(TEST_GRAPH);
     connection.commit();
     connection.close();
     //assert if the testModel and model from fuseki server is not same.

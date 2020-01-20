@@ -109,7 +109,7 @@ public class SparqlModelWriter extends AbstractModelWriter
         {
           logger.info("Writing the model with [Graph-Store HTTP protocol, MERGE operation, Graph name: "
             + graphName + "] to the endpoint: " + endPoint);
-          connection.update("INSERT DATA { GRAPH <" + endPoint + graphName + "> {" + getGraphData(model) + "} }");
+          connection.update("INSERT DATA { GRAPH <" + graphName + "> {" + getGraphData(model) + "} }");
         }
       }
       else if(writeOp.equals(SparqlModelWriter.REPLACE))
@@ -125,11 +125,10 @@ public class SparqlModelWriter extends AbstractModelWriter
         {
           logger.info("Writing the model with [Graph-Store HTTP protocol, REPLACE operation, Graph name: "
             + graphName + "] to the endpoint: " + endPoint);
-          connection.update("CLEAR GRAPH <" + endPoint + graphName + ">");
-          connection.update("INSERT DATA { GRAPH <" + endPoint + graphName + "> {" + getGraphData(model) + "} }");
+          connection.update("CLEAR GRAPH <" + graphName + ">");
+          connection.update("INSERT DATA { GRAPH <" + graphName + "> {" + getGraphData(model) + "} }");
         }
       }
-
       connection.commit();
       connection.close();
     }
