@@ -17,10 +17,13 @@ import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  *
@@ -29,11 +32,11 @@ import java.util.Optional;
 public class SparqlModelWriter extends AbstractModelWriter {
 
   public static final Property ENDPOINT = DEER.property("endPoint");
-  public static final Property GSP_ENDPOINT = DEER.property("gspEndPoint");
-  public static final Property QUERY_ENDPOINT = DEER.property("queryEndPoint");
   public static final Property WRITE_TYPE = DEER.property("writeType");
   public static final Property WRITE_OP = DEER.property("writeOp");
   public static final Property GRAPH_NAME = DEER.property("graphName");
+  public static final Property CRED_FILE = DEER.property("credFile");
+
   public static final String REPLACE = "replace";
   public static final String DEFAULT_GRAPH = "default";
   public static final String SPARQL = "sparql";
@@ -48,9 +51,8 @@ public class SparqlModelWriter extends AbstractModelWriter {
       .declareProperty(WRITE_TYPE)
       .declareProperty(WRITE_OP)
       .declareProperty(ENDPOINT)
-      .declareProperty(GSP_ENDPOINT)
-      .declareProperty(QUERY_ENDPOINT)
       .declareProperty(GRAPH_NAME)
+      .declareProperty(CRED_FILE)
       .declareValidationShape(getValidationModelFor(SparqlModelWriter.class))
       .build();
   }
@@ -69,10 +71,6 @@ public class SparqlModelWriter extends AbstractModelWriter {
       .map(RDFNode::asResource).map(Resource::getURI);
     Optional<String> graphName = getParameterMap().getOptional(GRAPH_NAME)
       .map(RDFNode::toString);
-    Optional<String> gspEndpoint = getParameterMap().getOptional(GSP_ENDPOINT)
-      .map(RDFNode::asResource).map(Resource::getURI);
-    Optional<String> queryEndpoint = getParameterMap().getOptional(QUERY_ENDPOINT)
-      .map(RDFNode::asResource).map(Resource::getURI);
 /*
     String nullStr = null;
     writeType = Optional.ofNullable(nullStr);
@@ -100,38 +98,53 @@ public class SparqlModelWriter extends AbstractModelWriter {
       graphName = Optional.of(DEFAULT_GRAPH);
     }
 
-    if (gspEndpoint.isEmpty()) {
-      logger.info("Graph name is null, switching to Default Graph");
-      gspEndpoint = Optional.of("data");
-    }
-
-    if (queryEndpoint.isEmpty()) {
-      logger.info("Graph name is null, switching to Default Graph");
-      queryEndpoint = Optional.of("update");
-    }
-
-    getConnection(endPoint.get(), gspEndpoint.get(), queryEndpoint.get());
+    getConnection(endPoint.get());
 
     if (writeType.get().equals(SPARQL)) {
       sparqlWrite(model, endPoint.get(), writeOp.get(), graphName.get());
     } else if (writeType.get().equals(GRAPH_STORE_HTTP)) {
       httpWrite(model, endPoint.get(), writeOp.get(), graphName.get());
-    } //@todo: what happens when a bad writeType is given?
+    } else {
+      //@todo: what happens when a bad writeType is given?
+    }
 
     return model;
   }
 
-  private void getConnection(String endPoint, String gspEndpoint, String queryEndpoint) {
-    BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-    Credentials credentials = new UsernamePasswordCredentials("admin", "password");
-    credsProvider.setCredentials(AuthScope.ANY, credentials);
-    HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+  private void getConnection(String endPoint) {
 
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-      .destination(endPoint)
-      .queryEndpoint(queryEndpoint)
-      .gspEndpoint(gspEndpoint)
-      .httpClient(client);
+      .destination(endPoint);
+
+    Optional<String> credFile = getParameterMap().getOptional(CRED_FILE)
+      .map(RDFNode::toString);
+
+
+    if (credFile.isPresent()) {
+      String credPath = injectWorkingDirectory(credFile.get());
+
+      Properties prop = new Properties();
+
+      String user = "";
+      String pass = "";
+      try {
+        prop.load(new FileInputStream(credPath));
+        user = prop.getProperty("username");
+        pass = prop.getProperty("password");
+      } catch (Exception ex) {
+        throw new RuntimeException("Encountered problem while trying to read credential file " +
+          endPoint, ex);
+      }
+
+      BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
+      Credentials credentials = new UsernamePasswordCredentials(user, pass);
+      credsProvider.setCredentials(AuthScope.ANY, credentials);
+      HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+
+
+      builder.httpClient(client);
+    }
+
 
     connection = builder.build();
   }
