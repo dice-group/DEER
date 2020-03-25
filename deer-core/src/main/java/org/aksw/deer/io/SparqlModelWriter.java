@@ -71,13 +71,7 @@ public class SparqlModelWriter extends AbstractModelWriter {
       .map(RDFNode::asResource).map(Resource::getURI);
     Optional<String> graphName = getParameterMap().getOptional(GRAPH_NAME)
       .map(RDFNode::toString);
-/*
-    String nullStr = null;
-    writeType = Optional.ofNullable(nullStr);
-    writeOp = Optional.ofNullable(nullStr);
- //   endPoint = Optional.ofNullable(nullStr);
-    graphName = Optional.ofNullable(nullStr);
-*/
+
     if (writeType.isEmpty()) {
       logger.info("Writing protocol is null, switching to Graph-store HTTP protocol");
       writeType = Optional.of(GRAPH_STORE_HTTP);
@@ -105,7 +99,8 @@ public class SparqlModelWriter extends AbstractModelWriter {
     } else if (writeType.get().equals(GRAPH_STORE_HTTP)) {
       httpWrite(model, endPoint.get(), writeOp.get(), graphName.get());
     } else {
-      //@todo: what happens when a bad writeType is given?
+      logger.info("Invalid Writing operation type, switching to Graph-Store HTTP protocol.");
+      httpWrite(model, endPoint.get(), writeOp.get(), graphName.get());
     }
 
     return model;

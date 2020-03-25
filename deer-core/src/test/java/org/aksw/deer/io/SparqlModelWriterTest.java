@@ -573,73 +573,6 @@ public class SparqlModelWriterTest {
     assertTrue(checkModel.isIsomorphicWith(secondModel));
   }
 
-//  @Test
-//  public void switchToDefault() {
-//    Model conf = ModelFactory.createDefaultModel();
-//    Resource mainRes = conf.createResource(CFG + "deo");
-//    conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.SPARQL);
-//    conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.REPLACE);
-//    conf.add(mainRes, SparqlModelWriter.ENDPOINT, DATASET_ENDPOINT);
-//    conf.add(mainRes, SparqlModelWriter.GSP_ENDPOINT, GSP_ENDPOINT);
-//    conf.add(mainRes, SparqlModelWriter.QUERY_ENDPOINT, SPARQL_ENDPOINT);
-//    conf.add(mainRes, SparqlModelWriter.GRAPH_NAME, TEST_GRAPH);
-//
-//    //Create the first model to write it into fuseki.
-//    Model firstModel = ModelFactory.createDefaultModel();
-//    firstModel.add(firstModel.createResource(NS + "table"),
-//      firstModel.createProperty(NS + "madeOf"),
-//      firstModel.createResource(NS + "dss?default"));
-//    firstModel.add(firstModel.createResource(NS + "table"),
-//      firstModel.createProperty(NS + "updatedBy"),
-//      firstModel.createResource(NS + "dice?update"));
-//    firstModel.add(firstModel.createResource(NS + "table"),
-//      firstModel.createProperty(NS + "madeOf"),
-//      firstModel.createResource(NS + "tentris?running"));
-//
-//    SparqlModelWriter writer = new SparqlModelWriter();
-//    writer.initParameters(writer.createParameterMap().populate(mainRes).init());
-//    writer.initPluginId(mainRes); writer.initDegrees(1, 1);
-//
-//    //Write the first model into fuseki.
-//    Model out = writer.safeApply(Lists.newArrayList(firstModel)).get(0);
-//
-//    //Create the second model to write it into fuseki.
-//    Model secondModel = ModelFactory.createDefaultModel();
-//    secondModel.add(secondModel.createResource(NS + "table"),
-//      secondModel.createProperty(NS + "madeOf"),
-//      secondModel.createResource(NS + "iguana?created"));
-//
-//    //Write the second model into fuseki.
-//    out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
-//
-//    //Create the testModel which looks likes merge of firstModel and secondModel to test merge is working or not.
-//    Model testModel = ModelFactory.createDefaultModel();
-//    testModel.add(testModel.createResource(NS + "table"),
-//      testModel.createProperty(NS + "madeOf"),
-//      testModel.createResource(NS + "tentris?running"));
-//    testModel.add(testModel.createResource(NS + "table"),
-//      testModel.createProperty(NS + "madeOf"),
-//      testModel.createResource(NS + "iguana?created"));
-//    testModel.add(testModel.createResource(NS + "table"),
-//      testModel.createProperty(NS + "madeOf"),
-//      testModel.createResource(NS + "dss?default"));
-//    testModel.add(testModel.createResource(NS + "table"),
-//      testModel.createProperty(NS + "updatedBy"),
-//      testModel.createResource(NS + "dice?update"));
-//
-//    //Get the model from fuseki server.
-//    RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
-//      .destination(GSP_ENDPOINT.getURI());
-//
-//    RDFConnection connection = builder.build();
-//    Model checkModel = connection.fetch();
-//    connection.delete();
-//    connection.commit();
-//    connection.close();
-//    //assert if the testModel and model from fuseki server is not same.
-//    assertTrue(checkModel.isIsomorphicWith(testModel));
-//  }
-
   @Test
   public void writeToDefaultGraphWihMergeAndGSPUsingAuthentication() throws URISyntaxException, MalformedURLException {
     URL credURL = getClass().getClassLoader().getResource("credentials");
@@ -716,5 +649,4 @@ public class SparqlModelWriterTest {
     //assert if the testModel and model from fuseki server is not same.
     assertTrue(checkModel.isIsomorphicWith(testModel));
   }
-
 }

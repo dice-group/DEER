@@ -36,7 +36,7 @@ deer:SparqlModelWriterShape_writeOp
   sh:path deer:writeOp ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
-  sh:nodeKind sh:string ;
+  sh:nodeKind xsd:string ;
   sh:message "SparqlModelWriter must declare exactly one deer:writeOp"
 .
 
@@ -44,7 +44,7 @@ deer:SparqlModelWriterShape_graphName
   sh:path deer:graphName ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
-  sh:nodeKind sh:string ;
+  sh:nodeKind xsd:string ;
   sh:message "SparqlModelWriter must declare exactly one deer:graphName"
 .
 
@@ -52,6 +52,6 @@ deer:SparqlModelWriterShape_credFile
   sh:path deer:credFile ;
   sh:minCount 0 ;
   sh:maxCount 1 ;
-  sh:nodeKind sh:string ;
+  sh:nodeKind xsd:string ;
   sh:message "SparqlModelWriter must declare exactly one deer:credFile"
 .
