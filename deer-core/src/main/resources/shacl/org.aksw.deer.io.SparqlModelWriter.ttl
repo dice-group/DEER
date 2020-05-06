@@ -1,0 +1,57 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix deer: <http://w3id.org/deer/> .
+
+# Node SparqlModelWriter
+
+deer:SparqlModelWriterShape
+	a sh:NodeShape ;
+	sh:targetClass deer:SparqlModelWriter ;
+	sh:property deer:SparqlModelWriterShape_endPoint ,
+	            deer:SparqlModelWriterShape_writeType ,
+	            deer:SparqlModelWriterShape_writeOp ,
+	            deer:SparqlModelWriterShape_graphName ,
+	            deer:SparqlModelWriterShape_credFile ;
+.
+
+deer:SparqlModelWriterShape_endPoint
+  sh:path deer:endPoint ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype sh:IRI ;
+  sh:message "SparqlModelWriter must declare exactly one deer:endPoint"
+.
+
+deer:SparqlModelWriterShape_writeType
+  sh:path deer:writeType ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+  sh:message "SparqlModelWriter must declare exactly one deer:writeType"
+.
+
+deer:SparqlModelWriterShape_writeOp
+  sh:path deer:writeOp ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind xsd:string ;
+  sh:message "SparqlModelWriter must declare exactly one deer:writeOp"
+.
+
+deer:SparqlModelWriterShape_graphName
+  sh:path deer:graphName ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind xsd:string ;
+  sh:message "SparqlModelWriter must declare exactly one deer:graphName"
+.
+
+deer:SparqlModelWriterShape_credFile
+  sh:path deer:credFile ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:nodeKind xsd:string ;
+  sh:message "SparqlModelWriter must declare exactly one deer:credFile"
+.
