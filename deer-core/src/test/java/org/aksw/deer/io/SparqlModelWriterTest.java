@@ -80,7 +80,7 @@ public class SparqlModelWriterTest {
     constraint.setRoles(new String[]{"user", "admin"});
 
     ConstraintMapping mapping = new ConstraintMapping();
-    mapping.setPathSpec("/default");
+    mapping.setPathSpec("/*");
     mapping.setConstraint(constraint);
 
     security.setConstraintMappings(Collections.singletonList(mapping));
