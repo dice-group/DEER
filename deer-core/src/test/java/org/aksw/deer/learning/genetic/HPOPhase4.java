@@ -110,13 +110,15 @@
 //
 //  @Test
 //  public void simpleTest() {
-//    List<PopulationEvaluationResult> evaluationResults = getAlg(1.0, 0.5, 0.5).run();
-//    System.out.println(evaluationResults.size());
-//    Phenotype of = Phenotype.of(evaluationResults.get(evaluationResults.size() - 1).getBest());
-//    Genotype genotype = evaluationResults.get(evaluationResults.size() - 1).getBest().compactBestResult(false, 0);
-//    System.out.println(of);
-//    System.out.println(genotype);
-//    System.out.println(evaluationResults.get(evaluationResults.size()-1).getBest().getBestFitness());
+//    for (int i = 0; i<100; i++) {
+//      List<PopulationEvaluationResult> evaluationResults = getAlg(1.0, 0.5, 0.5).run();
+//      System.out.println(evaluationResults.size());
+////      Phenotype of = Phenotype.of(evaluationResults.get(evaluationResults.size() - 1).getBest());
+////      Genotype genotype = evaluationResults.get(evaluationResults.size() - 1).getBest().compactBestResult(false, 0);
+////      System.out.println(of);
+////      System.out.println(genotype);
+////      System.out.println(evaluationResults.get(evaluationResults.size() - 1).getBest().getBestFitness());
+//    }
 //  }
 //
 //  @Test

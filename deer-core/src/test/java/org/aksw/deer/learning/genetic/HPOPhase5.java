@@ -71,6 +71,7 @@
 //        ""), null, "NT");
 //// (a -> )(b -> AC ->) -> MERGE -> NER -> PC -> DEREF
 //    Model target = ModelFactory.createDefaultModel().read(new StringReader(
+//      "<http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> <http://dbpedia.org/ontology/director> <http://dbpedia.org/resource/Tim_Southam> .\n" +
 //      "<http://my.dataset.edu/Peter_Koper> <http://my.dataset.edu/relatedTo> <http://dbpedia.org/resource/Peter_Griffin> .\n" +
 //        "<http://my.dataset.edu/Peter_Koper> <http://www.w3.org/2000/01/rdf-schema#comment> \"Peter Koper (born 1947) is an American journalist, professor, screenwriter, and producer. He numbers among the original Dreamlanders, the group of actors and artists who worked with independent film maker John Waters on his early films. He has written for the Associated Press, the Baltimore Sun, American Film, Rolling Stone, and People. He worked as a staff writer and producer for America's Most Wanted, and has written television for the Discovery Channel, the Learning Channel, Paramount Television and Lorimar Television. Koper wrote and co-produced the cult movie Headless Body in Topless Bar, and wrote the screenplay for Island of the Dead. He has taught at the University of the District of Columbia, and Hofstra University.\" .\n" +
 //        "<http://my.dataset.edu/Peter_Koper> <http://my.dataset.edu/relatedTo> <http://dbpedia.org/resource/Associated_Press> .\n" +
