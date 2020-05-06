@@ -135,7 +135,7 @@ external dataset of DBpedia and export them using the `dcterms:description`.
 
 The enrichment information hidden in datatype properties is retrieved by using Named Entity
 Recognition (NER) enrichment operator.
-In the current version of DEER, we rely on the FOX framework. In the following, we provides
+In the current version of DEER, we rely on the [FOX framework](http://fox-demo.aksw.org). In the following, we provides
 details about the NER operator parameters:
 - `deer:literalProperty` Literal property used by FOX for NER. If not set, the top ranked literal
 property will be pecked automatically by DEER, which ranks the lateral properties of a model
@@ -143,31 +143,9 @@ according to the average size of each literal property divided by the number of 
 - `deer:importProperty` Property added to be added into the input dataset.
 - `deer:neType` Force FOX to look for a specific NE’s types only. Available types are: `"location"` (default value),
 `"person"`, `"organization"`, and `"all"` to retrieve the all the previous three types.
-- `deer:askEndpoint` Ask the DBpedia endpoint for each location returned by FOX
-(setting it generates slower execution time but more accurate results).  
-By default this parameter is set to false.
+- `deer:parallelism` Make use of `N` threads to query FOX in parallel. Useful to speed up computation
+when using with a FOX distribution that supports parallel execution.  
 	
-
-## Clone Enrichment Operator (`deer:CloneEnrichmentOperator`) {#clone}
-
-The idea behind the clone operator is to enable parallel enrichment of multiple copies of the
-same dataset. The clone operator takes one dataset as input and produces n ≥ 2 output datasets,
-which are all identical to the input dataset. 
-
-In the following example, the clone operator is used to make 2 copies of the input dataset from
-`deer:node_1` into `deer:clone_1` and `deer:clone_2`
-
-```turtle
-@prefix : <urn:example:deer-manual/> .
-@prefix fcage: <http://w3id.org/fcage/> .
-@prefix deer: <http://w3id.org/deer/> .
-
-:node_clone
-  a deer:CloneEnrichmentOperator ; 
-  fcage:hasInput ( :node_in ) ;
-  fcage:hasOutput ( :clone_1  :clone_2 ) ;
-.
-```
 
 ## Merge Enrichment Operator (`deer:MergeEnrichmentOperator`) {#merge}
 
@@ -176,7 +154,7 @@ The merge operator takes a set of n ≥ 2 input datasets and merges them into on
 containing all the input datasets’ triples. 
 
 In the following example, the merge operator is used to combine the 2 input datasets of
-`deer:node_1` and `deer:node_2` into `deer:node_3`
+`deer:node_1` and `deer:node_2` into `deer:node_merged`
 
 
 ```turtle
@@ -184,10 +162,9 @@ In the following example, the merge operator is used to combine the 2 input data
 @prefix fcage: <http://w3id.org/fcage/> .
 @prefix deer: <http://w3id.org/deer/> .
 
-:node_merge
+:node_merged
   a deer:MergeEnrichmentOperator ;
-  fcage:hasInput ( :node_in_1 :node_in_2 ) ;
-  fcage:hasOutput ( :node_out ) ;
+  fcage:hasInput ( :node_1 :node_1 ) ;
 .
 ```
 
@@ -198,10 +175,10 @@ fused output dataset.
 In addtion to the common parameters, the geo-fusion operator have the following additional parameter:
 - The `deer:fusionAction` is used to specify the how to fuse geo-spatial properties
 (by default the `geo:lat` and `geo:long`), the available fusion actions are:
-    * "takeA" always use geometry from first dataset
-    * "takeB" always use geometry from second dataset
-    * "takeAll" merge all geometries
-    * "takeMostDetailed" use most detailed geometry from any model, e.g., in terms of lexical
+    * `"takeA"` always use geometry from first dataset
+    * `"takeB"` always use geometry from second dataset
+    * `"takeAll"` merge all geometries
+    * `"takeMostDetailed"` use most detailed geometry from any model, e.g., in terms of lexical
     length of latitude and longitude values
  - The `deer:mergeOtherStatements` parameter is used to enable the merge of all other non geo-spacial
  properties from all input dataset to the output dataset
@@ -243,8 +220,8 @@ Such configuration will change a resource like `http://dbpedia.org/Berlin` to `h
 :node_a_conf
   a deer:AuthorityConformationEnrichmentOperator ;
   deer:operation [ 
-    deer:sourceSubjectAuthority <http://dbpedia.org> ;
-    deer:targetSubjectAuthority <http://example.org> .
+    deer:sourceAuthority <http://dbpedia.org> ;
+    deer:targetAuthority <http://example.org> .
   ];
 .
 ```

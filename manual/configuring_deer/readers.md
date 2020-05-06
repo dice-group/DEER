@@ -7,7 +7,7 @@ Choose one of its configuration parameters to select how it should operate:
 
  * `deer:fromUri` if given, will operate in *web mode* and try to fetch the
  configuration from the given URI resource.
- * `deer:fromPath` if given, will operate in *file mode* and try to fetch the
+ * `deer:fromPath` if given, will operate in *local filesystem mode* and try to fetch the
  configuration from the given file path string literal.
  
 ## SPARQL Model Reader (`deer:SparqlModelReader`) {#sparql}
