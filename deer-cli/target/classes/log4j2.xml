@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] [%X{requestId}] %-5level %logger{36} - %msg%n"/>
+    </Console>
+    <Routing name="Routing">
+      <Routes pattern="$${ctx:requestId}">
+        <Route>
+          <RandomAccessFile name="user.log" append="false" fileName=".server-storage/logs/${ctx:requestId}.log">
+            <PatternLayout>
+              <pattern>%d{ISO8601} [%t] %p %c %L - %m%n</pattern>
+            </PatternLayout>
+          </RandomAccessFile>
+        </Route>
+      </Routes>
+    </Routing>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="Routing" level="info">
+        <ThreadContextMapFilter onMatch="DENY" onMismatch="ACCEPT">
+          <KeyValuePair key="requestId" value="" />
+        </ThreadContextMapFilter>
+      </AppenderRef>
+    </Root>
+    <Logger name="org.pf4j" level="fatal">
+    </Logger>
+  </Loggers>
+</Configuration>
