@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -31,11 +31,14 @@ import java.util.Properties;
 @Extension
 public class SparqlModelWriter extends AbstractModelWriter {
 
-  public static final Property ENDPOINT = DEER.property("endPoint");
+  public static final Property ENDPOINT = DEER.property("endpoint");
   public static final Property WRITE_TYPE = DEER.property("writeType");
   public static final Property WRITE_OP = DEER.property("writeOp");
   public static final Property GRAPH_NAME = DEER.property("graphName");
-  public static final Property CRED_FILE = DEER.property("credFile");
+  public static final Property CRED_FILE = DEER.property("credentialsFile");
+  public static final Property CRED = DEER.property("credentials");
+  public static final Property USER = DEER.property("user");
+  public static final Property PW = DEER.property("password");
 
   public static final String REPLACE = "replace";
   public static final String DEFAULT_GRAPH = "default";
@@ -53,6 +56,7 @@ public class SparqlModelWriter extends AbstractModelWriter {
       .declareProperty(ENDPOINT)
       .declareProperty(GRAPH_NAME)
       .declareProperty(CRED_FILE)
+      .declareProperty(CRED)
       .declareValidationShape(getValidationModelFor(SparqlModelWriter.class))
       .build();
   }
@@ -107,46 +111,44 @@ public class SparqlModelWriter extends AbstractModelWriter {
   }
 
   private void getConnection(String endPoint) {
-
     RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
       .destination(endPoint);
 
     Optional<String> credFile = getParameterMap().getOptional(CRED_FILE)
       .map(RDFNode::toString);
+    Optional<Resource> credentialsResource = getParameterMap().getOptional(CRED)
+      .map(RDFNode::asResource);
 
-
-    if (credFile.isPresent()) {
+    String user = null;
+    String pw = null;
+    if (credentialsResource.isPresent()) {
+      user = credentialsResource.get().getProperty(USER).getString();
+      pw = credentialsResource.get().getProperty(PW).getString();
+    } else if (credFile.isPresent()) {
       String credPath = injectWorkingDirectory(credFile.get());
-
       Properties prop = new Properties();
-
-      String user = "";
-      String pass = "";
       try {
         prop.load(new FileInputStream(credPath));
         user = prop.getProperty("username");
-        pass = prop.getProperty("password");
+        pw = prop.getProperty("password");
       } catch (Exception ex) {
         throw new RuntimeException("Encountered problem while trying to read credential file " +
           endPoint, ex);
       }
-
+    }
+    if (Objects.nonNull(user) && Objects.nonNull(pw)) {
       BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-      Credentials credentials = new UsernamePasswordCredentials(user, pass);
+      Credentials credentials = new UsernamePasswordCredentials(user, pw);
       credsProvider.setCredentials(AuthScope.ANY, credentials);
       HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-
-
       builder.httpClient(client);
     }
-
-
     connection = builder.build();
   }
 
   private String getGraphData(Model model) {
     Writer writer = new StringWriter();
-    model.write(writer, "TRIG");
+    model.write(writer, "NT");
     return writer.toString();
   }
 

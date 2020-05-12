@@ -36,7 +36,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.Scanner;
 
 import static org.junit.Assert.assertTrue;
 
@@ -102,8 +101,8 @@ public class SparqlModelWriterTest {
 
     fusekiServer.start();
     server.start();
-    System.out.println(DATASET_ENDPOINT);
-    System.out.println(SECURED_DATASET_ENDPOINT);
+//    System.out.println(DATASET_ENDPOINT);
+//    System.out.println(SECURED_DATASET_ENDPOINT);
     Lib.sleep(500);
   }
 
@@ -574,7 +573,7 @@ public class SparqlModelWriterTest {
   }
 
   @Test
-  public void writeToDefaultGraphWihMergeAndGSPUsingAuthentication() throws URISyntaxException, MalformedURLException {
+  public void writeToDefaultGraphWihMergeAndGSPUsingAuthenticationWithFile() throws URISyntaxException, MalformedURLException {
     URL credURL = getClass().getClassLoader().getResource("credentials");
     String credPath = Paths.get("").toAbsolutePath().toUri().relativize(credURL.toURI()).toString();
 
@@ -584,6 +583,83 @@ public class SparqlModelWriterTest {
     conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.MERGE);
     conf.add(mainRes, SparqlModelWriter.ENDPOINT, SECURED_GSP_ENDPOINT);
     conf.add(mainRes, SparqlModelWriter.CRED_FILE, credPath);
+
+
+    //Create the first model to write it into fuseki.
+    Model firstModel = ModelFactory.createDefaultModel();
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "dss?default"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "updatedBy"),
+      firstModel.createResource(NS + "dice?update"));
+    firstModel.add(firstModel.createResource(NS + "table"),
+      firstModel.createProperty(NS + "madeOf"),
+      firstModel.createResource(NS + "tentris?running"));
+
+    SparqlModelWriter writer = new SparqlModelWriter();
+    writer.initParameters(writer.createParameterMap().populate(mainRes).init());
+    writer.initPluginId(mainRes); writer.initDegrees(1, 1);
+
+    //Write the first model into fuseki.
+    Model out = writer.safeApply(Lists.newArrayList(firstModel)).get(0);
+
+    //Create the second model to write it into fuseki.
+    Model secondModel = ModelFactory.createDefaultModel();
+    secondModel.add(secondModel.createResource(NS + "table"),
+      secondModel.createProperty(NS + "madeOf"),
+      secondModel.createResource(NS + "iguana?created"));
+
+    //Write the second model into fuseki.
+    out = writer.safeApply(Lists.newArrayList(secondModel)).get(0);
+
+    //Create the testModel which looks likes merge of firstModel and secondModel to test merge is working or not.
+    Model testModel = ModelFactory.createDefaultModel();
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "tentris?running"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "iguana?created"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "madeOf"),
+      testModel.createResource(NS + "dss?default"));
+    testModel.add(testModel.createResource(NS + "table"),
+      testModel.createProperty(NS + "updatedBy"),
+      testModel.createResource(NS + "dice?update"));
+
+    //Get the model from fuseki server.
+
+    BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
+    Credentials credentials = new UsernamePasswordCredentials("ranjithk", "admin");
+    credsProvider.setCredentials(AuthScope.ANY, credentials);
+    HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+    RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
+      .destination(SECURED_GSP_ENDPOINT.getURI())
+      .httpClient(client);
+
+
+
+    RDFConnection connection = builder.build();
+    Model checkModel = connection.fetch();
+    //connection.delete();
+    connection.commit();
+    connection.close();
+    //assert if the testModel and model from fuseki server is not same.
+    assertTrue(checkModel.isIsomorphicWith(testModel));
+  }
+
+  @Test
+  public void writeToDefaultGraphWihMergeAndGSPUsingAuthenticationWithCredentials() throws URISyntaxException, MalformedURLException {
+    Model conf = ModelFactory.createDefaultModel();
+    Resource mainRes = conf.createResource(CFG + "deo");
+    Resource credResource = conf.createResource();
+    conf.add(mainRes, SparqlModelWriter.WRITE_TYPE, SparqlModelWriter.GRAPH_STORE_HTTP);
+    conf.add(mainRes, SparqlModelWriter.WRITE_OP, SparqlModelWriter.MERGE);
+    conf.add(mainRes, SparqlModelWriter.ENDPOINT, SECURED_GSP_ENDPOINT);
+    conf.add(mainRes, SparqlModelWriter.CRED, credResource);
+    conf.add(credResource, SparqlModelWriter.USER, "root");
+    conf.add(credResource, SparqlModelWriter.PW, "admin123");
 
 
     //Create the first model to write it into fuseki.
