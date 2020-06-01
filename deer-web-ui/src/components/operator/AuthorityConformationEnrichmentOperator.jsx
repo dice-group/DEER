@@ -1,5 +1,24 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "litegraph.js/css/litegraph.css";
+
+// reactstrap components
+import {
+  Row,
+  Col,
+  Button,
+  Form,
+  FormGroup,
+  Input,
+  Dropdown,
+  DropdownItem,
+  Label,
+  CardBody,
+  Card,
+  CardTitle,
+  CardFooter,
+  DropdownMenu,
+  DropdownToggle,
+} from "reactstrap";
 
 class AuthorityConformationEnrichmentOperator extends React.Component {
   constructor(props) {
@@ -11,8 +30,8 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
     this.addInput("input", "text");
     this.properties = {
       name: "",
-      sourceAuthority: "",
-      targetAuthority: "",
+      sourceSubjectAuthority: "",
+      targetSubjectAuthority: "",
     };
 
     var that = this;
@@ -30,27 +49,27 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
       }
     );
 
-    this.sourceAuthority = this.addWidget(
+    this.sourceSubjectAuthority = this.addWidget(
       "text",
-      "deer:sourceAuthority",
+      "deer:sourceSubjectAuthority",
       this.properties.name,
       function (v) {
         if (!v) {
           return;
         }
-        that.setProperty("sourceAuthority", v);
+        that.setProperty("sourceSubjectAuthority", v);
       }
     );
 
-    this.targetAuthority = this.addWidget(
+    this.targetSubjectAuthority = this.addWidget(
       "text",
-      "deer:targetAuthority",
+      "deer:targetSubjectAuthority",
       this.properties.name,
       function (v) {
         if (!v) {
           return;
         }
-        that.setProperty("targetAuthority", v);
+        that.setProperty("targetSubjectAuthority", v);
       }
     );
 
@@ -59,6 +78,38 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
     this.title = "Authority Conformation Enrichment Operator";
     this.color = "#816204";
     this.bgcolor = "#bb8b2c";
+  }
+
+  render() {
+    return (
+      <Card className="card-stats">
+        <div className="numbers">
+          <CardTitle tag="p">Node details</CardTitle>
+          <p />
+        </div>
+        <CardBody>
+          <Form>
+            <FormGroup>
+              <Label>Source Subject Authority</Label>
+              <Input type="text" placeholder="deer:sourceSubjectAuthority" />
+            </FormGroup>
+            <FormGroup>
+              <Label>Target Subject Authority</Label>
+              <Input type="text" placeholder="deer:targetSubjectAuthority" />
+            </FormGroup>
+          </Form>
+        </CardBody>
+        <CardFooter>
+          <Button
+            className="btn-round"
+            color="primary"
+            // onClick={this.addNewPrefixes}
+          >
+            Save
+          </Button>
+        </CardFooter>
+      </Card>
+    );
   }
 }
 

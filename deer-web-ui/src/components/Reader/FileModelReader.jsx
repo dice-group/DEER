@@ -91,7 +91,7 @@ class FileModelReader extends React.Component {
               />
             </FormGroup>
             <FormGroup>
-              <Label for="examplePassword">deer:fromPath</Label>
+              <Label>deer:fromPath</Label>
               <Input type="text" placeholder="fromPath" />
             </FormGroup>
           </Form>

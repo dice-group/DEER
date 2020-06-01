@@ -94,6 +94,34 @@ class Dashboard extends React.Component {
           src: <FilterEnrichmentOperator />,
           title: "Filter Enrichment Operator",
         },
+        {
+          src: <LinkingEnrichmentOperator />,
+          title: "Linking Enrichment Operator",
+        },
+        {
+          src: <NEREnrichmentOperator />,
+          title: "NER Enrichment Operator",
+        },
+        {
+          src: <GeoFusionEnrichmentOperator />,
+          title: "GeoFusion Enrichment Operator",
+        },
+        {
+          src: <AuthorityConformationEnrichmentOperator />,
+          title: "Authority Conformation Enrichment Operator",
+        },
+        {
+          src: <PredicateConformationEnrichmentOperator />,
+          title: "Predicate Conformation Enrichment Operator",
+        },
+        {
+          src: <GeoDistanceEnrichmentOperator />,
+          title: "GeoDistance Enrichment Operator",
+        },
+        {
+          src: <SparqlUpdateEnrichmentOperator />,
+          title: "Sparql Update Enrichment Operator",
+        },
       ],
     };
   }

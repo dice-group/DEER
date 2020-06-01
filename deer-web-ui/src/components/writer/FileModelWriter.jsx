@@ -94,11 +94,11 @@ class FileModelWriter extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
-              <Label for="exampleEmail">Output File</Label>
+              <Label>Output File</Label>
               <Input type="text" placeholder="deer:outputFile" />
             </FormGroup>
             <FormGroup>
-              <Label for="examplePassword">Output Format</Label>
+              <Label>Output Format</Label>
               <Input type="text" placeholder="deer:outputFormat" />
             </FormGroup>
           </Form>

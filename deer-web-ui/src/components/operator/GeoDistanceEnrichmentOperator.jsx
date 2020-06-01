@@ -1,18 +1,37 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "litegraph.js/css/litegraph.css";
+
+// reactstrap components
+import {
+  Row,
+  Col,
+  Button,
+  Form,
+  FormGroup,
+  Input,
+  Dropdown,
+  DropdownItem,
+  Label,
+  CardBody,
+  Card,
+  CardTitle,
+  CardFooter,
+  DropdownMenu,
+  DropdownToggle,
+} from "reactstrap";
 
 class GeoDistanceEnrichmentOperator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSelectors: true
+      showSelectors: true,
     };
 
     this.addInput("input", "text");
     this.properties = {
       name: "",
       selectPredicate: "",
-      distancePredicate: ""
+      distancePredicate: "",
     };
 
     var that = this;
@@ -22,7 +41,7 @@ class GeoDistanceEnrichmentOperator extends React.Component {
       "text",
       "deer:selectPredicate",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -34,7 +53,7 @@ class GeoDistanceEnrichmentOperator extends React.Component {
       "text",
       "deer:distancePredicate",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -47,6 +66,38 @@ class GeoDistanceEnrichmentOperator extends React.Component {
     this.title = "GeoDistance Enrichment Operator";
     this.color = "#816204";
     this.bgcolor = "#bb8b2c";
+  }
+
+  render() {
+    return (
+      <Card className="card-stats">
+        <div className="numbers">
+          <CardTitle tag="p">Node details</CardTitle>
+          <p />
+        </div>
+        <CardBody>
+          <Form>
+            <FormGroup>
+              <Label>Select Predicate</Label>
+              <Input type="text" placeholder="deer:selectPredicate" />
+            </FormGroup>
+            <FormGroup>
+              <Label>Distance Predicate</Label>
+              <Input type="text" placeholder="deer:distancePredicate" />
+            </FormGroup>
+          </Form>
+        </CardBody>
+        <CardFooter>
+          <Button
+            className="btn-round"
+            color="primary"
+            // onClick={this.addNewPrefixes}
+          >
+            Save
+          </Button>
+        </CardFooter>
+      </Card>
+    );
   }
 }
 
