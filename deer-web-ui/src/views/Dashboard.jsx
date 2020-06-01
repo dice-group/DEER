@@ -78,12 +78,35 @@ class Dashboard extends React.Component {
       afterFilteredSuggestions: [],
       addNewPrefixes: [],
       showForm: false,
+      showComponent: "",
+      node: "",
+      //TODO: will be updated
+      componentArray: [
+        {
+          src: <FileModelReader />,
+          title: "File Model Reader",
+        },
+        {
+          src: <FileModelWriter />,
+          title: "File Model Writer",
+        },
+        {
+          src: <FilterEnrichmentOperator />,
+          title: "Filter Enrichment Operator",
+        },
+      ],
     };
   }
 
   componentDidMount() {
-    var canvas1 = new LGraphCanvas("#mycanvas", this.state.graph);
+    var graphCanvas = new LGraphCanvas("#mycanvas", this.state.graph);
     this.state.graph.start();
+
+    graphCanvas.onShowNodePanel = (node) => {
+      this.setState({
+        node: node,
+      });
+    };
 
     fetch("https://prefix.cc/context")
       .then(function (response) {
@@ -96,6 +119,7 @@ class Dashboard extends React.Component {
         });
       });
   }
+
   toggleDropdown = () => {
     this.setState({
       show: !this.state.show,
@@ -171,7 +195,7 @@ class Dashboard extends React.Component {
     var parser = new N3.Parser({ format: "N3", blankNodePrefix: "" });
 
     data.nodes.map((node, key) => {
-      console.log(node);
+      // console.log(node);
       writer.addQuad(
         namedNode("urn:example:demo/" + node.properties.name),
         namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), //predicate
@@ -372,23 +396,12 @@ class Dashboard extends React.Component {
     });
   };
 
-  // callbackFunction = childData => {
-  //   console.log(childData);
-  //   this.setState({
-  //     showForm: childData
-  //   });
-  // };
-
   render() {
     const options = _.map(this.state.prefixOptions, (opt, index) => ({
       key: opt,
       text: opt,
       value: opt,
     }));
-
-    var data = this.state.graph.serialize();
-    console.log(data);
-
     return (
       <div className="content">
         <Row>
@@ -498,7 +511,11 @@ class Dashboard extends React.Component {
             </ModalBody>
           </Modal>
           <Col md="3">
-            <FileModelReader />
+            {this.state.componentArray.map((comp, key) => {
+              if (this.state.node.title === comp.title) {
+                return comp.src;
+              }
+            })}
           </Col>
         </Row>
         {/* <Row>

@@ -1,19 +1,39 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "litegraph.js/css/litegraph.css";
+
+// reactstrap components
+import {
+  Row,
+  Col,
+  Button,
+  Form,
+  FormGroup,
+  Input,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  DropdownMenu,
+  Label,
+  CardBody,
+  Card,
+  CardTitle,
+  CardFooter,
+} from "reactstrap";
 
 class FilterEnrichmentOperator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showSelectors: true,
-      endpoints: []
+      endpoints: [],
+      dropdownOpen: true,
     };
 
     fetch("./lod-data.json")
-      .then(function(response) {
+      .then(function (response) {
         return response.json();
       })
-      .then(content => {
+      .then((content) => {
         console.log(content);
         let obj = {};
         for (let prop in content) {
@@ -31,8 +51,9 @@ class FilterEnrichmentOperator extends React.Component {
     this.addInput("input", "text");
     this.properties = {
       name: "",
-      type: "number",
-      value: 0
+      showSelector: "number",
+      selector: "",
+      resource: "",
     };
 
     var that = this;
@@ -42,7 +63,7 @@ class FilterEnrichmentOperator extends React.Component {
       "text",
       "Operator name",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -54,7 +75,7 @@ class FilterEnrichmentOperator extends React.Component {
       "combo",
       "",
       "Select",
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -77,7 +98,7 @@ class FilterEnrichmentOperator extends React.Component {
       "combo",
       "",
       "Select",
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -90,7 +111,7 @@ class FilterEnrichmentOperator extends React.Component {
       "text",
       "Add resource",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -105,9 +126,59 @@ class FilterEnrichmentOperator extends React.Component {
     this.bgcolor = "#bb8b2c";
   }
 
-  // render() {
-  //   return <div>hello</div>;
-  // }
+  toggle = () => {
+    this.setState((prevState) => ({
+      dropdownOpen: !prevState.dropdownOpen,
+    }));
+  };
+
+  render() {
+    return (
+      <Card className="card-stats">
+        <div className="numbers">
+          <CardTitle tag="h5">Node Details</CardTitle>
+          <p />
+        </div>
+        <CardBody>
+          <Form>
+            <FormGroup tag="fieldset">
+              <legend>Select:</legend>
+              <FormGroup check>
+                <Label check>
+                  <Input type="radio" name="radio1" /> Selector
+                </Label>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input type="radio" name="radio1" /> Construct Query
+                </Label>
+              </FormGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+                <DropdownToggle caret>Select</DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem>Subject</DropdownItem>
+                  <DropdownItem>Predicate</DropdownItem>
+                  <DropdownItem>Object</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </FormGroup>
+          </Form>
+        </CardBody>
+        <CardFooter>
+          <Button
+            className="btn-round"
+            color="primary"
+            // onClick={this.addNewPrefixes}
+          >
+            Save
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
 }
 
 export default FilterEnrichmentOperator;

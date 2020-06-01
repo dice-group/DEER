@@ -1,5 +1,22 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "litegraph.js/css/litegraph.css";
+
+// reactstrap components
+import {
+  Row,
+  Col,
+  Button,
+  Form,
+  FormGroup,
+  Input,
+  Dropdown,
+  DropdownItem,
+  Label,
+  CardBody,
+  Card,
+  CardTitle,
+  CardFooter,
+} from "reactstrap";
 
 class FileModelWriter extends React.Component {
   constructor(props) {
@@ -8,8 +25,8 @@ class FileModelWriter extends React.Component {
     this.addInput("input", "text");
     this.properties = {
       name: "",
-      type: "number",
-      value: 0
+      outputFile: "number",
+      outputFormat: 0,
     };
 
     var that = this;
@@ -18,7 +35,7 @@ class FileModelWriter extends React.Component {
       "text",
       "Writer name",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -30,7 +47,7 @@ class FileModelWriter extends React.Component {
       "text",
       "deer:outputFile",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -42,7 +59,7 @@ class FileModelWriter extends React.Component {
       "text",
       "deer:outputFormat",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -65,6 +82,38 @@ class FileModelWriter extends React.Component {
     }
     //console.log(a);
     this.setOutputData(0, ++a);
+  }
+
+  render() {
+    return (
+      <Card className="card-stats">
+        <div className="numbers">
+          <CardTitle tag="p">Node details</CardTitle>
+          <p />
+        </div>
+        <CardBody>
+          <Form>
+            <FormGroup>
+              <Label for="exampleEmail">Output File</Label>
+              <Input type="text" placeholder="deer:outputFile" />
+            </FormGroup>
+            <FormGroup>
+              <Label for="examplePassword">Output Format</Label>
+              <Input type="text" placeholder="deer:outputFormat" />
+            </FormGroup>
+          </Form>
+        </CardBody>
+        <CardFooter>
+          <Button
+            className="btn-round"
+            color="primary"
+            // onClick={this.addNewPrefixes}
+          >
+            Save
+          </Button>
+        </CardFooter>
+      </Card>
+    );
   }
 }
 

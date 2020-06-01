@@ -1,38 +1,52 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "litegraph.js/css/litegraph.css";
+
+// reactstrap components
+import {
+  Row,
+  Col,
+  Button,
+  Form,
+  FormGroup,
+  Input,
+  Dropdown,
+  DropdownItem,
+  Label,
+  CardBody,
+  Card,
+  CardTitle,
+  CardFooter,
+} from "reactstrap";
 
 class FileModelReader extends React.Component {
   isSelected = false;
   state = {
     endpoints: [],
-    showForm: ""
+    showForm: "",
   };
   constructor(props) {
     super(props);
 
     this.properties = {
       name: "",
-      type: "number",
-      value: 0,
-      selected: ""
+      fromUri: "",
+      fromPath: "",
     };
 
     var that = this;
-    this.onSelected = this.onSelected.bind(that);
-    this.onDeselected = this.onDeselected.bind(that);
 
     this.name_widget = this.addWidget(
       "text",
       "Reader name",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
         that.setProperty("name", v);
       }
     );
-    this.addWidget("text", "deer:fromUri", this.properties.name, function(v) {
+    this.addWidget("text", "deer:fromUri", this.properties.name, function (v) {
       if (!v) {
         return;
       }
@@ -43,7 +57,7 @@ class FileModelReader extends React.Component {
       "text",
       "deer:fromPath",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -59,28 +73,40 @@ class FileModelReader extends React.Component {
     this.bgcolor = "#335533";
   }
 
-  componentDidUpdate(isSelected) {
-    console.log(isSelected);
-    // console.log(this.selected);
-    if (this.isSelected !== isSelected) {
-      this.isSelected = isSelected;
-    }
-  }
-
-  onSelected = () => {
-    this.isSelected = true;
-    this.render();
-    this.setProperty("selected", false);
-  };
-
-  onDeselected = () => {
-    this.isSelected = false;
-    this.render();
-    this.setProperty("selected", true);
-  };
-
   render() {
-    return <div></div>;
+    return (
+      <Card className="card-stats">
+        <div className="numbers">
+          <CardTitle tag="h5">Node Details</CardTitle>
+          <p />
+        </div>
+        <CardBody>
+          <Form>
+            <FormGroup>
+              <Label>deer:fromUri</Label>
+              <Input
+                type="text"
+                //name="email"
+                placeholder="fromUri"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="examplePassword">deer:fromPath</Label>
+              <Input type="text" placeholder="fromPath" />
+            </FormGroup>
+          </Form>
+        </CardBody>
+        <CardFooter>
+          <Button
+            className="btn-round"
+            color="primary"
+            // onClick={this.addNewPrefixes}
+          >
+            Save
+          </Button>
+        </CardFooter>
+      </Card>
+    );
   }
 }
 
