@@ -1,8 +1,7 @@
 {
-  "name": "paper-dashboard-react",
+  "name": "deer-webui",
   "version": "1.1.0",
   "private": true,
-  "homepage": "https://demos.creative-tim.com/paper-dashboard-react/#/dashboard",
   "dependencies": {
     "bootstrap": "4.3.1",
     "chart.js": "2.8.0",
@@ -29,7 +28,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && rm -rf ../deer-cli/src/main/resources/gui && cp -r ./build ../deer-cli/src/main/resources/gui && git add ../deer-cli/src/main/resources/gui/*",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",

@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.82bf28c1.chunk.css",
+    "main.js": "/static/js/main.f75d059b.chunk.js",
+    "main.js.map": "/static/js/main.f75d059b.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/css/2.e9103b17.chunk.css": "/static/css/2.e9103b17.chunk.css",
+    "static/js/2.dbcd2471.chunk.js": "/static/js/2.dbcd2471.chunk.js",
+    "static/js/2.dbcd2471.chunk.js.map": "/static/js/2.dbcd2471.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.0eda1eb54e7e04c1a6efc57172f25608.js": "/precache-manifest.0eda1eb54e7e04c1a6efc57172f25608.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.e9103b17.chunk.css.map": "/static/css/2.e9103b17.chunk.css.map",
+    "static/css/main.82bf28c1.chunk.css.map": "/static/css/main.82bf28c1.chunk.css.map",
+    "static/media/ayo-ogunseinde-2.jpg": "/static/media/ayo-ogunseinde-2.bfc688ca.jpg",
+    "static/media/semantic.min.css": "/static/media/outline-icons.ef60a4f6.woff",
+    "static/media/clem-onojeghuo-2.jpg": "/static/media/clem-onojeghuo-2.bb4b9ac9.jpg",
+    "static/media/damir-bosnjak.jpg": "/static/media/damir-bosnjak.a6f24e7d.jpg",
+    "static/media/joe-gardner-2.jpg": "/static/media/joe-gardner-2.76ff47ae.jpg",
+    "static/media/logo.svg": "/static/media/logo.5d5d9eef.svg",
+    "static/media/mike.jpg": "/static/media/mike.aab414f7.jpg",
+    "static/media/paper-dashboard.scss?v=1.1.0": "/static/media/nucleo-icons.f32ed5ad.eot"
+  }
+}
