@@ -1,0 +1,72 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix deer: <http://w3id.org/deer/> .
+
+# Node LinkingEnrichmentOperator
+
+deer:LinkingEnrichmentOperatorShape
+	a sh:NodeShape ;
+	sh:targetClass deer:LinkingEnrichmentOperator ;
+	sh:property deer:LinkingEnrichmentOperatorShape_linkingPredicate ,
+	            deer:LinkingEnrichmentOperatorShape_threshold ,
+	            deer:LinkingEnrichmentOperatorShape_selectMode ,
+	            deer:LinkingEnrichmentOperatorShape_linksPart ;
+	sh:xone (
+    [ sh:property deer:LinkingEnrichmentOperatorShape_specFile ; ]
+    [ sh:property deer:LinkingEnrichmentOperatorShape_linkSpecification ; ]
+    [ sh:property deer:LinkingEnrichmentOperatorShape_useMlL ; ]
+	) ;
+	sh:message "LinkingEnrichmentOperator must declare exactly one of {deer:specFile, deer:linkSpecification}" ;
+.
+
+deer:LinkingEnrichmentOperatorShape_linkingPredicate
+  sh:path deer:linkingPredicate ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:LinkingEnrichmentOperatorShape_specFile
+  sh:path deer:specFile ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+.
+
+deer:LinkingEnrichmentOperatorShape_linkSpecification
+  sh:path deer:linkSpecification ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+.
+
+deer:LinkingEnrichmentOperatorShape_useML
+  sh:path deer:useML ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:boolean ;
+.
+
+deer:LinkingEnrichmentOperatorShape_threshold
+  sh:path deer:threshold ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:decimal ;
+.
+
+deer:LinkingEnrichmentOperatorShape_selectMode
+  sh:path deer:selectMode ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+.
+
+deer:LinkingEnrichmentOperatorShape_linksPart
+  sh:path deer:linksPart ;
+  sh:minCount 0 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+.
+

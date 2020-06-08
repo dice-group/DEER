@@ -6,8 +6,7 @@
 *.ear
 /.server-storage/
 /target/
-/faraday-cage/
-/out/
+out/
 nbactions.xml
 
 # IntelliJ IDEA #
@@ -17,6 +16,9 @@ nbactions.xml
 dependency-reduced-pom.xml
 # Markdown Editor Metadata #
 
-.Ulysses*
 /manual/node_modules
 /manual/_book
+
+# Subrepositories
+/faraday-cage/
+/deer-slipo-plugin/

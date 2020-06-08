@@ -6,6 +6,8 @@ import eu.medsea.mimeutil.MimeType;
 import eu.medsea.mimeutil.MimeUtil;
 import org.aksw.deer.DeerController;
 import org.aksw.deer.io.AbstractModelIO;
+import org.aksw.faraday_cage.engine.CompiledExecutionGraph;
+import org.aksw.faraday_cage.engine.FaradayCageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -13,13 +15,20 @@ import spark.Request;
 import spark.Response;
 
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
 import javax.servlet.http.Part;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import static spark.Spark.*;
@@ -30,15 +39,13 @@ public class Server {
 
   private static final Logger logger = LoggerFactory.getLogger(Server.class);
 
-  public static final String STORAGE_DIR_PATH = "./.server-storage/";
+  public static final String STORAGE_DIR_PATH = ".server-storage/";
   public static final String LOG_DIR_PATH = STORAGE_DIR_PATH + "logs/";
-  public static final String CONFIG_FILE_PREFIX = "deer_cfg_";
-  public static final String CONFIG_FILE_SUFFIX = ".ttl";
 
   private static final Gson GSON = new GsonBuilder().create();
   private static Server instance = null;
 
-  private final Map<String, CompletableFuture<Void>> requests = new HashMap<>();
+  private final ConcurrentMap<String, CompletableFuture<Void>> requests = new ConcurrentHashMap<>();
   private final File uploadDir = new File(STORAGE_DIR_PATH);
   private int port = -1;
 
@@ -55,11 +62,12 @@ public class Server {
     } else {
       this.port = port;
     }
-    AbstractModelIO.takeWorkingDirectoryFrom(()-> STORAGE_DIR_PATH + MDC.get("requestId") + "/");
     if (!uploadDir.exists()) {
       uploadDir.mkdir();
     }
-    threadPool(8, 1, 30000);
+    FaradayCageContext.addForkListener(runId -> MDC.put("requestId", runId));
+    AbstractModelIO.takeWorkingDirectoryFrom(()-> STORAGE_DIR_PATH + FaradayCageContext.getRunId() + "/");
+    threadPool(100, 1, 30000);
     port(port);
     enableCORS("*","GET, POST, OPTIONS","");
     post("/submit", this::handleSubmit);
@@ -83,31 +91,47 @@ public class Server {
   }
 
   private Server(){
+    new RequestHealthChecker(requests).start();
   }
 
-  private Object handleSubmit(Request req, Response res) throws Exception {
-    Path tempFile = Files
-      .createTempFile(uploadDir.toPath(), CONFIG_FILE_PREFIX, CONFIG_FILE_SUFFIX);
-    req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
-    try (InputStream is = req.raw().getPart("config_file").getInputStream()) {
-      Files.copy(is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+  private Object handleSubmit(Request req, Response res) throws IOException, ServletException {
+    String runId = FaradayCageContext.newRunId();
+    File workingDir = new File(uploadDir.getAbsoluteFile(), runId);
+    if (!workingDir.mkdirs()) {
+      throw new IOException("Not able to create directory " + workingDir.getAbsolutePath());
     }
-    logger.info("Uploaded file '{}' saved as '{}'", getFileName(req.raw().getPart("config_file")),
-      tempFile.toAbsolutePath());
-    String id = tempFile.toString();
-    id = id.substring(id.indexOf(CONFIG_FILE_PREFIX) + CONFIG_FILE_PREFIX.length(),
-      id.lastIndexOf(CONFIG_FILE_SUFFIX));
-    File workingDir = new File(uploadDir.getAbsoluteFile(), id);
-    if (!workingDir.mkdir()) {
-      throw new RuntimeException("Not able to create directory " + workingDir.getAbsolutePath());
+    req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement(workingDir.getAbsolutePath()));
+    Path configFile = null;
+    if (req.contentType().contains("multipart/form-data")) {
+      for (Part part : req.raw().getParts()) {
+        try (InputStream is = part.getInputStream()) {
+          Path partFileName = Paths.get(part.getSubmittedFileName()).getFileName();
+          Path destinationPath = workingDir.toPath().resolve(partFileName);
+          Files.copy(is, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+          if (part.getName().equals("config")) {
+            configFile = destinationPath;
+          }
+          logger.info("Uploaded file '{}' to '{}'", partFileName, destinationPath);
+        }
+      }
+    } else {
+      return GSON.toJson(new ErrorMessage(1, "Only Requests of type \"multipart/form-data\" are allowed"));
     }
-    final String requestId = id;
-    requests.put(requestId, CompletableFuture.completedFuture(null).thenAcceptAsync($->{
-      MDC.put("requestId", requestId);
-      DeerController.runDeer(tempFile.toString());
+    if (Objects.isNull(configFile)) {
+      return GSON.toJson(new ErrorMessage(2, "No configuration was submitted"));
+    }
+    MDC.put("requestId", runId);
+    CompiledExecutionGraph compiledExecutionGraph =
+      DeerController.compileDeer(configFile.toString(), runId);
+    compiledExecutionGraph.andThen(() -> DeerController.writeAnalytics(workingDir.toPath().resolve("deer-analytics.json")));
+    requests.put(runId, CompletableFuture.completedFuture(null).thenAcceptAsync($->{
+      MDC.put("requestId", runId);
+      compiledExecutionGraph.run();
+      compiledExecutionGraph.join();
     }));
+    MDC.remove("requestId");
     res.status(200);
-    return GSON.toJson(new SubmitMessage(id));
+    return GSON.toJson(new SubmitMessage(runId));
   }
 
   private Object handleStatus(Request req, Response res) {
@@ -117,8 +141,10 @@ public class Server {
       result = new StatusMessage(-1, "Request ID not found");
     } else if (!requests.get(id).isDone()) {
       result = new StatusMessage(0, "Request is being processed");
+    } else if (requests.get(id).isCompletedExceptionally()){
+      result = new StatusMessage(1, "Request completed exceptionally");
     } else {
-      result = new StatusMessage(1, "Request has been processed");
+      result = new StatusMessage(2, "Request has been processed successfully");
     }
     res.status(200);
     return GSON.toJson(result);
@@ -198,7 +224,7 @@ public class Server {
   }
 
   private static String sanitizeId(String id) {
-    return id.replaceAll("[^\\d]", "");
+    return id.replaceAll("[^0-9a-f\\-]", "");
   }
 
   private static String getFileName(Part part) {

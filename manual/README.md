@@ -6,4 +6,3 @@ This documentation aims to help you understand, configure and extend DEER.
 If you believe a part of it to be inaccurate or outdated, please
 [file an issue](https://github.com/dice-group/deer/issues/new).  
 
-

@@ -1,56 +1,62 @@
 package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
-import org.aksw.faraday_cage.parameter.Parameter;
-import org.aksw.faraday_cage.parameter.ParameterImpl;
-import org.aksw.faraday_cage.parameter.ParameterMap;
-import org.aksw.faraday_cage.parameter.ParameterMapImpl;
-import org.aksw.deer.vocabulary.DBpedia;
-import org.aksw.deer.vocabulary.SCMSANN;
+import org.aksw.deer.learning.ReverseLearnable;
+import org.aksw.deer.learning.SelfConfigurable;
+import org.aksw.deer.vocabulary.DEER;
+import org.aksw.deer.vocabulary.FOXO;
+import org.aksw.faraday_cage.engine.ThreadlocalInheritingCompletableFuture;
+import org.aksw.faraday_cage.engine.ValidatableParameterMap;
 import org.aksw.fox.binding.FoxApi;
 import org.aksw.fox.binding.FoxParameter;
 import org.aksw.fox.binding.IFoxApi;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
+import org.aksw.fox.data.Entity;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.Lock;
+import org.apache.jena.vocabulary.RDFS;
+import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jetbrains.annotations.NotNull;
-import org.pf4j.Extension;
 
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  *
  */
 @Extension
-public class NEREnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
+public class NEREnrichmentOperator extends AbstractParameterizedEnrichmentOperator implements SelfConfigurable, ReverseLearnable {
+
+  public static final Property LITERAL_PROPERTY = DEER.property("literalProperty");
+
+  public static final Property IMPORT_PROPERTY = DEER.property("importProperty");
+
+  public static final Property FOX_URL = DEER.property("foxUrl");
+
+  public static final Property NE_TYPE = DEER.property("neType");
+
+  public static final Property PARALLELISM = DEER.property("parallelism");
+
+  private static final String DEFAULT_FOX_URL = "http://localhost:4444/fox";
+
+  private static final Property DEFAULT_IMPORT_PROPERTY
+    = ResourceFactory.createProperty("http://geoknow.org/ontology/relatedTo");
+
+  private static final int DEFAULT_PARALLELISM = 1;
 
   private static final Logger logger = LoggerFactory.getLogger(NEREnrichmentOperator.class);
 
-  private static final Parameter LITERAL_PROPERTY = new ParameterImpl("literalProperty");
-  private static final Parameter IMPORT_PROPERTY = new ParameterImpl("importProperty");
-  private static final Parameter FOX_URL = new ParameterImpl("foxUrl");
-  private static final Parameter NE_TYPE = new ParameterImpl("neType");
-  private static final Parameter ASK_ENDPOINT = new ParameterImpl("askEndpoint");
-  private static final Parameter DBPEDIA_ENDPOINT_URL = new ParameterImpl("dbpediaEndpointUrl");
-  private static final String DEFAULT_FOX_URL = "http://localhost:4444/fox";
-  private static final String DEFAULT_IMPORT_PROPERTY = "http://geoknow.org/ontology/relatedTo";
+  private static final ConcurrentMap<NEROperationID, CompletableFuture<List<String>>> cache = new ConcurrentHashMap<>();
 
   /**
    * Defines the possible (sub)types of named entities to be discovered
@@ -62,129 +68,174 @@ public class NEREnrichmentOperator extends AbstractParametrizedEnrichmentOperato
   private Property literalProperty;
   private Property importProperty;
   private URL foxUri;
-  private String dbpediaEndpointUri;
-  private boolean askEndPoint;
+  private int parallelism;
   private NET neType;
 
   @Override
-  public @NotNull ParameterMap createParameterMap() {
-    return new ParameterMapImpl(LITERAL_PROPERTY, IMPORT_PROPERTY, FOX_URL, NE_TYPE,
-      ASK_ENDPOINT, DBPEDIA_ENDPOINT_URL);
+  public ValidatableParameterMap createParameterMap() {
+    return ValidatableParameterMap.builder()
+      .declareProperty(LITERAL_PROPERTY)
+      .declareProperty(IMPORT_PROPERTY)
+      .declareProperty(FOX_URL)
+      .declareProperty(NE_TYPE)
+      .declareValidationShape(getValidationModelFor(NEREnrichmentOperator.class))
+      .declareValidationShape(getValidationModelFor(NEREnrichmentOperator.class))
+      .build();
   }
 
-  @Override
-  public void validateAndAccept(@NotNull ParameterMap params) {
-    this.literalProperty = params.getValue(LITERAL_PROPERTY) == null ?
-      null : ResourceFactory.createProperty(params.getValue(LITERAL_PROPERTY));
-    this.importProperty = ResourceFactory.createProperty(params.getValue(IMPORT_PROPERTY, DEFAULT_IMPORT_PROPERTY));
+
+  private void initializeFields() {
+    final ValidatableParameterMap parameters = getParameterMap();
+    // mandatory parameter literalProperty
+    literalProperty = parameters.getOptional(LITERAL_PROPERTY)
+      .map(n -> n.as(Property.class)).orElse(null);
+    // optional parameter importProperty
+    importProperty = parameters.getOptional(IMPORT_PROPERTY)
+      .map(n -> n.as(Property.class)).orElse(DEFAULT_IMPORT_PROPERTY);
     try {
-      this.foxUri = new URL(params.getValue(FOX_URL), DEFAULT_FOX_URL);
-      this.dbpediaEndpointUri = params.getValue(DBPEDIA_ENDPOINT_URL, DBpedia.endPoint);
+      // optional parameter foxUrl
+      String urlString = parameters.getOptional(FOX_URL)
+        .map(RDFNode::asResource).map(Resource::getURI).orElse(DEFAULT_FOX_URL);
+      foxUri = new URL(urlString);
     } catch (MalformedURLException e) {
-      throw new RuntimeException("Unresolvable bad URL encountered.", e);
+      throw new RuntimeException("Encountered bad URL in " + getId() + "!", e);
     }
-    this.askEndPoint = Boolean.valueOf(params.getValue(ASK_ENDPOINT, "false"));
-    this.neType = NET.valueOf(params.getValue(NE_TYPE, NET.ALL.toString()));
+    // optional parameter neType
+    neType = parameters.getOptional(NE_TYPE)
+      .map(RDFNode::asLiteral).map(l -> l.getString().toUpperCase()).map(NET::valueOf).orElse(NET.ALL);
+    // optional parameter parallelism
+    parallelism = parameters.getOptional(PARALLELISM)
+      .map(RDFNode::asLiteral).map(Literal::getInt).orElse(DEFAULT_PARALLELISM);
   }
 
-  /**
-   * Self configuration
-   * Set all parameters to default values, also extract all NEs
-   *
-   * @return Map of (key, value) pairs of self configured parameters
-   */
-  @Override
-  public @NotNull ParameterMap selfConfig(Model source, Model target) {
-    return ParameterMap.EMPTY_INSTANCE;
-  }
+//  /**
+//   * Self configuration
+//   * Set all parameters to default values, also extract all NEs
+//   *
+//   * @return Map of (key, value) pairs of self configured parameters
+//   */
+//  @Override
+//  public ParameterMap learnParameterMap(Model source, Model target) {
+//    return ParameterMap.EMPTY_INSTANCE;
+//  }
 
   @Override
   protected List<Model> safeApply(List<Model> models) {
-    Model model = models.get(0);
-    Model resultModel = ModelFactory.createDefaultModel();
+    initializeFields();
+    final Model model = models.get(0);
+    final Model resultModel = ModelFactory.createDefaultModel();
     resultModel.add(model);
     if (literalProperty == null) {
       literalProperty = LiteralPropertyRanker.getTopRankedProperty(model);
     }
+    CompletableFuture<Void> future = new ThreadlocalInheritingCompletableFuture<>();
+    List<CompletableFuture<Void>> pool = new ArrayList<>(parallelism);
+    for (int z = 0; z < parallelism; z++) {
+      pool.add(z == 0 ? future.thenApply(x->x) : future.thenApplyAsync(x->x));
+    }
+    AtomicInteger i = new AtomicInteger(0);
     model.listStatements(null, literalProperty, (RDFNode) null)
       .filterKeep(statement -> statement.getObject().isLiteral())
       .forEachRemaining(statement -> {
-        Resource subject = statement.getSubject();
-        Model namedEntityModel = runFOX(statement.getObject().toString());
-        if (!namedEntityModel.isEmpty()) {
-          switch (neType) {
-            case ALL:
-              resultModel.add(getNE(namedEntityModel, subject));
-              break;
-            case LOCATION:
-              resultModel.add(getNE(namedEntityModel, subject, SCMSANN.LOCATION));
-              break;
-            case PERSON:
-              resultModel.add(getNE(namedEntityModel, subject, SCMSANN.PERSON));
-              break;
-            case ORGANIZATION:
-              resultModel.add(getNE(namedEntityModel, subject, SCMSANN.ORGANIZATION));
-              break;
+        i.compareAndSet(parallelism, 0);
+        int j = i.getAndIncrement();
+        final Resource subject = statement.getSubject();
+        pool.set(j, pool.get(j).thenRun(() -> {
+          Model result = null;
+            switch (neType) {
+              case ALL:
+                result = runFOX(subject, statement.getObject().asLiteral().getString(), null);
+                break;
+              case LOCATION:
+                result = runFOX(subject, statement.getObject().asLiteral().toString(), FOXO.LOCATION.getURI());
+                break;
+              case PERSON:
+                result = runFOX(subject, statement.getObject().asLiteral().toString(), FOXO.PERSON.getURI());
+                break;
+              case ORGANIZATION:
+                result = runFOX(subject, statement.getObject().asLiteral().toString(), FOXO.ORGANIZATION.getURI());
+                break;
+            }
+          resultModel.enterCriticalSection(Lock.WRITE);
+          try {
+            resultModel.add(result);
+          } finally {
+            resultModel.leaveCriticalSection();
           }
-        }
+        }));
       });
+    future.complete(null);
+    for (int z = 0; z < parallelism; z++) {
+      future = future.thenCombine(pool.get(z), (a, b) -> null);
+    }
+    future.join();
     return Lists.newArrayList(resultModel);
   }
 
-  /**
-   * @return model of places contained in the input model
-   */
-  private List<Statement> getNE(Model namedEntityModel, Resource subject, Resource type) {
-    String sparqlQueryString = "CONSTRUCT {?s ?p ?o} " +
-      " WHERE {?s a <" + type + ">. ?s ?p ?o} ";
-    Model locationsModel = QueryExecutionFactory.create(sparqlQueryString, namedEntityModel)
-      .execConstruct();
-    return getNE(locationsModel, subject);
+  private Model runFOX(Resource subject, String input, String type) {
+    NEROperationID key = new NEROperationID(foxUri, input, type);
+    List<String> result;
+    CompletableFuture<List<String>> future = new ThreadlocalInheritingCompletableFuture<>();
+    cache.putIfAbsent(key, future);
+    if (cache.get(key) != future) {
+      try {
+        result = cache.get(key).get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      final IFoxApi fox = new FoxApi()
+        .setApiURL(foxUri)
+        .setTask(FoxParameter.TASK.NER)
+        .setOutputFormat(FoxParameter.OUTPUT.TURTLE)
+        .setLang(FoxParameter.LANG.EN)
+        .setInput(input)
+        //@todo: parameterize
+        .setLightVersion(FoxParameter.FOXLIGHT.ENBalie)
+        .send();
+      result = fox.responseAsClasses().getEntities().stream()
+        .filter(e -> Optional.ofNullable(type).isEmpty() || e.getType().equals(type))
+        .map(Entity::getUri)
+        .collect(Collectors.toList());
+      future.complete(result);
+    }
+    Model namedEntityModel = ModelFactory.createDefaultModel();
+    result.forEach(e -> namedEntityModel.add(subject, importProperty, namedEntityModel.createResource(e)));
+    return namedEntityModel;
   }
 
-  /**
-   * As a generalization of GeoLift
-   *
-   * @return model of all NEs contained in the input model
-   */
-  private List<Statement> getNE(Model namedEntityModel, Resource subject) {
-    return namedEntityModel.listObjectsOfProperty(SCMSANN.MEANS)
-      .filterKeep(RDFNode::isResource)
-      .mapWith(RDFNode::asResource)
-      .filterDrop(r -> askEndPoint && !isPlace(r))
-      .mapWith(r -> ResourceFactory.createStatement(subject, importProperty, r))
-      .toList();
-  }
+  private static class NEROperationID {
+    private URL foxURL;
+    private String input;
+    private String type;
 
-  /**
-   * @return wither is the input URI is a place of not
-   */
-  private boolean isPlace(RDFNode uri) {
-    boolean result;
-    if (uri.toString().contains("http://ns.aksw.org/scms/")) {
+    private NEROperationID(URL foxURL, String input, String type) {
+      this.foxURL = foxURL;
+      this.input = input;
+      this.type = type;
+    }
+
+    @Override
+    public int hashCode() {
+      return new HashCodeBuilder()
+        .append(foxURL.toString())
+        .append(input)
+        .append(type)
+        .toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof NEROperationID) {
+        NEROperationID o = (NEROperationID) obj;
+        return new EqualsBuilder()
+          .append(foxURL, o.foxURL)
+          .append(input, o.input)
+          .append(type, o.type)
+          .isEquals();
+      }
       return false;
     }
-    String queryString = "ask {<" + uri.toString() + "> a <http://dbpedia.org/ontology/Place>}";
-    logger.info("Asking DBpedia for: " + queryString);
-    Query query = QueryFactory.create(queryString);
-    QueryExecution qexec = QueryExecutionFactory.sparqlService(dbpediaEndpointUri, query);
-    result = qexec.execAsk();
-    logger.info("Answer: " + result);
-    return result;
-  }
-
-  private Model runFOX(String input) {
-    Model namedEntityModel = ModelFactory.createDefaultModel();
-    final IFoxApi fox = new FoxApi()
-      .setApiURL(foxUri)
-      .setTask(FoxParameter.TASK.NER)
-      .setOutputFormat(FoxParameter.OUTPUT.TURTLE)
-      .setLang(FoxParameter.LANG.EN)
-      .setInput(input)
-//        .setLightVersion(FoxParameter.FOXLIGHT.)
-      .send();
-    namedEntityModel.read(new StringReader(fox.responseAsFile().trim()), null, "TTL");
-    return namedEntityModel;
   }
 
   private static class LiteralPropertyRanker {
@@ -213,6 +264,37 @@ public class NEREnrichmentOperator extends AbstractParametrizedEnrichmentOperato
       SortedMap<Double, Property> ranks = rank(model);
       return ranks.get(ranks.firstKey());
     }
+  }
+
+  @Override
+  public double predictApplicability(List<Model> inputs, Model target) {
+    if (target.contains(null, FOXO.RELATED_TO) && !inputs.get(0).contains(null, FOXO.RELATED_TO)) {
+      return 1.0;
+    }
+    return 0;
+  }
+
+  @Override
+  public List<Model> reverseApply(List<Model> inputs, Model target) {
+    Model result = ModelFactory.createDefaultModel().add(target);
+    result.removeAll(null, FOXO.RELATED_TO, null);
+    return List.of(result);
+  }
+
+  @Override
+  public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target, ValidatableParameterMap prototype) {
+    return createParameterMap()
+      .add(NEREnrichmentOperator.LITERAL_PROPERTY, RDFS.comment)
+      .add(NEREnrichmentOperator.IMPORT_PROPERTY, FOXO.RELATED_TO)
+      .add(NEREnrichmentOperator.NE_TYPE, ResourceFactory.createStringLiteral("all"))
+      .add(NEREnrichmentOperator.FOX_URL, ResourceFactory.createResource("http://localhost:4444/fox"))
+      .add(NEREnrichmentOperator.PARALLELISM, ResourceFactory.createTypedLiteral(1))
+      .init();
+  }
+
+  @Override
+  public DegreeBounds getLearnableDegreeBounds() {
+    return getDegreeBounds();
   }
 
 }

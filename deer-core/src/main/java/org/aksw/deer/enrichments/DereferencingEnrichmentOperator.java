@@ -1,37 +1,30 @@
 package org.aksw.deer.enrichments;
 
-import com.github.therapi.runtimejavadoc.RetainJavadoc;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.aksw.faraday_cage.Vocabulary;
-import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
-import org.aksw.faraday_cage.parameter.Parameter;
-import org.aksw.faraday_cage.parameter.ParameterImpl;
-import org.aksw.faraday_cage.parameter.ParameterMap;
-import org.aksw.faraday_cage.parameter.ParameterMapImpl;
+import org.aksw.deer.learning.ReverseLearnable;
+import org.aksw.deer.learning.SelfConfigurable;
+import org.aksw.deer.vocabulary.DBR;
 import org.aksw.deer.vocabulary.DEER;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.aksw.faraday_cage.engine.ThreadlocalInheritingCompletableFuture;
+import org.aksw.faraday_cage.engine.ValidatableParameterMap;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.OWL;
+import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jetbrains.annotations.NotNull;
-import org.pf4j.Extension;
 
+import java.net.ConnectException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 /**
@@ -52,11 +45,19 @@ import java.util.stream.Collectors;
  *
  * <h3>{@code :operations}</h3>
  *
- * A {@link DictListParameterConversion DictList}.
  *
- * Each entry in the {@code DictList} corresponds to one dereferencing operation, allowing multiple
+ *
+ * Each operation corresponds to one dereferencing operation, allowing multiple
  * dereferencing operations being carried out by a single {@code DereferencingEnrichmentOperator}.
  * Each entry may contain the following properties:
+ *
+ * <blockquote>
+ *     <b>{@code :lookUpProperty}</b>
+ *     <i>range: resource</i>
+ *     <br>
+ *     Determines the starting resources {@code ?x} as all objects of triples having
+ *     the value of {@code :lookUpProperty} as predicate.
+ * </blockquote>
  *
  * <blockquote>
  *     <b>{@code :lookUpPrefix} [required]</b>
@@ -65,7 +66,7 @@ import java.util.stream.Collectors;
  *     Determines the starting resources {@code ?x} as all objects of triples having
  *     the value of {@code :lookUpProperty} as predicate.
  * </blockquote>
-
+ *
  * <blockquote>
  *     <b>{@code :dereferencingProperty} [required]</b>
  *     <i>range: resource</i>
@@ -81,153 +82,274 @@ import java.util.stream.Collectors;
  *     Add looked up values to starting resources using the value of :importProperty.
  * </blockquote>
  *
- * <blockquote>
- *     <b>{@code :endpoint} </b>
- *     <i>range: string</i>
- *     <br>
- *     URL of the SPARQL endpoint to use for this dereferencing operation.
- *     If not given, this operator tries to infer the endpoint from the starting resources URIs.
- * </blockquote>
  *
  * <h2>Example</h2>
  *
  */
-@Extension @RetainJavadoc
-public class DereferencingEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
+@Extension
+public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrichmentOperator implements ReverseLearnable, SelfConfigurable {
+
+//   * <blockquote>
+//   *     <b>{@code :endpoint} </b>
+//   *     <i>range: string</i>
+//   *     <br>
+//   *     URL of the SPARQL endpoint to use for this dereferencing operation.
+//   *     If not given, this operator tries to infer the endpoint from the starting resources URIs.
+//   * </blockquote>
+
+
 
   private static final Logger logger = LoggerFactory.getLogger(DereferencingEnrichmentOperator.class);
 
-  // @todo: implement this someday.. requires util endpoint discovery
-  //  * <blockquote>
-  //  *     <b>{@code :lookUpProperty} [required]</b>
-  //  *     <i>range: resource</i>
-  //  *     <br>
-  //  *     Determines the starting resources {@code ?x} as all objects of triples having
-  //  *     the value of {@code :lookUpProperty} as predicate.
-  //  * </blockquote>
-  //  private static final Property LOOKUP_PROPERTY = Vocabulary.property("lookUpProperty");
+  public static final Property LOOKUP_PROPERTY = DEER.property("lookUpProperty");
 
-  private static final Property LOOKUP_PREFIX = Vocabulary.property("lookUpPrefix");
+  public static final Property LOOKUP_PREFIX = DEER.property("lookUpPrefix");
 
-  private static final Property DEREFERENCING_PROPERTY = Vocabulary.property("dereferencingProperty");
+  public static final Property DEREFERENCING_PROPERTY = DEER.property("dereferencingProperty");
 
-  private static final Property IMPORT_PROPERTY = Vocabulary.property("importProperty");
+  public static final Property IMPORT_PROPERTY = DEER.property("importProperty");
 
-  private static final Parameter OPERATIONS = new ParameterImpl("operations",
-    new DictListParameterConversion(LOOKUP_PREFIX, DEREFERENCING_PROPERTY,
-      IMPORT_PROPERTY), true);
+  public static final Property OPERATION = DEER.property("operation");
 
-  private static final String DEFAULT_LOOKUP_PREFIX = "http://dbpedia.org/resource";
+  private static String DEFAULT_LOOKUP_PREFIX = DBR.getURI();
 
   private static final Set<Property> ignoredProperties = new HashSet<>(Arrays.asList(OWL.sameAs));
 
-  private List<Map<Property, RDFNode>> operations;
+  private HashMap<OperationGroup, Set<Property[]>> operations;
 
   private Model model;
 
-  public DereferencingEnrichmentOperator() {
-    super();
-  }
+  private static final ConcurrentMap<Resource, CompletableFuture<Model>> cache = new ConcurrentHashMap<>();
 
-  /**
-   * Self configuration
-   * Find source/target URI as the most redundant URIs
-   *
-   * @param source source
-   * @param target target
-   *
-   * @return Map of (key, value) pairs of self configured parameters
-   */
-  @NotNull
-  @Override
-  public ParameterMap selfConfig(Model source, Model target) {
-    ParameterMap parameters = createParameterMap();
-    Set<Property> propertyDifference = getPropertyDifference(source, target);
-    List<Map<Property, RDFNode>> autoOperations = new ArrayList<>();
-    for (Property property : propertyDifference) {
-      Map<Property, RDFNode> autoOperation = new HashMap<>();
-      autoOperation.put(DEREFERENCING_PROPERTY, property);
-      autoOperation.put(IMPORT_PROPERTY, property);
-      autoOperations.add(autoOperation);
-    }
-    parameters.setValue(OPERATIONS, autoOperations);
-    return parameters;
-  }
+//  static {
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Leipzig"),
+//      ModelFactory.createDefaultModel().read(new StringReader("" +
+//        "<http://dbpedia.org/resource/Leipzig> <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Germany> ." +
+//        ""), null, "TTL"));
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)"),
+//      ModelFactory.createDefaultModel().read(new StringReader("" +
+//        "<http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> <http://dbpedia.org/ontology/director> <http://dbpedia.org/resource/Tim_Southam> ." +
+//        ""), null, "TTL"));
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Johns_Hopkins_University"), ModelFactory.createDefaultModel());
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Germany"), ModelFactory.createDefaultModel());
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Paramount_Pictures"), ModelFactory.createDefaultModel());
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Baltimore"), ModelFactory.createDefaultModel());
+//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Tim_Southam"), ModelFactory.createDefaultModel());
+//  }
 
-  @NotNull
-  @Override
-  public ParameterMap createParameterMap() {
-    return new ParameterMapImpl(OPERATIONS);
-  }
 
   @Override
-  public void validateAndAccept(@NotNull ParameterMap params) {
-    this.operations = params.getValue(OPERATIONS);
+  public ValidatableParameterMap createParameterMap() {
+    return ValidatableParameterMap.builder()
+      .declareProperty(OPERATION)
+      .declareValidationShape(getValidationModelFor(DereferencingEnrichmentOperator.class))
+      .build();
+  }
 
+//  /**
+//   * Self configuration
+//   * Find source/target URI as the most redundant URIs
+//   *
+//   * @param source source
+//   * @param target target
+//   *
+//   * @return Map of (key, value) pairs of self configured parameters
+//   */
+//  //  @Override
+//  public ParameterMap learnParameterMap(Model source, Model target) {
+//    ParameterMap parameters = createParameterMap();
+//    Set<Property> propertyDifference = getPropertyDifference(source, target);
+//    List<Map<Property, RDFNode>> autoOperations = new ArrayList<>();
+//    for (Property property : propertyDifference) {
+//      Map<Property, RDFNode> autoOperation = new HashMap<>();
+//      autoOperation.put(DEREFERENCING_PROPERTY, property);
+//      autoOperation.put(IMPORT_PROPERTY, property);
+//      autoOperations.add(autoOperation);
+//    }
+//    parameters.setValue(OPERATIONS, autoOperations);
+//    return parameters;
+//  }
+
+  public void initializeOperations() {
+    ValidatableParameterMap parameters = getParameterMap();
+    this.operations = new HashMap<>();
+    parameters.listPropertyObjects(OPERATION)
+      .map(RDFNode::asResource)
+      .forEach(op -> {
+        String lookUpPrefix = !op.hasProperty(LOOKUP_PREFIX)
+          ? DEFAULT_LOOKUP_PREFIX : op.getProperty(LOOKUP_PREFIX).getLiteral().getString();
+        Property lookUpProperty = !op.hasProperty(LOOKUP_PROPERTY)
+          ? null : op.getPropertyResourceValue(LOOKUP_PROPERTY).as(Property.class);
+        Property dereferencingProperty = !op.hasProperty(DEREFERENCING_PROPERTY)
+          ? null : op.getPropertyResourceValue(DEREFERENCING_PROPERTY).as(Property.class);
+        Property importProperty = !op.hasProperty(IMPORT_PROPERTY)
+          ? dereferencingProperty : op.getPropertyResourceValue(IMPORT_PROPERTY).as(Property.class);
+        OperationGroup opGroup = new OperationGroup(lookUpProperty, lookUpPrefix);
+        if (!operations.containsKey(opGroup)) {
+          operations.put(opGroup, new HashSet<>());
+        }
+        operations.get(opGroup).add(new Property[]{dereferencingProperty, importProperty});
+      });
   }
 
   @Override
   protected List<Model> safeApply(List<Model> models) {
+    initializeOperations();
     model = ModelFactory.createDefaultModel().add(models.get(0));
     operations.forEach(this::runOperation);
     return Lists.newArrayList(model);
   }
 
-  private void runOperation(Map<Property, RDFNode> op) {
-    // get configuration for this operation
-    String lookUpPrefix = op.get(LOOKUP_PREFIX) == null
-      ? DEFAULT_LOOKUP_PREFIX : op.get(LOOKUP_PREFIX).toString();
-    Property dereferencingProperty = op.get(DEREFERENCING_PROPERTY) == null
-      ? null : op.get(DEREFERENCING_PROPERTY).as(Property.class);
-    Property importProperty = op.get(IMPORT_PROPERTY) == null
-      ? dereferencingProperty : op.get(IMPORT_PROPERTY).as(Property.class);
-    // execute this operation
-    if (dereferencingProperty != null) {
-      for (Resource s : getCandidateNodesByPrefix(lookUpPrefix)) {
-        for (RDFNode o : getEnrichmentValuesFor(s, dereferencingProperty)) {
-          s.addProperty(importProperty, o);
-        }
+  private void runOperation(OperationGroup opGroup, Set<Property[]> ops) {
+    Map<Resource, List<Pair<Property, RDFNode>>> dereffedPerResource = new HashMap<>();
+    List<Statement> candidateNodes = getCandidateNodes(opGroup.lookupPrefix, opGroup.lookupProperty);
+    candidateNodes.stream()
+      .map(Statement::getResource)
+      .distinct()
+      .forEach(o -> dereffedPerResource.put(o, getEnrichmentPairsFor(o, ops)));
+    for (Statement stmt : candidateNodes) {
+      for (Pair<Property, RDFNode> pair : dereffedPerResource.get(stmt.getResource())) {
+        stmt.getResource().addProperty(pair.getLeft(), pair.getRight());
       }
     }
   }
 
-  private List<Resource> getCandidateNodesByPrefix (String lookupPrefix) {
-    // old way with util:
-    //      "SELECT * " +
-    //      "WHERE { ?s ?p ?o . FILTER (isURI(?o)) . " +
-    //      "FILTER (STRSTARTS(STR(?o), \"" + lookupPrefix + "\"))}";
-    return model.listStatements()
-      .mapWith(Statement::getObject)
-      .filterKeep(RDFNode::isURIResource)
-      .mapWith(RDFNode::asResource)
-      .filterKeep(o -> o.getURI().startsWith(lookupPrefix))
-      .toList();
+  private List<Pair<Property, RDFNode>> getEnrichmentPairsFor(Resource o, Set<Property[]> ops) {
+    List<Pair<Property, RDFNode>> result = new ArrayList<>();
+    Model resourceModel = queryResourceModel(o);
+//    resourceModel.enterCriticalSection(Lock.READ);
+    for (Property[] op : ops) {
+      resourceModel.listStatements(o, op[0], (RDFNode)null)
+        .mapWith(Statement::getObject)
+        .forEachRemaining(x -> result.add(new ImmutablePair<>(op[1], x)));
+    }
+//    resourceModel.leaveCriticalSection();
+    return result;
   }
 
-
-  private List<RDFNode> getEnrichmentValuesFor(Resource resource, Property dereferencingProperty) {
+  private Model queryResourceModel(Resource o) {
+    CompletableFuture<Model> future = new ThreadlocalInheritingCompletableFuture<>();
+    cache.putIfAbsent(o, future);
+    if (cache.get(o) != future) {
+      logger.debug("cached future for " + o.getURI());
+      try {
+        return cache.get(o).get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    logger.debug("no cache for " + o.getURI());
+    Model result = ModelFactory.createDefaultModel();
+    URL url;
+    URLConnection conn;
     try {
-      URLConnection conn = new URL(resource.getURI()).openConnection();
+      url = new URL(o.getURI());
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+      future.complete(result);
+      return result;
+    }
+    try {
+      conn = url.openConnection();
       conn.setRequestProperty("Accept", "application/rdf+xml");
       conn.setRequestProperty("Accept-Language", "en");
-      return ModelFactory.createDefaultModel()
-        .read(conn.getInputStream(), null)
-        .listStatements(resource, dereferencingProperty, (RDFNode) null)
-        .mapWith(Statement::getObject)
-        .filterDrop(v -> v.isLiteral() && !Arrays.asList("en","")
-          .contains(v.asLiteral().getLanguage().toLowerCase()))
-        .toList();
+      result.read(conn.getInputStream(), null);
+    } catch (ConnectException e) {
+      if (e.getMessage().contains("refused")) {
+        throw new RuntimeException(e);
+      }
     } catch (Exception e) {
-      e.printStackTrace();
-      return Collections.emptyList();
+      throw new RuntimeException(e);
     }
+    future.complete(result);
+    return result;
+  }
+
+  private List<Statement> getCandidateNodes(String lookupPrefix, Property lookUpProperty) {
+    return model.listStatements()
+      .filterKeep(statement -> statement.getObject().isURIResource() &&
+        statement.getObject().asResource().getURI().startsWith(lookupPrefix) &&
+        (lookUpProperty == null || statement.getPredicate().equals(lookUpProperty)))
+      .toList();
   }
 
   private Set<Property> getPropertyDifference(Model source, Model target) {
     Function<Model, Set<Property>> getProperties =
       (m) -> m.listStatements().mapWith(Statement::getPredicate).toSet();
-    return Sets.difference(getProperties.apply(source), getProperties.apply(target))
+    return Sets.difference(getProperties.apply(target), getProperties.apply(source))
       .stream().filter(p -> !ignoredProperties.contains(p)).collect(Collectors.toSet());
+  }
+
+  @Override
+  public double predictApplicability(List<Model> inputs, Model target) {
+    return learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION).count() > 0 ? 1 : 0;
+  }
+
+  @Override
+  public List<Model> reverseApply(List<Model> inputs, Model target) {
+    Model result = ModelFactory.createDefaultModel();
+    Set<Resource> predicatesForDeletion = learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION)
+      .map(n -> n.asResource().getPropertyResourceValue(DEREFERENCING_PROPERTY))
+      .collect(Collectors.toSet());
+    target.listStatements()
+      .filterDrop(stmt -> stmt.getSubject().getURI().startsWith(DEFAULT_LOOKUP_PREFIX)
+      && predicatesForDeletion.contains(stmt.getPredicate()))
+      .forEachRemaining(result::add);
+    return List.of(result);
+  }
+
+  @Override
+  public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target, ValidatableParameterMap prototype) {
+    Model in = inputs.get(0);
+    ValidatableParameterMap result = createParameterMap();
+    target.listStatements()
+      .filterDrop(stmt -> stmt.getObject().isLiteral())
+      .mapWith(Statement::getResource)
+      .filterKeep(r -> r.getURI().startsWith(DEFAULT_LOOKUP_PREFIX))
+      .forEachRemaining(r -> target.listStatements(r, null, (RDFNode) null)
+        .filterDrop(stmt -> in.contains(r, stmt.getPredicate(), (RDFNode) null))
+        .mapWith(Statement::getPredicate).toSet()
+        .forEach(p -> result.add(OPERATION,
+          result.createResource()
+            .addProperty(LOOKUP_PREFIX, DEFAULT_LOOKUP_PREFIX)
+            .addProperty(DEREFERENCING_PROPERTY, p)
+        )));
+    return result.init();
+  }
+
+  @Override
+  public DegreeBounds getLearnableDegreeBounds() {
+    return getDegreeBounds();
+  }
+
+  static void setDefaultLookupPrefix(String defaultLookupPrefix) {
+    DEFAULT_LOOKUP_PREFIX = defaultLookupPrefix;
+  }
+
+  private static class OperationGroup {
+
+    private final Property lookupProperty;
+    private final String lookupPrefix;
+
+    private OperationGroup(Property lookupProperty, String lookupPrefix) {
+      this.lookupProperty = lookupProperty;
+      this.lookupPrefix = lookupPrefix;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (!(obj instanceof  OperationGroup)) {
+        return false;
+      }
+      OperationGroup other = (OperationGroup) obj;
+      return (Objects.equals(lookupPrefix, other.lookupPrefix))
+        && (Objects.equals(lookupProperty, other.lookupProperty));
+    }
+
+    @Override
+    public int hashCode() {
+      return (lookupPrefix == null ? -1 : lookupPrefix.hashCode()) + 13 * (lookupProperty == null ? -1 : lookupProperty.hashCode());
+    }
   }
 
 }

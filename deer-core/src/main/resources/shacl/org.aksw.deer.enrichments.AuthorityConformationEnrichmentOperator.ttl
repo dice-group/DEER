@@ -1,0 +1,46 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix deer: <http://w3id.org/deer/> .
+@prefix dash: <http://datashapes.org/dash#> .
+
+# Node AuthorityConformationEnrichmentOperator
+
+deer:AuthorityConformationEnrichmentOperatorShape
+	a sh:NodeShape ;
+	sh:targetClass deer:AuthorityConformationEnrichmentOperator ;
+	sh:property deer:AuthorityConformationEnrichmentOperatorShape_operation ;
+	sh:message "AuthorityConformationEnrichmentOperator must declare at least one operation" ;
+.
+
+deer:AuthorityConformationEnrichmentOperatorShape_operation
+  sh:path deer:operation ;
+  sh:minCount 1 ;
+  sh:node dash:ListShape ;
+  sh:property [
+               sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+               sh:node deer:AuthorityConformationEnrichmentOperatorShape_operationNode ;
+               sh:minCount 1 ;
+           ] ;
+ .
+
+deer:AuthorityConformationEnrichmentOperatorShape_operationNode
+  a sh:NodeShape ;
+  sh:property deer:AuthorityConformationEnrichmentOperatorShape_operationNode_sourceAuthority ,
+              deer:AuthorityConformationEnrichmentOperatorShape_operationNode_targetAuthority ;
+.
+
+deer:AuthorityConformationEnrichmentOperatorShape_operationNode_sourceAuthority
+  sh:path deer:sourceAuthority ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:AuthorityConformationEnrichmentOperatorShape_operationNode_targetAuthority
+  sh:path deer:sourceAuthority ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.

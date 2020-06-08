@@ -1,96 +1,107 @@
 package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
-import org.aksw.faraday_cage.Vocabulary;
-import org.aksw.faraday_cage.parameter.*;
-import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
+import org.aksw.deer.learning.ReverseLearnable;
+import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.deer.vocabulary.DEER;
-import org.apache.jena.rdf.model.*;
+import org.aksw.faraday_cage.engine.ValidatableParameterMap;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jetbrains.annotations.NotNull;
-import org.pf4j.Extension;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  */
 @Extension
-public class PredicateConformationEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
+public class PredicateConformationEnrichmentOperator extends AbstractParameterizedEnrichmentOperator implements ReverseLearnable, SelfConfigurable {
 
   private static final Logger logger = LoggerFactory.getLogger(AuthorityConformationEnrichmentOperator.class);
 
-  private static final Property SOURCE = Vocabulary.property("source");
-  private static final Property TARGET = Vocabulary.property("target");
+  public static final Property SOURCE_PREDICATE = DEER.property("sourcePredicate");
+  public static final Property TARGET_PREDICATE = DEER.property("targetPredicate");
+  public static final Property OPERATION = DEER.property("operation");
 
-  private static final Parameter PROPERTY_MAPPING = new ParameterImpl("propertyMapping",
-    new DictListParameterConversion(SOURCE, TARGET), true);
-
-  private List<Map<Property , RDFNode>> propertyMapping = new ArrayList<>();
-
-  public PredicateConformationEnrichmentOperator() {
-    super();
-  }
-
-  @NotNull
   @Override
-  public ParameterMap selfConfig(Model source, Model target) {
-    ParameterMap result = createParameterMap();
-    List<Map<Property , RDFNode>> propertyDictList = new ArrayList<>();
-    source.listStatements().forEachRemaining(s -> {
-      StmtIterator targetIt = target.listStatements(s.getSubject(), null, s.getObject());
-      if (targetIt.hasNext()) {
-        Map<Property, RDFNode> nodeMap = new HashMap<>();
-        nodeMap.put(SOURCE, s.getPredicate().asResource());
-        nodeMap.put(TARGET, targetIt.next().getPredicate().asResource());
-        propertyDictList.add(nodeMap);
-      }
-    });
-    result.setValue(PROPERTY_MAPPING, propertyDictList);
-    return result;
-  }
-
-  @NotNull
-  @Override
-  public ParameterMap createParameterMap() {
-    return new ParameterMapImpl(PROPERTY_MAPPING);
+  public ValidatableParameterMap createParameterMap() {
+    return ValidatableParameterMap.builder()
+      .declareProperty(OPERATION)
+      .declareValidationShape(getValidationModelFor(PredicateConformationEnrichmentOperator.class))
+      .build();
   }
 
   @Override
   protected List<Model> safeApply(List<Model> models) {
-    Model model = models.get(0);
-    //Conform Model
-    Model conformModel = ModelFactory.createDefaultModel();
-    StmtIterator statmentsIter = model.listStatements();
-    while (statmentsIter.hasNext()) {
-      Statement statment = statmentsIter.nextStatement();
-      Resource s = statment.getSubject();
-      Property p = statment.getPredicate();
-      RDFNode o = statment.getObject();
+    final Model model = models.get(0);
+    final Model conformModel = ModelFactory.createDefaultModel();
+    final Map<Property, Property> propertyMapping = new HashMap<>();
+    getParameterMap().listPropertyObjects(OPERATION)
+      .map(RDFNode::asResource)
+      .forEach(op -> {
+        final Property source = op.getPropertyResourceValue(SOURCE_PREDICATE).as(Property.class);
+        final Property target = op.getPropertyResourceValue(TARGET_PREDICATE).as(Property.class);
+        propertyMapping.put(source, target);
+      });
+    model.listStatements().forEachRemaining(stmt -> {
+      Property p = stmt.getPredicate();
       // conform properties
-      Property replacement = findReplacement(p);
-      conformModel.add(s, replacement != null ? replacement : p, o);
-    }
-    model = conformModel;
-    return Lists.newArrayList(model);
-  }
-
-  private Property findReplacement(Property p) {
-    final Property[] result = {null};
-    propertyMapping.forEach(nodeMap -> {
-      if (nodeMap.get(SOURCE).equals(p)) {
-        result[0] = nodeMap.get(TARGET).as(Property.class);
+      if (propertyMapping.containsKey(p)) {
+        p = propertyMapping.get(p);
       }
+      conformModel.add(stmt.getSubject(), p, stmt.getObject());
     });
-    return result[0];
+    return Lists.newArrayList(conformModel);
   }
 
   @Override
-  public void validateAndAccept(@NotNull ParameterMap parameterMap) {
-    this.propertyMapping = parameterMap.getValue(PROPERTY_MAPPING);
+  public double predictApplicability(List<Model> inputs, Model target) {
+    return learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION).count() > 0 ? 1 : 0;
+  }
+
+  @SuppressWarnings("Duplicates")
+  @Override
+  public List<Model> reverseApply(List<Model> inputs, Model target) {
+    ValidatableParameterMap reverseParameterMap = createParameterMap();
+    learnParameterMap(inputs, target, null).listPropertyObjects(OPERATION)
+      .forEach(r -> reverseParameterMap.add(OPERATION, reverseParameterMap.createResource()
+        .addProperty(SOURCE_PREDICATE, r.asResource().getPropertyResourceValue(TARGET_PREDICATE))
+        .addProperty(TARGET_PREDICATE, r.asResource().getPropertyResourceValue(SOURCE_PREDICATE))
+      ));
+    initParameters(reverseParameterMap.init());
+    return safeApply(List.of(target));
+  }
+
+  @Override
+  public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target, ValidatableParameterMap prototype) {
+    ValidatableParameterMap result = createParameterMap();
+    Model source = inputs.get(0);
+    Set<Property> seen = new HashSet<>();
+    source.listStatements().forEachRemaining(s -> {
+      if (seen.contains(s.getPredicate())) {
+        return;
+      }
+      seen.add(s.getPredicate());
+      target.listStatements(s.getSubject(), null, s.getObject())
+        .nextOptional()
+        .ifPresent(t -> {
+          if (!Objects.equals(s.getPredicate(), t.getPredicate())) {
+            result.add(OPERATION, result.createResource()
+              .addProperty(SOURCE_PREDICATE, s.getPredicate())
+              .addProperty(TARGET_PREDICATE, t.getPredicate())
+            );
+          }
+        });
+    });
+    return result.init();
+  }
+
+  @Override
+  public DegreeBounds getLearnableDegreeBounds() {
+    return getDegreeBounds();
   }
 
 }

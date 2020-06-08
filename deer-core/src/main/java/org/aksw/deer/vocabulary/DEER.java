@@ -4,25 +4,23 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
-@Deprecated
 public class DEER {
 
-  public static final String uri = "http://deer.aksw.org/vocabulary/#";
-  public static final String prefix = ":";
-  public static final Property hasUri = property("hasUri");
-  public static final Property fromGraph = property("fromGraph");
-  public static final Property graphTriplePattern = property("graphTriplePattern");
+  public static final String NS = "http://w3id.org/deer/";
 
-  public static Property property(String name) {
-    return ResourceFactory.createProperty(uri + name);
+  public static final String PREFIX = "deer";
+
+
+  public static Property property(String localName) {
+    return ResourceFactory.createProperty(NS + localName);
   }
 
-  public static Resource resource(String local) {
-    return ResourceFactory.createResource(uri + local);
+  public static Resource resource(String localName) {
+    return ResourceFactory.createResource(NS + localName);
   }
 
   public static String getURI() {
-    return uri;
+    return NS;
   }
 
 }

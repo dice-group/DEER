@@ -1,77 +1,76 @@
 # Configuring DEER
 
-DEER is configured using a simple RDF vocabulary.
-Its namespace is `http://deer.aksw.org/vocabulary/#`.
+DEER is configured using the 
+[**FARADAY-CAGE** Configuration Vocabulary](https://dice-group.github.io/faraday-cage/conf.html).
+The predefined plugins that ship with *deer-core* as well as their parameters live in the
+`http://w3id.org/deer/` namespace with the canonical prefix `deer:`.
 
-There are just three predefined predicates that DEER inherits from FARADAY-CAGE:
+Predefined plugins are denominated by their class name, e.g.
 
-* `<http://deer.aksw.org/vocabulary/#implementedIn>`
-* `<http://deer.aksw.org/vocabulary/#hasInput>`
-* `<http://deer.aksw.org/vocabulary/#hasOutput>`
+* `<http://w3id.org/deer/FileModelReader>` or `deer:FileModelReader`
+* `<http://w3id.org/deer/FileModelWriter>` or `deer:FileModelWriter`
+* `<http://w3id.org/deer/FilterEnrichmentOperator>` or `deer:FilterEnrichmentOperator`
 
-Plugins are associated with unique resources. The default plugins that ship with deer-core live in
-the deer namespace and have just their class name as local part, e.g.: 
-
-* `<http://deer.aksw.org/vocabulary/#DefaultModelReader>`
-* `<http://deer.aksw.org/vocabulary/#DefaultModelWriter>`
-* `<http://deer.aksw.org/vocabulary/#FilterEnrichmentOperator>`
+The parameter vocabulary of our predefined plugins is described more precisely in the following
+sections of this manual.
 
 Custom plugins should be identified by resources outside of the default namespace to prevent
 naming collisions.
 
-Plugins define their own configuration vocabulary. In the final 1.0.0 release, it will be possible to
-get an accurate description of the available parameters of a given plugin using the CLI.
-
 The following example configuration demonstrates how the predefined vocabulary works:  
 
 ```turtle
-@prefix : <http://deer.aksw.org/vocabulary/#> .
+@prefix : <urn:example:demo/> .
+@prefix fcage: <http://w3id.org/fcage/> .
+@prefix deer: <http://w3id.org/deer/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 :node_reader1
-              :implementedIn     :DefaultModelReader ;
-              :fromUri           <http://dbpedia.org/resource/Paderborn> ;
-              :useEndpoint       <http://dbpedia.org/sparql> ;
-              :outputFile        "input_dbp.ttl" ;
-              :outputFormat      "Turtle" ;
-              :hasOutput         ( :node_conf ) .
+  a deer:SparqlModelReader ;
+  fcage:hasOutput :node_geofusion ;
+  deer:useSparqlDescribeOf <http://dbpedia.org/resource/Paderborn> ;
+  deer:fromEndpoint       <http://dbpedia.org/sparql> ;
+.
+
 :node_reader2
-              :implementedIn     :DefaultModelReader ;
-              :fromUri           <http://dbpedia.org/resource/Paderborn> ;
-              :useEndpoint       <http://dbpedia.org/sparql> ;
-              :outputFile        "input_lgd.ttl" ;
-              :outputFormat      "Turtle" ;
-              :hasOutput         ( :node_merge ) .
-:node_writer
-              :implementedIn     :DefaultModelWriter ;
-              :outputFile        "output_demo.ttl" ;
-              :outputFormat      "Turtle" ;
-              :hasInput          ( :node_filter ) .
-:node_merge
-              :implementedIn     :GeoFusionEnrichmentOperator ;
-              :hasInput          ( :node_conf :node_reader2 ) ;
-              :hasOutput         ( :node_filter ) ;
-              :fusionAction      "takeAll" ;
-              :mergeOtherStatements
-                                 "true" .
-:node_filter
-              :implementedIn     :FilterEnrichmentOperator ;
-              :hasInput          ( :node_merge ) ;
-              :hasOutput         ( :node_writer ) ;
-              :selectors         (
-                    [ :predicate geo:lat ]
-                    [ :predicate geo:long ]
-                    [ :predicate rdfs:label ]
-                    [ :predicate owl:sameAs ]
-              ) .
+  a deer:SparqlModelReader ;
+  fcage:hasOutput :node_conf ;
+  deer:useSparqlDescribeOf <http://linkedgeodata.org/triplify/node240114473> ;
+  deer:fromEndpoint <http://linkedgeodata.org/sparql> ;
+.
+
 :node_conf
-              :implementedIn     :AuthorityConformationEnrichmentOperator ;
-              :hasInput          ( :node_reader1 ) ;
-              :hasOutput         ( :node_merge ) ;
-              :sourceSubjectAuthority 
-                                 "http://dbpedia.org" ;
-              :targetSubjectAuthority 
-                                 "http://deer.org" .
+  a deer:AuthorityConformationEnrichmentOperator ;
+  fcage:hasOutput :node_geofusion ;
+  deer:operation [
+    deer:sourceAuthority <http://dbpedia.org> ;
+    deer:targetAuthority <http://deer.org> ;
+  ] ;
+.
+
+:node_geofusion
+  a deer:GeoFusionEnrichmentOperator ;
+  fcage:hasInput ( :node_conf :node_reader1 ) ;
+  fcage:hasOutput :node_filter ;
+  deer:fusionAction "takeAll" ;
+  deer:mergeOtherStatements "true"^^xsd:boolean ;
+.
+
+:node_filter
+  a deer:FilterEnrichmentOperator ;
+  fcage:hasOutput ( :node_writer ) ;
+  deer:selector [ deer:predicate geo:lat ] ,
+            [ deer:predicate geo:long ] ,
+            [ deer:predicate rdfs:label ] ,
+            [ deer:predicate owl:sameAs ] ;
+.
+
+:node_writer
+  a deer:FileModelWriter ;
+  deer:outputFile "output_demo.ttl" ;
+  deer:outputFormat "Turtle" ;
+.
 ```

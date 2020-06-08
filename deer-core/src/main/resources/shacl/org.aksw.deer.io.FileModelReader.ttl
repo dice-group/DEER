@@ -1,0 +1,29 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix deer: <http://w3id.org/deer/> .
+
+# Node FileModelReader
+
+deer:FileModelReaderShape
+	a sh:NodeShape ;
+	sh:targetClass deer:FileModelReader ;
+	sh:xone (
+	[ sh:property deer:FileModelReaderShape_fromUri ]
+	[ sh:property deer:FileModelReaderShape_fromPath ] ) ;
+.
+
+deer:FileModelReaderShape_fromUri
+  sh:path deer:fromUri ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:FileModelReaderShape_fromPath
+  sh:path deer:fromPath ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+.

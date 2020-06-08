@@ -1,0 +1,60 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix deer: <http://w3id.org/deer/> .
+@prefix dash: <http://datashapes.org/dash#> .
+
+# Node FilterEnrichmentOperator
+
+deer:FilterEnrichmentOperatorShape
+	a sh:NodeShape ;
+	sh:targetClass deer:FilterEnrichmentOperator ;
+	sh:xone (
+	  [ sh:property deer:FilterEnrichmentOperatorShape_sparqlConstructQuery ; ]
+	  [ sh:property deer:FilterEnrichmentOperatorShape_selector ; ]
+	) ;
+	sh:message "FilterEnrichmentOperator must declare either exactly one deer:sparqlConstructQuery or at least one deer:selector" ;
+.
+
+deer:FilterEnrichmentOperatorShape_sparqlConstructQuery
+  sh:path deer:sparqlConstructQuery ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+.
+
+deer:FilterEnrichmentOperatorShape_selector
+  sh:path deer:selector ;
+  sh:minCount 1 ;
+  sh:node dash:ListShape ;
+  sh:property [
+              sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+              sh:node deer:FilterEnrichmentOperatorShape_selectorNode ;
+              sh:minCount 1 ;
+          ] ;
+.
+
+deer:FilterEnrichmentOperatorShape_selectorNode
+  a sh:NodeShape ;
+  sh:property deer:FilterEnrichmentOperatorShape_selectorNode_subject ,
+              deer:FilterEnrichmentOperatorShape_selectorNode_predicate ,
+              deer:FilterEnrichmentOperatorShape_selectorNode_object ;
+.
+
+deer:FilterEnrichmentOperatorShape_selectorNode_subject
+  sh:path deer:subject ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:FilterEnrichmentOperatorShape_selectorNode_predicate
+  sh:path deer:predicate ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+.
+
+deer:FilterEnrichmentOperatorShape_selectorNode_object
+  sh:path deer:object ;
+  sh:maxCount 1 ;
+.

@@ -1,0 +1,23 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix deer: <http://w3id.org/deer/> .
+
+# Node SparqlUpdateEnrichmentOperator
+
+deer:SparqlUpdateEnrichmentOperatorShape
+	a sh:NodeShape ;
+	sh:targetClass deer:SparqlUpdateEnrichmentOperator ;
+	sh:property deer:SparqlUpdateEnrichmentOperatorShape_updateQuery ;
+	sh:message "SparqlUpdateEnrichmentOperator must declare exactly one deer:sparqlUpdateQuery" ;
+.
+
+deer:SparqlUpdateEnrichmentOperatorShape_updateQuery
+  sh:path deer:sparqlUpdateQuery ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+  sh:message "SparqlUpdateEnrichmentOperator must declare exactly one deer:sparqlUpdateQuery" ;
+.
+

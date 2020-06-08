@@ -1,49 +1,36 @@
 package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
-import org.aksw.faraday_cage.parameter.Parameter;
-import org.aksw.faraday_cage.parameter.ParameterImpl;
-import org.aksw.faraday_cage.parameter.ParameterMap;
-import org.aksw.faraday_cage.parameter.ParameterMapImpl;
-import org.aksw.faraday_cage.parameter.conversions.StringParameterConversion;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.NodeIterator;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import com.google.common.collect.Sets;
+import org.aksw.deer.vocabulary.DEER;
+import org.aksw.faraday_cage.engine.ValidatableParameterMap;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.vocabulary.OWL;
-import org.jetbrains.annotations.NotNull;
+import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.pf4j.Extension;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Basic implementation of a fusion operator for geospatial properties.
  *
  */
 @Extension
-public class GeoFusionEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
+public class GeoFusionEnrichmentOperator extends AbstractParameterizedEnrichmentOperator {
 
   private static final Logger logger = LoggerFactory.getLogger(GeoFusionEnrichmentOperator.class);
 
   /**
    * required parameter, value is one of {@link GeoFusionAction}
    */
-  private static final Parameter FUSION_ACTION = new ParameterImpl("fusionAction");
+  public static final Property FUSION_ACTION = DEER.property("fusionAction");
   /**
    * optional parameter, boolean, default <code>true</code>
    */
-  private static final Parameter MERGE_OTHER_STATEMENTS = new ParameterImpl("mergeOtherStatements",
-    StringParameterConversion.getInstance(), false);
-
-  private GeoFusionAction fusionAction;
-  private boolean mergeOtherStatements;
+  public static final Property MERGE_OTHER_STATEMENTS = DEER.property("mergeOtherStatements");
 
   /**
    * Geospatial fusion actions:
@@ -92,7 +79,21 @@ public class GeoFusionEnrichmentOperator extends AbstractParametrizedEnrichmentO
   }
 
   @Override
+  public ValidatableParameterMap createParameterMap() {
+    return ValidatableParameterMap.builder()
+      .declareProperty(FUSION_ACTION)
+      .declareProperty(MERGE_OTHER_STATEMENTS)
+      .declareValidationShape(getValidationModelFor(GeoFusionEnrichmentOperator.class))
+      .build();
+  }
+
+  @Override
   protected List<Model> safeApply(List<Model> models) {
+    final GeoFusionAction fusionAction = GeoFusionAction.valueOf(
+      getParameterMap().get(FUSION_ACTION).asLiteral().getString()
+    );
+    final boolean mergeOtherStatements = getParameterMap().getOptional(MERGE_OTHER_STATEMENTS)
+      .map(RDFNode::asLiteral).map(Literal::getBoolean).orElse(true);
     logger.info("Invoking GeoFusionOperator of {} models with fusionAction {} and mergeOtherStatements {}", models.size(), fusionAction, mergeOtherStatements);
 
     try {
@@ -105,14 +106,13 @@ public class GeoFusionEnrichmentOperator extends AbstractParametrizedEnrichmentO
 
     GeoFusionAction action = fusionAction;
 
-    // TODO get rid of this quick fix: if there's no sameAs in model A, swap them ;-)
     // won't be necessary with new DEER configs supporting lists of datasets/parameters
-    if (!models.get(0).contains(null, OWL.sameAs)) {
-      logger.info("No owl:sameAs statements detected in first model, attempting to swap model A and model B");
-      Model temp = models.get(1);
-      models.set(1, models.get(0));
-      models.set(0, temp);
-    }
+//    if (!models.get(0).contains(null, OWL.sameAs)) {
+//      logger.info("No owl:sameAs statements detected in first model, attempting to swap model A and model B");
+//      Model temp = models.get(1);
+//      models.set(1, models.get(0));
+//      models.set(0, temp);
+//    }
 
     // Fuse geometries
     Model targetModel = ModelFactory.createDefaultModel();
@@ -137,27 +137,14 @@ public class GeoFusionEnrichmentOperator extends AbstractParametrizedEnrichmentO
 
     return Lists.newArrayList(targetModel);
   }
+//  //  @Override
+//  public ParameterMap learnParameterMap(Model source, Model target) {
+//    ParameterMap result = createParameterMap();
+//    result.setValue(FUSION_ACTION, GeoFusionAction.takeMostDetailed.name());
+//    result.setValue(MERGE_OTHER_STATEMENTS, "true");
 
-  @NotNull
-  @Override
-  public ParameterMap selfConfig(Model source, Model target) {
-    ParameterMap result = createParameterMap();
-    result.setValue(FUSION_ACTION, GeoFusionAction.takeMostDetailed.name());
-    result.setValue(MERGE_OTHER_STATEMENTS, "true");
-    return result;
-  }
-
-  @Override
-  public void validateAndAccept(@NotNull ParameterMap params) {
-    this.fusionAction = GeoFusionAction.valueOf(params.getValue(FUSION_ACTION));
-    this.mergeOtherStatements = Boolean.valueOf(params.getValue(MERGE_OTHER_STATEMENTS, "true"));
-  }
-
-  @NotNull
-  @Override
-  public ParameterMap createParameterMap() {
-    return new ParameterMapImpl(FUSION_ACTION, MERGE_OTHER_STATEMENTS);
-  }
+//    return result;
+//  }
 
   @Override
   public DegreeBounds getDegreeBounds() {
@@ -211,8 +198,8 @@ public class GeoFusionEnrichmentOperator extends AbstractParametrizedEnrichmentO
   private void addNonVisitedResources(Model model2, Model targetModel, List<Resource> visitedResources,
                                       boolean mergeOtherStatements) {
     // add non-visited resources
-    List<Resource> nonVisitedSubjects = model2.listSubjects().toList();
-    nonVisitedSubjects.removeAll(visitedResources);
+    Set<Resource> nonVisitedSubjects = model2.listSubjects().toSet();
+    nonVisitedSubjects.removeAll(Sets.newHashSet(visitedResources));
     for (Resource nonVisitedSubject : nonVisitedSubjects) {
       if (mergeOtherStatements) {
         targetModel.add(model2.listStatements(nonVisitedSubject, null, (RDFNode) null));

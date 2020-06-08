@@ -1,46 +1,43 @@
+
 package org.aksw.deer.enrichments;
 
-import org.aksw.faraday_cage.Vocabulary;
-import org.aksw.faraday_cage.parameter.conversions.DictListParameterConversion;
-import org.aksw.faraday_cage.parameter.Parameter;
-import org.aksw.faraday_cage.parameter.ParameterImpl;
-import org.aksw.faraday_cage.parameter.ParameterMap;
-import org.aksw.faraday_cage.parameter.ParameterMapImpl;
+import org.aksw.deer.learning.ReverseLearnable;
+import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.deer.vocabulary.DEER;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.SimpleSelector;
+import org.aksw.faraday_cage.engine.ValidatableParameterMap;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.rdf.model.*;
+import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jetbrains.annotations.NotNull;
-import org.pf4j.Extension;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 /**
  */
 @Extension
-public class FilterEnrichmentOperator extends AbstractParametrizedEnrichmentOperator {
+public class FilterEnrichmentOperator extends AbstractParameterizedEnrichmentOperator implements ReverseLearnable, SelfConfigurable {
 
   private static final Logger logger = LoggerFactory.getLogger(FilterEnrichmentOperator.class);
 
-  private static final Property SUBJECT = Vocabulary.property("subject");
-  private static final Property PREDICATE = Vocabulary.property("predicate");
-  private static final Property OBJECT = Vocabulary.property("object");
-
-  private static final Parameter SELECTORS = new ParameterImpl(
-    "selectors",
-    new DictListParameterConversion(SUBJECT, PREDICATE, OBJECT), false
-  );
-
-  private List<Map<Property, RDFNode>> selectors = new ArrayList<>();
+  public static final Property SUBJECT = DEER.property("subject");
+  public static final Property PREDICATE = DEER.property("predicate");
+  public static final Property OBJECT = DEER.property("object");
+  public static final Property SELECTOR = DEER.property("selector");
+  public static final Property SPARQL_CONSTRUCT_QUERY = DEER.property("sparqlConstructQuery");
 
   public FilterEnrichmentOperator() {
     super();
+  }
+
+  @Override
+  public ValidatableParameterMap createParameterMap() {
+    return ValidatableParameterMap.builder()
+      .declareProperty(SELECTOR)
+      .declareProperty(SPARQL_CONSTRUCT_QUERY)
+      .declareValidationShape(getValidationModelFor(FilterEnrichmentOperator.class))
+      .build();
   }
 
   @Override
@@ -49,50 +46,73 @@ public class FilterEnrichmentOperator extends AbstractParametrizedEnrichmentOper
   }
 
   private Model filterModel(Model model) {
-    Model resultModel = ModelFactory.createDefaultModel();
-    for (Map<Property, RDFNode> selectorMap : selectors) {
-      RDFNode s = selectorMap.get(SUBJECT);
-      RDFNode p = selectorMap.get(PREDICATE);
-      SimpleSelector selector = new SimpleSelector(
-        s == null ? null : s.asResource(),
-        p == null ? null : p.as(Property.class),
-        selectorMap.get(OBJECT)
-      );
-      resultModel.add(model.listStatements(selector));
+    final Model resultModel = ModelFactory.createDefaultModel();
+    final Optional<RDFNode> sparqlQuery = getParameterMap()
+      .getOptional(SPARQL_CONSTRUCT_QUERY);
+    if (sparqlQuery.isPresent()) {
+      logger.info("Executing SPARQL CONSTRUCT query for " + getId() + " ...");
+      return QueryExecutionFactory
+        .create(sparqlQuery.get().asLiteral().getString(), model)
+        .execConstruct();
+    } else {
+      getParameterMap().listPropertyObjects(SELECTOR)
+        .map(RDFNode::asResource)
+        .forEach(selectorResource -> {
+          RDFNode s = selectorResource.getPropertyResourceValue(SUBJECT);
+          RDFNode p = selectorResource.getPropertyResourceValue(PREDICATE);
+          Resource o = selectorResource.getPropertyResourceValue(OBJECT);
+          logger.info("Running filter " + getId() + " for triple pattern {} {} {} ...",
+            s == null ? "[]" : "<" + s.asResource().getURI() + ">",
+            p == null ? "[]" : "<" + p.asResource().getURI() + ">",
+            o == null ? "[]" : "(<)(\")" + o.toString() + "(\")(>)");
+          SimpleSelector selector = new SimpleSelector(
+            s == null ? null : s.asResource(),
+            p == null ? null : p.as(Property.class),
+            o
+          );
+          resultModel.add(model.listStatements(selector));
+        });
     }
     return resultModel;
   }
 
-  @NotNull
   @Override
-  public ParameterMap createParameterMap() {
-    return new ParameterMapImpl(SELECTORS);
+  public double predictApplicability(List<Model> inputs, Model target) {
+    // size of target < input && combined recall of input/target is high.
+    Model in = inputs.get(0);
+    double propertyIntersectionSize = target.listStatements()
+      .mapWith(Statement::getPredicate)
+      .filterKeep(p -> in.contains(null, p)).toList().size();
+    double stmtIntersectionSize = target.listStatements()
+      .filterKeep(in::contains).toList().size();
+    double propertyRecall = propertyIntersectionSize/target.size();
+    double stmtRecall = stmtIntersectionSize/target.size();
+    return stmtRecall * 0.6 + propertyRecall * 0.3 + (in.size()-target.size())/(double)in.size() * 0.1;
   }
 
   @Override
-  public void validateAndAccept(@NotNull ParameterMap params) {
-    selectors = params.getValue(SELECTORS);
-    if (selectors.size() == 0) {
-      // empty HashMap will select everything - equivalent to "?s ?p ?o"
-      selectors.add(new HashMap<>());
-    }
+  public List<Model> reverseApply(List<Model> inputs, Model target) {
+    return List.of(ModelFactory.createDefaultModel().add(target).add(inputs.get(0)));
   }
-  @NotNull
+
   @Override
-  public ParameterMap selfConfig(Model source, Model target) {
-    ParameterMap result = createParameterMap();
-    Model intersection = source.intersection(target);
-    if (intersection.isEmpty()) {
-      return result;
-    }
-    List<Map<Property, RDFNode>> selectors = new ArrayList<>();
-    intersection.listStatements().forEachRemaining(stmt -> {
-      Map<Property, RDFNode> selectorMap = new HashMap<>();
-      selectorMap.put(PREDICATE, stmt.getPredicate());
-      selectors.add(selectorMap);
-    });
-    result.setValue(SELECTORS, selectors);
-    return result;
+  public ValidatableParameterMap learnParameterMap(List<Model> inputs, Model target, ValidatableParameterMap prototype) {
+    ValidatableParameterMap result = createParameterMap();
+    Model in = inputs.get(0);
+    target.listStatements()
+      .mapWith(Statement::getPredicate)
+      .filterKeep(p -> in.contains(null, p))
+      .toSet()
+      .forEach(p -> {
+        result.add(SELECTOR, result.createResource()
+          .addProperty(PREDICATE, p));
+      });
+    return result.init();
+  }
+
+  @Override
+  public DegreeBounds getLearnableDegreeBounds() {
+    return getDegreeBounds();
   }
 
 }

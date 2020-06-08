@@ -9,10 +9,11 @@
   <parent>
     <artifactId>deer-parent</artifactId>
     <groupId>org.aksw.deer</groupId>
-    <version>1.0.0-alpha4-SNAPSHOT</version>
+    <version>2.1.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>deer-cli</artifactId>
+  <name>DEER Command Line Interface</name>
 
   <build>
     <plugins>
@@ -33,7 +34,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>3.1.0</version>
         <configuration>
           <!-- filter all the META-INF files of other artifacts -->
           <filters>
@@ -67,7 +68,7 @@
     <dependency>
       <groupId>org.aksw.deer</groupId>
       <artifactId>deer-core</artifactId>
-      <version>1.0.0-alpha4-SNAPSHOT</version>
+      <version>2.1.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
 
@@ -86,7 +87,8 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
-      <version>2.9.0</version>
+      <version>2.11.1</version>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
