@@ -67,6 +67,8 @@ public class Server {
     }
     FaradayCageContext.addForkListener(runId -> MDC.put("requestId", runId));
     AbstractModelIO.takeWorkingDirectoryFrom(()-> STORAGE_DIR_PATH + FaradayCageContext.getRunId() + "/");
+    staticFiles.expireTime(0);
+    staticFiles.location("/gui");
     threadPool(100, 1, 30000);
     port(port);
     enableCORS("*","GET, POST, OPTIONS","");
@@ -82,9 +84,8 @@ public class Server {
       res.body(GSON.toJson(new ErrorMessage(e)));
     });
     notFound((req, res) -> {
-      res.type("application/json");
-      res.status(404);
-      return GSON.toJson(new ErrorMessage(-2, "Route not known"));
+      res.redirect("/");
+      return "";
     });
     init();
     awaitInitialization();
