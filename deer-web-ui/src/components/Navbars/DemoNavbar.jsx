@@ -23,19 +23,14 @@ import {
   Navbar,
   NavbarToggler,
   NavbarBrand,
-  Nav,
-  NavItem,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Container,
   InputGroup,
   InputGroupText,
   InputGroupAddon,
-  Input
+  Input,
 } from "reactstrap";
 
+import DemoNavbar from "./DemoNavbar.css";
 import routes from "routes.js";
 
 class Header extends React.Component {
@@ -44,7 +39,7 @@ class Header extends React.Component {
     this.state = {
       isOpen: false,
       dropdownOpen: false,
-      color: "transparent"
+      color: "transparent",
     };
     this.toggle = this.toggle.bind(this);
     this.dropdownToggle = this.dropdownToggle.bind(this);
@@ -53,20 +48,20 @@ class Header extends React.Component {
   toggle() {
     if (this.state.isOpen) {
       this.setState({
-        color: "transparent"
+        color: "transparent",
       });
     } else {
       this.setState({
-        color: "dark"
+        color: "dark",
       });
     }
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   }
   dropdownToggle(e) {
     this.setState({
-      dropdownOpen: !this.state.dropdownOpen
+      dropdownOpen: !this.state.dropdownOpen,
     });
   }
   getBrand() {
@@ -87,11 +82,11 @@ class Header extends React.Component {
   updateColor() {
     if (window.innerWidth < 993 && this.state.isOpen) {
       this.setState({
-        color: "dark"
+        color: "dark",
       });
     } else {
       this.setState({
-        color: "transparent"
+        color: "transparent",
       });
     }
   }
@@ -127,19 +122,15 @@ class Header extends React.Component {
       >
         <Container fluid>
           <div className="navbar-wrapper">
-            <div className="navbar-toggle">
-              <button
-                type="button"
-                ref={this.sidebarToggle}
-                className="navbar-toggler"
-                onClick={() => this.openSidebar()}
-              >
-                <span className="navbar-toggler-bar bar1" />
-                <span className="navbar-toggler-bar bar2" />
-                <span className="navbar-toggler-bar bar3" />
-              </button>
-            </div>
-            <NavbarBrand href="/">{this.getBrand()}</NavbarBrand>
+            <div className="navbar-toggle"></div>
+            <NavbarBrand href="/">
+              <img
+                className="logo-height"
+                alt="..."
+                src={require("assets/img/deer-logo.svg")}
+              />
+              <span className="logo-title">DEER Web UI</span>
+            </NavbarBrand>
           </div>
           <NavbarToggler onClick={this.toggle}>
             <span className="navbar-toggler-bar navbar-kebab" />
@@ -161,41 +152,6 @@ class Header extends React.Component {
                 </InputGroupAddon>
               </InputGroup>
             </form>
-            <Nav navbar>
-              <NavItem>
-                <Link to="#pablo" className="nav-link btn-magnify">
-                  <i className="nc-icon nc-layout-11" />
-                  <p>
-                    <span className="d-lg-none d-md-block">Stats</span>
-                  </p>
-                </Link>
-              </NavItem>
-              <Dropdown
-                nav
-                isOpen={this.state.dropdownOpen}
-                toggle={e => this.dropdownToggle(e)}
-              >
-                <DropdownToggle caret nav>
-                  <i className="nc-icon nc-bell-55" />
-                  <p>
-                    <span className="d-lg-none d-md-block">Some Actions</span>
-                  </p>
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem tag="a">Action</DropdownItem>
-                  <DropdownItem tag="a">Another Action</DropdownItem>
-                  <DropdownItem tag="a">Something else here</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-              <NavItem>
-                <Link to="#pablo" className="nav-link btn-rotate">
-                  <i className="nc-icon nc-settings-gear-65" />
-                  <p>
-                    <span className="d-lg-none d-md-block">Account</span>
-                  </p>
-                </Link>
-              </NavItem>
-            </Nav>
           </Collapse>
         </Container>
       </Navbar>
