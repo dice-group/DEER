@@ -34,29 +34,25 @@ class Footer extends React.Component {
               <ul>
                 <li>
                   <a href="https://www.creative-tim.com" target="_blank">
-                    Creative Tim
+                    {/* TODO: */}
                   </a>
                 </li>
                 <li>
-                  <a href="https://blog.creative-tim.com" target="_blank">
-                    Blog
-                  </a>
+                  <a href="https://blog.creative-tim.com" target="_blank"></a>
                 </li>
                 <li>
                   <a
                     href="https://www.creative-tim.com/license"
                     target="_blank"
-                  >
-                    Licenses
-                  </a>
+                  ></a>
                 </li>
               </ul>
             </nav>
             <div className="credits ml-auto">
-              <div className="copyright">
+              {/* <div className="copyright">
                 &copy; {1900 + new Date().getYear()}, made with{" "}
                 <i className="fa fa-heart heart" /> by Creative Tim
-              </div>
+              </div> */}
             </div>
           </Row>
         </Container>
@@ -67,7 +63,7 @@ class Footer extends React.Component {
 
 Footer.propTypes = {
   default: PropTypes.bool,
-  fluid: PropTypes.bool
+  fluid: PropTypes.bool,
 };
 
 export default Footer;
