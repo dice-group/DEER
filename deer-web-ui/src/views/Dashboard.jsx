@@ -80,6 +80,7 @@ class Dashboard extends React.Component {
       showForm: false,
       showComponent: "",
       node: "",
+      isDisabled: false,
       //TODO: will be updated
       componentArray: [
         {
@@ -122,6 +123,10 @@ class Dashboard extends React.Component {
           src: <SparqlUpdateEnrichmentOperator />,
           title: "Sparql Update Enrichment Operator",
         },
+        {
+          src: <SparQLModelReader />,
+          title: "SparQL Model Reader",
+        },
       ],
     };
   }
@@ -146,6 +151,12 @@ class Dashboard extends React.Component {
           prefixOptions: Object.keys(content["@context"]),
         });
       });
+
+    if (this.state.userInput == "") {
+      this.setState({
+        isDisabled: true,
+      });
+    }
   }
 
   toggleDropdown = () => {
@@ -409,6 +420,7 @@ class Dashboard extends React.Component {
       afterFilteredSuggestions: [],
       namespace: this.state.contexts[event.target.value],
       userInput: event.target.value,
+      isDisabled: false,
     });
   };
 
@@ -486,6 +498,7 @@ class Dashboard extends React.Component {
                         </Col>
                         <div className="pl-1" md="4">
                           <Button
+                            disabled={this.state.isDisabled}
                             className="btn-round prefixBtn"
                             color="primary"
                             onClick={this.addNewPrefixes}

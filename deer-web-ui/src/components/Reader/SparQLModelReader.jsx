@@ -1,5 +1,18 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "litegraph.js/css/litegraph.css";
+
+// reactstrap components
+import {
+  Button,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  CardBody,
+  Card,
+  CardTitle,
+  CardFooter,
+} from "reactstrap";
 
 class SparQLModelReader extends React.Component {
   constructor(props) {
@@ -7,20 +20,20 @@ class SparQLModelReader extends React.Component {
     this.properties = {
       name: "",
       type: "number",
-      value: 0
+      value: 0,
     };
 
     this.state = {
       endpoints: [],
-      showForm: false
+      showForm: false,
     };
     var that = this;
 
     fetch("./lod-data.json")
-      .then(function(response) {
+      .then(function (response) {
         return response.json();
       })
-      .then(content => {
+      .then((content) => {
         console.log(content);
         let obj = {};
         for (let prop in content) {
@@ -39,7 +52,7 @@ class SparQLModelReader extends React.Component {
       "text",
       "Reader name",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -50,7 +63,7 @@ class SparQLModelReader extends React.Component {
       "combo",
       "deer:fromEndpoint",
       "Select",
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -63,7 +76,7 @@ class SparQLModelReader extends React.Component {
       "text",
       "deer:useSparqlDescribeOf",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -74,7 +87,7 @@ class SparQLModelReader extends React.Component {
       "text",
       "deer:useSparqlConstruct",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -88,6 +101,42 @@ class SparQLModelReader extends React.Component {
     this.title = "SparQL Model Reader";
     this.color = "#223322";
     this.bgcolor = "#335533";
+  }
+
+  render() {
+    return (
+      <Card className="card-stats">
+        <div className="numbers">
+          <CardTitle tag="p">Node details</CardTitle>
+          <p />
+        </div>
+        <CardBody>
+          <Form>
+            <FormGroup>
+              <Label>From endpoint:</Label>
+              <Input type="text" placeholder="deer:fromEndpoint" required />
+            </FormGroup>
+            <FormGroup>
+              <Label>Use Sparql Describe of:</Label>
+              <Input type="text" placeholder="deer:useSparqlDescribeOf" />
+            </FormGroup>
+            <FormGroup>
+              <Label>Use Sparql Construct</Label>
+              <Input type="textarea" placeholder="deer:useSparqlConstruct" />
+            </FormGroup>
+          </Form>
+        </CardBody>
+        <CardFooter>
+          <Button
+            className="btn-round"
+            color="primary"
+            // onClick={this.addNewPrefixes}
+          >
+            Save
+          </Button>
+        </CardFooter>
+      </Card>
+    );
   }
 }
 
