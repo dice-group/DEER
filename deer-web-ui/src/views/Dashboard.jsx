@@ -135,12 +135,16 @@ class Dashboard extends React.Component {
     var graphCanvas = new LGraphCanvas("#mycanvas", this.state.graph);
     this.state.graph.start();
 
+    //double click on a node will render a form on the UI
     graphCanvas.onShowNodePanel = (node) => {
       this.setState({
         node: node,
       });
     };
 
+    graphCanvas.show_info = false;
+
+    //returns the prefixes
     fetch("https://prefix.cc/context")
       .then(function (response) {
         return response.json();
