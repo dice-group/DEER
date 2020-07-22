@@ -63,6 +63,7 @@ import {
 const N3 = require("n3");
 const { DataFactory } = N3;
 const { namedNode, literal, defaultGraph } = DataFactory;
+const nodeArr = [];
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -81,6 +82,7 @@ class Dashboard extends React.Component {
       showComponent: "",
       node: "",
       isDisabled: false,
+      showNode: false,
       //TODO: will be updated
       componentArray: [
         {
@@ -141,8 +143,8 @@ class Dashboard extends React.Component {
         node: node,
       });
     };
-
     graphCanvas.show_info = false;
+    //LiteGraph.registerNodeType("Reader/FileModelReader", FileModelReader);
 
     //returns the prefixes
     fetch("https://prefix.cc/context")
@@ -160,6 +162,57 @@ class Dashboard extends React.Component {
       this.setState({
         isDisabled: true,
       });
+    }
+
+    LiteGraph.registerNodeType("Reader/FileModelReader", FileModelReader);
+
+    const parser = new N3.Parser();
+    //Example for FileModelReader to be rendered dynamically.
+    parser.parse(
+      `@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+      @prefix sh: <http://www.w3.org/ns/shacl#>.
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+      @prefix deer: <http://w3id.org/deer/> .
+      
+      # Node FileModelReader
+      
+      deer:FileModelReaderShape
+        a sh:NodeShape ;
+        sh:targetClass deer:FileModelReader ;
+        sh:xone (
+        [ sh:property deer:FileModelReaderShape_fromUri ]
+        [ sh:property deer:FileModelReaderShape_fromPath ] ) ;
+      .
+      
+      deer:FileModelReaderShape_fromUri
+        sh:path deer:fromUri ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+      .
+      
+      deer:FileModelReaderShape_fromPath
+        sh:path deer:fromPath ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+      .`,
+      (error, quad, prefixes) => {
+        if (
+          quad &&
+          quad.object.id.includes("http://w3id.org/deer/FileModelReader")
+        ) {
+          this.setState({
+            showNode: true,
+            //add the node to a state here and use it to register.
+          });
+        } else console.log("No node returned.");
+      }
+    );
+
+    if (this.state.showNode) {
+      LiteGraph.registerNodeType("Reader/FileModelReader", FileModelReader);
     }
   }
 
@@ -624,52 +677,53 @@ class Dashboard extends React.Component {
 
 LiteGraph.registered_node_types = {};
 LiteGraph.searchbox_extras = {};
-LiteGraph.registerNodeType("Reader/FileModelReader", FileModelReader);
+
+//LiteGraph.registerNodeType("Reader/FileModelReader", FileModelReader);
 LiteGraph.registerNodeType("Reader/SparQLModelReader", SparQLModelReader);
-LiteGraph.registerNodeType("Writer/FileModelWriter", FileModelWriter);
-LiteGraph.registerNodeType(
-  "Operator/FilterEnrichmentOperator",
-  FilterEnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/LinkingEnrichmentOperator",
-  LinkingEnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/DereferencingEnrichmentOperator",
-  DereferencingEnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/NEREnrichmentOperator",
-  NEREnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/CloneEnrichmentOperator",
-  CloneEnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/MergeEnrichmentOperator",
-  MergeEnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/GeoFusionEnrichmentOperator",
-  GeoFusionEnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/AuthorityConformationEnrichmentOperator",
-  AuthorityConformationEnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/PredicateConformationEnrichmentOperator",
-  PredicateConformationEnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/GeoDistanceEnrichmentOperator",
-  GeoDistanceEnrichmentOperator
-);
-LiteGraph.registerNodeType(
-  "Operator/SparqlUpdateEnrichmentOperator",
-  SparqlUpdateEnrichmentOperator
-);
+// LiteGraph.registerNodeType("Writer/FileModelWriter", FileModelWriter);
+// LiteGraph.registerNodeType(
+//   "Operator/FilterEnrichmentOperator",
+//   FilterEnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/LinkingEnrichmentOperator",
+//   LinkingEnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/DereferencingEnrichmentOperator",
+//   DereferencingEnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/NEREnrichmentOperator",
+//   NEREnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/CloneEnrichmentOperator",
+//   CloneEnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/MergeEnrichmentOperator",
+//   MergeEnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/GeoFusionEnrichmentOperator",
+//   GeoFusionEnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/AuthorityConformationEnrichmentOperator",
+//   AuthorityConformationEnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/PredicateConformationEnrichmentOperator",
+//   PredicateConformationEnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/GeoDistanceEnrichmentOperator",
+//   GeoDistanceEnrichmentOperator
+// );
+// LiteGraph.registerNodeType(
+//   "Operator/SparqlUpdateEnrichmentOperator",
+//   SparqlUpdateEnrichmentOperator
+// );
 
 export default Dashboard;
