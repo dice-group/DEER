@@ -9,8 +9,6 @@ import {
   Form,
   FormGroup,
   Input,
-  Dropdown,
-  DropdownItem,
   Label,
   CardBody,
   Card,
@@ -20,10 +18,7 @@ import {
 
 class FileModelReader extends React.Component {
   isSelected = false;
-  state = {
-    endpoints: [],
-    showForm: "",
-  };
+
   constructor(props) {
     super(props);
 
@@ -33,19 +28,25 @@ class FileModelReader extends React.Component {
       fromPath: "",
     };
 
+    this.state = {
+      endpoints: [],
+      showForm: "",
+      readerCount: 0,
+    };
+
     var that = this;
 
-    this.name_widget = this.addWidget(
-      "text",
-      "Reader name",
-      this.properties.name,
-      function (v) {
-        if (!v) {
-          return;
-        }
-        that.setProperty("name", v);
-      }
-    );
+    // this.name_widget = this.addWidget(
+    //   "text",
+    //   "Reader name",
+    //   this.properties.name,
+    //   function (v) {
+    //     if (!v) {
+    //       return;
+    //     }
+    //     that.setProperty("name", v);
+    //   }
+    // );
     this.addWidget("text", "deer:fromUri", this.properties.name, function (v) {
       if (!v) {
         return;
@@ -71,6 +72,13 @@ class FileModelReader extends React.Component {
     this.title = "File Model Reader";
     this.color = "#223322";
     this.bgcolor = "#335533";
+
+    this.onNodeAdded = (node) => {
+      that.setProperty("name", "reader_" + this.state.readerCount);
+      this.setState({
+        readerCount: this.state.readerCount + 1,
+      });
+    };
   }
 
   render() {
