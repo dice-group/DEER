@@ -82,12 +82,14 @@ class Dashboard extends React.Component {
       showComponent: "",
       node: "",
       isDisabled: false,
-      showNode: false,
+      nodeArr: [],
       //TODO: will be updated
       componentArray: [
         {
           src: <FileModelReader />,
           title: "File Model Reader",
+          name: "FileModelReader",
+          compo: FileModelReader,
         },
         {
           src: <FileModelWriter />,
@@ -144,7 +146,6 @@ class Dashboard extends React.Component {
       });
     };
     graphCanvas.show_info = false;
-    //LiteGraph.registerNodeType("Reader/FileModelReader", FileModelReader);
 
     //returns the prefixes
     fetch("https://prefix.cc/context")
@@ -152,6 +153,7 @@ class Dashboard extends React.Component {
         return response.json();
       })
       .then((content) => {
+        console.log(content);
         this.setState({
           contexts: content["@context"],
           prefixOptions: Object.keys(content["@context"]),
@@ -163,8 +165,6 @@ class Dashboard extends React.Component {
         isDisabled: true,
       });
     }
-
-    LiteGraph.registerNodeType("Reader/FileModelReader", FileModelReader);
 
     const parser = new N3.Parser();
     //Example for FileModelReader to be rendered dynamically.
@@ -201,20 +201,38 @@ class Dashboard extends React.Component {
       (error, quad, prefixes) => {
         if (
           quad &&
-          quad.object.id.includes("http://w3id.org/deer/FileModelReader")
+          //quad.object.id.includes("http://w3id.org/deer/FileModelReader") &&
+          quad.predicate.id.includes("targetClass")
         ) {
-          this.setState({
-            showNode: true,
-            //add the node to a state here and use it to register.
-          });
+          console.log(quad.object.id);
+          console.log(Object.values(quad["object"])[0]);
+          this.showNode(quad.object.id);
+
+          // this.setState((state) => {
+          //   const nodeList = state.nodeArr.concat(quad.object.id.toString());
+          //   return {
+          //     nodeArr,
+          //   };
+          // });
+
+          // this.state.nodeArr.push(quad.object.id);
         } else console.log("No node returned.");
       }
     );
-
-    if (this.state.showNode) {
-      LiteGraph.registerNodeType("Reader/FileModelReader", FileModelReader);
-    }
   }
+
+  showNode = (quadOb) => {
+    console.log(quadOb);
+    this.state.componentArray.map((comp, key) => {
+      if (quadOb.includes(comp.name)) {
+        console.log(comp.compo);
+        LiteGraph.registerNodeType(comp.url, comp.src);
+      }
+    });
+    // this.state.nodeArr.map((nod, key) => {
+    //   console.log(nod);
+    // });
+  };
 
   toggleDropdown = () => {
     this.setState({
