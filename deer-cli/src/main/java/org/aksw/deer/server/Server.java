@@ -8,6 +8,7 @@ import org.aksw.deer.DeerController;
 import org.aksw.deer.io.AbstractModelIO;
 import org.aksw.faraday_cage.engine.CompiledExecutionGraph;
 import org.aksw.faraday_cage.engine.FaradayCageContext;
+import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -45,6 +46,8 @@ public class Server {
   private static final Gson GSON = new GsonBuilder().create();
   private static Server instance = null;
 
+  private static Model SHAPES_MODEL = DeerController.getShapes();
+
   private final ConcurrentMap<String, CompletableFuture<Void>> requests = new ConcurrentHashMap<>();
   private final File uploadDir = new File(STORAGE_DIR_PATH);
   private int port = -1;
@@ -73,6 +76,7 @@ public class Server {
     port(port);
     enableCORS("*","GET, POST, OPTIONS","");
     post("/submit", this::handleSubmit);
+    get("/shapes", this::handleShapes);
     get("/status/:id", this::handleStatus);
     get("/logs/:id", this::handleLogs);
     get("/results/:id", this::handleResults);
@@ -133,6 +137,14 @@ public class Server {
     MDC.remove("requestId");
     res.status(200);
     return GSON.toJson(new SubmitMessage(runId));
+  }
+
+  private Object handleShapes(Request req, Response res) throws IOException {
+    res.type("text/turtle");
+    res.header("Content-Disposition", "attachment; filename=shapes.ttl");
+    res.status(200);
+    SHAPES_MODEL.write(res.raw().getOutputStream(), "TTL");
+    return "";
   }
 
   private Object handleStatus(Request req, Response res) {
@@ -226,15 +238,6 @@ public class Server {
 
   private static String sanitizeId(String id) {
     return id.replaceAll("[^0-9a-f\\-]", "");
-  }
-
-  private static String getFileName(Part part) {
-    for (String cd : part.getHeader("content-disposition").split(";")) {
-      if (cd.trim().startsWith("filename")) {
-        return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-      }
-    }
-    return "config.ttl";
   }
 
   private static void enableCORS(final String origin, final String methods, final String headers) {

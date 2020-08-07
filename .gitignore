@@ -5,7 +5,7 @@
 *.war
 *.ear
 /.server-storage/
-/target/
+target/
 out/
 nbactions.xml
 
