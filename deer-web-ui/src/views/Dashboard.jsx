@@ -89,7 +89,7 @@ class Dashboard extends React.Component {
           src: <FileModelReader />,
           title: "File Model Reader",
           name: "FileModelReader",
-          compo: FileModelReader,
+          url: "Reader/FileModelReader",
         },
         {
           src: <FileModelWriter />,
@@ -225,8 +225,7 @@ class Dashboard extends React.Component {
     console.log(quadOb);
     this.state.componentArray.map((comp, key) => {
       if (quadOb.includes(comp.name)) {
-        console.log(comp.compo);
-        LiteGraph.registerNodeType(comp.url, comp.src);
+        LiteGraph.registerNodeType(comp.url, comp.src["type"]);
       }
     });
     // this.state.nodeArr.map((nod, key) => {
