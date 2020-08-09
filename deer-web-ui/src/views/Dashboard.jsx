@@ -166,6 +166,14 @@ class Dashboard extends React.Component {
       });
     }
 
+    fetch("http://localhost:8080/shapes")
+      .then(function (response) {
+        return response;
+      })
+      .then((content) => {
+        console.log(content);
+      });
+
     const parser = new N3.Parser();
     //Example for FileModelReader to be rendered dynamically.
     parser.parse(
@@ -207,15 +215,6 @@ class Dashboard extends React.Component {
           console.log(quad.object.id);
           console.log(Object.values(quad["object"])[0]);
           this.showNode(quad.object.id);
-
-          // this.setState((state) => {
-          //   const nodeList = state.nodeArr.concat(quad.object.id.toString());
-          //   return {
-          //     nodeArr,
-          //   };
-          // });
-
-          // this.state.nodeArr.push(quad.object.id);
         } else console.log("No node returned.");
       }
     );
@@ -228,9 +227,6 @@ class Dashboard extends React.Component {
         LiteGraph.registerNodeType(comp.url, comp.src["type"]);
       }
     });
-    // this.state.nodeArr.map((nod, key) => {
-    //   console.log(nod);
-    // });
   };
 
   toggleDropdown = () => {
