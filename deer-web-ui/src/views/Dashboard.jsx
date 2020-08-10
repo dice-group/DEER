@@ -63,7 +63,6 @@ import {
 const N3 = require("n3");
 const { DataFactory } = N3;
 const { namedNode, literal, defaultGraph } = DataFactory;
-const nodeArr = [];
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -72,7 +71,7 @@ class Dashboard extends React.Component {
       graph: new LGraph(),
       outputLinks: [],
       prefixOptions: [],
-      config: "",
+      config: ``,
       isModalOpen: false,
       namespace: "",
       userInput: "",
@@ -83,7 +82,6 @@ class Dashboard extends React.Component {
       node: "",
       isDisabled: false,
       nodeArr: [],
-      //TODO: will be updated
       componentArray: [
         {
           src: <FileModelReader />,
@@ -191,14 +189,13 @@ class Dashboard extends React.Component {
         return response.json();
       })
       .then((content) => {
-        console.log(content);
         this.setState({
           contexts: content["@context"],
           prefixOptions: Object.keys(content["@context"]),
         });
       });
 
-    if (this.state.userInput == "") {
+    if (this.state.userInput === "") {
       this.setState({
         isDisabled: true,
       });
@@ -212,15 +209,17 @@ class Dashboard extends React.Component {
       .then((content) => {
         parser.parse(content, (error, quad, prefixes) => {
           if (quad && quad.predicate.id.includes("targetClass")) {
-            console.log(quad);
+            //console.log(quad);
             this.showNode(quad.object.id);
-          } else console.log("No node returned.");
+          } else {
+          }
+          //  console.log("No node returned.");
         });
       });
   }
 
   showNode = (quadOb) => {
-    console.log(quadOb);
+    // console.log(quadOb);
     this.state.componentArray.map((comp, key) => {
       if (quadOb.includes(comp.name)) {
         LiteGraph.registerNodeType(comp.url, comp.src["type"]);
@@ -309,6 +308,8 @@ class Dashboard extends React.Component {
         namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), //predicate
         namedNode("http://w3id.org/deer/" + node.type.split("/")[1]) //object
       );
+
+      //File Model Reader
       if (node.type === "Reader/FileModelReader") {
         if (node.properties.fromUri) {
           writer.addQuad(
@@ -463,6 +464,21 @@ class Dashboard extends React.Component {
     });
     writer.end((error, result) => {
       console.log(result);
+      //post method goes here
+      fetch("https://localhost:8080/submit", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "text/ttl",
+        },
+        body: result,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
       this.setState({
         config: result,
       });
@@ -616,9 +632,7 @@ class Dashboard extends React.Component {
           </Col>
           <Modal isOpen={this.state.isModalOpen} toggle={this.toggle}>
             <ModalHeader toggle={this.toggle}>Display Config</ModalHeader>
-            <ModalBody>
-              <h1>{this.state.config}</h1>
-            </ModalBody>
+            <ModalBody></ModalBody>
           </Modal>
           <Col md="3">
             {this.state.componentArray.map((comp, key) => {
