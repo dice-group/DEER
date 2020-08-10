@@ -19,7 +19,7 @@
 import React, { Fragment } from "react";
 // react plugin used to create charts
 import { LGraph, LGraphCanvas, LiteGraph } from "litegraph.js";
-import _ from "lodash";
+import _, { result } from "lodash";
 import "litegraph.js/css/litegraph.css";
 import "./Dashboard.css";
 
@@ -82,6 +82,7 @@ class Dashboard extends React.Component {
       node: "",
       isDisabled: false,
       nodeArr: [],
+      file: "",
       componentArray: [
         {
           src: <FileModelReader />,
@@ -267,9 +268,9 @@ class Dashboard extends React.Component {
 
   saveConfig = () => {
     var data = this.state.graph.serialize();
-    this.setState({
-      isModalOpen: true,
-    });
+    // this.setState({
+    //   isModalOpen: true,
+    // });
     //use N3
     const myQuad = DataFactory.quad(
       namedNode("https://ruben.verborgh.org/profile/#me"),
@@ -311,6 +312,7 @@ class Dashboard extends React.Component {
 
       //File Model Reader
       if (node.type === "Reader/FileModelReader") {
+        console.log(node.properties);
         if (node.properties.fromUri) {
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
@@ -318,12 +320,20 @@ class Dashboard extends React.Component {
             namedNode(node.properties.fromUri)
           );
         }
+        if (node.properties.fromPath) {
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/deer/" + "fromPath"),
+            namedNode(node.properties.fromPath)
+          );
+        }
       }
       if (node.type === "Reader/SparQLModelReader") {
         console.log(node.properties.endpoint);
       }
 
-      if (node.type === "Writer/FileModelWriter") {
+      if (node.type === "writer/FileModelWriter") {
+        console.log(node.properties);
         if (node.properties.outputFile && node.properties.outputFormat) {
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
@@ -339,7 +349,7 @@ class Dashboard extends React.Component {
         }
       }
       //Filter Enrichment Operator
-      if (node.type === "Operator/FilterEnrichmentOperator") {
+      if (node.type === "operator/FilterEnrichmentOperator") {
         if (
           node.properties.showSelector &&
           node.properties.showSelector === "Selectors"
@@ -361,7 +371,7 @@ class Dashboard extends React.Component {
         }
       }
       //Dereferencing enrichment Operator
-      if (node.type === "Operator/DereferencingEnrichmentOperator") {
+      if (node.type === "operator/DereferencingEnrichmentOperator") {
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/operation"),
@@ -385,7 +395,7 @@ class Dashboard extends React.Component {
       }
 
       //GeoFusion Enrichment Operator
-      if (node.type === "Operator/GeoFusionEnrichmentOperator") {
+      if (node.type === "operator/GeoFusionEnrichmentOperator") {
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/fusionAction"),
@@ -400,7 +410,7 @@ class Dashboard extends React.Component {
       }
 
       //Authority Conformation Enrichment Operator
-      if (node.type === "Operator/AuthorityConformationEnrichmentOperator") {
+      if (node.type === "operator/AuthorityConformationEnrichmentOperator") {
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/operation"),
@@ -422,7 +432,7 @@ class Dashboard extends React.Component {
       }
 
       //Predicate Conformation Enrichment Operator
-      if (node.type === "Operator/PredicateConformationEnrichmentOperator") {
+      if (node.type === "operator/PredicateConformationEnrichmentOperator") {
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/operation"),
@@ -440,7 +450,7 @@ class Dashboard extends React.Component {
       }
 
       //GeoDistance Enrichment Operator
-      if (node.type === "Operator/GeoDistanceEnrichmentOperator") {
+      if (node.type === "operator/GeoDistanceEnrichmentOperator") {
       }
 
       if (this.getOutputLinks(node)) {
@@ -464,25 +474,52 @@ class Dashboard extends React.Component {
     });
     writer.end((error, result) => {
       console.log(result);
-      //post method goes here
-      fetch("https://localhost:8080/submit", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "text/ttl",
-        },
-        body: result,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-      this.setState({
-        config: result,
-      });
+      this.submitConfig(result);
     });
+  };
+
+  //TODO: Download the results
+  downloadFileConfig = (result) => {
+    var textFile = null,
+      makeTextFile = function (text) {
+        var data = new Blob([text], { type: "text/plain" });
+
+        textFile = window.URL.createObjectURL(data);
+
+        return textFile;
+      };
+
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+
+    var link = document.getElementById("downloadlink");
+    link.href = makeTextFile(result);
+    link.style.display = "block";
+    //this.uploadFile(textFile);
+  };
+
+  submitConfig = (result) => {
+    var textFile = null;
+    console.log(result);
+    var data = new Blob([result], { type: "text/ttl" });
+    var file = new File([data], "config.ttl");
+    //textFile = window.URL.createObjectURL(data);
+    // var link = document.getElementById("downloadlink");
+    // link.href = textFile;
+
+    var formData = new FormData();
+    formData.append("config", file);
+    fetch("http://localhost:8080/submit", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((success) => {
+        //TODO: get requestID
+        console.log(success);
+      })
+      .catch((error) => console.log(error));
   };
 
   toggle = () => {
@@ -619,13 +656,27 @@ class Dashboard extends React.Component {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                  <Button onClick={this.saveConfig}>
-                    <i
-                      className="fa fa-sticky-note"
-                      style={{ color: `white` }}
-                    />{" "}
-                    Save Configuration
-                  </Button>
+                  <a
+                    download="config.ttl"
+                    id="downloadlink"
+                    //style={{ display: "none" }}
+                    ref="file"
+                  >
+                    <Button onClick={this.saveConfig}>
+                      <i
+                        className="fa fa-sticky-note"
+                        style={{ color: `white` }}
+                      />{" "}
+                      Run Configuration
+                    </Button>
+                  </a>
+                  {/* <a
+                    download="config.ttl"
+                    id="downloadlink"
+                    style={{ display: "none" }}
+                  >
+                    Download
+                  </a> */}
                 </div>
               </CardFooter>
             </Card>
