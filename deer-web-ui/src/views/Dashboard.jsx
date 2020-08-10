@@ -57,6 +57,8 @@ import {
   Dropdown,
   DropdownItem,
   Badge,
+  Alert,
+  ModalFooter,
 } from "reactstrap";
 //import { Dropdown } from "semantic-ui-react";
 
@@ -83,6 +85,8 @@ class Dashboard extends React.Component {
       isDisabled: false,
       nodeArr: [],
       file: "",
+      visible: false,
+      requestID: "",
       componentArray: [
         {
           src: <FileModelReader />,
@@ -268,9 +272,6 @@ class Dashboard extends React.Component {
 
   saveConfig = () => {
     var data = this.state.graph.serialize();
-    // this.setState({
-    //   isModalOpen: true,
-    // });
     //use N3
     const myQuad = DataFactory.quad(
       namedNode("https://ruben.verborgh.org/profile/#me"),
@@ -317,14 +318,14 @@ class Dashboard extends React.Component {
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
             namedNode("http://w3id.org/deer/" + "fromUri"),
-            namedNode(node.properties.fromUri)
+            literal(node.properties.fromUri)
           );
         }
         if (node.properties.fromPath) {
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
             namedNode("http://w3id.org/deer/" + "fromPath"),
-            namedNode(node.properties.fromPath)
+            literal(node.properties.fromPath)
           );
         }
       }
@@ -500,13 +501,8 @@ class Dashboard extends React.Component {
   };
 
   submitConfig = (result) => {
-    var textFile = null;
-    console.log(result);
     var data = new Blob([result], { type: "text/ttl" });
     var file = new File([data], "config.ttl");
-    //textFile = window.URL.createObjectURL(data);
-    // var link = document.getElementById("downloadlink");
-    // link.href = textFile;
 
     var formData = new FormData();
     formData.append("config", file);
@@ -515,16 +511,31 @@ class Dashboard extends React.Component {
       body: formData,
     })
       .then((response) => response.json())
-      .then((success) => {
-        //TODO: get requestID
-        console.log(success);
+      .then((res) => {
+        if (res.error && res.error.code === -1) {
+          this.setState({
+            visible: true,
+          });
+        } else if (res.requestId) {
+          this.getStatusForRequest(res.requestId);
+        }
+      });
+  };
+
+  getStatusForRequest = (requestId) => {
+    console.log(requestId);
+    fetch("https://localhost:8080/status/" + requestId)
+      .then(function (response) {
+        return response.json();
       })
-      .catch((error) => console.log(error));
+      .then((content) => {
+        // console.log(content);
+      });
   };
 
   toggle = () => {
     this.setState({
-      isModalOpen: !this.state.isModalOpen,
+      visible: !this.state.visible,
     });
   };
 
@@ -564,8 +575,17 @@ class Dashboard extends React.Component {
       text: opt,
       value: opt,
     }));
+
     return (
       <div className="content">
+        <Modal isOpen={this.state.visible} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>
+            Incorrect Configuration
+          </ModalHeader>
+          <ModalBody>
+            Please input all the required fields and connections.
+          </ModalBody>
+        </Modal>
         <Row>
           <Col lg="12" md="12" sm="12">
             <Card className="card-stats">
@@ -681,10 +701,10 @@ class Dashboard extends React.Component {
               </CardFooter>
             </Card>
           </Col>
-          <Modal isOpen={this.state.isModalOpen} toggle={this.toggle}>
+          {/* <Modal isOpen={this.state.isModalOpen} toggle={this.toggle}>
             <ModalHeader toggle={this.toggle}>Display Config</ModalHeader>
             <ModalBody></ModalBody>
-          </Modal>
+          </Modal> */}
           <Col md="3">
             {this.state.componentArray.map((comp, key) => {
               if (this.state.node.title === comp.title) {
