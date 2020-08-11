@@ -19,8 +19,9 @@ class SparQLModelReader extends React.Component {
     super(props);
     this.properties = {
       name: "",
-      type: "number",
-      value: 0,
+      fromEndpoint: "",
+      sparqlDescribeOf: "",
+      useSparqlConstruct: "",
     };
 
     this.state = {
@@ -59,17 +60,28 @@ class SparQLModelReader extends React.Component {
         that.setProperty("name", v);
       }
     );
-    this.addWidget(
-      "combo",
+    // this.addWidget(
+    //   "combo",
+    //   "deer:fromEndpoint",
+    //   "Select",
+    //   function (v) {
+    //     if (!v) {
+    //       return;
+    //     }
+    //     that.setProperty("endpoint", v);
+    //   },
+    //   { values: this.state.endpoints }
+    // );
+    this.fromEndpoint = this.addWidget(
+      "text",
       "deer:fromEndpoint",
-      "Select",
+      this.properties.name,
       function (v) {
         if (!v) {
           return;
         }
-        that.setProperty("endpoint", v);
-      },
-      { values: this.state.endpoints }
+        that.setProperty("fromEndpoint", v);
+      }
     );
 
     this.sparqlDescribeOf = this.addWidget(
@@ -80,7 +92,7 @@ class SparQLModelReader extends React.Component {
         if (!v) {
           return;
         }
-        that.setProperty("useSparqlDescribeOf", v);
+        that.setProperty("sparqlDescribeOf", v);
       }
     );
     this.useSparqlConstruct = this.addWidget(

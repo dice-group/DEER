@@ -49,7 +49,7 @@ class FileModelReader extends React.Component {
       this.properties.name,
       function (v) {
         if (!v) {
-          this.toggle();
+          //this.toggle();
           return;
         }
         that.setProperty("name", v);
@@ -119,7 +119,7 @@ class FileModelReader extends React.Component {
   render() {
     return (
       <div>
-        <Modal
+        {/* <Modal
           isOpen={this.state.modal}
           toggle={this.toggle}
           className={this.props.className}
@@ -131,7 +131,7 @@ class FileModelReader extends React.Component {
               Cancel
             </Button>
           </ModalFooter>
-        </Modal>
+        </Modal> */}
 
         <Card className="card-stats">
           <div className="numbers">

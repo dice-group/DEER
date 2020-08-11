@@ -59,6 +59,7 @@ import {
   Badge,
   Alert,
   ModalFooter,
+  Table,
 } from "reactstrap";
 //import { Dropdown } from "semantic-ui-react";
 
@@ -87,6 +88,7 @@ class Dashboard extends React.Component {
       file: "",
       visible: false,
       requestID: "",
+      showResultModal: false,
       componentArray: [
         {
           src: <FileModelReader />,
@@ -169,7 +171,7 @@ class Dashboard extends React.Component {
         {
           src: <SparQLModelReader />,
           title: "SparQL Model Reader",
-          name: "SparQLModelReader",
+          name: "SparqlModelReader",
           url: "Reader/SparQLModelReader",
         },
       ],
@@ -214,7 +216,7 @@ class Dashboard extends React.Component {
       .then((content) => {
         parser.parse(content, (error, quad, prefixes) => {
           if (quad && quad.predicate.id.includes("targetClass")) {
-            //console.log(quad);
+            console.log(quad);
             this.showNode(quad.object.id);
           } else {
           }
@@ -329,8 +331,31 @@ class Dashboard extends React.Component {
           );
         }
       }
+
+      //Sparql Model Reader
       if (node.type === "Reader/SparQLModelReader") {
-        console.log(node.properties.endpoint);
+        if (node.properties.fromEndpoint) {
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/deer/" + "fromEndpoint"),
+            namedNode(node.properties.fromEndpoint)
+          );
+        }
+        if (node.properties.sparqlDescribeOf) {
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/deer/" + "useSparqlDescribeOf"),
+            namedNode(node.properties.sparqlDescribeOf)
+          );
+        }
+
+        if (node.properties.useSparqlConstruct) {
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/deer/" + "useSparqlConstruct"),
+            literal(node.properties.useSparqlConstruct)
+          );
+        }
       }
 
       if (node.type === "writer/FileModelWriter") {
@@ -569,6 +594,18 @@ class Dashboard extends React.Component {
     });
   };
 
+  saveResults = () => {
+    this.setState({
+      showResultModal: !this.state.showResultModal,
+    });
+  };
+
+  toggleResultModal = () => {
+    this.setState({
+      showResultModal: !this.state.showResultModal,
+    });
+  };
+
   render() {
     const options = _.map(this.state.prefixOptions, (opt, index) => ({
       key: opt,
@@ -584,6 +621,39 @@ class Dashboard extends React.Component {
           </ModalHeader>
           <ModalBody>
             Please input all the required fields and connections.
+          </ModalBody>
+        </Modal>
+
+        <Modal
+          isOpen={this.state.showResultModal}
+          toggle={this.toggleResultModal}
+        >
+          <ModalHeader toggle={this.toggleResultModal}>Results</ModalHeader>
+          <ModalBody>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Job Id</th>
+                  <th>Status</th>
+                  <th>Download</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Mark</td>
+                  <td>Otto</td>
+                  <td>
+                    <Button onClick={this.downloadResults}>
+                      <i
+                        className="fa fa-download"
+                        style={{ color: `white` }}
+                      />{" "}
+                      Download
+                    </Button>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
           </ModalBody>
         </Modal>
         <Row>
@@ -683,20 +753,21 @@ class Dashboard extends React.Component {
                     ref="file"
                   >
                     <Button onClick={this.saveConfig}>
-                      <i
-                        className="fa fa-sticky-note"
-                        style={{ color: `white` }}
-                      />{" "}
-                      Run Configuration
+                      <i className="fa fa-cog" style={{ color: `white` }} /> Run
+                      Configuration
                     </Button>
                   </a>
-                  {/* <a
-                    download="config.ttl"
-                    id="downloadlink"
-                    style={{ display: "none" }}
+
+                  <Button
+                    onClick={this.saveResults}
+                    style={{ marginLeft: `10px` }}
                   >
-                    Download
-                  </a> */}
+                    <i
+                      className="fa fa-sticky-note"
+                      style={{ color: `white` }}
+                    />{" "}
+                    Show results
+                  </Button>
                 </div>
               </CardFooter>
             </Card>
