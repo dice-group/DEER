@@ -14,7 +14,7 @@ import {
   CardFooter,
 } from "reactstrap";
 
-class SparQLModelReader extends React.Component {
+class SparqlModelReader extends React.Component {
   constructor(props) {
     super(props);
     this.properties = {
@@ -152,4 +152,4 @@ class SparQLModelReader extends React.Component {
   }
 }
 
-export default SparQLModelReader;
+export default SparqlModelReader;

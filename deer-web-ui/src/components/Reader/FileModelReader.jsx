@@ -49,7 +49,6 @@ class FileModelReader extends React.Component {
       this.properties.name,
       function (v) {
         if (!v) {
-          //this.toggle();
           return;
         }
         that.setProperty("name", v);
@@ -60,6 +59,7 @@ class FileModelReader extends React.Component {
         return;
       }
       that.setProperty("fromUri", v);
+      // that.setFromUri(v);
     });
 
     this.name_widget = this.addWidget(
@@ -71,23 +71,37 @@ class FileModelReader extends React.Component {
           return;
         }
         that.setProperty("fromPath", v);
+        //  that.setFromPath(v);
       }
     );
 
     this.widgets_up = true;
     this.size = [180, 90];
     this.addOutput("output", "text");
+    this.addOutput("output2", "text");
     this.title = "File Model Reader";
     this.color = "#223322";
     this.bgcolor = "#335533";
 
     this.onNodeAdded = (node) => {
       that.setProperty("name", "reader_" + this.state.readerCount);
-      this.setState({
+      that.setState({
         readerCount: this.state.readerCount + 1,
       });
     };
   }
+
+  setFromUri = (uri) => {
+    this.setState({
+      uri: uri,
+    });
+  };
+
+  setFromPath = (path) => {
+    this.setState({
+      path: path,
+    });
+  };
 
   toggle = () => {
     console.log("toggle");
@@ -96,19 +110,19 @@ class FileModelReader extends React.Component {
     });
   };
 
-  handleFromUriChange = (event) => {
-    this.setState({
-      fromUri: event.target.value,
-    });
-  };
+  // handleFromUriChange = (event) => {
+  //   this.setState({
+  //     fromUri: event.target.value,
+  //   });
+  // };
 
-  handleFromPathChange = (event) => {
-    var that = this;
-    this.setState({
-      fromPath: event.target.value,
-    });
-    that.setProperty("fromPath", event.target.value);
-  };
+  // handleFromPathChange = (event) => {
+  //   var that = this;
+  //   this.setState({
+  //     fromPath: event.target.value,
+  //   });
+  //   that.setProperty("fromPath", event.target.value);
+  // };
 
   submitFormData = (event) => {
     event.preventDefault();
@@ -145,7 +159,8 @@ class FileModelReader extends React.Component {
                 <Input
                   type="text"
                   placeholder="fromUri"
-                  onChange={this.handleFromUriChange}
+                  //onChange={this.handleFromUriChange}
+                  defaultValue={this.state.fromUri}
                 />
               </FormGroup>
               <FormGroup>
@@ -153,7 +168,8 @@ class FileModelReader extends React.Component {
                 <Input
                   type="text"
                   placeholder="fromPath"
-                  onChange={this.handleFromPathChange}
+                  defaultValue={this.state.fromPath}
+                  //onChange={this.handleFromPathChange}
                 />
               </FormGroup>
             </Form>

@@ -25,7 +25,7 @@ import "./Dashboard.css";
 
 import FileModelReader from "../components/Reader/FileModelReader";
 import FileModelWriter from "../components/writer/FileModelWriter";
-import SparQLModelReader from "../components/Reader/SparQLModelReader";
+import SparqlModelReader from "../components/Reader/SparqlModelReader";
 import FilterEnrichmentOperator from "../components/operator/FilterEnrichmentOperator";
 import LinkingEnrichmentOperator from "../components/operator/LinkingEnrichmentOperator";
 import DereferencingEnrichmentOperator from "../components/operator/DereferencingEnrichmentOperator";
@@ -89,6 +89,18 @@ class Dashboard extends React.Component {
       visible: false,
       requestID: "",
       showResultModal: false,
+      prefixes: {
+        example: "urn:example:demo/",
+        foaf: "http://xmlns.com/foaf/0.1/",
+        dbpedia: "http://dbpedia.org/resource/",
+        deer: "http://w3id.org/deer/",
+        fcage: "http://w3id.org/fcage/",
+        geo: "http://www.w3.org/2003/01/geo/wgs84_pos#",
+        owl: "http://www.w3.org/2002/07/owl#",
+        rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        rdfs: "http://www.w3.org/2000/01/rdf-schema#",
+        xsd: "http://www.w3.org/2001/XMLSchema#",
+      },
       componentArray: [
         {
           src: <FileModelReader />,
@@ -135,8 +147,8 @@ class Dashboard extends React.Component {
         {
           src: <AuthorityConformationEnrichmentOperator />,
           title: "Authority Conformation Enrichment Operator",
-          name: "GeoFusionEnrichmentOperator",
-          url: "operator/GeoFusionEnrichmentOperator",
+          name: "AuthorityConformationEnrichmentOperator",
+          url: "operator/AuthorityConformationEnrichmentOperator",
         },
         {
           src: <PredicateConformationEnrichmentOperator />,
@@ -169,10 +181,10 @@ class Dashboard extends React.Component {
           url: "operator/CloneEnrichmentOperator",
         },
         {
-          src: <SparQLModelReader />,
+          src: <SparqlModelReader />,
           title: "SparQL Model Reader",
           name: "SparqlModelReader",
-          url: "Reader/SparQLModelReader",
+          url: "Reader/SparqlModelReader",
         },
       ],
     };
@@ -216,7 +228,6 @@ class Dashboard extends React.Component {
       .then((content) => {
         parser.parse(content, (error, quad, prefixes) => {
           if (quad && quad.predicate.id.includes("targetClass")) {
-            console.log(quad);
             this.showNode(quad.object.id);
           } else {
           }
@@ -226,7 +237,6 @@ class Dashboard extends React.Component {
   }
 
   showNode = (quadOb) => {
-    // console.log(quadOb);
     this.state.componentArray.map((comp, key) => {
       if (quadOb.includes(comp.name)) {
         LiteGraph.registerNodeType(comp.url, comp.src["type"]);
@@ -282,23 +292,9 @@ class Dashboard extends React.Component {
       defaultGraph()
     );
 
-    //can be changed
-    var prefixes = {
-      example: "urn:example:demo/",
-      foaf: "http://xmlns.com/foaf/0.1/",
-      dbpedia: "http://dbpedia.org/resource/",
-      deer: "http://w3id.org/deer/",
-      fcage: "http://w3id.org/fcage/",
-      geo: "http://www.w3.org/2003/01/geo/wgs84_pos#",
-      owl: "http://www.w3.org/2002/07/owl#",
-      rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-      rdfs: "http://www.w3.org/2000/01/rdf-schema#",
-      xsd: "http://www.w3.org/2001/XMLSchema#",
-    };
-
     var writer = new N3.Writer(
       {
-        prefixes: prefixes,
+        prefixes: this.state.prefixes,
       },
       { format: "N-Triples" }
     );
@@ -312,6 +308,25 @@ class Dashboard extends React.Component {
         namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), //predicate
         namedNode("http://w3id.org/deer/" + node.type.split("/")[1]) //object
       );
+
+      // if (this.getOutputLinks(node)) {
+      //   //if it has output links, check and add a quad
+      //   var readerTargetNode = this.getOutputLinks(node);
+      //   writer.addQuad(
+      //     namedNode("urn:example:demo/" + node.properties.name),
+      //     namedNode("http://w3id.org/fcage/" + "hasOutput"),
+      //     namedNode("urn:example:demo/" + readerTargetNode.properties.name)
+      //   );
+      // }
+      //if it has an input link, check and add a quad
+      if (this.getInputLink(node)) {
+        var originInputNode = this.getInputLink(node);
+        writer.addQuad(
+          namedNode("urn:example:demo/" + node.properties.name),
+          namedNode("http://w3id.org/fcage/" + "hasInput"),
+          namedNode("urn:example:demo/" + originInputNode.properties.name)
+        );
+      }
 
       //File Model Reader
       if (node.type === "Reader/FileModelReader") {
@@ -333,8 +348,9 @@ class Dashboard extends React.Component {
       }
 
       //Sparql Model Reader
-      if (node.type === "Reader/SparQLModelReader") {
+      if (node.type === "Reader/SparqlModelReader") {
         if (node.properties.fromEndpoint) {
+          console.log();
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
             namedNode("http://w3id.org/deer/" + "fromEndpoint"),
@@ -358,8 +374,8 @@ class Dashboard extends React.Component {
         }
       }
 
+      //File Model Writer
       if (node.type === "writer/FileModelWriter") {
-        console.log(node.properties);
         if (node.properties.outputFile && node.properties.outputFormat) {
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
@@ -388,9 +404,7 @@ class Dashboard extends React.Component {
                 predicate: namedNode(
                   "http://w3id.org/deer/" + node.properties.selector
                 ),
-                object: namedNode(
-                  "http://w3id.org/deer/" + node.properties.resource
-                ),
+                object: namedNode(node.properties.resource),
               },
             ])
           );
@@ -477,30 +491,22 @@ class Dashboard extends React.Component {
 
       //GeoDistance Enrichment Operator
       if (node.type === "operator/GeoDistanceEnrichmentOperator") {
-      }
-
-      if (this.getOutputLinks(node)) {
-        //if it has output links, check and add a quad
-        var readerTargetNode = this.getOutputLinks(node);
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
-          namedNode("http://w3id.org/fcage/" + "hasOutput"),
-          namedNode("urn:example:demo/" + readerTargetNode.properties.name)
+          namedNode("http://w3id.org/deer/" + "selectPredicate"),
+          namedNode(node.properties.selectPredicate)
         );
-      }
-      //if it has an input link, check and add a quad
-      if (this.getInputLink(node)) {
-        var originInputNode = this.getInputLink(node);
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
-          namedNode("http://w3id.org/fcage/" + "hasInput"),
-          namedNode("urn:example:demo/" + originInputNode.properties.name)
+          namedNode("http://w3id.org/deer/" + "distancePredicate"),
+          namedNode(node.properties.distancePredicate)
         );
       }
     });
     writer.end((error, result) => {
       console.log(result);
       this.submitConfig(result);
+      result = "";
     });
   };
 
@@ -542,6 +548,7 @@ class Dashboard extends React.Component {
             visible: true,
           });
         } else if (res.requestId) {
+          console.log(res.requestId);
           this.getStatusForRequest(res.requestId);
         }
       });
@@ -551,7 +558,7 @@ class Dashboard extends React.Component {
     console.log(requestId);
     fetch("https://localhost:8080/status/" + requestId)
       .then(function (response) {
-        return response.json();
+        return response;
       })
       .then((content) => {
         // console.log(content);
@@ -592,6 +599,8 @@ class Dashboard extends React.Component {
     this.setState({
       addNewPrefixes: this.state.addNewPrefixes.concat(this.state.userInput),
     });
+    this.state.prefixes[this.state.userInput] =
+      "<" + this.state.namespace + ">";
   };
 
   saveResults = () => {
