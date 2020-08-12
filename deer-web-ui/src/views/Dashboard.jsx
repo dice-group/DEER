@@ -103,85 +103,85 @@ class Dashboard extends React.Component {
       },
       componentArray: [
         {
-          src: <FileModelReader />,
+          src: FileModelReader,
           title: "File Model Reader",
           name: "FileModelReader",
           url: "Reader/FileModelReader",
         },
         {
-          src: <FileModelWriter />,
+          src: FileModelWriter,
           title: "File Model Writer",
           name: "FileModelWriter",
           url: "writer/FileModelWriter",
         },
         {
-          src: <FilterEnrichmentOperator />,
+          src: FilterEnrichmentOperator,
           title: "Filter Enrichment Operator",
           name: "FilterEnrichmentOperator",
           url: "operator/FilterEnrichmentOperator",
         },
         {
-          src: <LinkingEnrichmentOperator />,
+          src: LinkingEnrichmentOperator,
           title: "Linking Enrichment Operator",
           name: "LinkingEnrichmentOperator",
           url: "operator/LinkingEnrichmentOperator",
         },
         {
-          src: <NEREnrichmentOperator />,
+          src: NEREnrichmentOperator,
           title: "NER Enrichment Operator",
           name: "NEREnrichmentOperator",
           url: "operator/NEREnrichmentOperator",
         },
         {
-          src: <DereferencingEnrichmentOperator />,
+          src: DereferencingEnrichmentOperator,
           title: "Dereferencing Enrichment Operator",
           name: "DereferencingEnrichmentOperator",
           url: "operator/DereferencingEnrichmentOperator",
         },
         {
-          src: <GeoFusionEnrichmentOperator />,
+          src: GeoFusionEnrichmentOperator,
           title: "GeoFusion Enrichment Operator",
           name: "GeoFusionEnrichmentOperator",
           url: "operator/GeoFusionEnrichmentOperator",
         },
         {
-          src: <AuthorityConformationEnrichmentOperator />,
+          src: AuthorityConformationEnrichmentOperator,
           title: "Authority Conformation Enrichment Operator",
           name: "AuthorityConformationEnrichmentOperator",
           url: "operator/AuthorityConformationEnrichmentOperator",
         },
         {
-          src: <PredicateConformationEnrichmentOperator />,
+          src: PredicateConformationEnrichmentOperator,
           title: "Predicate Conformation Enrichment Operator",
           name: "PredicateConformationEnrichmentOperator",
           url: "operator/PredicateConformationEnrichmentOperator",
         },
         {
-          src: <GeoDistanceEnrichmentOperator />,
+          src: GeoDistanceEnrichmentOperator,
           title: "GeoDistance Enrichment Operator",
           name: "GeoDistanceEnrichmentOperator",
           url: "operator/GeoDistanceEnrichmentOperator",
         },
         {
-          src: <SparqlUpdateEnrichmentOperator />,
+          src: SparqlUpdateEnrichmentOperator,
           title: "Sparql Update Enrichment Operator",
           name: "SparqlUpdateEnrichmentOperator",
           url: "operator/SparqlUpdateEnrichmentOperator",
         },
         {
-          src: <MergeEnrichmentOperator />,
+          src: MergeEnrichmentOperator,
           title: "Merge Enrichment Operator",
           name: "MergeEnrichmentOperator",
           url: "operator/MergeEnrichmentOperator",
         },
         {
-          src: <CloneEnrichmentOperator />,
+          src: CloneEnrichmentOperator,
           title: "Clone Enrichment Operator",
           name: "CloneEnrichmentOperator",
           url: "operator/CloneEnrichmentOperator",
         },
         {
-          src: <SparqlModelReader />,
+          src: SparqlModelReader,
           title: "SparQL Model Reader",
           name: "SparqlModelReader",
           url: "Reader/SparqlModelReader",
@@ -239,7 +239,8 @@ class Dashboard extends React.Component {
   showNode = (quadOb) => {
     this.state.componentArray.map((comp, key) => {
       if (quadOb.includes(comp.name)) {
-        LiteGraph.registerNodeType(comp.url, comp.src["type"]);
+        comp.src.title = comp.title;
+        LiteGraph.registerNodeType(comp.url, comp.src);
       }
     });
   };
@@ -599,8 +600,7 @@ class Dashboard extends React.Component {
     this.setState({
       addNewPrefixes: this.state.addNewPrefixes.concat(this.state.userInput),
     });
-    this.state.prefixes[this.state.userInput] =
-      "<" + this.state.namespace + ">";
+    this.state.prefixes[this.state.userInput] = this.state.namespace;
   };
 
   saveResults = () => {
