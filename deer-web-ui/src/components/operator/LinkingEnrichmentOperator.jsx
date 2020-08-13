@@ -191,7 +191,7 @@ class LinkingEnrichmentOperator extends React.Component {
       node: LinkingEnrichmentOperator,
       name: this.state["name"],
       specFile: this.state["specFile"],
-      linksPart: this.state["linksPart"],
+      linksPart: this.state["radioOption"],
       selectMode: this.state["selectMode"],
       linkSpecification: this.state["linkSpecification"],
       linkingPredicate: this.state["linkingPredicate"],
@@ -205,6 +205,12 @@ class LinkingEnrichmentOperator extends React.Component {
     let value = event.target.value;
     this.setState({
       [event.target.name]: value,
+    });
+  };
+
+  handleRadioChange = (event) => {
+    this.setState({
+      radioOption: event.target.value,
     });
   };
 
@@ -244,8 +250,9 @@ class LinkingEnrichmentOperator extends React.Component {
                   <Input
                     type="radio"
                     name="radio1"
-                    value="Source"
-                    onChange={this.handleChange}
+                    value="source"
+                    onChange={this.handleRadioChange}
+                    checked={this.state.radioOption === "source"}
                   />{" "}
                   Source
                 </Label>
@@ -255,8 +262,9 @@ class LinkingEnrichmentOperator extends React.Component {
                   <Input
                     type="radio"
                     name="radio1"
-                    value="Target"
-                    onChange={this.handleChange}
+                    value="target"
+                    onChange={this.handleRadioChange}
+                    checked={this.state.radioOption === "target"}
                   />{" "}
                   Target
                 </Label>

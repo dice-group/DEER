@@ -451,10 +451,10 @@ class Dashboard extends React.Component {
       }
 
       //File Model Writer
-      if (node.type === "writer/FileModelWriter") {
+      if (node.type === "Writer/FileModelWriter") {
         if (
           this.state.formProperties &&
-          this.state.formProperties.node.type === "Reader/FileModelWriter"
+          this.state.formProperties.node.type === "Writer/FileModelWriter"
         ) {
           node.properties.name = this.state.formProperties.name;
           node.properties.outputFile = this.state.formProperties.outputFile;
@@ -475,11 +475,11 @@ class Dashboard extends React.Component {
         }
       }
       //Filter Enrichment Operator
-      if (node.type === "operator/FilterEnrichmentOperator") {
+      if (node.type === "Operator/FilterEnrichmentOperator") {
         if (
           this.state.formProperties &&
           this.state.formProperties.node.type ===
-            "operator/FilterEnrichmentOperator"
+            "Operator/FilterEnrichmentOperator"
         ) {
           node.properties.name = this.state.formProperties.name;
           node.properties.selector = this.state.formProperties.selector;
@@ -508,11 +508,11 @@ class Dashboard extends React.Component {
         }
       }
       //Dereferencing enrichment Operator
-      if (node.type === "operator/DereferencingEnrichmentOperator") {
+      if (node.type === "Operator/DereferencingEnrichmentOperator") {
         if (
           this.state.formProperties &&
           this.state.formProperties.node.type ===
-            "operator/DereferencingEnrichmentOperator"
+            "Operator/DereferencingEnrichmentOperator"
         ) {
           node.properties.name = this.state.properties.name;
           node.properties.lookUpPrefix = this.state.formProperties.lookUpPrefix;
@@ -542,11 +542,11 @@ class Dashboard extends React.Component {
       }
 
       //GeoFusion Enrichment Operator
-      if (node.type === "operator/GeoFusionEnrichmentOperator") {
+      if (node.type === "Operator/GeoFusionEnrichmentOperator") {
         if (
           this.state.formProperties &&
           this.state.formProperties.node.type ===
-            "operator/GeoFusionEnrichmentOperator"
+            "Operator/GeoFusionEnrichmentOperator"
         ) {
           node.properties.name = this.state.properties.name;
           node.properties.fusionAction = this.state.formProperties.fusionAction;
@@ -566,11 +566,11 @@ class Dashboard extends React.Component {
       }
 
       //Authority Conformation Enrichment Operator
-      if (node.type === "operator/AuthorityConformationEnrichmentOperator") {
+      if (node.type === "Operator/AuthorityConformationEnrichmentOperator") {
         if (
           this.state.formProperties &&
           this.state.formProperties.node.type ===
-            "operator/AuthorityConformationEnrichmentOperator"
+            "Operator/AuthorityConformationEnrichmentOperator"
         ) {
           node.properties.name = this.state.properties.name;
           node.properties.sourceSubjectAuthority = this.state.formProperties.sourceSubjectAuthority;
@@ -597,11 +597,11 @@ class Dashboard extends React.Component {
       }
 
       //Predicate Conformation Enrichment Operator
-      if (node.type === "operator/PredicateConformationEnrichmentOperator") {
+      if (node.type === "Operator/PredicateConformationEnrichmentOperator") {
         if (
           this.state.formProperties &&
           this.state.formProperties.node.type ===
-            "operator/PredicateConformationEnrichmentOperator"
+            "Operator/PredicateConformationEnrichmentOperator"
         ) {
           node.properties.name = this.state.properties.name;
           node.properties.sourcePredicate = this.state.formProperties.sourcePredicate;
@@ -624,11 +624,11 @@ class Dashboard extends React.Component {
       }
 
       //GeoDistance Enrichment Operator
-      if (node.type === "operator/GeoDistanceEnrichmentOperator") {
+      if (node.type === "Operator/GeoDistanceEnrichmentOperator") {
         if (
           this.state.formProperties &&
           this.state.formProperties.node.type ===
-            "operator/GeoDistanceEnrichmentOperator"
+            "Operator/GeoDistanceEnrichmentOperator"
         ) {
           node.properties.name = this.state.properties.name;
           node.properties.selectPredicate = this.state.formProperties.selectPredicate;
@@ -646,13 +646,13 @@ class Dashboard extends React.Component {
         );
       }
 
-      if (node.type === "operator/LinkingEnrichmentOperator") {
+      if (node.type === "Operator/LinkingEnrichmentOperator") {
         if (
           this.state.formProperties &&
           this.state.formProperties.node.type ===
-            "operator/LinkingEnrichmentOperator"
+            "Operator/LinkingEnrichmentOperator"
         ) {
-          node.properties.name = this.state.properties.name;
+          node.properties.name = this.state.formProperties.name;
           node.properties.specFile = this.state.formProperties.specFile;
           node.properties.linksPart = this.state.formProperties.linksPart;
           node.properties.selectMode = this.state.formProperties.selectMode;
@@ -662,22 +662,48 @@ class Dashboard extends React.Component {
         }
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
-          namedNode("http://w3id.org/deer/" + "selectPredicate"),
-          namedNode(node.properties.selectPredicate)
+          namedNode("http://w3id.org/deer/" + "specFile"),
+          literal(node.properties.specFile)
         );
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
-          namedNode("http://w3id.org/deer/" + "distancePredicate"),
-          namedNode(node.properties.distancePredicate)
+          namedNode("http://w3id.org/deer/" + "linksPart"),
+          literal(node.properties.linksPart)
         );
+        writer.addQuad(
+          namedNode("urn:example:demo/" + node.properties.name),
+          namedNode("http://w3id.org/deer/" + "selectMode"),
+          literal(node.properties.selectMode)
+        );
+        if (node.properties.linkSpecification) {
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/deer/" + "linkSpecification"),
+            literal(node.properties.linkSpecification)
+          );
+        }
+        if (node.properties.linkingPredicate) {
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/deer/" + "linkingPredicate"),
+            literal(node.properties.linkingPredicate)
+          );
+        }
+        if (node.properties.threshold) {
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/deer/" + "threshold"),
+            literal(node.properties.threshold)
+          );
+        }
       }
 
       //NER Enrichment Operator
-      if (node.type === "operator/NEREnrichmentOperator") {
+      if (node.type === "Operator/NEREnrichmentOperator") {
         if (
           this.state.formProperties &&
           this.state.formProperties.node.type ===
-            "operator/NEREnrichmentOperator"
+            "Operator/NEREnrichmentOperator"
         ) {
           node.properties.name = this.state.properties.name;
           node.properties.literalProperty = this.state.formProperties.literalProperty;
@@ -709,11 +735,11 @@ class Dashboard extends React.Component {
       }
 
       //Sparql Update Enrichment Operator
-      if (node.type === "operator/SparqlUpdateEnrichmentOperator") {
+      if (node.type === "Operator/SparqlUpdateEnrichmentOperator") {
         if (
           this.state.formProperties &&
           this.state.formProperties.node.type ===
-            "operator/NEREnrichmentOperator"
+            "Operator/NEREnrichmentOperator"
         ) {
           node.properties.name = this.state.properties.name;
           node.properties.sparqlUpdateQuery = this.state.formProperties.sparqlUpdateQuery;
