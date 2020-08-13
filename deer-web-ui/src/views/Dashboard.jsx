@@ -92,6 +92,7 @@ class Dashboard extends React.Component {
       requestCompleteModal: false,
       showConfigButton: false,
       availableFiles: [],
+      showLogButton: false,
       prefixes: {
         example: "urn:example:demo/",
         foaf: "http://xmlns.com/foaf/0.1/",
@@ -552,6 +553,7 @@ class Dashboard extends React.Component {
         } else if (res.requestId) {
           this.setState({
             requestID: res.requestId,
+            showLogButton: true,
           });
           this.interval = setInterval(this.getStatusForRequest, 1000);
         }
@@ -588,6 +590,15 @@ class Dashboard extends React.Component {
       });
   };
 
+  showLogs = () => {
+    fetch("http://localhost:8080/logs/" + this.state.requestID).then(function (
+      response
+    ) {
+      let a = document.getElementById("downloadLink");
+      a.href = response.url;
+      a.click();
+    });
+  };
   toggle = () => {
     this.setState({
       visible: !this.state.visible,
@@ -818,6 +829,24 @@ class Dashboard extends React.Component {
                       />{" "}
                       Show results
                     </Button>
+                  ) : (
+                    ""
+                  )}
+                  {this.state.showLogButton ? (
+                    <a
+                      target="_blank"
+                      id="downloadlink"
+                      //style={{ display: "none" }}
+                      ref="file"
+                    >
+                      <Button
+                        onClick={this.showLogs}
+                        style={{ marginLeft: `10px` }}
+                      >
+                        <i className="fa fa-cog" style={{ color: `white` }} />{" "}
+                        Logs
+                      </Button>
+                    </a>
                   ) : (
                     ""
                   )}
