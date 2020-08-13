@@ -4,16 +4,10 @@ import Select from "react-select";
 
 // reactstrap components
 import {
-  Row,
-  Col,
   Button,
   Form,
   FormGroup,
   Input,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  DropdownMenu,
   Label,
   CardBody,
   Card,
@@ -42,11 +36,25 @@ class NEREnrichmentOperator extends React.Component {
       literalProperty: "",
       importProperty: "",
       neType: "location",
-      askEndpoint: false,
+      foxUrl: false,
     };
 
     var that = this;
-    var show = true;
+
+    this.literalProperty = this.addWidget(
+      "text",
+      "Name",
+      this.properties.name,
+      function (v) {
+        if (!v) {
+          return;
+        }
+        that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
+      }
+    );
 
     this.literalProperty = this.addWidget(
       "text",
@@ -57,6 +65,9 @@ class NEREnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("literalProperty", v);
+        if (document.getElementById("literalProperty")) {
+          document.getElementById("literalProperty").value = v;
+        }
       }
     );
 
@@ -69,6 +80,9 @@ class NEREnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("importProperty", v);
+        if (document.getElementById("importProperty")) {
+          document.getElementById("naimportPropertyme").value = v;
+        }
       }
     );
 
@@ -81,6 +95,9 @@ class NEREnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("neType", v);
+        if (document.getElementById("neType")) {
+          document.getElementById("neType").value = v;
+        }
       },
       { values: ["location", "person", "organization", "all"] }
     );
@@ -93,7 +110,10 @@ class NEREnrichmentOperator extends React.Component {
         if (!v) {
           return;
         }
-        that.setProperty("importProperty", v);
+        that.setProperty("foxUrl", v);
+        if (document.getElementById("foxUrl")) {
+          document.getElementById("foxUrl").value = v;
+        }
       }
     );
 
@@ -104,9 +124,28 @@ class NEREnrichmentOperator extends React.Component {
     this.bgcolor = "#bb8b2c";
   }
 
-  handleChange = (selectedOption) => {
-    this.setState({ selectedOption });
-    console.log(`Option selected:`, selectedOption);
+  handleSelectChange = (selectedOption) => {
+    this.setState({ neType: selectedOption.value });
+  };
+
+  submitForm = () => {
+    var properties = {
+      node: NEREnrichmentOperator,
+      name: this.state["name"],
+      literalProperty: this.state["literalProperty"],
+      importProperty: this.state["importProperty"],
+      neType: this.state["neType"],
+      foxUrl: this.state["foxUrl"],
+    };
+
+    this.props.parentCallback(properties);
+  };
+
+  handleChange = (event) => {
+    let value = event.target.value;
+    this.setState({
+      [event.target.name]: value,
+    });
   };
 
   render() {
@@ -119,31 +158,55 @@ class NEREnrichmentOperator extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                placeholder="Node name"
+                onChange={this.handleChange}
+                name="name"
+                id="name"
+              />
+            </FormGroup>
+            <FormGroup>
               <Label>Literal Property</Label>
-              <Input type="text" placeholder="deer:literalProperty" />
+              <Input
+                type="text"
+                placeholder="deer:literalProperty"
+                onChange={this.handleChange}
+                name="literalProperty"
+                id="literalProperty"
+              />
             </FormGroup>
             <FormGroup>
               <Label>Import Property</Label>
-              <Select
-                value={this.state.selectedOption}
-                onChange={this.handleChange}
-                options={options}
+              <Input
+                type="text"
                 placeholder="deer:importProperty"
+                onChange={this.handleChange}
+                name="importProperty"
+                id="importProperty"
               />
             </FormGroup>
-
-            <FormGroup tag="fieldset">
-              <legend>Select:</legend>
-              <FormGroup check>
-                <Label check>
-                  <Input type="radio" name="radio1" /> Selector
-                </Label>
-              </FormGroup>
-              <FormGroup check>
-                <Label check>
-                  <Input type="radio" name="radio1" /> Construct Query
-                </Label>
-              </FormGroup>
+            <FormGroup>
+              <Label>neType</Label>
+              <Select
+                value={this.state.selectedOption}
+                onChange={this.handleSelectChange}
+                options={options}
+                placeholder="deer:neType"
+                id="neType"
+                name="neType"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>Endpoint</Label>
+              <Input
+                type="text"
+                placeholder="deer:foxUrl"
+                onChange={this.handleChange}
+                name="foxUrl"
+                id="foxUrl"
+              />
             </FormGroup>
           </Form>
         </CardBody>
@@ -151,7 +214,7 @@ class NEREnrichmentOperator extends React.Component {
           <Button
             className="btn-round"
             color="primary"
-            // onClick={this.addNewPrefixes}
+            onClick={this.submitForm}
           >
             Save
           </Button>

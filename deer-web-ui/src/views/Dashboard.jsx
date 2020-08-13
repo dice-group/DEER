@@ -24,19 +24,19 @@ import "litegraph.js/css/litegraph.css";
 import "./Dashboard.css";
 
 import FileModelReader from "../components/Reader/FileModelReader";
-import FileModelWriter from "../components/writer/FileModelWriter";
+import FileModelWriter from "../components/Writer/FileModelWriter";
 import SparqlModelReader from "../components/Reader/SparqlModelReader";
-import FilterEnrichmentOperator from "../components/operator/FilterEnrichmentOperator";
-import LinkingEnrichmentOperator from "../components/operator/LinkingEnrichmentOperator";
-import DereferencingEnrichmentOperator from "../components/operator/DereferencingEnrichmentOperator";
-import NEREnrichmentOperator from "../components/operator/NEREnrichmentOperator";
-import CloneEnrichmentOperator from "../components/operator/CloneEnrichmentOperator";
-import MergeEnrichmentOperator from "../components/operator/MergeEnrichmentOperator";
-import GeoFusionEnrichmentOperator from "../components/operator/GeoFusionEnrichmentOperator";
-import SparqlUpdateEnrichmentOperator from "../components/operator/SparqlUpdateEnrichmentOperator";
-import GeoDistanceEnrichmentOperator from "../components/operator/GeoDistanceEnrichmentOperator";
-import AuthorityConformationEnrichmentOperator from "../components/operator/AuthorityConformationEnrichmentOperator";
-import PredicateConformationEnrichmentOperator from "../components/operator/PredicateConformationEnrichmentOperator";
+import FilterEnrichmentOperator from "../components/Operator/FilterEnrichmentOperator";
+import LinkingEnrichmentOperator from "../components/Operator/LinkingEnrichmentOperator";
+import DereferencingEnrichmentOperator from "../components/Operator/DereferencingEnrichmentOperator";
+import NEREnrichmentOperator from "../components/Operator/NEREnrichmentOperator";
+import CloneEnrichmentOperator from "../components/Operator/CloneEnrichmentOperator";
+import MergeEnrichmentOperator from "../components/Operator/MergeEnrichmentOperator";
+import GeoFusionEnrichmentOperator from "../components/Operator/GeoFusionEnrichmentOperator";
+import SparqlUpdateEnrichmentOperator from "../components/Operator/SparqlUpdateEnrichmentOperator";
+import GeoDistanceEnrichmentOperator from "../components/Operator/GeoDistanceEnrichmentOperator";
+import AuthorityConformationEnrichmentOperator from "../components/Operator/AuthorityConformationEnrichmentOperator";
+import PredicateConformationEnrichmentOperator from "../components/Operator/PredicateConformationEnrichmentOperator";
 
 // reactstrap components
 import {
@@ -93,6 +93,7 @@ class Dashboard extends React.Component {
       showConfigButton: false,
       availableFiles: [],
       showLogButton: false,
+      formProperties: "",
       prefixes: {
         example: "urn:example:demo/",
         foaf: "http://xmlns.com/foaf/0.1/",
@@ -111,88 +112,143 @@ class Dashboard extends React.Component {
           title: "File Model Reader",
           name: "FileModelReader",
           url: "Reader/FileModelReader",
+          form: <FileModelReader parentCallback={this.callbackFunction} />,
         },
         {
           src: FileModelWriter,
           title: "File Model Writer",
           name: "FileModelWriter",
-          url: "writer/FileModelWriter",
+          url: "Writer/FileModelWriter",
+          form: <FileModelWriter parentCallback={this.callbackFunction} />,
         },
         {
           src: FilterEnrichmentOperator,
           title: "Filter Enrichment Operator",
           name: "FilterEnrichmentOperator",
-          url: "operator/FilterEnrichmentOperator",
+          url: "Operator/FilterEnrichmentOperator",
+          form: (
+            <FilterEnrichmentOperator parentCallback={this.callbackFunction} />
+          ),
         },
         {
           src: LinkingEnrichmentOperator,
           title: "Linking Enrichment Operator",
           name: "LinkingEnrichmentOperator",
-          url: "operator/LinkingEnrichmentOperator",
+          url: "Operator/LinkingEnrichmentOperator",
+          form: (
+            <LinkingEnrichmentOperator parentCallback={this.callbackFunction} />
+          ),
         },
         {
           src: NEREnrichmentOperator,
           title: "NER Enrichment Operator",
           name: "NEREnrichmentOperator",
-          url: "operator/NEREnrichmentOperator",
+          url: "Operator/NEREnrichmentOperator",
+          form: (
+            <NEREnrichmentOperator parentCallback={this.callbackFunction} />
+          ),
         },
         {
           src: DereferencingEnrichmentOperator,
           title: "Dereferencing Enrichment Operator",
           name: "DereferencingEnrichmentOperator",
-          url: "operator/DereferencingEnrichmentOperator",
+          url: "Operator/DereferencingEnrichmentOperator",
+          form: (
+            <DereferencingEnrichmentOperator
+              parentCallback={this.callbackFunction}
+            />
+          ),
         },
         {
           src: GeoFusionEnrichmentOperator,
           title: "GeoFusion Enrichment Operator",
           name: "GeoFusionEnrichmentOperator",
-          url: "operator/GeoFusionEnrichmentOperator",
+          url: "Operator/GeoFusionEnrichmentOperator",
+          form: (
+            <GeoFusionEnrichmentOperator
+              parentCallback={this.callbackFunction}
+            />
+          ),
         },
         {
           src: AuthorityConformationEnrichmentOperator,
           title: "Authority Conformation Enrichment Operator",
           name: "AuthorityConformationEnrichmentOperator",
-          url: "operator/AuthorityConformationEnrichmentOperator",
+          url: "Operator/AuthorityConformationEnrichmentOperator",
+          form: (
+            <AuthorityConformationEnrichmentOperator
+              parentCallback={this.callbackFunction}
+            />
+          ),
         },
         {
           src: PredicateConformationEnrichmentOperator,
           title: "Predicate Conformation Enrichment Operator",
           name: "PredicateConformationEnrichmentOperator",
-          url: "operator/PredicateConformationEnrichmentOperator",
+          url: "Operator/PredicateConformationEnrichmentOperator",
+          form: (
+            <PredicateConformationEnrichmentOperator
+              parentCallback={this.callbackFunction}
+            />
+          ),
         },
         {
           src: GeoDistanceEnrichmentOperator,
           title: "GeoDistance Enrichment Operator",
           name: "GeoDistanceEnrichmentOperator",
-          url: "operator/GeoDistanceEnrichmentOperator",
+          url: "Operator/GeoDistanceEnrichmentOperator",
+          form: (
+            <GeoDistanceEnrichmentOperator
+              parentCallback={this.callbackFunction}
+            />
+          ),
         },
         {
           src: SparqlUpdateEnrichmentOperator,
           title: "Sparql Update Enrichment Operator",
           name: "SparqlUpdateEnrichmentOperator",
-          url: "operator/SparqlUpdateEnrichmentOperator",
+          url: "Operator/SparqlUpdateEnrichmentOperator",
+          form: (
+            <SparqlUpdateEnrichmentOperator
+              parentCallback={this.callbackFunction}
+            />
+          ),
         },
         {
           src: MergeEnrichmentOperator,
           title: "Merge Enrichment Operator",
           name: "MergeEnrichmentOperator",
-          url: "operator/MergeEnrichmentOperator",
+          url: "Operator/MergeEnrichmentOperator",
+          form: (
+            <MergeEnrichmentOperator parentCallback={this.callbackFunction} />
+          ),
         },
         {
           src: CloneEnrichmentOperator,
           title: "Clone Enrichment Operator",
           name: "CloneEnrichmentOperator",
-          url: "operator/CloneEnrichmentOperator",
+          url: "Operator/CloneEnrichmentOperator",
+          form: (
+            <CloneEnrichmentOperator parentCallback={this.callbackFunction} />
+          ),
         },
         {
           src: SparqlModelReader,
           title: "SparQL Model Reader",
           name: "SparqlModelReader",
           url: "Reader/SparqlModelReader",
+          form: <SparqlModelReader parentCallback={this.callbackFunction} />,
         },
       ],
     };
   }
+
+  callbackFunction = (properties) => {
+    console.log(properties);
+    this.setState({
+      formProperties: properties,
+    });
+  };
 
   componentDidMount() {
     var graphCanvas = new LGraphCanvas("#mycanvas", this.state.graph);
@@ -218,7 +274,7 @@ class Dashboard extends React.Component {
         });
       });
 
-    if (this.state.userInput === "") {
+    if (this.state.userInput === "" || this.state.namespace === "") {
       this.setState({
         isDisabled: true,
       });
@@ -305,9 +361,8 @@ class Dashboard extends React.Component {
     );
 
     var parser = new N3.Parser({ format: "N3", blankNodePrefix: "" });
-
+    console.log(this.state.formProperties);
     data.nodes.map((node, key) => {
-      // console.log(node);
       writer.addQuad(
         namedNode("urn:example:demo/" + node.properties.name),
         namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), //predicate
@@ -335,7 +390,14 @@ class Dashboard extends React.Component {
 
       //File Model Reader
       if (node.type === "Reader/FileModelReader") {
-        console.log(node.properties);
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type === "Reader/FileModelReader"
+        ) {
+          node.properties.name = this.state.properties.name;
+          node.properties.fromUri = this.state.formProperties.fromUri;
+          node.properties.fromPath = this.state.formProperties.fromPath;
+        }
         if (node.properties.fromUri) {
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
@@ -354,6 +416,15 @@ class Dashboard extends React.Component {
 
       //Sparql Model Reader
       if (node.type === "Reader/SparqlModelReader") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type === "Reader/SparqlModelReader"
+        ) {
+          node.properties.name = this.state.formProperties.name;
+          node.properties.fromEndpoint = this.state.formProperties.fromEndpoint;
+          node.properties.sparqlDescribeOf = this.state.formProperties.useSparqlDescribeOf;
+          node.properties.useSparqlConstruct = this.state.formProperties.useSparqlConstruct;
+        }
         if (node.properties.fromEndpoint) {
           console.log();
           writer.addQuad(
@@ -381,6 +452,14 @@ class Dashboard extends React.Component {
 
       //File Model Writer
       if (node.type === "writer/FileModelWriter") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type === "Reader/FileModelWriter"
+        ) {
+          node.properties.name = this.state.formProperties.name;
+          node.properties.outputFile = this.state.formProperties.outputFile;
+          node.properties.outputFormat = this.state.formProperties.outputFormat;
+        }
         if (node.properties.outputFile && node.properties.outputFormat) {
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
@@ -398,9 +477,16 @@ class Dashboard extends React.Component {
       //Filter Enrichment Operator
       if (node.type === "operator/FilterEnrichmentOperator") {
         if (
-          node.properties.showSelector &&
-          node.properties.showSelector === "Selectors"
+          this.state.formProperties &&
+          this.state.formProperties.node.type ===
+            "operator/FilterEnrichmentOperator"
         ) {
+          node.properties.name = this.state.formProperties.name;
+          node.properties.selector = this.state.formProperties.selector;
+          node.properties.resource = this.state.formProperties.resource;
+          node.properties.sparqlConstructQuery = this.state.formProperties.sparqlConstructQuery;
+        }
+        if (node.properties.selector) {
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
             namedNode("http://w3id.org/deer/" + "selector"), //predicate
@@ -413,10 +499,26 @@ class Dashboard extends React.Component {
               },
             ])
           );
+        } else if (node.properties.sparqlConstructQuery) {
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/deer/" + "sparqlConstructQuery"),
+            literal(node.properties.sparqlConstructQuery)
+          );
         }
       }
       //Dereferencing enrichment Operator
       if (node.type === "operator/DereferencingEnrichmentOperator") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type ===
+            "operator/DereferencingEnrichmentOperator"
+        ) {
+          node.properties.name = this.state.properties.name;
+          node.properties.lookUpPrefix = this.state.formProperties.lookUpPrefix;
+          node.properties.dereferencingProperty = this.state.formProperties.dereferencingProperty;
+          node.properties.importProperty = this.state.formProperties.importProperty;
+        }
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/operation"),
@@ -441,6 +543,15 @@ class Dashboard extends React.Component {
 
       //GeoFusion Enrichment Operator
       if (node.type === "operator/GeoFusionEnrichmentOperator") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type ===
+            "operator/GeoFusionEnrichmentOperator"
+        ) {
+          node.properties.name = this.state.properties.name;
+          node.properties.fusionAction = this.state.formProperties.fusionAction;
+          node.properties.mergeOtherStatements = this.state.formProperties.mergeOtherStatements;
+        }
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/fusionAction"),
@@ -456,6 +567,15 @@ class Dashboard extends React.Component {
 
       //Authority Conformation Enrichment Operator
       if (node.type === "operator/AuthorityConformationEnrichmentOperator") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type ===
+            "operator/AuthorityConformationEnrichmentOperator"
+        ) {
+          node.properties.name = this.state.properties.name;
+          node.properties.sourceSubjectAuthority = this.state.formProperties.sourceSubjectAuthority;
+          node.properties.targetSubjectAuthority = this.state.formProperties.targetSubjectAuthority;
+        }
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/operation"),
@@ -478,6 +598,15 @@ class Dashboard extends React.Component {
 
       //Predicate Conformation Enrichment Operator
       if (node.type === "operator/PredicateConformationEnrichmentOperator") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type ===
+            "operator/PredicateConformationEnrichmentOperator"
+        ) {
+          node.properties.name = this.state.properties.name;
+          node.properties.sourcePredicate = this.state.formProperties.sourcePredicate;
+          node.properties.targetPredicate = this.state.formProperties.targetPredicate;
+        }
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/operation"),
@@ -496,6 +625,15 @@ class Dashboard extends React.Component {
 
       //GeoDistance Enrichment Operator
       if (node.type === "operator/GeoDistanceEnrichmentOperator") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type ===
+            "operator/GeoDistanceEnrichmentOperator"
+        ) {
+          node.properties.name = this.state.properties.name;
+          node.properties.selectPredicate = this.state.formProperties.selectPredicate;
+          node.properties.distancePredicate = this.state.formProperties.distancePredicate;
+        }
         writer.addQuad(
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/" + "selectPredicate"),
@@ -505,6 +643,86 @@ class Dashboard extends React.Component {
           namedNode("urn:example:demo/" + node.properties.name),
           namedNode("http://w3id.org/deer/" + "distancePredicate"),
           namedNode(node.properties.distancePredicate)
+        );
+      }
+
+      if (node.type === "operator/LinkingEnrichmentOperator") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type ===
+            "operator/LinkingEnrichmentOperator"
+        ) {
+          node.properties.name = this.state.properties.name;
+          node.properties.specFile = this.state.formProperties.specFile;
+          node.properties.linksPart = this.state.formProperties.linksPart;
+          node.properties.selectMode = this.state.formProperties.selectMode;
+          node.properties.linkSpecification = this.state.formProperties.linkSpecification;
+          node.properties.linkingPredicate = this.state.formProperties.linkingPredicate;
+          node.properties.threshold = this.state.formProperties.threshold;
+        }
+        writer.addQuad(
+          namedNode("urn:example:demo/" + node.properties.name),
+          namedNode("http://w3id.org/deer/" + "selectPredicate"),
+          namedNode(node.properties.selectPredicate)
+        );
+        writer.addQuad(
+          namedNode("urn:example:demo/" + node.properties.name),
+          namedNode("http://w3id.org/deer/" + "distancePredicate"),
+          namedNode(node.properties.distancePredicate)
+        );
+      }
+
+      //NER Enrichment Operator
+      if (node.type === "operator/NEREnrichmentOperator") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type ===
+            "operator/NEREnrichmentOperator"
+        ) {
+          node.properties.name = this.state.properties.name;
+          node.properties.literalProperty = this.state.formProperties.literalProperty;
+          node.properties.importProperty = this.state.formProperties.importProperty;
+          node.properties.neType = this.state.formProperties.neType;
+          node.properties.foxUrl = this.state.formProperties.foxUrl;
+        }
+
+        writer.addQuad(
+          namedNode("urn:example:demo/" + node.properties.name),
+          namedNode("http://w3id.org/deer/" + "literalProperty"),
+          namedNode(node.properties.literalProperty)
+        );
+        writer.addQuad(
+          namedNode("urn:example:demo/" + node.properties.name),
+          namedNode("http://w3id.org/deer/" + "importProperty"),
+          namedNode(node.properties.distancePredimportPropertyicate)
+        );
+        writer.addQuad(
+          namedNode("urn:example:demo/" + node.properties.name),
+          namedNode("http://w3id.org/deer/" + "foxUrl"),
+          namedNode(node.properties.foxUrl)
+        );
+        writer.addQuad(
+          namedNode("urn:example:demo/" + node.properties.name),
+          namedNode("http://w3id.org/deer/" + "neType"),
+          literal(node.properties.neType)
+        );
+      }
+
+      //Sparql Update Enrichment Operator
+      if (node.type === "operator/SparqlUpdateEnrichmentOperator") {
+        if (
+          this.state.formProperties &&
+          this.state.formProperties.node.type ===
+            "operator/NEREnrichmentOperator"
+        ) {
+          node.properties.name = this.state.properties.name;
+          node.properties.sparqlUpdateQuery = this.state.formProperties.sparqlUpdateQuery;
+        }
+
+        writer.addQuad(
+          namedNode("urn:example:demo/" + node.properties.name),
+          namedNode("http://w3id.org/deer/" + "sparqlUpdateQuery"),
+          literal(node.properties.sparqlUpdateQuery)
         );
       }
     });
@@ -626,6 +844,7 @@ class Dashboard extends React.Component {
   handleNamespaceChange = (event) => {
     this.setState({
       namespace: event.target.value,
+      isDisabled: false,
     });
   };
 
@@ -802,7 +1021,7 @@ class Dashboard extends React.Component {
                 <CardTitle tag="h5">Graph</CardTitle>
               </CardHeader>
               <CardBody>
-                <canvas id="mycanvas" width="800" height="600"></canvas>{" "}
+                <canvas id="mycanvas" height="600" width="1000"></canvas>{" "}
               </CardBody>
               <CardFooter>
                 <hr />
@@ -861,7 +1080,7 @@ class Dashboard extends React.Component {
           <Col md="3">
             {this.state.componentArray.map((comp, key) => {
               if (this.state.node.title === comp.title) {
-                return comp.src;
+                return comp.form;
               }
             })}
           </Col>

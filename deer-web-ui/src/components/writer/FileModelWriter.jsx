@@ -40,6 +40,9 @@ class FileModelWriter extends React.Component {
           return;
         }
         that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
       }
     );
 
@@ -52,6 +55,9 @@ class FileModelWriter extends React.Component {
           return;
         }
         that.setProperty("outputFile", v);
+        if (document.getElementById("outputFile")) {
+          document.getElementById("outputFile").value = v;
+        }
       }
     );
 
@@ -64,6 +70,9 @@ class FileModelWriter extends React.Component {
           return;
         }
         that.setProperty("outputFormat", v);
+        if (document.getElementById("outputFormat")) {
+          document.getElementById("outputFormat").value = v;
+        }
       }
     );
 
@@ -84,6 +93,24 @@ class FileModelWriter extends React.Component {
     this.setOutputData(0, ++a);
   }
 
+  handleChange = (event) => {
+    let value = event.target.value;
+    this.setState({
+      [event.target.name]: value,
+    });
+  };
+
+  submitForm = () => {
+    var properties = {
+      node: FileModelWriter,
+      name: this.state["name"],
+      outputFile: this.state["outputFile"],
+      outputFormat: this.state["outputFormat"],
+    };
+
+    this.props.parentCallback(properties);
+  };
+
   render() {
     return (
       <Card className="card-stats">
@@ -94,12 +121,34 @@ class FileModelWriter extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                placeholder="Node name"
+                onChange={this.handleChange}
+                name="name"
+                id="name"
+              />
+            </FormGroup>
+            <FormGroup>
               <Label>Output File</Label>
-              <Input type="text" placeholder="deer:outputFile" />
+              <Input
+                type="text"
+                placeholder="deer:outputFile"
+                onChange={this.handleChange}
+                name="outputFile"
+                id="outputFile"
+              />
             </FormGroup>
             <FormGroup>
               <Label>Output Format</Label>
-              <Input type="text" placeholder="deer:outputFormat" />
+              <Input
+                type="text"
+                placeholder="deer:outputFormat"
+                onChange={this.handleChange}
+                name="outputFormat"
+                id="outputFormat"
+              />
             </FormGroup>
           </Form>
         </CardBody>
@@ -107,7 +156,7 @@ class FileModelWriter extends React.Component {
           <Button
             className="btn-round"
             color="primary"
-            // onClick={this.addNewPrefixes}
+            onClick={this.submitForm}
           >
             Save
           </Button>

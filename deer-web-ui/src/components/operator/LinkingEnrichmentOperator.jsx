@@ -36,8 +36,8 @@ class LinkingEnrichmentOperator extends React.Component {
       selectedOption: null,
     };
 
-    this.addInput("input", "text");
-    this.addInput("input", "text");
+    this.addInput("input1", "text");
+    this.addInput("input2", "text");
 
     this.properties = {
       name: "",
@@ -49,7 +49,21 @@ class LinkingEnrichmentOperator extends React.Component {
     };
 
     var that = this;
-    var show = true;
+
+    this.name_widget = this.addWidget(
+      "text",
+      "Name",
+      this.properties.name,
+      function (v) {
+        if (!v) {
+          return;
+        }
+        that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
+      }
+    );
 
     this.specFile = this.addWidget(
       "text",
@@ -60,6 +74,9 @@ class LinkingEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("specFile", v);
+        if (document.getElementById("specFile")) {
+          document.getElementById("specFile").value = v;
+        }
       }
     );
 
@@ -72,6 +89,9 @@ class LinkingEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("linksPart", v);
+        if (document.getElementById("linksPart")) {
+          document.getElementById("linksPart").value = v;
+        }
       },
       { values: ["source", "target"] }
     );
@@ -95,6 +115,9 @@ class LinkingEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("selectMode", v);
+        if (document.getElementById("selectMode")) {
+          document.getElementById("selectMode").value = v;
+        }
       },
       { values: ["all", "best1toN", "best1to1", "best"] }
     );
@@ -108,6 +131,9 @@ class LinkingEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("linkSpecification", v);
+        if (document.getElementById("linkSpecification")) {
+          document.getElementById("linkSpecification").value = v;
+        }
       }
     );
 
@@ -120,6 +146,9 @@ class LinkingEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("linkingPredicate", v);
+        if (document.getElementById("linkingPredicate")) {
+          document.getElementById("linkingPredicate").value = v;
+        }
       }
     );
 
@@ -132,10 +161,15 @@ class LinkingEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("threshold", v);
+        if (document.getElementById("threshold")) {
+          document.getElementById("threshold").value = v;
+        }
       }
     );
 
-    this.addOutput("output", "text");
+    this.addOutput("output1", "text");
+    this.addOutput("output2", "text");
+    this.addOutput("output3", "text");
 
     this.title = "Linking Enrichment Operator";
     this.color = "#816204";
@@ -148,9 +182,30 @@ class LinkingEnrichmentOperator extends React.Component {
     }));
   };
 
-  handleChange = (selectedOption) => {
-    this.setState({ selectedOption });
-    console.log(`Option selected:`, selectedOption);
+  handleSelectChange = (selectedOption) => {
+    this.setState({ selectedOption, selectMode: selectedOption.value });
+  };
+
+  submitForm = () => {
+    var properties = {
+      node: LinkingEnrichmentOperator,
+      name: this.state["name"],
+      specFile: this.state["specFile"],
+      linksPart: this.state["linksPart"],
+      selectMode: this.state["selectMode"],
+      linkSpecification: this.state["linkSpecification"],
+      linkingPredicate: this.state["linkingPredicate"],
+      threshold: this.state["threshold"],
+    };
+
+    this.props.parentCallback(properties);
+  };
+
+  handleChange = (event) => {
+    let value = event.target.value;
+    this.setState({
+      [event.target.name]: value,
+    });
   };
 
   render() {
@@ -163,27 +218,88 @@ class LinkingEnrichmentOperator extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                onChange={this.handleChange}
+                placeholder="Node name"
+                name="name"
+                id="name"
+              />
+            </FormGroup>
+            <FormGroup>
               <Label>Spec File:</Label>
-              <Input type="text" placeholder="deer:specFile" />
+              <Input
+                type="text"
+                placeholder="deer:specFile"
+                onChange={this.handleChange}
+                name="specFile"
+                id="specFile"
+              />
             </FormGroup>
             <FormGroup tag="fieldset">
-              <legend>Select</legend>
+              <legend>LinksPart</legend>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="radio1" /> Source
+                  <Input
+                    type="radio"
+                    name="radio1"
+                    value="Source"
+                    onChange={this.handleChange}
+                  />{" "}
+                  Source
                 </Label>
               </FormGroup>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="radio1" /> Target
+                  <Input
+                    type="radio"
+                    name="radio1"
+                    value="Target"
+                    onChange={this.handleChange}
+                  />{" "}
+                  Target
                 </Label>
               </FormGroup>
             </FormGroup>
             <FormGroup>
+              <Label>Select Mode</Label>
               <Select
                 value={this.state.selectedOption}
-                onChange={this.handleChange}
+                onChange={this.handleSelectChange}
                 options={options}
+                name="selectMode"
+                id="selectMode"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>Link Specification:</Label>
+              <Input
+                type="text"
+                placeholder="deer:linkSpecification"
+                onChange={this.handleChange}
+                name="linkSpecification"
+                id="linkSpecification"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>Linking Predicate:</Label>
+              <Input
+                type="text"
+                placeholder="deer:linkingPredicate"
+                onChange={this.handleChange}
+                name="linkingPredicate"
+                id="linkingPredicate"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>Threshold:</Label>
+              <Input
+                type="text"
+                placeholder="deer:threshold"
+                onChange={this.handleChange}
+                name="threshold"
+                id="threshold"
               />
             </FormGroup>
           </Form>
@@ -192,7 +308,7 @@ class LinkingEnrichmentOperator extends React.Component {
           <Button
             className="btn-round"
             color="primary"
-            // onClick={this.addNewPrefixes}
+            onClick={this.submitForm}
           >
             Save
           </Button>

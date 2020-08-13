@@ -5,14 +5,14 @@ class MergeEnrichmentOperator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSelectors: true
+      showSelectors: true,
     };
 
     this.addInput("input", "text");
     this.properties = {
       name: "",
       node_1: "",
-      node_2: ""
+      node_2: "",
     };
 
     var that = this;
@@ -22,7 +22,7 @@ class MergeEnrichmentOperator extends React.Component {
       "text",
       "deer:node_1",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }
@@ -33,7 +33,7 @@ class MergeEnrichmentOperator extends React.Component {
       "text",
       "deer:node_2",
       this.properties.name,
-      function(v) {
+      function (v) {
         if (!v) {
           return;
         }

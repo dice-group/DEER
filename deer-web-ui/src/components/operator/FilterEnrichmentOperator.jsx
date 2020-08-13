@@ -1,24 +1,24 @@
 import React, { Fragment } from "react";
 import "litegraph.js/css/litegraph.css";
-
+import Select from "react-select";
 // reactstrap components
 import {
-  Row,
-  Col,
   Button,
   Form,
   FormGroup,
   Input,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  DropdownMenu,
   Label,
   CardBody,
   Card,
   CardTitle,
   CardFooter,
 } from "reactstrap";
+
+const options = [
+  { value: "subject", label: "Subject" },
+  { value: "predicate", label: "Predicate" },
+  { value: "object", label: "Object" },
+];
 
 class FilterEnrichmentOperator extends React.Component {
   constructor(props) {
@@ -27,6 +27,8 @@ class FilterEnrichmentOperator extends React.Component {
       showSelectors: true,
       endpoints: [],
       dropdownOpen: true,
+      showSelector: false,
+      selectedOption: "selector",
     };
 
     fetch("./lod-data.json")
@@ -51,7 +53,7 @@ class FilterEnrichmentOperator extends React.Component {
     this.addInput("input", "text");
     this.properties = {
       name: "",
-      showSelector: "number",
+      showSelector: "",
       selector: "",
       resource: "",
     };
@@ -61,13 +63,16 @@ class FilterEnrichmentOperator extends React.Component {
 
     this.name_widget_1 = this.addWidget(
       "text",
-      "Operator name",
+      "Name",
       this.properties.name,
       function (v) {
         if (!v) {
           return;
         }
         that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
       }
     );
 
@@ -80,6 +85,9 @@ class FilterEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("showSelector", v);
+        if (document.getElementById("showSelector")) {
+          document.getElementById("showSelector").value = v;
+        }
       },
       { values: ["Selectors", "Construct Query"] }
     );
@@ -103,6 +111,9 @@ class FilterEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("selector", v);
+        if (document.getElementById("selector")) {
+          document.getElementById("selector").value = v;
+        }
       },
       { values: ["subject", "predicate", "object"] }
     );
@@ -116,6 +127,24 @@ class FilterEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("resource", v);
+        if (document.getElementById("resource")) {
+          document.getElementById("resource").value = v;
+        }
+      }
+    );
+
+    this.name_widget = this.addWidget(
+      "text",
+      "Add resource",
+      this.properties.name,
+      function (v) {
+        if (!v) {
+          return;
+        }
+        that.setProperty("sparqlConstructQuery", v);
+        if (document.getElementById("sparqlConstructQuery")) {
+          document.getElementById("sparqlConstructQuery").value = v;
+        }
       }
     );
 
@@ -132,6 +161,46 @@ class FilterEnrichmentOperator extends React.Component {
     }));
   };
 
+  submitForm = () => {
+    var properties = {
+      node: FilterEnrichmentOperator,
+      name: this.state["name"],
+      selector: this.state["selector"],
+      resource: this.state["resource"],
+      sparqlConstructQuery: this.state["sparqlConstructQuery"],
+    };
+
+    this.props.parentCallback(properties);
+  };
+
+  handleSelectChange = (selectedOption) => {
+    this.setState({ selectedOption, selector: selectedOption.value });
+  };
+
+  handleRadioChange = (event) => {
+    this.setState({
+      radioOption: event.target.value,
+    });
+
+    if (event.target.value === "selector") {
+      this.setState({
+        showSelector: true,
+      });
+    } else if (event.target.value === "sparqlConstructQuery") {
+      this.setState({
+        showSelector: false,
+      });
+    }
+  };
+
+  handleChange = (event) => {
+    event.preventDefault();
+    let value = event.target.value;
+    this.setState({
+      [event.target.name]: value,
+    });
+  };
+
   render() {
     return (
       <Card className="card-stats">
@@ -141,37 +210,87 @@ class FilterEnrichmentOperator extends React.Component {
         </div>
         <CardBody>
           <Form>
+            <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                onChange={this.handleChange}
+                placeholder="Node name"
+                name="name"
+                id="name"
+              />
+            </FormGroup>
+
             <FormGroup tag="fieldset">
               <legend>Select:</legend>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="radio1" /> Selector
+                  <Input
+                    type="radio"
+                    name="radio1"
+                    value="selector"
+                    onChange={this.handleRadioChange}
+                    checked={this.state.radioOption === "selector"}
+                  />{" "}
+                  Selector
                 </Label>
               </FormGroup>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="radio1" /> Construct Query
+                  <Input
+                    type="radio"
+                    name="radio1"
+                    value="sparqlConstructQuery"
+                    onChange={this.handleRadioChange}
+                    checked={this.state.radioOption === "sparqlConstructQuery"}
+                  />{" "}
+                  Construct Query
                 </Label>
               </FormGroup>
             </FormGroup>
 
-            <FormGroup>
-              <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-                <DropdownToggle caret>Select</DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem>Subject</DropdownItem>
-                  <DropdownItem>Predicate</DropdownItem>
-                  <DropdownItem>Object</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </FormGroup>
+            {this.state.showSelector ? (
+              <div>
+                <FormGroup>
+                  <Label>Selector</Label>
+                  <Select
+                    value={this.state.selectedOption}
+                    onChange={this.handleSelectChange}
+                    options={options}
+                    name="selector"
+                    id="selector"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Name</Label>
+                  <Input
+                    type="text"
+                    onChange={this.handleChange}
+                    placeholder="Enter resource"
+                    name="resource"
+                    id="resource"
+                  />
+                </FormGroup>
+              </div>
+            ) : (
+              <FormGroup>
+                <Label>Use Sparql Construct</Label>
+                <Input
+                  type="textarea"
+                  placeholder="deer:sparqlConstructQuery"
+                  onChange={this.handleChange}
+                  name="sparqlConstructQuery"
+                  id="sparqlConstructQuery"
+                />
+              </FormGroup>
+            )}
           </Form>
         </CardBody>
         <CardFooter>
           <Button
             className="btn-round"
             color="primary"
-            // onClick={this.addNewPrefixes}
+            onClick={this.submitForm}
           >
             Save
           </Button>

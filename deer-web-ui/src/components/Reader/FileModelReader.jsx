@@ -14,10 +14,6 @@ import {
   Card,
   CardTitle,
   CardFooter,
-  Modal,
-  ModalFooter,
-  ModalBody,
-  ModalHeader,
 } from "reactstrap";
 
 class FileModelReader extends React.Component {
@@ -36,6 +32,7 @@ class FileModelReader extends React.Component {
       endpoints: [],
       showForm: "",
       readerCount: 0,
+      name: "",
       fromUri: "",
       fromPath: "",
       modal: true,
@@ -49,29 +46,42 @@ class FileModelReader extends React.Component {
       this.properties.name,
       function (v) {
         if (!v) {
+          that.setProperty("name", this.state.name);
           return;
         }
         that.setProperty("name", v);
+        if (document.getElementById("readerName")) {
+          document.getElementById("readerName").value = v;
+        }
       }
     );
-    this.addWidget("text", "deer:fromUri", this.properties.name, function (v) {
-      if (!v) {
-        return;
+    this.fromUriWidget = this.addWidget(
+      "text",
+      "deer:fromUri",
+      this.properties.fromUri,
+      function (v) {
+        if (!v) {
+          return;
+        }
+        that.setProperty("fromUri", v);
+        if (document.getElementById("fromUri")) {
+          document.getElementById("fromUri").value = v;
+        }
       }
-      that.setProperty("fromUri", v);
-      // that.setFromUri(v);
-    });
+    );
 
-    this.name_widget = this.addWidget(
+    this.fromPathWidget = this.addWidget(
       "text",
       "deer:fromPath",
-      this.properties.name,
+      this.properties.fromPath,
       function (v) {
         if (!v) {
           return;
         }
         that.setProperty("fromPath", v);
-        //  that.setFromPath(v);
+        if (document.getElementById("fromPath")) {
+          document.getElementById("fromPath").value = v;
+        }
       }
     );
 
@@ -91,15 +101,22 @@ class FileModelReader extends React.Component {
     };
   }
 
-  setFromUri = (uri) => {
+  handleChange = (event) => {
     this.setState({
-      uri: uri,
+      [event.target.name]: event.target.value,
     });
+
+    //this.name_widget.value = event.target.value;
   };
 
-  setFromPath = (path) => {
+  handleFromUriChange = (event) => {
     this.setState({
-      path: path,
+      fromUri: event.target.value,
+    });
+  };
+  handleFromPathChange = (event) => {
+    this.setState({
+      fromPath: event.target.value,
     });
   };
 
@@ -110,24 +127,16 @@ class FileModelReader extends React.Component {
     });
   };
 
-  // handleFromUriChange = (event) => {
-  //   this.setState({
-  //     fromUri: event.target.value,
-  //   });
-  // };
+  submitFormData = () => {
+    //event.preventDefault();
+    var properties = {
+      node: FileModelReader,
+      name: this.state.name,
+      fromUri: this.state.fromUri,
+      fromPath: this.state.fromPath,
+    };
 
-  // handleFromPathChange = (event) => {
-  //   var that = this;
-  //   this.setState({
-  //     fromPath: event.target.value,
-  //   });
-  //   that.setProperty("fromPath", event.target.value);
-  // };
-
-  submitFormData = (event) => {
-    event.preventDefault();
-    console.log(this.state.fromUri);
-    console.log(this.state.fromPath);
+    this.props.parentCallback(properties);
   };
 
   render() {
@@ -155,12 +164,23 @@ class FileModelReader extends React.Component {
           <CardBody>
             <Form>
               <FormGroup>
+                <Label>Name</Label>
+                <Input
+                  type="text"
+                  placeholder="Node name"
+                  onChange={this.handleName}
+                  id="readerName"
+                  name="name"
+                />
+              </FormGroup>
+              <FormGroup>
                 <Label>deer:fromUri</Label>
                 <Input
                   type="text"
                   placeholder="fromUri"
-                  //onChange={this.handleFromUriChange}
-                  defaultValue={this.state.fromUri}
+                  onChange={this.handleFromUriChange}
+                  id="fromUri"
+                  name="fromUri"
                 />
               </FormGroup>
               <FormGroup>
@@ -168,8 +188,9 @@ class FileModelReader extends React.Component {
                 <Input
                   type="text"
                   placeholder="fromPath"
-                  defaultValue={this.state.fromPath}
-                  //onChange={this.handleFromPathChange}
+                  onChange={this.handleFromPathChange}
+                  id="fromPath"
+                  name="fromPath"
                 />
               </FormGroup>
             </Form>

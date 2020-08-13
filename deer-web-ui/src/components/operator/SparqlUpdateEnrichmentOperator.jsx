@@ -32,17 +32,34 @@ class SparqlUpdateEnrichmentOperator extends React.Component {
     };
 
     var that = this;
-    var show = true;
 
     this.sparqlUpdateQuery = this.addWidget(
       "text",
-      "deer:sparqlUpdateQuery",
+      "Name",
       this.properties.name,
       function (v) {
         if (!v) {
           return;
         }
+        that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
+      }
+    );
+
+    this.sparqlUpdateQuery = this.addWidget(
+      "text",
+      "deer:sparqlUpdateQuery",
+      this.properties.sparqlUpdateQuery,
+      function (v) {
+        if (!v) {
+          return;
+        }
         that.setProperty("sparqlUpdateQuery", v);
+        if (document.getElementById("sparqlUpdateQuery")) {
+          document.getElementById("sparqlUpdateQuery").value = v;
+        }
       }
     );
 
@@ -52,6 +69,23 @@ class SparqlUpdateEnrichmentOperator extends React.Component {
     this.color = "#816204";
     this.bgcolor = "#bb8b2c";
   }
+
+  handleChange = (event) => {
+    let value = event.target.value;
+    this.setState({
+      [event.target.name]: value,
+    });
+  };
+
+  submitForm = () => {
+    var properties = {
+      node: SparqlUpdateEnrichmentOperator,
+      name: this.state["name"],
+      sparqlUpdateQuery: this.state["sparqlUpdateQuery"],
+    };
+
+    this.props.parentCallback(properties);
+  };
 
   render() {
     return (
@@ -63,11 +97,23 @@ class SparqlUpdateEnrichmentOperator extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                placeholder="Node name"
+                onChange={this.handleChange}
+                name="name"
+                id="name"
+              />
+            </FormGroup>
+            <FormGroup>
               <Label>Sparql Update Query</Label>
               <Input
                 type="textarea"
-                name="text"
+                name="sparqlUpdateQuery"
+                id="sparqlUpdateQuery"
                 placeholder="deer:sparqlUpdateQuery"
+                onChange={this.handleChange}
               />
             </FormGroup>
           </Form>
@@ -76,7 +122,7 @@ class SparqlUpdateEnrichmentOperator extends React.Component {
           <Button
             className="btn-round"
             color="primary"
-            // onClick={this.addNewPrefixes}
+            onClick={this.submitForm}
           >
             Save
           </Button>

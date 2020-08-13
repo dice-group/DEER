@@ -46,6 +46,9 @@ class PredicateConformationEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
       }
     );
 
@@ -58,6 +61,9 @@ class PredicateConformationEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("sourcePredicate", v);
+        if (document.getElementById("sourcePredicate")) {
+          document.getElementById("sourcePredicate").value = v;
+        }
       }
     );
 
@@ -70,6 +76,9 @@ class PredicateConformationEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("targetPredicate", v);
+        if (document.getElementById("targetPredicate")) {
+          document.getElementById("targetPredicate").value = v;
+        }
       }
     );
 
@@ -79,6 +88,24 @@ class PredicateConformationEnrichmentOperator extends React.Component {
     this.color = "#816204";
     this.bgcolor = "#bb8b2c";
   }
+
+  submitForm = () => {
+    var properties = {
+      node: PredicateConformationEnrichmentOperator,
+      name: this.state["name"],
+      sourcePredicate: this.state["sourcePredicate"],
+      targetPredicate: this.state["targetPredicate"],
+    };
+
+    this.props.parentCallback(properties);
+  };
+
+  handleChange = (event) => {
+    let value = event.target.value;
+    this.setState({
+      [event.target.name]: value,
+    });
+  };
 
   render() {
     return (
@@ -90,12 +117,34 @@ class PredicateConformationEnrichmentOperator extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                placeholder="Node name"
+                onChange={this.handleChange}
+                name="name"
+                id="name"
+              />
+            </FormGroup>
+            <FormGroup>
               <Label>Source Predicate</Label>
-              <Input type="text" placeholder="deer:sourcePredicate" />
+              <Input
+                type="text"
+                placeholder="deer:sourcePredicate"
+                onChange={this.handleChange}
+                name="sourcePredicate"
+                id="sourcePredicate"
+              />
             </FormGroup>
             <FormGroup>
               <Label>Target Predicate</Label>
-              <Input type="text" placeholder="deer:targetPredicate" />
+              <Input
+                type="text"
+                placeholder="deer:targetPredicate"
+                onChange={this.handleChange}
+                name="targetPredicate"
+                id="targetPredicate"
+              />
             </FormGroup>
           </Form>
         </CardBody>

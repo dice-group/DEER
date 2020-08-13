@@ -52,6 +52,9 @@ class GeoFusionEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
       }
     );
 
@@ -64,6 +67,9 @@ class GeoFusionEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("fusionAction", v);
+        if (document.getElementById("fusionAction")) {
+          document.getElementById("fusionAction").value = v;
+        }
       },
       { values: ["takeA", "takeB", "takeAll", "takeMostDetailed"] }
     );
@@ -77,6 +83,9 @@ class GeoFusionEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("mergeOtherStatements", v);
+        if (document.getElementById("mergeOtherStatements")) {
+          document.getElementById("mergeOtherStatements").value = v;
+        }
       }
     );
 
@@ -87,9 +96,27 @@ class GeoFusionEnrichmentOperator extends React.Component {
     this.bgcolor = "#bb8b2c";
   }
 
-  handleChange = (selectedOption) => {
-    this.setState({ selectedOption });
+  handleSelectChange = (selectedOption) => {
+    this.setState({ selectedOption: selectedOption.value });
     console.log(`Option selected:`, selectedOption);
+  };
+
+  submitForm = () => {
+    var properties = {
+      node: GeoFusionEnrichmentOperator,
+      name: this.state["name"],
+      fusionAction: this.state["selectedOption"],
+      mergeOtherStatements: this.state["mergeOtherStatements"],
+    };
+
+    this.props.parentCallback(properties);
+  };
+
+  handleChange = (event) => {
+    let value = event.target.value;
+    this.setState({
+      [event.target.name]: value,
+    });
   };
 
   render() {
@@ -102,17 +129,35 @@ class GeoFusionEnrichmentOperator extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                onChange={this.handleChange}
+                placeholder="Node name"
+                name="name"
+                id="name"
+              />
+            </FormGroup>
+            <FormGroup>
               <Label>Fusion Action</Label>
               <Select
                 value={this.state.selectedOption}
-                onChange={this.handleChange}
+                onChange={this.handleSelectChange}
                 options={options}
                 placeholder="deer:fusionAction"
+                name="fusionAction"
+                id="fusionAction"
               />
             </FormGroup>
             <FormGroup>
               <Label>Merge other statements?</Label>
-              <Input type="text" placeholder="deer:mergeOtherStatements" />
+              <Input
+                type="text"
+                placeholder="deer:mergeOtherStatements"
+                onChange={this.handleChange}
+                name="mergeOtherStatements"
+                id="mergeOtherStatements"
+              />
             </FormGroup>
           </Form>
         </CardBody>

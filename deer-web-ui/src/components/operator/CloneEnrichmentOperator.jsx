@@ -25,6 +25,9 @@ class CloneEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
       }
     );
 

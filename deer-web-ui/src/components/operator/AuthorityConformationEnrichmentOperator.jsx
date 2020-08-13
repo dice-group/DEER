@@ -3,21 +3,15 @@ import "litegraph.js/css/litegraph.css";
 
 // reactstrap components
 import {
-  Row,
-  Col,
   Button,
   Form,
   FormGroup,
   Input,
-  Dropdown,
-  DropdownItem,
   Label,
   CardBody,
   Card,
   CardTitle,
   CardFooter,
-  DropdownMenu,
-  DropdownToggle,
 } from "reactstrap";
 
 class AuthorityConformationEnrichmentOperator extends React.Component {
@@ -46,6 +40,9 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
       }
     );
 
@@ -58,6 +55,9 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("sourceSubjectAuthority", v);
+        if (document.getElementById("sourceSubjectAuthority")) {
+          document.getElementById("sourceSubjectAuthority").value = v;
+        }
       }
     );
 
@@ -70,6 +70,9 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
           return;
         }
         that.setProperty("targetSubjectAuthority", v);
+        if (document.getElementById("targetSubjectAuthority")) {
+          document.getElementById("targetSubjectAuthority").value = v;
+        }
       }
     );
 
@@ -79,6 +82,24 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
     this.color = "#816204";
     this.bgcolor = "#bb8b2c";
   }
+
+  submitForm = () => {
+    var properties = {
+      node: AuthorityConformationEnrichmentOperator,
+      name: this.state["name"],
+      sourceSubjectAuthority: this.state["sourceSubjectAuthority"],
+      targetSubjectAuthority: this.state["targetSubjectAuthority"],
+    };
+
+    this.props.parentCallback(properties);
+  };
+
+  handleChange = (event) => {
+    let value = event.target.value;
+    this.setState({
+      [event.target.name]: value,
+    });
+  };
 
   render() {
     return (
@@ -90,12 +111,34 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                placeholder="Node name"
+                onChange={this.handleChange}
+                name="name"
+                id="name"
+              />
+            </FormGroup>
+            <FormGroup>
               <Label>Source Subject Authority</Label>
-              <Input type="text" placeholder="deer:sourceSubjectAuthority" />
+              <Input
+                type="text"
+                placeholder="deer:sourceSubjectAuthority"
+                onChange={this.handleChange}
+                name="sourceSubjectAuthority"
+                id="sourceSubjectAuthority"
+              />
             </FormGroup>
             <FormGroup>
               <Label>Target Subject Authority</Label>
-              <Input type="text" placeholder="deer:targetSubjectAuthority" />
+              <Input
+                type="text"
+                placeholder="deer:targetSubjectAuthority"
+                onChange={this.handleChange}
+                name="targetSubjectAuthority"
+                id="targetSubjectAuthority"
+              />
             </FormGroup>
           </Form>
         </CardBody>

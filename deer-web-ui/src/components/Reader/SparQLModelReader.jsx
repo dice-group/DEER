@@ -58,6 +58,9 @@ class SparqlModelReader extends React.Component {
           return;
         }
         that.setProperty("name", v);
+        if (document.getElementById("name")) {
+          document.getElementById("name").value = v;
+        }
       }
     );
     // this.addWidget(
@@ -81,6 +84,9 @@ class SparqlModelReader extends React.Component {
           return;
         }
         that.setProperty("fromEndpoint", v);
+        if (document.getElementById("fromEndpoint")) {
+          document.getElementById("fromEndpoint").value = v;
+        }
       }
     );
 
@@ -93,6 +99,9 @@ class SparqlModelReader extends React.Component {
           return;
         }
         that.setProperty("sparqlDescribeOf", v);
+        if (document.getElementById("sparqlDescribeOf")) {
+          document.getElementById("sparqlDescribeOf").value = v;
+        }
       }
     );
     this.useSparqlConstruct = this.addWidget(
@@ -104,6 +113,9 @@ class SparqlModelReader extends React.Component {
           return;
         }
         that.setProperty("useSparqlConstruct", v);
+        if (document.getElementById("useSparqlConstruct")) {
+          document.getElementById("useSparqlConstruct").value = v;
+        }
       }
     );
 
@@ -115,6 +127,24 @@ class SparqlModelReader extends React.Component {
     this.bgcolor = "#335533";
   }
 
+  handleChange = (event) => {
+    let value = event.target.value;
+    this.setState({
+      [event.target.name]: value,
+    });
+  };
+
+  submitForm = () => {
+    var properties = {
+      node: SparqlModelReader,
+      name: this.state["name"],
+      fromEndpoint: this.state["fromEndpoint"],
+      useSparqlDescribeOf: this.state["useSparqlDescribeOf"],
+      useSparqlConstruct: this.state["useSparqlConstruct"],
+    };
+
+    this.props.parentCallback(properties);
+  };
   render() {
     return (
       <Card className="card-stats">
@@ -125,16 +155,46 @@ class SparqlModelReader extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                placeholder="Node name"
+                onChange={this.handleChange}
+                name="name"
+                id="name"
+                required
+              />
+            </FormGroup>
+            <FormGroup>
               <Label>From endpoint:</Label>
-              <Input type="text" placeholder="deer:fromEndpoint" required />
+              <Input
+                type="text"
+                placeholder="deer:fromEndpoint"
+                onChange={this.handleChange}
+                name="fromEndpoint"
+                id="fromEndpoint"
+                required
+              />
             </FormGroup>
             <FormGroup>
               <Label>Use Sparql Describe of:</Label>
-              <Input type="text" placeholder="deer:useSparqlDescribeOf" />
+              <Input
+                type="text"
+                placeholder="deer:useSparqlDescribeOf"
+                onChange={this.handleChange}
+                name="useSparqlDescribeOf"
+                id="useSparqlDescribeOf"
+              />
             </FormGroup>
             <FormGroup>
               <Label>Use Sparql Construct</Label>
-              <Input type="textarea" placeholder="deer:useSparqlConstruct" />
+              <Input
+                type="textarea"
+                placeholder="deer:useSparqlConstruct"
+                onChange={this.handleChange}
+                name="useSparqlConstruct"
+                id="useSparqlConstruct"
+              />
             </FormGroup>
           </Form>
         </CardBody>
@@ -142,7 +202,7 @@ class SparqlModelReader extends React.Component {
           <Button
             className="btn-round"
             color="primary"
-            // onClick={this.addNewPrefixes}
+            onClick={this.submitForm}
           >
             Save
           </Button>
