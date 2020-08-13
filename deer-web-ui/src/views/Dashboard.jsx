@@ -89,6 +89,9 @@ class Dashboard extends React.Component {
       visible: false,
       requestID: "",
       showResultModal: false,
+      requestCompleteModal: false,
+      showConfigButton: false,
+      availableFiles: [],
       prefixes: {
         example: "urn:example:demo/",
         foaf: "http://xmlns.com/foaf/0.1/",
@@ -512,24 +515,22 @@ class Dashboard extends React.Component {
   };
 
   //TODO: Download the results
-  downloadFileConfig = (result) => {
-    var textFile = null,
-      makeTextFile = function (text) {
-        var data = new Blob([text], { type: "text/plain" });
-
-        textFile = window.URL.createObjectURL(data);
-
-        return textFile;
-      };
-
-    if (textFile !== null) {
-      window.URL.revokeObjectURL(textFile);
-    }
-
-    var link = document.getElementById("downloadlink");
-    link.href = makeTextFile(result);
-    link.style.display = "block";
-    //this.uploadFile(textFile);
+  downloadResults = (index) => {
+    console.log(this.state.availableFiles[index]);
+    fetch(
+      "http://localhost:8080/result/" +
+        this.state.requestID +
+        "/" +
+        this.state.availableFiles[index]
+    ).then((response) => {
+      response.blob().then((blob) => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = this.state.availableFiles[index];
+        a.click();
+      });
+    });
   };
 
   submitConfig = (result) => {
@@ -549,20 +550,41 @@ class Dashboard extends React.Component {
             visible: true,
           });
         } else if (res.requestId) {
-          console.log(res.requestId);
-          this.getStatusForRequest(res.requestId);
+          this.setState({
+            requestID: res.requestId,
+          });
+          this.interval = setInterval(this.getStatusForRequest, 1000);
         }
       });
   };
 
-  getStatusForRequest = (requestId) => {
-    console.log(requestId);
-    fetch("https://localhost:8080/status/" + requestId)
+  getStatusForRequest = () => {
+    fetch("http://localhost:8080/status/" + this.state.requestID)
       .then(function (response) {
-        return response;
+        return response.json();
       })
       .then((content) => {
-        // console.log(content);
+        if (content.status.code === 2) {
+          clearInterval(this.interval);
+          this.setState({
+            requestCompleteModal: true,
+            showConfigButton: true,
+          });
+          this.getResults();
+        }
+      });
+  };
+
+  getResults = () => {
+    fetch("http://localhost:8080/results/" + this.state.requestID)
+      .then(function (response) {
+        return response.json();
+      })
+      .then((content) => {
+        console.log(content.availableFiles);
+        this.setState({
+          availableFiles: content.availableFiles,
+        });
       });
   };
 
@@ -615,6 +637,12 @@ class Dashboard extends React.Component {
     });
   };
 
+  toggleRequestCompleteModal = () => {
+    this.setState({
+      requestCompleteModal: !this.state.requestCompleteModal,
+    });
+  };
+
   render() {
     const options = _.map(this.state.prefixOptions, (opt, index) => ({
       key: opt,
@@ -634,6 +662,19 @@ class Dashboard extends React.Component {
         </Modal>
 
         <Modal
+          isOpen={this.state.requestCompleteModal}
+          toggle={this.toggleRequestCompleteModal}
+        >
+          <ModalHeader toggle={this.toggleRequestCompleteModal}>
+            Status
+          </ModalHeader>
+          <ModalBody>
+            The results are ready. You can download them by clicking 'Show
+            Results'.
+          </ModalBody>
+        </Modal>
+
+        <Modal
           isOpen={this.state.showResultModal}
           toggle={this.toggleResultModal}
         >
@@ -642,25 +683,25 @@ class Dashboard extends React.Component {
             <Table>
               <thead>
                 <tr>
-                  <th>Job Id</th>
-                  <th>Status</th>
+                  <th>File</th>
                   <th>Download</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>
-                    <Button onClick={this.downloadResults}>
-                      <i
-                        className="fa fa-download"
-                        style={{ color: `white` }}
-                      />{" "}
-                      Download
-                    </Button>
-                  </td>
-                </tr>
+                {this.state.availableFiles.map((file, index) => (
+                  <tr key={index}>
+                    <td>{file}</td>
+                    <td>
+                      <Button onClick={() => this.downloadResults(index)}>
+                        <i
+                          className="fa fa-download"
+                          style={{ color: `white` }}
+                        />{" "}
+                        Download
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </ModalBody>
@@ -755,28 +796,31 @@ class Dashboard extends React.Component {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                  <a
+                  {/* <a
                     download="config.ttl"
                     id="downloadlink"
                     //style={{ display: "none" }}
                     ref="file"
-                  >
-                    <Button onClick={this.saveConfig}>
-                      <i className="fa fa-cog" style={{ color: `white` }} /> Run
-                      Configuration
-                    </Button>
-                  </a>
-
-                  <Button
-                    onClick={this.saveResults}
-                    style={{ marginLeft: `10px` }}
-                  >
-                    <i
-                      className="fa fa-sticky-note"
-                      style={{ color: `white` }}
-                    />{" "}
-                    Show results
+                  > */}
+                  <Button onClick={this.saveConfig}>
+                    <i className="fa fa-cog" style={{ color: `white` }} /> Run
+                    Configuration
                   </Button>
+                  {/* </a> */}
+                  {this.state.showConfigButton ? (
+                    <Button
+                      onClick={this.saveResults}
+                      style={{ marginLeft: `10px` }}
+                    >
+                      <i
+                        className="fa fa-sticky-note"
+                        style={{ color: `white` }}
+                      />{" "}
+                      Show results
+                    </Button>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </CardFooter>
             </Card>
