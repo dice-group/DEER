@@ -168,8 +168,6 @@ class LinkingEnrichmentOperator extends React.Component {
     );
 
     this.addOutput("output1", "text");
-    this.addOutput("output2", "text");
-    this.addOutput("output3", "text");
 
     this.title = "Linking Enrichment Operator";
     this.color = "#816204";
@@ -228,7 +226,7 @@ class LinkingEnrichmentOperator extends React.Component {
               <Input
                 type="text"
                 onChange={this.handleChange}
-                placeholder="Node name"
+                //der="Node name"
                 name="name"
                 id="name"
               />
@@ -237,7 +235,7 @@ class LinkingEnrichmentOperator extends React.Component {
               <Label>Spec File:</Label>
               <Input
                 type="text"
-                placeholder="deer:specFile"
+                //placeholder="deer:specFile"
                 onChange={this.handleChange}
                 name="specFile"
                 id="specFile"
@@ -294,7 +292,7 @@ class LinkingEnrichmentOperator extends React.Component {
               <Label>Linking Predicate:</Label>
               <Input
                 type="text"
-                placeholder="deer:linkingPredicate"
+                //placeholder="deer:linkingPredicate"
                 onChange={this.handleChange}
                 name="linkingPredicate"
                 id="linkingPredicate"
@@ -304,7 +302,7 @@ class LinkingEnrichmentOperator extends React.Component {
               <Label>Threshold:</Label>
               <Input
                 type="text"
-                placeholder="deer:threshold"
+                //placeholder="deer:threshold"
                 onChange={this.handleChange}
                 name="threshold"
                 id="threshold"

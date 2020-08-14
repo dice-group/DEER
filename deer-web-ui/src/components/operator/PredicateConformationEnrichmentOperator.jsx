@@ -120,7 +120,7 @@ class PredicateConformationEnrichmentOperator extends React.Component {
               <Label>Name</Label>
               <Input
                 type="text"
-                placeholder="Node name"
+                //placeholder="Node name"
                 onChange={this.handleChange}
                 name="name"
                 id="name"
@@ -130,7 +130,7 @@ class PredicateConformationEnrichmentOperator extends React.Component {
               <Label>Source Predicate</Label>
               <Input
                 type="text"
-                placeholder="deer:sourcePredicate"
+                //placeholder="deer:sourcePredicate"
                 onChange={this.handleChange}
                 name="sourcePredicate"
                 id="sourcePredicate"
@@ -140,7 +140,7 @@ class PredicateConformationEnrichmentOperator extends React.Component {
               <Label>Target Predicate</Label>
               <Input
                 type="text"
-                placeholder="deer:targetPredicate"
+                //placeholder="deer:targetPredicate"
                 onChange={this.handleChange}
                 name="targetPredicate"
                 id="targetPredicate"
@@ -152,7 +152,7 @@ class PredicateConformationEnrichmentOperator extends React.Component {
           <Button
             className="btn-round"
             color="primary"
-            // onClick={this.addNewPrefixes}
+            onClick={this.submitForm}
           >
             Save
           </Button>

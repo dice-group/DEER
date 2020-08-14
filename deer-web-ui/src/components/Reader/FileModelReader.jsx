@@ -88,7 +88,6 @@ class FileModelReader extends React.Component {
     this.widgets_up = true;
     this.size = [180, 90];
     this.addOutput("output", "text");
-    this.addOutput("output2", "text");
     this.title = "File Model Reader";
     this.color = "#223322";
     this.bgcolor = "#335533";
@@ -167,7 +166,7 @@ class FileModelReader extends React.Component {
                 <Label>Name</Label>
                 <Input
                   type="text"
-                  placeholder="Node name"
+                  //placeholder="Node name"
                   onChange={this.handleName}
                   id="readerName"
                   name="name"
@@ -177,7 +176,7 @@ class FileModelReader extends React.Component {
                 <Label>deer:fromUri</Label>
                 <Input
                   type="text"
-                  placeholder="fromUri"
+                  //placeholder="fromUri"
                   onChange={this.handleFromUriChange}
                   id="fromUri"
                   name="fromUri"
@@ -187,7 +186,7 @@ class FileModelReader extends React.Component {
                 <Label>deer:fromPath</Label>
                 <Input
                   type="text"
-                  placeholder="fromPath"
+                  //placeholder="fromPath"
                   onChange={this.handleFromPathChange}
                   id="fromPath"
                   name="fromPath"

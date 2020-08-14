@@ -113,7 +113,7 @@ class GeoDistanceEnrichmentOperator extends React.Component {
               <Label>Name</Label>
               <Input
                 type="text"
-                placeholder="Node name"
+                //placeholder="Node name"
                 onChange={this.handleChange}
                 name="name"
                 id="name"
@@ -123,7 +123,7 @@ class GeoDistanceEnrichmentOperator extends React.Component {
               <Label>Select Predicate</Label>
               <Input
                 type="text"
-                placeholder="deer:selectPredicate"
+                //placeholder="deer:selectPredicate"
                 onChange={this.handleChange}
                 name="selectPredicate"
                 id="selectPredicate"
@@ -133,7 +133,7 @@ class GeoDistanceEnrichmentOperator extends React.Component {
               <Label>Distance Predicate</Label>
               <Input
                 type="text"
-                placeholder="deer:distancePredicate"
+                //placeholder="deer:distancePredicate"
                 onChange={this.handleChange}
                 name="distancePredicate"
                 id="nadistancePredicateme"
@@ -145,7 +145,7 @@ class GeoDistanceEnrichmentOperator extends React.Component {
           <Button
             className="btn-round"
             color="primary"
-            // onClick={this.addNewPrefixes}
+            onClick={this.submitForm}
           >
             Save
           </Button>

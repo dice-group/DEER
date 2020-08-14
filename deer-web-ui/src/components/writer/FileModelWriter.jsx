@@ -124,7 +124,7 @@ class FileModelWriter extends React.Component {
               <Label>Name</Label>
               <Input
                 type="text"
-                placeholder="Node name"
+                //placeholder="Node name"
                 onChange={this.handleChange}
                 name="name"
                 id="name"
@@ -134,7 +134,7 @@ class FileModelWriter extends React.Component {
               <Label>Output File</Label>
               <Input
                 type="text"
-                placeholder="deer:outputFile"
+                //placeholder="deer:outputFile"
                 onChange={this.handleChange}
                 name="outputFile"
                 id="outputFile"
@@ -144,7 +144,7 @@ class FileModelWriter extends React.Component {
               <Label>Output Format</Label>
               <Input
                 type="text"
-                placeholder="deer:outputFormat"
+                //placeholder="deer:outputFormat"
                 onChange={this.handleChange}
                 name="outputFormat"
                 id="outputFormat"

@@ -66,6 +66,8 @@ import {
 const N3 = require("n3");
 const { DataFactory } = N3;
 const { namedNode, literal, defaultGraph } = DataFactory;
+const URI = "http://localhost:8080";
+const BASE_URI = window.location.hostname + ":" + window.location.port;
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -94,6 +96,8 @@ class Dashboard extends React.Component {
       availableFiles: [],
       showLogButton: false,
       formProperties: "",
+      input1: "",
+      input2: "",
       prefixes: {
         example: "urn:example:demo/",
         foaf: "http://xmlns.com/foaf/0.1/",
@@ -243,6 +247,11 @@ class Dashboard extends React.Component {
     };
   }
 
+  getBaseUrl = () => {
+    var re = new RegExp(/^.*\//);
+    return re.exec(window.location.href);
+  };
+
   callbackFunction = (properties) => {
     console.log(properties);
     this.setState({
@@ -281,7 +290,7 @@ class Dashboard extends React.Component {
     }
 
     const parser = new N3.Parser();
-    fetch("http://localhost:8080/shapes")
+    fetch(BASE_URI + "/shapes")
       .then(function (response) {
         return response.text();
       })
@@ -329,15 +338,38 @@ class Dashboard extends React.Component {
   };
 
   getInputLink = (node) => {
-    for (let link in node.inputs) {
-      if (node.inputs[link].link) {
-        var inputLinkId = node.inputs[link].link;
-        var inputLinkInGraph = this.state.graph.links[inputLinkId];
-        if (inputLinkInGraph) {
-          var inputOriginNode = this.state.graph.getNodeById(
-            inputLinkInGraph.origin_id
-          );
-          return inputOriginNode;
+    console.log(node);
+    if (node.type === "Operator/LinkingEnrichmentOperator") {
+      var inputLinkInGraph1 = this.state.graph.links[node.inputs[0].link];
+      var inputLinkInGraph2 = this.state.graph.links[node.inputs[1].link];
+      if (inputLinkInGraph1) {
+        var inputOriginNode1 = this.state.graph.getNodeById(
+          inputLinkInGraph1.origin_id
+        ).properties.name;
+      }
+      if (inputLinkInGraph2) {
+        var inputOriginNode2 = this.state.graph.getNodeById(
+          inputLinkInGraph2.origin_id
+        ).properties.name;
+      }
+      console.log(inputOriginNode1);
+
+      return {
+        first: inputOriginNode1,
+        second: inputOriginNode2,
+      };
+    } else {
+      for (let link in node.inputs) {
+        if (node.inputs[link].link) {
+          console.log(node.inputs[link].link);
+          var inputLinkId = node.inputs[link].link;
+          var inputLinkInGraph = this.state.graph.links[inputLinkId];
+          if (inputLinkInGraph) {
+            var inputOriginNode = this.state.graph.getNodeById(
+              inputLinkInGraph.origin_id
+            );
+            return inputOriginNode;
+          }
         }
       }
     }
@@ -379,13 +411,25 @@ class Dashboard extends React.Component {
       //   );
       // }
       //if it has an input link, check and add a quad
-      if (this.getInputLink(node)) {
-        var originInputNode = this.getInputLink(node);
-        writer.addQuad(
-          namedNode("urn:example:demo/" + node.properties.name),
-          namedNode("http://w3id.org/fcage/" + "hasInput"),
-          namedNode("urn:example:demo/" + originInputNode.properties.name)
-        );
+      if (node.inputs) {
+        if (node.type === "Operator/LinkingEnrichmentOperator") {
+          var inputs = this.getInputLink(node);
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/fcage/" + "hasInput"),
+            writer.list([
+              namedNode("urn:example:demo/" + inputs.first),
+              namedNode("urn:example:demo/" + inputs.second),
+            ])
+          );
+        } else {
+          var originInputNode = this.getInputLink(node);
+          writer.addQuad(
+            namedNode("urn:example:demo/" + node.properties.name),
+            namedNode("http://w3id.org/fcage/" + "hasInput"),
+            namedNode("urn:example:demo/" + originInputNode.properties.name)
+          );
+        }
       }
 
       //File Model Reader
@@ -426,7 +470,6 @@ class Dashboard extends React.Component {
           node.properties.useSparqlConstruct = this.state.formProperties.useSparqlConstruct;
         }
         if (node.properties.fromEndpoint) {
-          console.log();
           writer.addQuad(
             namedNode("urn:example:demo/" + node.properties.name),
             namedNode("http://w3id.org/deer/" + "fromEndpoint"),
@@ -761,9 +804,9 @@ class Dashboard extends React.Component {
 
   //TODO: Download the results
   downloadResults = (index) => {
-    console.log(this.state.availableFiles[index]);
     fetch(
-      "http://localhost:8080/result/" +
+      BASE_URI +
+        "/result/" +
         this.state.requestID +
         "/" +
         this.state.availableFiles[index]
@@ -784,7 +827,7 @@ class Dashboard extends React.Component {
 
     var formData = new FormData();
     formData.append("config", file);
-    fetch("http://localhost:8080/submit", {
+    fetch(BASE_URI + "/submit", {
       method: "POST",
       body: formData,
     })
@@ -805,7 +848,7 @@ class Dashboard extends React.Component {
   };
 
   getStatusForRequest = () => {
-    fetch("http://localhost:8080/status/" + this.state.requestID)
+    fetch(BASE_URI + "/status/" + this.state.requestID)
       .then(function (response) {
         return response.json();
       })
@@ -822,7 +865,7 @@ class Dashboard extends React.Component {
   };
 
   getResults = () => {
-    fetch("http://localhost:8080/results/" + this.state.requestID)
+    fetch(BASE_URI + "/results/" + this.state.requestID)
       .then(function (response) {
         return response.json();
       })
@@ -835,9 +878,7 @@ class Dashboard extends React.Component {
   };
 
   showLogs = () => {
-    fetch("http://localhost:8080/logs/" + this.state.requestID).then(function (
-      response
-    ) {
+    fetch(BASE_URI + "/logs/" + this.state.requestID).then(function (response) {
       let a = document.getElementById("downloadLink");
       a.href = response.url;
       a.click();

@@ -266,7 +266,7 @@ class FilterEnrichmentOperator extends React.Component {
                   <Input
                     type="text"
                     onChange={this.handleChange}
-                    placeholder="Enter resource"
+                    //placeholder="Enter resource"
                     name="resource"
                     id="resource"
                   />
@@ -277,7 +277,7 @@ class FilterEnrichmentOperator extends React.Component {
                 <Label>Use Sparql Construct</Label>
                 <Input
                   type="textarea"
-                  placeholder="deer:sparqlConstructQuery"
+                  //placeholder="deer:sparqlConstructQuery"
                   onChange={this.handleChange}
                   name="sparqlConstructQuery"
                   id="sparqlConstructQuery"

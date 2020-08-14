@@ -133,7 +133,7 @@ class GeoFusionEnrichmentOperator extends React.Component {
               <Input
                 type="text"
                 onChange={this.handleChange}
-                placeholder="Node name"
+                //placeholder="Node name"
                 name="name"
                 id="name"
               />
@@ -144,7 +144,7 @@ class GeoFusionEnrichmentOperator extends React.Component {
                 value={this.state.selectedOption}
                 onChange={this.handleSelectChange}
                 options={options}
-                placeholder="deer:fusionAction"
+                //placeholder="deer:fusionAction"
                 name="fusionAction"
                 id="fusionAction"
               />
@@ -153,7 +153,7 @@ class GeoFusionEnrichmentOperator extends React.Component {
               <Label>Merge other statements?</Label>
               <Input
                 type="text"
-                placeholder="deer:mergeOtherStatements"
+                //placeholder="deer:mergeOtherStatements"
                 onChange={this.handleChange}
                 name="mergeOtherStatements"
                 id="mergeOtherStatements"
@@ -165,7 +165,7 @@ class GeoFusionEnrichmentOperator extends React.Component {
           <Button
             className="btn-round"
             color="primary"
-            // onClick={this.addNewPrefixes}
+            onClick={this.submitForm}
           >
             Save
           </Button>

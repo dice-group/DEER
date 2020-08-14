@@ -114,7 +114,7 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
               <Label>Name</Label>
               <Input
                 type="text"
-                placeholder="Node name"
+                //placeholder="Node name"
                 onChange={this.handleChange}
                 name="name"
                 id="name"
@@ -124,7 +124,7 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
               <Label>Source Subject Authority</Label>
               <Input
                 type="text"
-                placeholder="deer:sourceSubjectAuthority"
+                //placeholder="deer:sourceSubjectAuthority"
                 onChange={this.handleChange}
                 name="sourceSubjectAuthority"
                 id="sourceSubjectAuthority"
@@ -134,7 +134,7 @@ class AuthorityConformationEnrichmentOperator extends React.Component {
               <Label>Target Subject Authority</Label>
               <Input
                 type="text"
-                placeholder="deer:targetSubjectAuthority"
+                //placeholder="deer:targetSubjectAuthority"
                 onChange={this.handleChange}
                 name="targetSubjectAuthority"
                 id="targetSubjectAuthority"

@@ -100,7 +100,7 @@ class SparqlUpdateEnrichmentOperator extends React.Component {
               <Label>Name</Label>
               <Input
                 type="text"
-                placeholder="Node name"
+                //placeholder="Node name"
                 onChange={this.handleChange}
                 name="name"
                 id="name"
@@ -112,7 +112,7 @@ class SparqlUpdateEnrichmentOperator extends React.Component {
                 type="textarea"
                 name="sparqlUpdateQuery"
                 id="sparqlUpdateQuery"
-                placeholder="deer:sparqlUpdateQuery"
+                //placeholder="deer:sparqlUpdateQuery"
                 onChange={this.handleChange}
               />
             </FormGroup>

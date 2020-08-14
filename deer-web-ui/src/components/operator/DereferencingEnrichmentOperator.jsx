@@ -104,15 +104,24 @@ class DereferencingEnrichmentOperator extends React.Component {
           <Form>
             <FormGroup>
               <Label>Look Up Prefix</Label>
-              <Input type="text" placeholder="deer:lookUpPrefix" />
+              <Input
+                type="text"
+                //placeholder="deer:lookUpPrefix"
+              />
             </FormGroup>
             <FormGroup>
               <Label>Dereferencing Property</Label>
-              <Input type="text" placeholder="deer:dereferencingProperty" />
+              <Input
+                type="text"
+                //placeholder="deer:dereferencingProperty"
+              />
             </FormGroup>
             <FormGroup>
               <Label>Import Property</Label>
-              <Input type="text" placeholder="deer:importProperty" />
+              <Input
+                type="text"
+                //placeholder="deer:importProperty"
+              />
             </FormGroup>
           </Form>
         </CardBody>

@@ -161,7 +161,7 @@ class NEREnrichmentOperator extends React.Component {
               <Label>Name</Label>
               <Input
                 type="text"
-                placeholder="Node name"
+                //placeholder="Node name"
                 onChange={this.handleChange}
                 name="name"
                 id="name"
@@ -171,7 +171,7 @@ class NEREnrichmentOperator extends React.Component {
               <Label>Literal Property</Label>
               <Input
                 type="text"
-                placeholder="deer:literalProperty"
+                //placeholder="deer:literalProperty"
                 onChange={this.handleChange}
                 name="literalProperty"
                 id="literalProperty"
@@ -181,7 +181,7 @@ class NEREnrichmentOperator extends React.Component {
               <Label>Import Property</Label>
               <Input
                 type="text"
-                placeholder="deer:importProperty"
+                //placeholder="deer:importProperty"
                 onChange={this.handleChange}
                 name="importProperty"
                 id="importProperty"
@@ -193,7 +193,7 @@ class NEREnrichmentOperator extends React.Component {
                 value={this.state.selectedOption}
                 onChange={this.handleSelectChange}
                 options={options}
-                placeholder="deer:neType"
+                //placeholder="deer:neType"
                 id="neType"
                 name="neType"
               />
@@ -202,7 +202,7 @@ class NEREnrichmentOperator extends React.Component {
               <Label>Endpoint</Label>
               <Input
                 type="text"
-                placeholder="deer:foxUrl"
+                //placeholder="deer:foxUrl"
                 onChange={this.handleChange}
                 name="foxUrl"
                 id="foxUrl"
