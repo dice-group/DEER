@@ -29,3 +29,4 @@ dependency-reduced-pom.xml
 .server-storage/
 deer-analytics.json
 package-lock.json
+.tool-versions
