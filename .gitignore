@@ -30,3 +30,4 @@ dependency-reduced-pom.xml
 deer-analytics.json
 package-lock.json
 .tool-versions
+/experiments-data/
