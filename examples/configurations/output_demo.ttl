@@ -1,0 +1,17 @@
+<http://dbpedia.org/resource/Paderborn>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Paderborn"@it , "Paderborn"@de , "Paderborn"@pl , "Paderborn"@en , "Paderborn"@pt , "Paderborn"@fr , "Paderborn"@es , "帕德博恩"@zh , "Paderborn (stad)"@nl , "Падерборн"@ru , "بادربورن"@ar , "パーダーボルン"@ja ;
+        <http://www.w3.org/2002/07/owl#sameAs>
+                <http://pl.dbpedia.org/resource/Paderborn> , <http://ja.dbpedia.org/resource/パーダーボルン> , <http://de.dbpedia.org/resource/Paderborn> , <http://wikidata.dbpedia.org/resource/Q2971> , <http://d-nb.info/gnd/4044283-4> , <http://eu.dbpedia.org/resource/Paderborn> , <http://nl.dbpedia.org/resource/Paderborn_(stad)> , <http://sws.geonames.org/6557655/> , <http://es.dbpedia.org/resource/Paderborn> , <http://pt.dbpedia.org/resource/Paderborn> , <http://www.wikidata.org/entity/Q2971> , <http://sws.geonames.org/2855745/> , <http://it.dbpedia.org/resource/Paderborn> , <http://linkedgeodata.org/triplify/node240114473> , <http://id.dbpedia.org/resource/Paderborn> , <http://fr.dbpedia.org/resource/Paderborn> , <http://ko.dbpedia.org/resource/파더보른> , <http://yago-knowledge.org/resource/Paderborn> , <http://cs.dbpedia.org/resource/Paderborn> , <http://rdf.freebase.com/ns/m.01gn7v> ;
+        <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+                5.171666717529297E1 ;
+        <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+                8.766666412353516E0 .
+
+<http://linkedgeodata.org/triplify/node240114473>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Paderborn"@fr , "Paderborn"@es , "Paderborn"@de , "Paderborn" , "Paderborn"@it , "Paderborn"@en , "Падерборн"@ru , "Падерборн"@sr , "パーダーボルン"@ja ;
+        <http://www.w3.org/2003/01/geo/wgs84_pos#lat>
+                5.17177044E1 ;
+        <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+                8.752653E0 .

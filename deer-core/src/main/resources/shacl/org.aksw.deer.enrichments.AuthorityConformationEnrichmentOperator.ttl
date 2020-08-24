@@ -3,12 +3,15 @@
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix deer: <http://w3id.org/deer/> .
+@prefix fcage: <http://w3id.org/fcage/> .
 
 # Node AuthorityConformationEnrichmentOperator
 
 deer:AuthorityConformationEnrichmentOperatorShape
 	a sh:NodeShape ;
 	sh:targetClass deer:AuthorityConformationEnrichmentOperator ;
+	sh:closed true ;
+	sh:ignoredProperties ( rdf:type fcage:hasInput ) ;
 	sh:property deer:AuthorityConformationEnrichmentOperatorShape_operation ;
 	sh:message "AuthorityConformationEnrichmentOperator must declare at least one operation" ;
 .
@@ -17,7 +20,7 @@ deer:AuthorityConformationEnrichmentOperatorShape_operation
   sh:path deer:operation ;
   sh:minCount 1 ;
   sh:node deer:AuthorityConformationEnrichmentOperatorShape_operationNode;
-.
+ .
 
 deer:AuthorityConformationEnrichmentOperatorShape_operationNode
   a sh:NodeShape ;
@@ -33,7 +36,7 @@ deer:AuthorityConformationEnrichmentOperatorShape_operationNode_sourceAuthority
 .
 
 deer:AuthorityConformationEnrichmentOperatorShape_operationNode_targetAuthority
-  sh:path deer:sourceAuthority ;
+  sh:path deer:targetAuthority ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
   sh:nodeKind sh:IRI ;

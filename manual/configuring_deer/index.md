@@ -28,23 +28,21 @@ The following example configuration demonstrates how the predefined vocabulary w
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-:node_reader1
+:node_reader1_dbp
   a deer:SparqlModelReader ;
-  fcage:hasOutput :node_geofusion ;
   deer:useSparqlDescribeOf <http://dbpedia.org/resource/Paderborn> ;
   deer:fromEndpoint       <http://dbpedia.org/sparql> ;
 .
 
-:node_reader2
+:node_reader_lgd
   a deer:SparqlModelReader ;
-  fcage:hasOutput :node_conf ;
   deer:useSparqlDescribeOf <http://linkedgeodata.org/triplify/node240114473> ;
   deer:fromEndpoint <http://linkedgeodata.org/sparql> ;
 .
 
 :node_conf
   a deer:AuthorityConformationEnrichmentOperator ;
-  fcage:hasOutput :node_geofusion ;
+  fcage:hasInput :node_reader_lgd ;
   deer:operation [
     deer:sourceAuthority <http://dbpedia.org> ;
     deer:targetAuthority <http://deer.org> ;
@@ -53,15 +51,14 @@ The following example configuration demonstrates how the predefined vocabulary w
 
 :node_geofusion
   a deer:GeoFusionEnrichmentOperator ;
-  fcage:hasInput ( :node_conf :node_reader1 ) ;
-  fcage:hasOutput :node_filter ;
+  fcage:hasInput ( :node_conf :node_reader_dbp ) ;
   deer:fusionAction "takeAll" ;
   deer:mergeOtherStatements "true"^^xsd:boolean ;
 .
 
 :node_filter
   a deer:FilterEnrichmentOperator ;
-  fcage:hasOutput ( :node_writer ) ;
+  fcage:hasInput :node_geofusion ;
   deer:selector [ deer:predicate geo:lat ] ,
             [ deer:predicate geo:long ] ,
             [ deer:predicate rdfs:label ] ,
@@ -70,6 +67,7 @@ The following example configuration demonstrates how the predefined vocabulary w
 
 :node_writer
   a deer:FileModelWriter ;
+  fcage:hasInput :node_filter ;
   deer:outputFile "output_demo.ttl" ;
   deer:outputFormat "Turtle" ;
 .

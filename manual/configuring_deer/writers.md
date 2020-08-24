@@ -7,4 +7,4 @@ This Model Writer can write RDF to any
 Its configuration parameters are:
 
  * `deer:outputFile` *(required)* specifies the name of the emitted file
- * `deer:outputFormat` specifies the file format to be used, defaults to **TURTLE**.
+ * `deer:outputFormat` specifies the file format to be used (defaults to `"TURTLE"`).

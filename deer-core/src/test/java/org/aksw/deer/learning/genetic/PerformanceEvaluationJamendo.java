@@ -67,18 +67,18 @@ public class PerformanceEvaluationJamendo {
           ""), null, "NT");
 // (a -> )(b -> AC ->) -> MERGE -> NER -> PC -> DEREF
     Model a = ModelFactory.createDefaultModel().read(new StringReader(
-      "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/name> \"ARCTIC\" .\n" +
-        "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/made> <http://dbtune.org/jamendo/record/2357> .\n" +
-        "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/img> <http://img.jamendo.com/artists/a/arctic.gif> .\n" +
-        "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/homepage> <http://www.projectarctic.com> .\n" +
-        "<http://dbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/based_near> <http://sws.geonames.org/6251999/> .\n" +
-        "<http://dbtune.org/jamendo/artist/1399> <http://www.w3.org/2000/01/rdf-schema#comment> \"<p>ARCTIC - the band and/or solo project of Marcus Martin - is all about duality. His childhood in Yellowknife, a small gold mining town in the Arctic region of Canada's Northwest Territories, was a stark contrast to his experiences in a private UK boarding school. He grew up in the land of lakes, trees, rocks and ice with true wilderness spirit and is equally at home sharing his ARCTIC adventures in any big city, where there are more people on one street than in his whole hometown. </p>\\n<p>Coming from the Tom Morello school of guitar texture, he has learned to challenge the listener by layering unique sounds usually found only in the electric guitar world. As a loop-based acoustic artist he tours with an 80 lb. effects pedalboard - not traveling light compared to most acoustic singer-songwriters. </p>\\n<p>His live set is where this duality takes flight, as he constructs each song before the audience, piece by piece. Influenced by both 70's progressive rock and conventional songwriters of the day, ARCTIC bridges a world of opposites together. He layers haunting melodies on top of his arrangements, improvising like a jazz artist, intertwining vocals and guitar into a chilled and airy soundscape. </p>\" .\n" +
-        "<http://dbtune.org/jamendo/artist/1399> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/mo/MusicArtist> .\n" +
+      "<http://adbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/name> \"ARCTIC\" .\n" +
+        "<http://adbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/made> <http://dbtune.org/jamendo/record/2357> .\n" +
+        "<http://adbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/img> <http://img.jamendo.com/artists/a/arctic.gif> .\n" +
+        "<http://adbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/homepage> <http://www.projectarctic.com> .\n" +
+        "<http://adbtune.org/jamendo/artist/1399> <http://xmlns.com/foaf/0.1/based_near> <http://sws.geonames.org/6251999/> .\n" +
+        "<http://adbtune.org/jamendo/artist/1399> <http://www.w3.org/2000/01/rdf-schema#comment> \"<p>ARCTIC - the band and/or solo project of Marcus Martin - is all about duality. His childhood in Yellowknife, a small gold mining town in the Arctic region of Canada's Northwest Territories, was a stark contrast to his experiences in a private UK boarding school. He grew up in the land of lakes, trees, rocks and ice with true wilderness spirit and is equally at home sharing his ARCTIC adventures in any big city, where there are more people on one street than in his whole hometown. </p>\\n<p>Coming from the Tom Morello school of guitar texture, he has learned to challenge the listener by layering unique sounds usually found only in the electric guitar world. As a loop-based acoustic artist he tours with an 80 lb. effects pedalboard - not traveling light compared to most acoustic singer-songwriters. </p>\\n<p>His live set is where this duality takes flight, as he constructs each song before the audience, piece by piece. Influenced by both 70's progressive rock and conventional songwriters of the day, ARCTIC bridges a world of opposites together. He layers haunting melodies on top of his arrangements, improvising like a jazz artist, intertwining vocals and guitar into a chilled and airy soundscape. </p>\" .\n" +
+        "<http://adbtune.org/jamendo/artist/1399> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/mo/MusicArtist> .\n" +
         ""), null, "NT");
     a.write(new FileWriter(testDir + paths[0]), "TTL");
     target.write(new FileWriter(testDir + paths[2]), "TTL");
     trainingData = new TrainingData(new FitnessFunction(new int[]{1,1,1,1}, 1), List.of(testDir + paths[0]), List.of(testDir + paths[0]), testDir + paths[2], testDir + paths[2], testDir + paths[3]);
-    Genotype.SIZE = 10;
+    Genotype.SIZE = 9;
   }
 
   private static double calcMeanCI(SummaryStatistics stats, double level) {
@@ -114,7 +114,10 @@ public class PerformanceEvaluationJamendo {
 
   @Test
   public void constructorTest() {
-    runPerformanceExperiment(1.0,0.5,0.25);
+    int i=0;while(++i<=10) {
+      System.out.println(i + "-------------");
+      runPerformanceExperiment(1.0, 0.5, 0.25);
+    }
   }
 
   private void runPerformanceExperiment(double oF, double mP, double mR) {

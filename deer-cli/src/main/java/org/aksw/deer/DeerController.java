@@ -7,13 +7,16 @@ import org.aksw.deer.server.Server;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.CompiledExecutionGraph;
 import org.aksw.faraday_cage.engine.FaradayCageContext;
+import org.aksw.faraday_cage.engine.Plugin;
 import org.aksw.faraday_cage.engine.PluginFactory;
 import org.aksw.faraday_cage.vocabulary.FCAGE;
 import org.apache.commons.cli.*;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.vocabulary.RDFS;
 import org.json.JSONObject;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginManager;
@@ -30,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 import static org.fusesource.jansi.Ansi.Color.RED;
 import static org.fusesource.jansi.Ansi.ansi;
@@ -78,8 +82,20 @@ public class DeerController {
 
   private static final FaradayCageContext executionContext = Deer.getExecutionContext(pluginManager);
 
-  public static FaradayCageContext getExecutionContext() {
-    return executionContext;
+  private static <U extends Plugin> Model getClassHierarchy(Class<U> clazz, Resource type) {
+    List<Resource> list = new PluginFactory<>(clazz, DeerController.pluginManager, type)
+      .listAvailable();
+    Model res = (list.size() == 0) ? ModelFactory.createDefaultModel() : list.get(0).getModel();
+    res.add(type, RDFS.subClassOf, FCAGE.ExecutionNode);
+    return res;
+  }
+
+  public static Model getShapes() {
+    return executionContext.getFullValidationModel()
+      .add(getClassHierarchy(EnrichmentOperator.class, DEER.EnrichmentOperator))
+      .add(getClassHierarchy(ModelReader.class, DEER.ModelReader))
+      .add(getClassHierarchy(ModelWriter.class, DEER.ModelWriter))
+      .add(getClassHierarchy(DeerExecutionNodeWrapper.class, DEER.DeerExecutionNodeWrapper));
   }
 
   public static void main(String args[]) {

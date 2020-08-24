@@ -3,12 +3,15 @@
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix deer: <http://w3id.org/deer/> .
+@prefix fcage: <http://w3id.org/fcage/> .
 
 # Node PredicateConformationEnrichmentOperator
 
 deer:PredicateConformationEnrichmentOperatorShape
 	a sh:NodeShape ;
 	sh:targetClass deer:PredicateConformationEnrichmentOperator ;
+	sh:closed true ;
+	sh:ignoredProperties ( rdf:type fcage:hasInput ) ;
 	sh:property deer:PredicateConformationEnrichmentOperatorShape_operation ;
 	sh:message "PredicateConformationEnrichmentOperator must declare at least one operation." ;
 .

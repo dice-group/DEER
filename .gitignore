@@ -5,7 +5,7 @@
 *.war
 *.ear
 /.server-storage/
-/target/
+target/
 out/
 nbactions.xml
 
@@ -22,3 +22,11 @@ dependency-reduced-pom.xml
 # Subrepositories
 /faraday-cage/
 /deer-slipo-plugin/
+
+
+# Other
+.java-version
+.server-storage/
+deer-analytics.json
+package-lock.json
+.tool-versions

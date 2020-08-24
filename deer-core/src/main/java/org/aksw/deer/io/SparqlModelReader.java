@@ -65,7 +65,7 @@ public class SparqlModelReader extends AbstractModelReader {
     final String sparqlQueryString;
     if (sparqlQuery.isPresent()) {
       org.aksw.jena_sparql_api.core.QueryExecutionFactory qef = new QueryExecutionFactoryHttp(fromEndpoint);
-      qef = new QueryExecutionFactoryDelay(qef, 2000);
+      qef = new QueryExecutionFactoryDelay(qef, 500);
       qef = new QueryExecutionFactoryPaginated(qef, 5000);
       sparqlQueryString = sparqlQuery.get();
       final QueryExecution queryExecution = qef.createQueryExecution(sparqlQueryString);

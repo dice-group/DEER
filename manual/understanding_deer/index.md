@@ -1,5 +1,12 @@
 # About DEER
 
+The RDF Dataset Enrichment Framework (DEER), is a modular, extensible software system for efficient
+computation of arbitrary operations on RDF datasets.  
+The atomic operations involved in this process, dubbed *enrichment operators*, 
+are configured using RDF, making DEER a native semantic web citizen.  
+Enrichment operators are mapped to nodes of a directed acyclic graphs to build complex enrichment
+models, in which the connections between two nodes represent intermediary datasets.
+
 ## Architecture
 
 <img src="./stack.svg" style="float:right; margin:0em 0em 2em 2em"/>
@@ -37,17 +44,17 @@ of the corresponding **FARADAY-CAGE** interfaces:
 DEER plugins that implement the `DeerExecutionNode` interface inherit from the `ExecutionNode` interface of **FARADAY-CAGE**.
 Therefore, they have so called **degree bounds**, which restrict the number of datasets they can accept and emit.
 Degree bounds are notated as `(minIn, maxIn, minOut, maxOut)`, where
-  * minIn is the minimum number of accepted datasets
-  * maxIn is the maximum number of accepted datasets
-  * minIn is the minimum number of emitted datasets
-  * maxIn is the maximum number of emitted datasets
+  * `minIn` is the minimum number of accepted datasets
+  * `maxIn` is the maximum number of accepted datasets
+  * `minIn` is the minimum number of emitted datasets
+  * `maxIn` is the maximum number of emitted datasets
   
 The following three plugin types are derived from `DeerExecutionNode`. For each of them there
 exists a convenience abstract class which specifies the according degree bounds and other utility methods.
  
 * A **ModelReader** `(0,0,1,1)` is the only plugin that can be a root node in the execution graph and likewise it
 must be a root node. It is responsible for reading one RDF dataset from a dedicated source to feed it into 
-the exxecution graph.  
+the execution graph.  
 * A **ModelWriter** `(1,1,0,1)` can be an intermediary or a leaf node and it will write one RDF dataset to an external channel,
 e.g. a file or a triplestore.  
 * An **EnrichmentOperator** `(1,N,1,M)` is an intermediary node that takes one or more RDF datasets as input,

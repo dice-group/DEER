@@ -1,17 +1,20 @@
 package org.aksw.deer.enrichments;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.aksw.deer.learning.ReverseLearnable;
 import org.aksw.deer.learning.SelfConfigurable;
 import org.aksw.deer.vocabulary.DBR;
 import org.aksw.deer.vocabulary.DEER;
 import org.aksw.faraday_cage.engine.ThreadlocalInheritingCompletableFuture;
 import org.aksw.faraday_cage.engine.ValidatableParameterMap;
+import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
+import org.apache.commons.collections15.MultiMap;
+import org.apache.commons.collections15.multimap.MultiHashMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.vocabulary.OWL;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 /**
  * An EnrichmentOperator for dereferencing.
@@ -111,64 +114,28 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
 
   public static final Property OPERATION = DEER.property("operation");
 
-  private static String DEFAULT_LOOKUP_PREFIX = DBR.getURI();
+  public static final Property USE_SPARQL_ENDPOINT = DEER.property("useSparqlEndpoint");
 
-  private static final Set<Property> ignoredProperties = new HashSet<>(Arrays.asList(OWL.sameAs));
+  private static String DEFAULT_LOOKUP_PREFIX = DBR.getURI();
 
   private HashMap<OperationGroup, Set<Property[]>> operations;
 
+  private Optional<String> endpoint;
+
   private Model model;
 
+
   private static final ConcurrentMap<Resource, CompletableFuture<Model>> cache = new ConcurrentHashMap<>();
-
-//  static {
-//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Leipzig"),
-//      ModelFactory.createDefaultModel().read(new StringReader("" +
-//        "<http://dbpedia.org/resource/Leipzig> <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Germany> ." +
-//        ""), null, "TTL"));
-//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)"),
-//      ModelFactory.createDefaultModel().read(new StringReader("" +
-//        "<http://dbpedia.org/resource/Island_of_the_Dead_(2000_film)> <http://dbpedia.org/ontology/director> <http://dbpedia.org/resource/Tim_Southam> ." +
-//        ""), null, "TTL"));
-//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Johns_Hopkins_University"), ModelFactory.createDefaultModel());
-//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Germany"), ModelFactory.createDefaultModel());
-//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Paramount_Pictures"), ModelFactory.createDefaultModel());
-//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Baltimore"), ModelFactory.createDefaultModel());
-//    cache.putIfAbsent(ResourceFactory.createResource("http://dbpedia.org/resource/Tim_Southam"), ModelFactory.createDefaultModel());
-//  }
-
 
   @Override
   public ValidatableParameterMap createParameterMap() {
     return ValidatableParameterMap.builder()
       .declareProperty(OPERATION)
+      .declareProperty(USE_SPARQL_ENDPOINT)
       .declareValidationShape(getValidationModelFor(DereferencingEnrichmentOperator.class))
       .build();
   }
 
-//  /**
-//   * Self configuration
-//   * Find source/target URI as the most redundant URIs
-//   *
-//   * @param source source
-//   * @param target target
-//   *
-//   * @return Map of (key, value) pairs of self configured parameters
-//   */
-//  //  @Override
-//  public ParameterMap learnParameterMap(Model source, Model target) {
-//    ParameterMap parameters = createParameterMap();
-//    Set<Property> propertyDifference = getPropertyDifference(source, target);
-//    List<Map<Property, RDFNode>> autoOperations = new ArrayList<>();
-//    for (Property property : propertyDifference) {
-//      Map<Property, RDFNode> autoOperation = new HashMap<>();
-//      autoOperation.put(DEREFERENCING_PROPERTY, property);
-//      autoOperation.put(IMPORT_PROPERTY, property);
-//      autoOperations.add(autoOperation);
-//    }
-//    parameters.setValue(OPERATIONS, autoOperations);
-//    return parameters;
-//  }
 
   public void initializeOperations() {
     ValidatableParameterMap parameters = getParameterMap();
@@ -194,36 +161,107 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
 
   @Override
   protected List<Model> safeApply(List<Model> models) {
+    endpoint = getParameterMap().getOptional(USE_SPARQL_ENDPOINT)
+      .map(r -> r.asResource().getURI());
     initializeOperations();
     model = ModelFactory.createDefaultModel().add(models.get(0));
-    operations.forEach(this::runOperation);
+    operations.forEach(endpoint.isPresent() ? this::runSPARQLOperation : this::runOperation);
     return Lists.newArrayList(model);
   }
 
+  /**
+   * Implementation of HTTP-based lookup.
+   * Groups HTTP calls per lookup resource, retrieves
+   * Model via cached  HTTP calls.
+   */
   private void runOperation(OperationGroup opGroup, Set<Property[]> ops) {
     Map<Resource, List<Pair<Property, RDFNode>>> dereffedPerResource = new HashMap<>();
-    List<Statement> candidateNodes = getCandidateNodes(opGroup.lookupPrefix, opGroup.lookupProperty);
-    candidateNodes.stream()
-      .map(Statement::getResource)
-      .distinct()
+    MultiMap<Resource, Resource> candidateNodes = getCandidateNodeMap(opGroup.lookupPrefix, opGroup.lookupProperty);
+    candidateNodes.keySet()
       .forEach(o -> dereffedPerResource.put(o, getEnrichmentPairsFor(o, ops)));
-    for (Statement stmt : candidateNodes) {
-      for (Pair<Property, RDFNode> pair : dereffedPerResource.get(stmt.getResource())) {
-        stmt.getResource().addProperty(pair.getLeft(), pair.getRight());
+    for (Map.Entry<Resource, Collection<Resource>> entry : candidateNodes.entrySet()) {
+      for (Resource subject : entry.getValue()) {
+        for (Pair<Property, RDFNode> pair : dereffedPerResource.get(entry.getKey())) {
+          subject.addProperty(pair.getLeft(), pair.getRight());
+        }
       }
     }
   }
 
+
+  /**
+   * Get SPARQL Endpoint suggestions based on WIMU (will this work for prefixes?)
+   *    * If not, need to query for each resource -> can reuse same structure as HTTP-based
+   *    lookup...
+   *
+   *
+   */
+
+
+  /**
+   *
+   * Implementation of SPARQL lookup.
+   * Here we will group by operation to achieve higher throughput and less overhead.
+   * Question: Is SELECT or CONSTRUCT better for this? (or DESCRIBE)
+   */
+  private void runSPARQLOperation(OperationGroup opGroup, Set<Property[]> ops) {
+    String queryStart = "SELECT ?source ?import ?dereffed WHERE { VALUES (?source ?deref ?import) { ";
+    String queryEnd = "} ?source ?deref ?dereffed . }";
+    MultiMap<Resource, Resource> candidateNodes = getCandidateNodeMap(opGroup.lookupPrefix, opGroup.lookupProperty);
+    int i = 0;
+    int c = 0;
+    int j = 0;
+    StringBuilder sparqlQueryBuilder = new StringBuilder();
+    for (Resource o : candidateNodes.keySet()) {
+      i++;
+      for (Property[] op : ops) {
+        sparqlQueryBuilder.append("(<");
+        sparqlQueryBuilder.append(o.asResource().getURI());
+        sparqlQueryBuilder.append("> <");
+        sparqlQueryBuilder.append(op[0]);
+        sparqlQueryBuilder.append("> <");
+        sparqlQueryBuilder.append(op[1]);
+        sparqlQueryBuilder.append(">)\n");
+        if (++c > 1000) {
+          j += queryAndAddToModel(queryStart + sparqlQueryBuilder.toString() + queryEnd, candidateNodes);
+          c = 0;
+          sparqlQueryBuilder = new StringBuilder();
+        }
+      }
+    }
+    if (c > 0) {
+      queryAndAddToModel(queryStart + sparqlQueryBuilder.toString() + queryEnd, candidateNodes);
+    }
+//    logger.info("Trying for {} possible dereferencings for lookup {}", i * ops.size(), opGroup);
+    logger.info("Dereferenced {} of {} possible properties for lookup {}", j, i * ops.size(), opGroup);
+  }
+
+  private int queryAndAddToModel(String query, MultiMap<Resource, Resource> candidateNodes) {
+    org.aksw.jena_sparql_api.core.QueryExecutionFactory qef = new QueryExecutionFactoryHttp(endpoint.get());
+//    qef = new QueryExecutionFactoryDelay(qef, 100);
+//    qef = new QueryExecutionFactoryPaginated(qef, 20000);
+    final QueryExecution queryExecution = qef.createQueryExecution(query);
+    ResultSet resultSet = queryExecution.execSelect();
+    AtomicInteger i = new AtomicInteger(0);
+    resultSet.forEachRemaining(result -> {
+      i.incrementAndGet();
+      for (Resource subject : candidateNodes.get(result.getResource("?source"))) {
+        subject.addProperty(model.createProperty(result.getResource("?import").getURI()), result.get("?dereffed"));
+      }
+    });
+    queryExecution.close();
+    return i.get();
+  }
+
+
   private List<Pair<Property, RDFNode>> getEnrichmentPairsFor(Resource o, Set<Property[]> ops) {
     List<Pair<Property, RDFNode>> result = new ArrayList<>();
     Model resourceModel = queryResourceModel(o);
-//    resourceModel.enterCriticalSection(Lock.READ);
     for (Property[] op : ops) {
       resourceModel.listStatements(o, op[0], (RDFNode)null)
         .mapWith(Statement::getObject)
         .forEachRemaining(x -> result.add(new ImmutablePair<>(op[1], x)));
     }
-//    resourceModel.leaveCriticalSection();
     return result;
   }
 
@@ -265,19 +303,14 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
     return result;
   }
 
-  private List<Statement> getCandidateNodes(String lookupPrefix, Property lookUpProperty) {
-    return model.listStatements()
+  private MultiMap<Resource, Resource> getCandidateNodeMap(String lookupPrefix, Property lookUpProperty) {
+    MultiMap<Resource, Resource> result = new MultiHashMap<>();
+    model.listStatements()
       .filterKeep(statement -> statement.getObject().isURIResource() &&
         statement.getObject().asResource().getURI().startsWith(lookupPrefix) &&
         (lookUpProperty == null || statement.getPredicate().equals(lookUpProperty)))
-      .toList();
-  }
-
-  private Set<Property> getPropertyDifference(Model source, Model target) {
-    Function<Model, Set<Property>> getProperties =
-      (m) -> m.listStatements().mapWith(Statement::getPredicate).toSet();
-    return Sets.difference(getProperties.apply(target), getProperties.apply(source))
-      .stream().filter(p -> !ignoredProperties.contains(p)).collect(Collectors.toSet());
+      .forEachRemaining(stmt -> result.put(stmt.getResource(), stmt.getSubject()));
+    return result;
   }
 
   @Override
@@ -293,7 +326,7 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
       .collect(Collectors.toSet());
     target.listStatements()
       .filterDrop(stmt -> stmt.getSubject().getURI().startsWith(DEFAULT_LOOKUP_PREFIX)
-      && predicatesForDeletion.contains(stmt.getPredicate()))
+        && predicatesForDeletion.contains(stmt.getPredicate()))
       .forEachRemaining(result::add);
     return List.of(result);
   }
@@ -350,6 +383,11 @@ public class DereferencingEnrichmentOperator extends AbstractParameterizedEnrich
     public int hashCode() {
       return (lookupPrefix == null ? -1 : lookupPrefix.hashCode()) + 13 * (lookupProperty == null ? -1 : lookupProperty.hashCode());
     }
+
+    public String toString() {
+      return "(lookupPrefix: " + lookupPrefix + (lookupProperty == null ? "" : ", lookupProperty: " + lookupProperty) + ")";
+    }
+
   }
 
 }

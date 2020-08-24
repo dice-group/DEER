@@ -41,17 +41,17 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
 
   private static final Logger logger = LoggerFactory.getLogger(LinkingEnrichmentOperator.class);
 
-  public static final Property SPEC_FILE = DEER.property("specFile");
+  public static final Property LINKING_PREDICATE = DEER.property("linkingPredicate");
+
+  public static final Property THRESHOLD = DEER.property("threshold");
 
   public static final Property SELECT_MODE = DEER.property("selectMode");
 
   public static final Property LINKS_PART = DEER.property("linksPart");
 
+  public static final Property SPEC_FILE = DEER.property("specFile");
+
   public static final Property LINK_SPECIFICATION = DEER.property("linkSpecification");
-
-  public static final Property LINKING_PREDICATE = DEER.property("linkingPredicate");
-
-  public static final Property THRESHOLD = DEER.property("threshold");
 
   public static final Property USE_ML = DEER.property("useML");
 
@@ -127,12 +127,12 @@ public class LinkingEnrichmentOperator extends AbstractParameterizedEnrichmentOp
           return List.of(models.get(0), models.get(1), ModelFactory.createDefaultModel());
         }
       }
-      AMapping mapping;
+      AMapping mapping = MappingFactory.createDefaultMapping();
       if (linkSpecification.isPresent()) {
         mapping = LSPipeline.execute(
           source, target, new LinkSpecification(linkSpecification.get(), threshold)
         );
-      } else {
+      } else if (useML) {
         Configuration cfg = new Configuration();
         cfg.setMlAlgorithmName("Wombat Simple");
         cfg.setMlImplementationType(MLImplementationType.UNSUPERVISED);

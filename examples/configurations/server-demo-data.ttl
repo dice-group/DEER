@@ -1,9 +1,11 @@
 @prefix : <urn:example:mockup/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix deer: <http://w3id.org/deer> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 :bob
   a foaf:person ;
+  rdfs:description "Bob Barnes was born in Ontario." ;
   foaf:name "Bob Barnes" ;
   foaf:interest deer: ;
   foaf:based_near <http://dbpedia.org/resource/Paderborn> ;

@@ -39,6 +39,7 @@ public class GeneticProgrammingAlgorithm {
   public List<PopulationEvaluationResult> run() {
     int generation = 0;
     int convergenceCounter = 0;
+    int convergenceIgnore = 100;
     double localMP = mutationProbability;
     double localMR = mutationRate;
     final List<PopulationEvaluationResult> evolutionHistory = new ArrayList<>();
@@ -75,13 +76,16 @@ public class GeneticProgrammingAlgorithm {
       // repeat
       generation++;
       if (localMP != mutationProbability) {
-        localMP = Math.max(mutationProbability, localMP/5*4);
+        localMP = Math.max(mutationProbability, localMP/50*49);
       }
       if (localMR != mutationRate) {
-        localMR = Math.max(mutationRate, localMR/5*4);
+        localMR = Math.max(mutationRate, localMR/50*49);
       }
-      if (converged(evolutionHistory)) {
+      convergenceIgnore--;
+      if (convergenceIgnore <= 0 && converged(evolutionHistory)) {
+//        System.out.println(evolutionHistory.get(evolutionHistory.size()-1).getMax());
         convergenceCounter++;
+        convergenceIgnore = 100;
         localMP = 1.0;
         localMR = 1.0;
       }
@@ -90,14 +94,14 @@ public class GeneticProgrammingAlgorithm {
   }
 
   private boolean converged(List<PopulationEvaluationResult> history) {
-    int lookAhead = 10;
+    int lookAhead = 100;
     if (history.size() < lookAhead) {
       return false;
     }
     double f = history.get(history.size()-1).getMax();
 //    List<Resource> smell = history.get(history.size()-1).getBest().getSmell(true);
     for (int i = history.size()-lookAhead; i < history.size(); i++) {
-      if (history.get(i).getMax() != f || history.get(i).getStandardDeviation() > 0.1 )
+      if (history.get(i).getMax() != f) //|| history.get(i).getStandardDeviation() > 0.15
         return false;
     }
     return true;
