@@ -1,0 +1,12 @@
+<urn:example:mockup/tom> <http://xmlns.com/foaf/0.1/based_near> <http://dbpedia.org/resource/Bonn> .
+<urn:example:mockup/tom> <http://xmlns.com/foaf/0.1/interest> <http://w3id.org/deer> .
+<urn:example:mockup/tom> <http://xmlns.com/foaf/0.1/name> "Tom Tweed" .
+<urn:example:mockup/tom> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/person> .
+<urn:example:mockup/bob> <http://geoknow.org/ontology/relatedTo> <http://dbpedia.org/resource/Bob_Barnes> .
+<urn:example:mockup/bob> <http://geoknow.org/ontology/relatedTo> <http://dbpedia.org/resource/Ontario> .
+<urn:example:mockup/bob> <http://xmlns.com/foaf/0.1/knows> <urn:example:mockup/tom> .
+<urn:example:mockup/bob> <http://xmlns.com/foaf/0.1/based_near> <http://dbpedia.org/resource/Paderborn> .
+<urn:example:mockup/bob> <http://xmlns.com/foaf/0.1/interest> <http://w3id.org/deer> .
+<urn:example:mockup/bob> <http://xmlns.com/foaf/0.1/name> "Bob Barnes" .
+<urn:example:mockup/bob> <http://www.w3.org/2000/01/rdf-schema#description> "Bob Barnes was born in Ontario." .
+<urn:example:mockup/bob> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/person> .

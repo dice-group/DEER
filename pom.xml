@@ -26,7 +26,7 @@
 <modules>
   <module>deer-core</module>
   <module>deer-cli</module>
-  <module>examples/simple-plugin-example</module>
+<!--  <module>examples/simple-plugin-example</module>-->
   <!--<module>deer-slipo-plugin</module>-->
 <!--  <module>faraday-cage</module>-->
 </modules>
@@ -49,7 +49,7 @@
     <id>sonatype-nexus-snapshots</id>
     <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     <releases>
-      <enabled>false</enabled>
+      <enabled>true</enabled>
     </releases>
     <snapshots>
       <enabled>true</enabled>
@@ -59,25 +59,25 @@
   <repository>
     <id>maven.aksw.internal</id>
     <name>University Leipzig, AKSW Maven2 Internal Repository</name>
-    <url>http://maven.aksw.org/repository/internal/</url>
+    <url>https://maven.aksw.org/repository/internal/</url>
   </repository>
 
   <repository>
     <id>maven.aksw.snapshots</id>
     <name>University Leipzig, AKSW Maven2 Snapshot Repository</name>
-    <url>http://maven.aksw.org/repository/snapshots/</url>
+    <url>https://maven.aksw.org/repository/snapshots/</url>
   </repository>
 
   <repository>
     <id>maven2-repository.java.net</id>
     <name>Java.net Repository for Maven</name>
-    <url>http://download.java.net/maven/2/</url>
+    <url>https://download.java.net/maven/2/</url>
     <layout>default</layout>
   </repository>
 
   <repository>
     <id>jcenter</id>
-    <url>http://jcenter.bintray.com</url>
+    <url>https://jcenter.bintray.com</url>
   </repository>
 
   <repository>

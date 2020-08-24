@@ -1,0 +1,20 @@
+#@prefix : <http://deer.aksw.org/config/learning/#> .
+#@prefix deer: <http://w3id.org/deer/> .
+#@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+#@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+#@prefix owl: <http://www.w3.org/2002/07/owl#> .
+#
+#:source
+#              a                     deer:FileModelReader ;
+#              deer:fromUri          <http://dbpedia.org/resource/Paderborn> .
+#
+#:target
+#              a                     deer:FileModelReader ;
+#              deer:fromUri          <http://linkedgeodata.org/triplify/node240114473> .
+#
+#:learn        a                     deer:EvolutionaryPipelineLearner ;
+#              deer:sourceDataset    :source ;
+#              deer:targetDataset    :target ;
+#              deer:hasOutput        :out ; # output learned configuration, statistics and results
+#
+#:writ
